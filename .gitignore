@@ -1,0 +1,17 @@
+*~
+.DS_Store
+
+*.pyc
+*.swp
+*.egg
+.idea
+.tgz
+
+tmp
+dist
+tests/.pytest_cache
+migrations/
+.vscode
+build
+project.egg-info
+setup.py
