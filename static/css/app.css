@@ -1,0 +1,108 @@
+/* 指定字体样式 family=Material+Icons */
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/static/font/materialicons.v47.woff2) format('woff2');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+/* end */
+
+/* Sticky Footer */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* end */
+
+/* 自定义的样式 */
+.page-footer {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    padding: 0;
+}
+
+.unread {
+    font-size: 8px;
+    color: red;
+    width: 14px;
+}
+
+.read {
+    font-size: 10px;
+    color: blue;
+    width: 14px;
+}
+
+.meta-icon {
+    font-size: 14px;
+    vertical-align: text-bottom;
+    line-height: unset;
+}
+
+.meta-time {
+    width: 6em;
+}
+
+.meta-left{
+    padding-left: 18px;
+}
+
+.meta-num {
+    width: 2.5em;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: bold;
+}
+.collection-item span {
+    display: inline-block;
+}
+
+.cnt-index {
+    overflow-y: hidden;
+}
+
+.cnt-detail {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/* 适配高分辨率屏幕 */
+@media only screen and (min-width: 1200px) {
+    .unread {
+        font-size: 7px;
+    }
+
+    .meta-icon {
+        font-size: 15px;
+    }
+    .title {
+        font-size: 17px;
+    }
+}
