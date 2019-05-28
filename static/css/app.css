@@ -38,6 +38,37 @@ main {
 /* end */
 
 /* 自定义的样式 */
+h1 {
+    font-size: 2.1rem;
+    margin-top: 1.4rem;
+    margin-bottom: 0.8rem;
+}
+h2 {
+    font-size: 1.8rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.7rem;
+}
+h3 {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 0.6rem;
+}
+h4 {
+    font-size: 1.2rem;
+    margin-top: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+h5 {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+h6 {
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.2rem;
+}
+
 .page-footer {
     position: fixed;
     left: 0px;
@@ -49,35 +80,35 @@ main {
 .unread {
     font-size: 8px;
     color: red;
-    width: 14px;
+    width: 1rem;
 }
 
 .read {
     font-size: 10px;
-    color: blue;
-    width: 14px;
+    color: darkgreen;
+    width: 1rem;
 }
 
 .meta-icon {
-    font-size: 14px;
+    font-size: 1rem;
     vertical-align: text-bottom;
     line-height: unset;
 }
 
 .meta-time {
-    width: 6em;
+    width: 6rem;
 }
 
 .meta-left{
-    padding-left: 18px;
+    padding-left: 1.2rem;
 }
 
 .meta-num {
-    width: 2.5em;
+    width: 2.5rem;
 }
 
 .title {
-    font-size: 16px;
+    font-size: 1.2rem;
     font-weight: bold;
 }
 .collection-item span {
@@ -86,23 +117,20 @@ main {
 
 .cnt-index {
     overflow-y: hidden;
+    border-right: 1px dashed;
 }
 
 .cnt-detail {
     overflow-y: scroll;
     overflow-x: hidden;
+    padding: 0 10px;
 }
 
 /* 适配高分辨率屏幕 */
-@media only screen and (min-width: 1200px) {
+/*
+@media only screen and (min-width: 800px) and (max-width: 1200px) {
     .unread {
-        font-size: 7px;
-    }
-
-    .meta-icon {
-        font-size: 15px;
-    }
-    .title {
-        font-size: 17px;
+        font-size: 8px;
     }
 }
+*/
