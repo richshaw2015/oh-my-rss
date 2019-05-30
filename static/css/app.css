@@ -126,6 +126,10 @@ h6 {
     padding: 0 10px;
 }
 
+.fixed-action-btn {
+    right: 4rem;
+    bottom: 5rem;
+}
 /* 适配高分辨率屏幕 */
 /*
 @media only screen and (min-width: 800px) and (max-width: 1200px) {
