@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Title</title>
     <link rel="stylesheet" href="/static/css/materialize.min.css">
+    <link rel="stylesheet" href="/static/css/prism.css">
     <link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
@@ -339,40 +340,18 @@ ctx<span class="token punctuation">.</span>response<span class="token punctuatio
 
                 </div>
 
+
                 <hr>
-
-                <div class="card">
-                    <div class="card-content">
-                        <span class="card-title activator grey-text text-darken-4">Card Title<i
-                                class="material-icons right">more_vert</i></span>
-                    </div>
-                    <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">Card Title<i
-                                class="material-icons right">close</i></span>
-                        <div class="card-image waves-effect waves-block waves-light">
-                            <img src="/static/img/qrcode.jpg" class="qrcode"/>
+                <ul class="collapsible">
+                    <li class="">
+                        <div class="collapsible-header" tabindex="0">
+                            <i class="material-icons">filter_drama</i>更多技术交流和探讨，欢迎点击加群互动
                         </div>
-
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image waves-effect waves-block waves-light">
-                        <img class="activator" src="/static/img/qrcode.jpg">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-title activator grey-text text-darken-4">Card Title<i
-                                class="material-icons right">more_vert</i></span>
-                        <p><a href="#">This is a link</a></p>
-                    </div>
-                    <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">Card Title<i
-                                class="material-icons right">close</i></span>
-                        <p>Here is some more information about this product that is only revealed once clicked on.</p>
-                    </div>
-                </div>
-                <h1>更多技术交流和探讨，欢迎加群互动：</h1>
-
+                        <div class="collapsible-body" style="">
+                            <img class="qrcode" src="/static/img/qrcode.jpg"/>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
         </div>
@@ -389,8 +368,8 @@ ctx<span class="token punctuation">.</span>response<span class="token punctuatio
     </div>
 </footer>
 
-<script src="/static/js/materialize.min.js"></script>
 <script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/materialize.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>
