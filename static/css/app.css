@@ -38,6 +38,7 @@ main {
 /* end */
 
 /* 自定义的样式 */
+
 h1 {
     font-size: 2.1rem;
     margin-top: 1.4rem;
@@ -115,12 +116,13 @@ h6 {
     display: inline-block;
 }
 
-.cnt-index {
+.cnt-left {
     overflow-y: hidden;
     border-right: 1px dashed;
+    /* min-width: 28rem; */
 }
 
-.cnt-detail {
+.cnt-right {
     overflow-y: scroll;
     overflow-x: hidden;
     padding: 0 10px;
@@ -130,6 +132,11 @@ h6 {
     right: 4rem;
     bottom: 5rem;
 }
+
+#page {
+    position: absolute;
+}
+
 /* 适配高分辨率屏幕 */
 /*
 @media only screen and (min-width: 800px) and (max-width: 1200px) {

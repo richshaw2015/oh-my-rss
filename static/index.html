@@ -28,64 +28,67 @@
 <main>
     <!-- 页面内容 -->
     <div class="row">
-        <div class="col s4 eal lighten-2 cnt-index">
+        <div class="col s4 eal lighten-2 cnt-left">
+            <div>
+                <ul class="collection">
+                    <li class="collection-item">
+                        <div>
+                            <span class="title">GitHub OAuth 第三方登录示例教程</span>
+                            <span class="right">@阮一峰</span>
+                        </div>
 
-            <ul class="collection">
-                <li class="collection-item">
-                    <div>
-                        <span class="title">GitHub OAuth 第三方登录示例教程</span>
-                        <span class="right">@阮一峰</span>
-                    </div>
+                        <div>
+                            <i class="material-icons unread meta-left">lens</i>
 
-                    <div>
-                        <i class="material-icons unread meta-left">lens</i>
+                            <span class="meta-left meta-time">一小时前</span>
+                            <span class="meta-left">238人浏览</span>
 
-                        <span class="meta-left meta-time">一小时前</span>
-                        <span class="meta-left">238人浏览</span>
+                            <span class="right meta-right meta-num">3</span>
+                            <i class="material-icons meta-icon right">sms</i>
+                            <span class="right meta-right meta-num">23</span>
+                            <i class="material-icons meta-icon right">thumb_up</i>
 
-                        <span class="right meta-right meta-num">3</span>
-                        <i class="material-icons meta-icon right">sms</i>
-                        <span class="right meta-right meta-num">23</span>
-                        <i class="material-icons meta-icon right">thumb_up</i>
+                        </div>
+                    </li>
 
-                    </div>
-                </li>
+                    <li class="collection-item active">
+                        <div>
+                            <span class="title">GitHub OAuth 第三方登录示例教程</span>
+                            <span class="right">@阮一峰</span>
+                        </div>
 
-                <li class="collection-item active">
-                    <div>
-                        <span class="title">GitHub OAuth 第三方登录示例教程</span>
-                        <span class="right">@阮一峰</span>
-                    </div>
+                        <div>
+                            <i class="material-icons read meta-left">check</i>
 
-                    <div>
-                        <i class="material-icons read meta-left">check</i>
+                            <span class="meta-left meta-time">一天前</span>
+                            <span class="meta-left">238人浏览</span>
 
-                        <span class="meta-left meta-time">一天前</span>
-                        <span class="meta-left">238人浏览</span>
+                            <span class="right meta-right meta-num">3909</span>
+                            <i class="material-icons meta-icon right">sms</i>
+                            <span class="right meta-right meta-num">283</span>
+                            <i class="material-icons meta-icon right">thumb_up</i>
 
-                        <span class="right meta-right meta-num">3909</span>
-                        <i class="material-icons meta-icon right">sms</i>
-                        <span class="right meta-right meta-num">283</span>
-                        <i class="material-icons meta-icon right">thumb_up</i>
-
-                    </div>
-                </li>
+                        </div>
+                    </li>
 
 
-            </ul>
+                </ul>
+            </div>
 
-            <!-- 翻页 -->
-            <ul class="pagination">
-                <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                <li class="active"><a href="#!">1</a></li>
-                <li class="waves-effect"><a href="#!">2</a></li>
-                <li class="waves-effect"><a href="#!">3</a></li>
-                <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-            </ul>
+            <div id="page">
+                <!-- 翻页 -->
+                <ul class="pagination">
+                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                    <li class="active"><a href="#!">1</a></li>
+                    <li class="waves-effect"><a href="#!">2</a></li>
+                    <li class="waves-effect"><a href="#!">3</a></li>
+                    <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                </ul>
+            </div>
 
         </div>
 
-        <div class="col s8 eal lighten-5 cnt-detail">
+        <div class="col s8 eal lighten-5 cnt-right">
             <!-- Teal page content  -->
             <div class="asset-content entry-content" id="main-content">
                 <h1>介绍了获取令牌的四种方式过 OAuth 获取 API 数据</h1>
@@ -355,7 +358,8 @@ ctx<span class="token punctuation">.</span>response<span class="token punctuatio
                         </a>
                         <ul>
                             <li><a class="btn-floating red"><i class="material-icons">insert_chart</i>新窗口打开</a></li>
-                            <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i>回到顶部</a>
+                            <li><a class="btn-floating yellow darken-1"><i
+                                    class="material-icons">format_quote</i>回到顶部</a>
                             </li>
                             <li><a class="btn-floating green"><i class="material-icons">publish</i>喜欢</a></li>
                             <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
