@@ -1,14 +1,7 @@
-jQuery(document).ready(function () {
-    M.AutoInit();
-
+$(document).ready(function () {
+    
     //Init Collapsible
-    jQuery('.collapsible').collapsible();
-
-    var elem = document.querySelector('.collapsible');
-    var instance = new M.Collapsible(elem, {
-        // inDuration: 1000,
-        // outDuration: 1000
-    });
+    $('.collapsible').collapsible();
 
     // 页面样式
     const height = ($(window).height() - $('.page-footer').height() - $('header').height()) + 'px';
