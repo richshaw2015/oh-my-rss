@@ -33,7 +33,8 @@
                 <ul class="collection">
                     <li class="collection-item">
                         <div>
-                            <span class="title">GitHub OAuth 第三方登录示例教程</span>
+                            <img src="http://www.ruanyifeng.com/favicon.ico" class="circle responsive-img favico"/>
+                            <span class="title truncate">GitHub OAuth 第三方登录示例教程sssssssssssssttttttttttttttttttt</span>
                             <span class="right">@阮一峰</span>
                         </div>
 
@@ -44,16 +45,18 @@
                             <span class="meta-left">238人浏览</span>
 
                             <span class="right meta-right meta-num">3</span>
-                            <i class="material-icons meta-icon right">sms</i>
+                            <i class="material-icons meta-icon right group-icon">group_add</i>
                             <span class="right meta-right meta-num">23</span>
-                            <i class="material-icons meta-icon right">thumb_up</i>
+                            <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
 
                         </div>
                     </li>
 
                     <li class="collection-item active">
                         <div>
-                            <span class="title">GitHub OAuth 第三方登录示例教程</span>
+                            <img src="https://www.williamlong.info/favicon.ico" class="circle responsive-img favico"/>
+
+                            <span class="title truncate">介绍了获取令牌的四种方式过 OAuth 获取 API 数据</span>
                             <span class="right">@阮一峰</span>
                         </div>
 
@@ -64,13 +67,33 @@
                             <span class="meta-left">238人浏览</span>
 
                             <span class="right meta-right meta-num">3909</span>
-                            <i class="material-icons meta-icon right">sms</i>
+                            <i class="material-icons meta-icon right group-icon">group_add</i>
                             <span class="right meta-right meta-num">283</span>
-                            <i class="material-icons meta-icon right">thumb_up</i>
+                            <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
 
                         </div>
                     </li>
 
+                    <li class="collection-item">
+                        <div>
+                            <img src="http://www.ruanyifeng.com/favicon.ico" class="circle responsive-img favico"/>
+                            <span class="title truncate">每周分享第 58 期</span>
+                            <span class="right">@阮一峰</span>
+                        </div>
+
+                        <div>
+                            <i class="material-icons unread meta-left">lens</i>
+
+                            <span class="meta-left meta-time">一小时前</span>
+                            <span class="meta-left">238人浏览</span>
+
+                            <span class="right meta-right meta-num">3</span>
+                            <i class="material-icons meta-icon right group-icon">group_add</i>
+                            <span class="right meta-right meta-num">23</span>
+                            <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
+
+                        </div>
+                    </li>
 
                 </ul>
             </div>
@@ -92,8 +115,10 @@
             <!-- Teal page content  -->
             <div class="asset-content entry-content" id="main-content">
                 <h1>介绍了获取令牌的四种方式过 OAuth 获取 API 数据</h1>
-                <blockquote>原文出处：<a href="#">阮一峰</a>。侵犯了您的权益？请<a href="#">在此</a>留言。</blockquote>
-                <hr>
+                <blockquote>本文预计阅读时间<b>34</b>分钟。 原文出处：<a href="#">阮一峰的技术博客</a>（侵犯了您的权益？请<a href="#">在此</a>留言）
+                </blockquote>
+
+                <div class="divider"></div>
 
                 <div>
                     <!-- div class="asset-body" -->
@@ -108,7 +133,8 @@
                     <!-- div id="more" class="asset-more" -->
                     <p>很多网站登录时，允许使用第三方网站的身份，这称为"第三方登录"。</p>
 
-                    <p><img src="https://www.wangbase.com/blogimg/asset/201904/bg2019042101.jpg" alt="" title=""></p>
+                    <p><img class="materialboxed" src="https://www.wangbase.com/blogimg/asset/201904/bg2019042101.jpg"
+                            alt="" title=""></p>
 
                     <p>下面就以 GitHub 为例，写一个最简单的应用，演示第三方登录。</p>
 
@@ -139,7 +165,8 @@
 
                     <p>访问这个<a href="https://github.com/settings/applications/new" target="_blank">网址</a>，填写登记表。</p>
 
-                    <p><img src="https://www.wangbase.com/blogimg/asset/201904/bg2019042102.jpg" alt="" title=""></p>
+                    <p><img class="materialboxed" src="https://www.wangbase.com/blogimg/asset/201904/bg2019042102.jpg"
+                            alt="" title=""></p>
 
                     <p>应用的名称随便填，主页 URL 填写<code>http://localhost:8080</code>，跳转网址填写 <code>http://localhost:8080/oauth/redirect</code>。
                     </p>
@@ -354,32 +381,43 @@ ctx<span class="token punctuation">.</span>response<span class="token punctuatio
                     <!-- 悬浮球 -->
                     <div class="fixed-action-btn">
                         <a class="btn-floating btn-large red">
-                            <i class="large material-icons">mode_edit</i>
+                            <i class="large material-icons">more_vert</i>
                         </a>
                         <ul>
-                            <li><a class="btn-floating red"><i class="material-icons">insert_chart</i>新窗口打开</a></li>
-                            <li><a class="btn-floating yellow darken-1"><i
-                                    class="material-icons">format_quote</i>回到顶部</a>
+                            <li><a class="btn-floating blue tooltipped" data-position="left" data-tooltip="新窗口打开"><i
+                                    class="material-icons">open_in_new</i></a></li>
+                            <li><a class="btn-floating green darken-1 tooltipped" data-position="left"
+                                   data-tooltip="回到顶部"><i
+                                    class="material-icons">publish</i></a>
                             </li>
-                            <li><a class="btn-floating green"><i class="material-icons">publish</i>喜欢</a></li>
-                            <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
+                            <li><a class="btn-floating red tooltipped" data-position="left" data-tooltip="喜欢"><i
+                                    class="material-icons">thumb_up</i></a></li>
                         </ul>
                     </div>
 
                 </div>
 
 
-                <hr>
-                <ul class="collapsible">
-                    <li class="">
-                        <div class="collapsible-header" tabindex="0">
-                            <i class="material-icons">filter_drama</i>更多技术交流和探讨，欢迎点击加群互动
-                        </div>
-                        <div class="collapsible-body" style="">
-                            <img class="qrcode" src="/static/img/qrcode.jpg"/>
-                        </div>
-                    </li>
-                </ul>
+                <div class="divider"></div>
+                <div class="card-panel hoverable">
+
+                    <span class="text-darken-2 add-group">想要更多技术交流和探讨？欢迎
+                        <a href="#modal-qrcode" class="modal-trigger tooltipped" data-tooltip="加群互动" data-position="top">
+                            <i class="material-icons add-group">touch_app</i>点此加群互动</a></span>
+
+                    <span class="text-darken-2 add-group"> OR 想和本文作者互动？
+                        <a href="#" class="tooltipped" data-tooltip="去原文留言" data-position="top">
+                            <i class="material-icons add-group">touch_app</i>点此去原文留言</a></span>
+
+                </div>
+
+                <!-- Modal Structure -->
+                <div id="modal-qrcode" class="modal">
+                    <div class="modal-content">
+                        <img class="qrcode" src="/static/img/qrcode.jpg"/>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -397,7 +435,9 @@ ctx<span class="token punctuation">.</span>response<span class="token punctuatio
 </footer>
 
 <script src="/static/js/jquery-3.4.1.min.js"></script>
-<script src="/static/js/materialize.js"></script>
+<script src="/static/js/materialize.min.js"></script>
+<script src="/static/js/exif.js"></script>
+<script src="/static/js/uuid.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>

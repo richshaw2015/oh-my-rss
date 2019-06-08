@@ -91,9 +91,21 @@ h6 {
 }
 
 .meta-icon {
-    font-size: 1rem;
     vertical-align: text-bottom;
     line-height: unset;
+    margin-right: 3px;
+}
+
+.group-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.thumb-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
 }
 
 .meta-time {
@@ -111,6 +123,7 @@ h6 {
 .title {
     font-size: 1.2rem;
     font-weight: bold;
+    max-width: 25rem;
 }
 .collection-item span {
     display: inline-block;
@@ -133,8 +146,44 @@ h6 {
     bottom: 5rem;
 }
 
+.favico {
+    max-height: 1.5rem;
+    width: 1.5rem;
+}
+
+.qrcode {
+    display: block;
+    margin: 0 auto;
+    max-width: 450px;
+    overflow-y: hidden;
+}
+
 #page {
     position: absolute;
+}
+
+#modal-qrcode {
+    max-width: 50%;
+}
+
+.add-group {
+    font-size: 1.2rem;
+}
+
+.user-photo {
+    width: 50px;
+}
+.issues {
+    border: none;
+}
+.issue-time {
+    padding-left: 2rem;
+}
+
+#cancel {
+    margin-right: 2rem;
+    background-color:  #DFDFDF;
+    color: #9F9F9F;
 }
 
 /* 适配高分辨率屏幕 */
