@@ -186,6 +186,30 @@ h6 {
     color: #9F9F9F;
 }
 
+.rss-text {
+    line-height: 32.4px;
+    display: inline-block;
+}
+
+.rss-item {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.rss-title {
+    font-size: 1.2rem;
+    display: inline-block;
+}
+
+.rss-item .favico {
+    vertical-align: text-bottom;
+}
+
+.rss-meta {
+    margin-right: 2em;
+}
+
+
 /* 适配高分辨率屏幕 */
 /*
 @media only screen and (min-width: 800px) and (max-width: 1200px) {
