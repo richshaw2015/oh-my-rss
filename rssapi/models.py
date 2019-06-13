@@ -6,10 +6,11 @@ class Site(models.Model):
     内容站点定义
     """
     name = models.CharField('对应 scrapy 的 name 代号（不对外显示）', max_length=100, unique=True, db_index=True)
-    cname = models.CharField('显示来源的名称', max_length=100)
+    author = models.CharField('来源站点的作者名', max_length=100)
+    cname = models.CharField('来源站点的名称', max_length=100)
     link = models.CharField('来源站点的主页', max_length=200)
-    favico = models.CharField('图标地址，单独制作', max_length=100, default='')
-    brief = models.CharField('来源站点的简介', max_length=200)
+    favico = models.CharField('来源站点的图标，单独制作', max_length=100, default='')
+    brief = models.CharField('简介', max_length=200)
     star = models.IntegerField('评级', choices=(
         (1, '入门'),
         (2, '普通'),
@@ -27,7 +28,7 @@ class Site(models.Model):
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='')
+    remark = models.TextField('备注', default='', null=True)
 
 
 class Article(models.Model):
@@ -38,6 +39,7 @@ class Article(models.Model):
     title = models.CharField('标题', max_length=200, unique=True)
     uindex = models.IntegerField('一个时间戳表示的唯一地址', unique=True, db_index=True)
     content = models.TextField('内容')
+    src_url = models.CharField('原始链接', max_length=500)
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),

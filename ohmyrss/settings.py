@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -124,3 +124,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+
+# 提供一个 redis 服务
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = '6379'
+# 爬虫使用
+REDIS_FEEDS_DB = 0
+# 后台计数用
+REDIS_API_DB = 1

@@ -9,6 +9,12 @@ import scrapy
 
 
 class RssfeedsItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    # 必填
+    title = scrapy.Field()
+    content = scrapy.Field()
+    url = scrapy.Field()
+    name = scrapy.Field()
+
+    # 选填，下载防盗链的图片
+    image_urls = scrapy.Field()
+    image_paths = scrapy.Field()
