@@ -7,6 +7,12 @@
 
 from rssfeeds.utils import *
 from scrapy.exceptions import DropItem
+import django
+
+# 使用django的模型，需要初始化环境
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ohmyrss.settings")
+django.setup()
+
 from rssapi.models import *
 
 
