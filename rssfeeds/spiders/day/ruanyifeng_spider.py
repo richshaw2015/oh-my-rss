@@ -12,6 +12,7 @@ class RuanyifengSpider(scrapy.Spider):
 
     def parse(self, response):
         content_urls = response.xpath('//div[@class="asset-header"]/h2/a/@href').extract()[:2]
+        # content_urls = response.xpath('//*[@id="homepage"]//a/@href').extract()[:6]
         if content_urls:
             for content_url in content_urls:
                 full_url = urllib.parse.urljoin(self.start_urls[0], content_url)

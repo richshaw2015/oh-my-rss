@@ -9,7 +9,7 @@ class Site(models.Model):
     author = models.CharField('来源站点的作者名', max_length=100)
     cname = models.CharField('来源站点的名称', max_length=100)
     link = models.CharField('来源站点的主页', max_length=200)
-    favico = models.CharField('来源站点的图标，单独制作', max_length=100, default='')
+    favicon = models.CharField('来源站点的图标，单独制作', max_length=100, default='')
     brief = models.CharField('简介', max_length=200)
     star = models.IntegerField('评级', choices=(
         (1, '入门'),

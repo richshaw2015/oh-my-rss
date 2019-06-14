@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/css/materialize.min.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+
+<!-- 顶部导航栏 -->
+<header>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo"><i class="material-icons">cloud</i>Logo</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="sass.html"><i class="material-icons">search</i></a></li>
+                <li><a href="badges.html"><i class="material-icons">view_module</i></a></li>
+                <li><a href="collapsible.html"><i class="material-icons">refresh</i></a></li>
+                <li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <!-- 页面内容 -->
+    <div class="row">
+        <div class="col s4 eal lighten-2 cnt-left">
+            <div>
+                <ul class="collection">
+                    {% for article in articles %}
+                    <li class="collection-item">
+                        <div>
+                            <img src="{{ article.site.favico }}" class="circle responsive-img favico"/>
+                            <span class="title truncate">{{ article.title }}</span>
+                            <span class="right">{{ article.site.name }}</span>
+                        </div>
+
+                        <div>
+                            <i class="material-icons unread meta-left">lens</i>
+
+                            <span class="meta-left meta-time">一小时前</span>
+                            <span class="meta-left">0人浏览</span>
+
+                            <span class="right meta-right meta-num">0</span>
+                            <i class="material-icons meta-icon right group-icon">group_add</i>
+                            <span class="right meta-right meta-num">0</span>
+                            <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
+
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="page">
+                <!-- 翻页 -->
+                <ul class="pagination">
+                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                    <li class="active"><a href="#!">1</a></li>
+                    <li class="waves-effect"><a href="#!">2</a></li>
+                    <li class="waves-effect"><a href="#!">3</a></li>
+                    <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="col s8 eal lighten-5 cnt-right">
+            <!-- Teal page content  -->
+            <div class="asset-content entry-content" id="main-content">
+                <h1>介绍了获取令牌的四种方式过 OAuth 获取 API 数据</h1>
+                <blockquote>本文预计阅读时间<b>34</b>分钟。 原文出处：<a href="#">阮一峰的技术博客</a>（侵犯了您的权益？请<a href="#">在此</a>留言）
+                </blockquote>
+
+                <div class="divider"></div>
+
+                <div>
+                    <!-- div class="asset-body" -->
+                    <p>这组 OAuth 系列教程，<a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html"
+                                        target="_blank">第一篇</a>介绍了基本概念，<a
+                            href="http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html" target="_blank">第二篇</a>介绍了获取令牌的四种方式，今天演示一个实例，如何通过
+                        OAuth 获取 API 数据。</p>
+
+                    <!-- /div -->
+
+
+                    <!-- div id="more" class="asset-more" -->
+                    <p>很多网站登录时，允许使用第三方网站的身份，这称为"第三方登录"。</p>
+
+                    <p><img class="materialboxed" src="https://www.wangbase.com/blogimg/asset/201904/bg2019042101.jpg"
+                            alt="" title=""></p>
+
+                    <p>下面就以 GitHub 为例，写一个最简单的应用，演示第三方登录。</p>
+
+                    <h2>一、第三方登录的原理</h2>
+
+                    <p>所谓第三方登录，实质就是 OAuth 授权。用户想要登录 A 网站，A 网站让用户提供第三方网站的数据，证明自己的身份。获取第三方网站的身份数据，就需要 OAuth 授权。</p>
+
+                    <p>举例来说，A 网站允许 GitHub 登录，背后就是下面的流程。</p>
+
+                    <blockquote>
+                        <ol start="1">
+                            <li>A 网站让用户跳转到 GitHub。</li>
+                            <li>GitHub 要求用户登录，然后询问"A 网站要求获得 xx 权限，你是否同意？"</li>
+                            <li>用户同意，GitHub 就会重定向回 A 网站，同时发回一个授权码。</li>
+                            <li>A 网站使用授权码，向 GitHub 请求令牌。</li>
+                            <li>GitHub 返回令牌.</li>
+                            <li>A 网站使用令牌，向 GitHub 请求用户数据。</li>
+                        </ol>
+                    </blockquote>
+
+                    <p>下面就是这个流程的代码实现。</p>
+
+                    <h1>二、应用登记</h1>
+
+                    <p>一个应用要求 OAuth 授权，必须先到对方网站登记，让对方知道是谁在请求。</p>
+
+                    <p>所以，你要先去 GitHub 登记一下。当然，我已经登记过了，你使用我的登记信息也可以，但为了完整走一遍流程，还是建议大家自己登记。这是免费的。</p>
+
+                    <p>访问这个<a href="https://github.com/settings/applications/new" target="_blank">网址</a>，填写登记表。</p>
+
+                    <p><img class="materialboxed" src="https://www.wangbase.com/blogimg/asset/201904/bg2019042102.jpg"
+                            alt="" title=""></p>
+
+                    <p>应用的名称随便填，主页 URL 填写<code>http://localhost:8080</code>，跳转网址填写 <code>http://localhost:8080/oauth/redirect</code>。
+                    </p>
+
+                    <p>提交表单以后，GitHub 应该会返回客户端 ID（client ID）和客户端密钥（client secret），这就是应用的身份识别码。</p>
+
+                    <h2>三、示例仓库</h2>
+
+                    <p>我写了一个<a href="https://github.com/ruanyf/node-oauth-demo" target="_blank">代码仓库</a>，请将它克隆到本地。</p>
+
+                    <blockquote><pre class=" language-bash"><code class=" language-bash">
+$ git clone <a class="token email-link" href="mailto:git@github">git@github</a><span class="token punctuation">.</span>com<span
+                            class="token punctuation">:</span>ruanyf<span class="token operator">/</span>node<span
+                            class="token operator">-</span>oauth<span class="token operator">-</span>demo<span
+                            class="token punctuation">.</span>git
+$ cd node<span class="token operator">-</span>oauth<span class="token operator">-</span>demo
+</code></pre>
+                    </blockquote>
+
+                    <p>两个配置项要改一下，写入上一步的身份识别码。</p>
+
+                    <blockquote>
+                        <ul>
+                            <li><a href="https://github.com/ruanyf/node-oauth-demo/blob/master/index.js#L3"
+                                   target="_blank"><code>index.js</code></a>：改掉变量<code>clientID</code>
+                                and <code>clientSecret</code></li>
+                            <li><a href="https://github.com/ruanyf/node-oauth-demo/blob/master/public/index.html#L16"
+                                   target="_blank"><code>public/index.html</code></a>：改掉变量<code>client_id</code></li>
+                        </ul>
+                    </blockquote>
+
+                    <p>然后，安装依赖。</p>
+
+                    <blockquote><pre class=" language-bash"><code class=" language-bash">
+$ npm install
+</code></pre>
+                    </blockquote>
+
+                    <p>启动服务。</p>
+
+                    <blockquote><pre class=" language-bash"><code class=" language-bash">
+$ node index<span class="token punctuation">.</span>js
+</code></pre>
+                    </blockquote>
+
+                    <p>浏览器访问<code>http://localhost:8080</code>，就可以看到这个示例了。</p>
+
+                    <h2>四、浏览器跳转 GitHub</h2>
+
+                    <p>示例的首页很简单，就是一个链接，让用户跳转到 GitHub。</p>
+
+                    <p><img src="https://www.wangbase.com/blogimg/asset/201904/bg2019042103.jpg" alt="" title=""></p>
+
+                    <p>跳转的 URL 如下。</p>
+
+                    <blockquote><pre class=" language-markup"><code class=" language-markup">
+<a class="token url-link" href="https://github.com/login/oauth/authorize">https://github.com/login/oauth/authorize</a>?
+  client_id=7e015d8ce32370079895&amp;
+  redirect_uri=<a class="token url-link" href="http://localhost">http://localhost</a>:8080/oauth/redirect
+</code></pre>
+                    </blockquote>
+
+                    <p>这个 URL 指向 GitHub 的 OAuth 授权网址，带有两个参数：<code>client_id</code>告诉 GitHub
+                        谁在请求，<code>redirect_uri</code>是稍后跳转回来的网址。
+                    </p>
+
+                    <p>用户点击到了 GitHub，GitHub 会要求用户登录，确保是本人在操作。</p>
+
+                    <h2>五、授权码</h2>
+
+                    <p>登录后，GitHub 询问用户，该应用正在请求数据，你是否同意授权。</p>
+
+                    <p><img src="https://www.wangbase.com/blogimg/asset/201904/bg2019042104.png" alt="" title=""></p>
+
+                    <p>用户同意授权， GitHub 就会跳转到<code>redirect_uri</code>指定的跳转网址，并且带上授权码，跳转回来的 URL 就是下面的样子。</p>
+
+                    <blockquote><pre class=" language-markup"><code class=" language-markup">
+<a class="token url-link" href="http://localhost">http://localhost</a>:8080/oauth/redirect?
+  code=859310e7cecc9196f4af
+</code></pre>
+                    </blockquote>
+
+                    <p>后端收到这个请求以后，就拿到了授权码（<code>code</code>参数）。</p>
+
+                    <h2>六、后端实现</h2>
+
+                    <p>示例的<a href="https://github.com/ruanyf/node-oauth-demo/blob/master/index.js"
+                             target="_blank">后端</a>采用
+                        Koa 框架编写，具体语法请看<a href="http://www.ruanyifeng.com/blog/2017/08/koa.html" target="_blank">教程</a>。
+                    </p>
+
+                    <p>这里的关键是针对<code>/oauth/redirect</code>的请求，编写一个<a
+                            href="https://github.com/ruanyf/node-oauth-demo/blob/master/index.js#L16"
+                            target="_blank">路由</a>，完成
+                        OAuth 认证。</p>
+
+                    <blockquote><pre class=" language-javascript"><code class=" language-javascript">
+const oauth <span class="token operator">=</span> async ctx <span class="token operator">=</span><span
+                            class="token operator">&gt;</span> <span class="token punctuation">{</span>
+ <span class="token comment" spellcheck="true"> // ...
+</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">use<span
+                            class="token punctuation">(</span></span>route<span class="token punctuation">.</span><span
+                            class="token function">get<span class="token punctuation">(</span></span><span
+                            class="token string">'/oauth/redirect'</span><span
+                            class="token punctuation">,</span> oauth<span
+                            class="token punctuation">)</span><span class="token punctuation">)</span><span
+                            class="token punctuation">;</span>
+</code></pre>
+                    </blockquote>
+
+                    <p>上面代码中，<code>oauth</code>函数就是路由的处理函数。下面的代码都写在这个函数里面。</p>
+
+                    <p>路由函数的第一件事，是从 URL 取出授权码。</p>
+
+                    <blockquote><pre class=" language-javascript"><code class=" language-javascript">
+const requestToken <span class="token operator">=</span> ctx<span class="token punctuation">.</span>request<span
+                            class="token punctuation">.</span>query<span class="token punctuation">.</span>code<span
+                            class="token punctuation">;</span>
+</code></pre>
+                    </blockquote>
+
+                    <h2>七、令牌</h2>
+
+                    <p>后端使用这个授权码，向 GitHub 请求令牌。</p>
+
+                    <blockquote><pre class=" language-javascript"><code class=" language-javascript">
+const tokenResponse <span class="token operator">=</span> await <span class="token function">axios<span
+                            class="token punctuation">(</span></span><span class="token punctuation">{</span>
+  method<span class="token punctuation">:</span> <span class="token string">'post'</span><span
+                            class="token punctuation">,</span>
+  url<span class="token punctuation">:</span> <span class="token string">'<a class="token url-link"
+                                                                             href="https://github.com/login/oauth/access_token">https://github.com/login/oauth/access_token</a>?'</span> <span
+                            class="token operator">+</span>
+    `client_id<span class="token operator">=</span>$<span class="token punctuation">{</span>clientID<span
+                            class="token punctuation">}</span><span class="token operator">&amp;</span>` <span
+                            class="token operator">+</span>
+    `client_secret<span class="token operator">=</span>$<span class="token punctuation">{</span>clientSecret<span
+                            class="token punctuation">}</span><span class="token operator">&amp;</span>` <span
+                            class="token operator">+</span>
+    `code<span class="token operator">=</span>$<span class="token punctuation">{</span>requestToken<span
+                            class="token punctuation">}</span>`<span class="token punctuation">,</span>
+  headers<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    accept<span class="token punctuation">:</span> <span class="token string">'application/json'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+                    </blockquote>
+
+                    <p>上面代码中，GitHub 的令牌接口<code>https://github.com/login/oauth/access_token</code>需要提供三个参数。</p>
+
+                    <blockquote>
+                        <ul>
+                            <li><code>client_id</code>：客户端的 ID</li>
+                            <li><code>client_secret</code>：客户端的密钥</li>
+                            <li><code>code</code>：授权码</li>
+                        </ul>
+                    </blockquote>
+
+                    <p>作为回应，GitHub 会返回一段 JSON 数据，里面包含了令牌<code>accessToken</code>。</p>
+
+                    <blockquote><pre class=" language-javascript"><code class=" language-javascript">
+const accessToken <span class="token operator">=</span> tokenResponse<span class="token punctuation">.</span>data<span
+                            class="token punctuation">.</span>access_token<span class="token punctuation">;</span>
+</code></pre>
+                    </blockquote>
+
+                    <h2>八、API 数据</h2>
+
+                    <p>有了令牌以后，就可以向 API 请求数据了。</p>
+
+                    <blockquote><pre class=" language-javascript"><code class=" language-javascript">
+const result <span class="token operator">=</span> await <span class="token function">axios<span
+                            class="token punctuation">(</span></span><span class="token punctuation">{</span>
+  method<span class="token punctuation">:</span> <span class="token string">'get'</span><span class="token punctuation">,</span>
+  url<span class="token punctuation">:</span> `https<span class="token punctuation">:</span><span
+                            class="token operator">/</span><span class="token operator">/</span>api<span
+                            class="token punctuation">.</span>github<span class="token punctuation">.</span>com<span
+                            class="token operator">/</span>user`<span class="token punctuation">,</span>
+  headers<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    accept<span class="token punctuation">:</span> <span class="token string">'application/json'</span><span
+                            class="token punctuation">,</span>
+    Authorization<span class="token punctuation">:</span> `token $<span
+                            class="token punctuation">{</span>accessToken<span class="token punctuation">}</span>`
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+                    </blockquote>
+
+                    <p>上面代码中，GitHub API 的地址是<code>https://api.github.com/user</code>，请求的时候必须在 HTTP 头信息里面带上令牌<code>Authorization:
+                        token 361507da</code>。</p>
+
+                    <p>然后，就可以拿到用户数据，得到用户的身份。</p>
+
+                    <blockquote><pre class=" language-javascript"><code class=" language-javascript">
+const name <span class="token operator">=</span> result<span class="token punctuation">.</span>data<span
+                            class="token punctuation">.</span>name<span class="token punctuation">;</span>
+ctx<span class="token punctuation">.</span>response<span class="token punctuation">.</span><span class="token function">redirect<span
+                            class="token punctuation">(</span></span>`<span class="token operator">/</span>welcome<span
+                            class="token punctuation">.</span>html<span class="token operator">?</span>name<span
+                            class="token operator">=</span>$<span class="token punctuation">{</span>name<span
+                            class="token punctuation">}</span>`<span class="token punctuation">)</span><span
+                            class="token punctuation">;</span>
+</code></pre>
+                    </blockquote>
+
+                    <p>（完）</p>
+
+                    <!-- /div -->
+
+                    <!-- 悬浮球 -->
+                    <div class="fixed-action-btn">
+                        <a class="btn-floating btn-large red">
+                            <i class="large material-icons">more_vert</i>
+                        </a>
+                        <ul>
+                            <li><a class="btn-floating blue tooltipped" data-position="left" data-tooltip="新窗口打开"><i
+                                    class="material-icons">open_in_new</i></a></li>
+                            <li><a class="btn-floating green darken-1 tooltipped" data-position="left"
+                                   data-tooltip="回到顶部"><i
+                                    class="material-icons">publish</i></a>
+                            </li>
+                            <li><a class="btn-floating red tooltipped" data-position="left" data-tooltip="喜欢"><i
+                                    class="material-icons">thumb_up</i></a></li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="divider"></div>
+                <div class="card-panel hoverable">
+
+                    <span class="text-darken-2 add-group">想要更多技术交流和探讨？欢迎
+                        <a href="#modal-qrcode" class="modal-trigger tooltipped" data-tooltip="加群互动" data-position="top">
+                            <i class="material-icons add-group">touch_app</i>点此加群互动</a></span>
+
+                    <span class="text-darken-2 add-group"> OR 想和本文作者互动？
+                        <a href="#" class="tooltipped" data-tooltip="去原文留言" data-position="top">
+                            <i class="material-icons add-group">touch_app</i>点此去原文留言</a></span>
+
+                </div>
+
+                <!-- Modal Structure -->
+                <div id="modal-qrcode" class="modal">
+                    <div class="modal-content">
+                        <img class="qrcode" src="/static/img/qrcode.jpg"/>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- 底部 -->
+<footer class="page-footer">
+    <div class="footer-copyright">
+        <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        </div>
+    </div>
+</footer>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/materialize.min.js"></script>
+<script src="/static/js/uuid.js"></script>
+<script src="/static/js/app.js"></script>
+
+</body>
+</html>
