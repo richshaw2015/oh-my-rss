@@ -15,4 +15,8 @@ $(document).ready(function () {
     $('.cnt-left').css({'height': cntHeight, 'maxHeight': cntHeight});
 
     $('#page').css({'bottom': $('.page-footer').height() + 'px'});
+
+    const cntList = ($(window).height() - $('.page-footer').height() - $('header').height() - $('#page').height()) + 'px';
+    $('#cnt-list').css({'height': cntList, 'maxHeight': cntList});
+
 });

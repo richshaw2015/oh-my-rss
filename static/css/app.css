@@ -209,6 +209,13 @@ h6 {
     margin-right: 2em;
 }
 
+#cnt-list {
+    overflow-y: hidden;
+}
+
+li.collection-item:not(.active):hover{
+    background-color:#ddd
+}
 
 /* 适配高分辨率屏幕 */
 /*

@@ -7,12 +7,13 @@ from rssfeeds.items import *
 class RuanyifengSpider(scrapy.Spider):
     name = "ruanyifeng"
     start_urls = [
-        'http://www.ruanyifeng.com/blog/',
+        # 'http://www.ruanyifeng.com/blog/',
+        'http://www.ruanyifeng.com/blog/archives.html'
     ]
 
     def parse(self, response):
-        content_urls = response.xpath('//div[@class="asset-header"]/h2/a/@href').extract()[:2]
-        # content_urls = response.xpath('//*[@id="homepage"]//a/@href').extract()[:6]
+        # content_urls = response.xpath('//div[@class="asset-header"]/h2/a/@href').extract()[:2]
+        content_urls = response.xpath('//*[@class="module-list-item"]//a/@href').extract()[:20]
         if content_urls:
             for content_url in content_urls:
                 full_url = urllib.parse.urljoin(self.start_urls[0], content_url)
