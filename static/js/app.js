@@ -53,19 +53,4 @@ $(document).ready(function () {
         })
     });
 
-    /* 快捷键
-    $(document).keydown(function (event) {
-        const current_y_pos = $('#omrss-main').scrollTop()
-        console.log(event.keyCode)
-
-        if (event.code == "KeyJ") {
-            // j
-            $('#omrss-main').scrollTop(current_y_pos + 25);
-        } else if (event.code == 'KeyK') {
-            // k
-            $('#omrss-main').scrollTop(current_y_pos - 25);
-        }
-    });
-     */
-
 });

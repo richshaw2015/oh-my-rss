@@ -951,78 +951,6 @@ var CONSTANTS = {
     FIND_STYLE: {
         STYLE_ID: 'vimlike:findStyleId',
         STYLE: '.vimlike-shortcuts-found-tag{position:absolute;z-index:99999;background-color:yellow;color:black;padding:0 1px;border:solid 1px #E3BE23;text-decoration:none;font:bold 12px "Helvetica Neue", "Helvetica", "Arial", "Sans";}'
-    },
-    HELP_VIEW: {
-        STYLE_ID: 'vimlike:helpStyleId',
-        HTML_ID: 'vimlike:helpHtmlId',
-        STYLE: ''+
-'vim010container{display:block;position:absolute;left:-1000px;z-index:99999;transition:left .4s ease-in-out;-moz-transition:left .4s ease-in-out;-webkit-transition:left .4s ease-in-out;opacity:.85;filter:alpha(opacity=85);}' +
-// firefox 下透明不能盖住 flash, 因此 firefox 下设置透明度为 1
-'@-moz-document url-prefix() {vim010container {opacity:1.0}}' +
-// iframe 来盖住 flash
-'vim010container iframe{position:absolute;top:0;left:0;z-index:99999;width:100%;height:100%;border:none;}' +
-'vim010wrapper{position:relative;z-index:99999;display:block;width:100%;height:100%;background-color:#333;overflow:hidden;}'+
-'vim010main{display:block;margin:15px 20px 10px;background:transparent;color:#fff;font-family:arial,sans-serif;font-size:13px;}'+
-'@-moz-document url-prefix() {vim010main{opacity:.85}}' +
-'vim010hd{display:block;height:24px;font-weight:bold;}'+
-'vim010hd-lt{float:left;font-size:16px;}'+
-'vim010hd-rt{float:right;}'+
-'vim010hd-lt vim010-btn{padding-left:10px;}' +
-'vim010-btn{cursor:pointer;color:#dd0;text-decoration:underline;font-size:12px;font-weight:normal;}' +
-'vim010bd{display:block;margin-top:2px;border-top:1px solid #999;width:100%;width:100%;padding-top:8px;overflow:hidden;zoom:1;}'+
-'vim010bd-row-lt{float:left;width:40%;}'+
-'vim010bd-row-rt{float:left;width:60%;-width:50%;}'+
-'vim010row-hd{display:block;margin-bottom:5px;width:100%;text-align:center;color: #DD0;font-weight: bold;font-size:14px;}'+
-'vim010colon{color:#fff;}'+
-'vim010-col-lt, vim010-col-rt{float:left;height:20px;line-height:20px;}'+
-'vim010-col-lt{width:35%;text-align:right;color:#DD0;font-family: "courier new",monospace;font-weight:bold;}'+
-'vim010-col-rt{width:65%;text-align:left;text-indent:3px;font-family:arial,sans-serif;}'+
-'vim010ft{display:block;margin-top:6px;border-top:1px solid #999;padding-top:8px;overflow:hidden;zoom:1;}'+
-'vim010ft-lt{float:left;}'+
-'vim010ft-lt a{font-size:12px;line-height:18px;color:#f60 !important;background:none !important;text-decoration:underline}' +
-'vim010ft-rt{float:right;}',
-        HTML: ''+
-'<iframe frameborder="0""></iframe>'+
-'<vim010wrapper>'+
-    '<vim010main>'+
-        '<vim010hd>'+
-            '<vim010hd-lt>Vimlike-Shortcuts Help<vim010-btn id="vimlike:shortcuts:disableBtn"></vim010-btn></vim010hd-lt>'+
-            '<vim010hd-rt><vim010-btn id="vimlike:shortcuts:closeBtn" title="click or press Enter to hide">close</vim010-btn></vim010hd-rt>'+
-        '</vim010hd>'+
-        '<vim010bd>'+
-            '<vim010bd-row-lt>'+
-                '<vim010row-hd>Supported</vim010row-hd>'+
-                '<vim010-col-lt>j<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Scroll down</vim010-col-rt>'+
-                '<vim010-col-lt>k<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Scroll up</vim010-col-rt>'+
-                '<vim010-col-lt>gg<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Go to top</vim010-col-rt>'+
-                '<vim010-col-lt>G<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Go to bottom</vim010-col-rt>'+
-                '<vim010-col-lt>gi<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Focus input</vim010-col-rt>'+
-                '<vim010-col-lt>f<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Open link</vim010-col-rt>'+
-                '<vim010-col-lt>F<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Open link in new window</vim010-col-rt>'+
-                '<vim010-col-lt>Esc<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Blur input</vim010-col-rt>'+
-                '<vim010-col-lt>?<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt style="_margin-right:-6px;">Show this help</vim010-col-rt>'+
-            '</vim010bd-row-lt>'+
-            '<vim010bd-row-rt>'+
-                '<vim010row-hd>Native</vim010row-hd>'+
-                '<vim010-col-lt>Ctrl + f<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Search</vim010-col-rt>'+
-                '<vim010-col-lt>Ctrl + r<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Refresh</vim010-col-rt>'+
-                '<vim010-col-lt>Ctrl + w<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Close current window</vim010-col-rt>'+
-                '<vim010-col-lt>Ctrl + l<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Open url in current window</vim010-col-rt>'+
-                '<vim010-col-lt>Ctrl + h<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>View the history</vim010-col-rt>'+
-                '<vim010-col-lt>Ctrl + Tab<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Switch to the next tab</vim010-col-rt>'+
-                '<vim010-col-lt>Ctrl +Shift+Tab<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>Switch to the previous Tab</vim010-col-rt>'+
-                '<vim010-col-lt>Alt + -><vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>History forward</vim010-col-rt>'+
-                '<vim010-col-lt>Alt + <-<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt>History back</vim010-col-rt>'+
-                '<vim010-col-lt>Alt + Home<vim010colon>:</vim010colon></vim010-col-lt><vim010-col-rt style="_margin-right:-6px;">Go to home page</vim010-col-rt>'+
-            '</vim010bd-row-rt>'+
-        '</vim010bd>'+
-        '<vim010ft>'+
-            '<vim010ft-lt><a href="mailto:myhere.2009@gmail.com">Feedback</a> | <a target="_blank" title="project hosting" href="https://github.com/myhere">GitHub</a></vim010ft-lt>'+
-            '<vim010ft-rt>Version:1.0.0</vim010ft-rt>'+
-        '</vim010ft>'+
-    '</vim010main>'+
-'</vim010wrapper>',
-        WIDTH: 800
     }
 };
 var filterByTarget = function(c, s, keyStroke) {
@@ -1038,6 +966,20 @@ V.addKeypress('srcollDown', {
         execute: function() {
             var scrollTop = $('#omrss-main').scrollTop();
             $('#omrss-main').scrollTop(scrollTop + CONSTANTS.SCROLL_STEP);
+            return true;
+        }
+    }
+});
+
+V.addKeypress('srcollDown', {
+    pattern: {
+        value: ' '
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            var scrollTop = $('#omrss-main').scrollTop();
+            $('#omrss-main').scrollTop(scrollTop + 3 * CONSTANTS.SCROLL_STEP);
             return true;
         }
     }
@@ -1254,7 +1196,7 @@ V.addKeypress('goBottom', {
         if (len > 1) {
             return;
         } else if (len === 1){
-            click(links[0][1], keyStrokes.charAt(0) === 'F');
+            click(links[0][1], true);
             clear();
         }
 
@@ -1275,7 +1217,6 @@ V.addKeypress('goBottom', {
         };
     };
     V.addKeypress('findf', finderFactory('^f.*'));
-    V.addKeypress('findF', finderFactory('^F.*'));
     V.addKeyup('clearFind', {
         fns: {
             filter: function (c, s, keyStroke) {
@@ -1326,146 +1267,6 @@ V.addKeyup('blur', {
 
 })();
 
-var helpController = (function() {
-    var addListener = function() {
-        if (document.addEventListener) {
-            return function(node, type, fn) {
-                node.addEventListener(type, fn, false);
-            }
-        } else if (document.attachEvent) {
-            return function(node, type, fn) {
-                node.attachEvent('on' + type, fn);
-            }
-        } else {
-            return function(node, type, fn) {
-                throw 'cannot bind event"' + type + '"';
-            }
-        }
-    }(),
-    html5shiv = function() {
-        var ua = window.navigator.userAgent.toLowerCase(),
-        matches = ua.match(/msie ([\w.]+)/);
-        if (matches && matches[1] && parseInt(matches[1], 10) < 9) {
-            logger.log('stupid ie, htmlshiv to fix custom tag!');
-            var tag,
-                tags = 'vim010container vim010wrapper vim010hd vim010main vim010hd-lt vim010-btn vim010hd-rt vim010bd vim010-row-rt vim010colon vim010bd-row-lt vim010bd-row-rt vim010-row-hd vim010-col-lt vim010-col-rt vim010row-hd vim010ft vim010ft-lt vim010ft-rt vim010ft-rt'.split(/\s+/);
-            while (tag = tags.pop()) {
-                document.createElement(tag);
-            }
-        }
-    
-    },
-    hideHelp = function() {
-        var helpContainer = document.getElementById(CONSTANTS.HELP_VIEW.HTML_ID);
-        if (helpContainer) {
-            // TODO: generate a value
-            helpContainer.style.left = '-1000px';
-        }
-    },
-    bindToggleBtn = function() {
-        var btn = document.getElementById('vimlike:shortcuts:disableBtn');
-        if (btn) {
-            addListener(btn, 'click', function() {
-                vimlikeStateMgr.toggle();
-                hideHelp();
-            });
-        }
-    },
-    showToggleBtn = function() {
-        var stateConf = {
-            on: {
-                title: 'disable keyboard shortcuts',
-                text: 'disable shortcuts'
-            },
-            off: {
-                title: 'enable keyboard shortcuts',
-                text: 'enable shortcuts'
-            }
-        };
-        vimlikeStateMgr.isOn() ?
-            showBtn(stateConf.on) :
-            showBtn(stateConf.off);
-
-        function showBtn(conf) {
-            var btn = document.getElementById('vimlike:shortcuts:disableBtn');
-            btn.title = conf.title;
-            btn.innerHTML = conf.text;
-        }
-    },
-    bindHelpCloseBtn = function() {
-        var closeBtn = document.getElementById('vimlike:shortcuts:closeBtn');
-
-        if (closeBtn) {
-            addListener(closeBtn, 'click', hideHelp);
-        }
-    },
-    execute = function() {
-        var doc = document,
-            HELP_VIEW = CONSTANTS.HELP_VIEW,
-            helpContainer = doc.getElementById(HELP_VIEW.HTML_ID);
-
-        if (!helpContainer) { // 不存在
-            // ie<9 htmlshiv fix custom tag
-            html5shiv();
-
-            // 添加 style
-            DOM.addStyleSheet(HELP_VIEW.STYLE, {
-                id: HELP_VIEW.STYLE_ID
-            });
-
-            helpContainer = doc.createElement('vim010container');
-            helpContainer.id = HELP_VIEW.HTML_ID;
-            // ie 下要把 元素 先放入 dom 中, 然后在设置 innerHTML 自定义的标签样式才生效
-            document.body.appendChild(helpContainer);
-            helpContainer.innerHTML = HELP_VIEW.HTML;
-            // 绑定 disable 和 close
-            bindToggleBtn();
-            bindHelpCloseBtn();
-        }
-
-        // 调整位置
-        var WIDTH  = HELP_VIEW.WIDTH,
-            left, top;
-        left = (DOM.getViewWidth() - WIDTH) / 2;
-        top  = DOM.getDocScrollTop() + 200;
-        helpContainer.style.cssText = 'top:'+top+'px;left:'+left+'px;width:'+WIDTH+'px;z-index:99999;';
-
-        // 根据当前状态显示
-        showToggleBtn();
-
-        return true;
-    };
-
-    V.addKeypress('help', {
-        pattern: {
-            value: '?'
-        },
-        fns: {
-            filter: filterByTarget,
-            execute: execute,
-            clear: hideHelp
-        }
-    });
-    V.addKeyup('clearHelp', {
-        fns: {
-            filter: function (c, s, keyStroke) {
-                return keyStroke.isEscape();
-            },
-            execute: function(c,s, keyStroke) {
-                hideHelp();
-                window.focus();
-                return true;
-            }
-        }
-    });
-
-    return {
-        show: execute,
-        hide: hideHelp
-    };
-})();
-
-
 
 var vimlikeStateMgr = (function() {
     var vimlike_binded = false;
@@ -1489,11 +1290,10 @@ var vimlikeStateMgr = (function() {
         }
     }
 })();
+
 function extractAPI() {
     S.toggleVimlike = vimlikeStateMgr.toggle;
     S.isVimlikeOn   = vimlikeStateMgr.isOn;
-    S.showVimlikeHelp = helpController.show;
-    S.hideVimlikeHelp = helpController.hide;
 }
  
 function init() {
