@@ -120,6 +120,10 @@ h6 {
     width: 2.5rem;
 }
 
+.meta-recommend {
+    margin-right: 2em;
+}
+
 .title {
     font-size: 1.2rem;
     font-weight: bold;
@@ -215,6 +219,20 @@ h6 {
 
 li.collection-item:not(.active):hover{
     background-color:#ddd
+}
+
+#omrss-loader {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    z-index: 999999;
+}
+
+#omrss-nav {
+    background-lcolor: #e65100;
+}
+#omrss-footer {
+    background-lcolor: #6d4c41;
 }
 
 /* 适配高分辨率屏幕 */

@@ -9,8 +9,22 @@
 </head>
 <body>
 
+<div class="preloader-wrapper big active" id="omrss-loader">
+    <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
+
 <header>
-    <nav>
+    <nav id="omrss-nav">
         {# 顶部导航栏 #}
         {% include 'top-nav.html' %}
     </nav>
@@ -32,8 +46,8 @@
 
         </div>
 
-        <div class="col s8 eal lighten-5 cnt-right">
-            {% include 'feeds.html' %}
+        <div class="col s8 eal lighten-5 cnt-right" id="omrss-main">
+            {% include 'intro.html' %}
         </div>
     </div>
 </main>
@@ -44,6 +58,8 @@
 <script src="/static/js/jquery-3.4.1.min.js"></script>
 <script src="/static/js/materialize.min.js"></script>
 <script src="/static/js/uuid.js"></script>
+<script src="/static/js/md5.min.js"></script>
+<script src="/static/js/vimlike-shortcuts.js"></script>
 <script src="/static/js/app.js"></script>
 
 </body>

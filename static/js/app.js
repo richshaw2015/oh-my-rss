@@ -48,10 +48,24 @@ $(document).ready(function () {
         // 网络请求
         $.post("/api/article", {uid: getUid(), id: this.id}, function (data) {
             $('#omrss-main').html(data);
-        }).always(function() {
+        }).always(function () {
             $('#omrss-loader').addClass('hide');
         })
+    });
 
-    })
+    /* 快捷键
+    $(document).keydown(function (event) {
+        const current_y_pos = $('#omrss-main').scrollTop()
+        console.log(event.keyCode)
+
+        if (event.code == "KeyJ") {
+            // j
+            $('#omrss-main').scrollTop(current_y_pos + 25);
+        } else if (event.code == 'KeyK') {
+            // k
+            $('#omrss-main').scrollTop(current_y_pos - 25);
+        }
+    });
+     */
 
 });

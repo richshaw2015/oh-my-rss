@@ -1,39 +1,19 @@
+{% load helpers %}
 <h1>›› 订阅源设置中心</h1>
 
 <div class="divider"></div>
 
 <div class="row">
+    {% for feed in feeds %}
     <div class="col s6 rss-item">
-        <img src="/static/img/favicon.ico" class="circle responsive-img favico rss-text"/>
+        <img src="{{ feed.favicon }}" class="circle responsive-img favico rss-text"/>
         <div class="rss-text rss-title rss-text">
-            <a href="#" class="tooltipped" data-tooltip="这是一个介绍性的文本" data-position="top">码农周刊</a>
+            <a href="{{ feed.link }}" class="tooltipped" data-tooltip="{{ feed.brief }}" data-position="top">{{ feed.cname }}</a>
         </div>
 
-
         <a class="waves-effect waves-light btn-small right rss-text rss-meta">取消订阅</a>
-        <span class="rss-text right rss-text rss-meta">日更</span>
-        <span class="right rss-text rss-meta yellow-text text-darken-2">★★★</span>
+        <span class="rss-text right rss-text rss-meta">{{ feed.freq }}</span>
+        <span class="right rss-text rss-meta yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
     </div>
-
-    <div class="col s6 rss-item">
-        <img src="/static/img/favicon.ico" class="circle responsive-img favico rss-text"/>
-        <div class="rss-text rss-title rss-text">
-            <a href="#" class="tooltipped" data-tooltip="这是一个介绍性的文本" data-position="top">码农周刊</a>
-        </div>
-
-
-        <a class="waves-effect waves-light btn-small right rss-text rss-meta">取消订阅</a>
-        <span class="rss-text right rss-text rss-meta">日更</span>
-        <span class="right rss-text rss-meta yellow-text text-darken-2">★★★</span>
-    </div>
-    <div class="col s6 rss-item">
-        <img src="/static/img/favicon.ico" class="circle responsive-img favico rss-text"/>
-        <div class="rss-text rss-title rss-text"><a href="#">前端日报</a></div>
-
-
-        <a class="waves-effect waves-light btn-small right rss-text rss-meta">重新订阅</a>
-        <span class="rss-text right rss-text rss-meta">日更</span>
-        <span class="right rss-text rss-meta yellow-text text-darken-2">★</span>
-    </div>
-
+    {% endfor %}
 </div>

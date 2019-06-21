@@ -11,4 +11,31 @@
 
     <!-- 文章底部的加群入口 -->
     {% include 'cnt-addgroup.html' %}
+
+    <!-- 悬浮球 -->
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons">more_vert</i>
+        </a>
+        <ul>
+            <li><a target="_blank" href="{{ article.src_url }}" class="btn-floating blue tooltipped" data-position="left" data-tooltip="新窗口打开">
+                <i class="material-icons">open_in_new</i></a></li>
+            <li><a id="omrss-top" class="btn-floating green darken-1 tooltipped" data-position="left"
+                   data-tooltip="回到顶部"><i class="material-icons">publish</i></a>
+            </li>
+            <li><a class="btn-floating red tooltipped" data-position="left" data-tooltip="喜欢"><i
+                    class="material-icons">thumb_up</i></a></li>
+        </ul>
+    </div>
 </div>
+<script>
+    $('.fixed-action-btn').floatingActionButton();
+    $('.tooltipped').tooltip();
+    // TODO 点赞
+
+    /* 文章置顶 */
+    $(document).on('click', '#omrss-top', function () {
+        $('#omrss-main').scrollTop(0);
+    })
+
+</script>

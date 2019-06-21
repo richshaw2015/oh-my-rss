@@ -11,11 +11,7 @@ class Site(models.Model):
     link = models.CharField('来源站点的主页', max_length=200)
     favicon = models.CharField('来源站点的图标，单独制作', max_length=100, default='')
     brief = models.CharField('简介', max_length=200)
-    star = models.IntegerField('评级', choices=(
-        (1, '入门'),
-        (2, '普通'),
-        (3, '优秀'),
-    ), default=2)
+    star = models.IntegerField('评级，10，20，30', default=20)
     freq = models.CharField('更新频率', choices=(
         ('日更', '每天更新'),
         ('周更', '每周更新'),

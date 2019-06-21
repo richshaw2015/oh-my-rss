@@ -1,11 +1,14 @@
 <ul class="collection">
     {% for article in articles %}
-        <li class="collection-item">
+        <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
             <div>
                 <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                 <span class="title truncate">{{ article.title }}</span>
+                <span class="right">@{{ article.site.author }}</span>
+                <!--
                 <span class="right"><a href="{{ article.site.link }}"
                                        target="_blank">@{{ article.site.author }}</a></span>
+                                       -->
             </div>
 
             <div>
@@ -19,6 +22,9 @@
                 <span class="right meta-right meta-num">0</span>
                 <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
 
+                {% if article.site.star >= 30 %}
+                    <span class="right meta-right meta-recommend new badge" data-badge-caption="">荐</span>
+                {% endif %}
             </div>
         </li>
     {% endfor %}

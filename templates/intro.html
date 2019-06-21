@@ -1,19 +1,13 @@
-{% load helpers %}
-<h1>›› 订阅源设置中心</h1>
+<h1>›› 首页</h1>
 
 <div class="divider"></div>
 
-<div class="row">
-    {% for feed in feeds %}
-    <div class="col s6 rss-item">
-        <img src="{{ feed.favicon }}" class="circle responsive-img favico rss-text"/>
-        <div class="rss-text rss-title rss-text">
-            <a href="{{ feed.link }}" class="tooltipped" data-tooltip="{{ feed.brief }}" data-position="top">{{ feed.cname }}</a>
-        </div>
 
-        <a class="waves-effect waves-light btn-small right rss-text rss-meta">取消订阅</a>
-        <span class="rss-text right rss-text rss-meta">{{ feed.freq }}</span>
-        <span class="right rss-text rss-meta yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
-    </div>
-    {% endfor %}
+<div>
+    所谓第三方登录，实质就是 OAuth 授权。用户想要登录 A 网站，A 网站让用户提供第三方网站的数据，证明自己的身份。获取第三方网站的身份数据，就需要 OAuth 授权。 举例来说，A 网站允许 GitHub 登录，背后就是下面的流程。所谓第三方登录，实质就是 OAuth 授权。用户想要登录 A 网站，A 网站让用户提供第三方网站的数据，证明自己的身份。获取第三方网站的身份数据，就需要 OAuth 授权。 举例来说，A 网站允许 GitHub 登录，背后就是下面的流程。
+    - 本站点的目标及面向用户
+    - 特性及使用说明
+    - 按键操作说明
+    - 爬虫及版权说明
+    -
 </div>
