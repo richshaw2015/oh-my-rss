@@ -48,6 +48,7 @@ $(document).ready(function () {
         // 网络请求
         $.post("/api/article", {uid: getUid(), id: this.id}, function (data) {
             $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         })

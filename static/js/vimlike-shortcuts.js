@@ -1027,6 +1027,37 @@ V.addKeypress('goBottom', {
     }
 });
 
+V.addKeypress('nextArticle', {
+    pattern: {
+        value: 'n'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            const target = $('.ev-cnt-list.active')
+            if (target.length == 0) {
+                $('.ev-cnt-list')[0].click();
+            }else {
+                $('.ev-cnt-list.active').next().click();
+            }
+            return true;
+        }
+    }
+});
+
+V.addKeypress('prevArticle', {
+    pattern: {
+        value: 'p'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            $('.ev-cnt-list.active').prev().click();
+            return true;
+        }
+    }
+});
+
 (function() {
     var tagContainer,
         findedLinkTagPair;
