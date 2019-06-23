@@ -1008,6 +1008,7 @@ V.addKeypress('goTop', {
         execute: function (c, keyStrokes) {
             logger.log('gotop');
             $('#omrss-main').scrollTop(0);
+            M.toast({html: '回到顶部', displayLength: 1000});
             return true;
         }
     }
@@ -1022,6 +1023,7 @@ V.addKeypress('goBottom', {
         execute: function () {
             var offsetHeight = $('#omrss-main')[0].scrollHeight;
             $('#omrss-main').scrollTop(offsetHeight);
+            M.toast({html: '达到底部', displayLength: 1000});
             return true;
         }
     }
@@ -1040,6 +1042,7 @@ V.addKeypress('nextArticle', {
             }else {
                 $('.ev-cnt-list.active').next().click();
             }
+            M.toast({html: '下一篇', displayLength: 1000});
             return true;
         }
     }
@@ -1053,6 +1056,7 @@ V.addKeypress('prevArticle', {
         filter: filterByTarget,
         execute: function() {
             $('.ev-cnt-list.active').prev().click();
+            M.toast({html: '上一篇', displayLength: 1000});
             return true;
         }
     }
@@ -1068,6 +1072,7 @@ V.addKeypress('refreshSite', {
             $('#omrss-loader').removeClass('hide');
             location.reload();
             $('#omrss-loader').addClass('hide');
+            M.toast({html: '刷新', displayLength: 1000});
             return true;
         }
     }

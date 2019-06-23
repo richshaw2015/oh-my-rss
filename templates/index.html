@@ -23,7 +23,7 @@
     </div>
 </div>
 
-<header>
+<header id="omrss-header">
     <nav id="omrss-nav">
         {# 顶部导航栏 #}
         {% include 'top-nav.html' %}
@@ -32,8 +32,8 @@
 
 <main>
     {# 页面内容 #}
-    <div class="row">
-        <div class="col s4 eal lighten-2 cnt-left">
+    <div>
+        <div class="eal lighten-2 cnt-left">
             <div id="cnt-list">
                 {# 内容列表 #}
                 {% include 'left-list.html' %}
@@ -46,7 +46,7 @@
 
         </div>
 
-        <div class="col s8 eal lighten-5 cnt-right" id="omrss-main">
+        <div class="eal lighten-5 cnt-right" id="omrss-main">
             {% include 'intro.html' %}
         </div>
     </div>

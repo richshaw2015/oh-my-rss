@@ -16,8 +16,10 @@ function setUid() {
 }
 
 function initLayout(){
-
+    /*
     const cntHeight = ($(window).height() - $('.page-footer').height() - $('header').height()) + 'px';
+
+    console.log("内容高度", cntHeight);
 
     $('.cnt-right').css({'height': cntHeight, 'maxHeight': cntHeight});
     $('.cnt-left').css({'height': cntHeight, 'maxHeight': cntHeight});
@@ -26,7 +28,7 @@ function initLayout(){
 
     const cntList = ($(window).height() - $('.page-footer').height() - $('header').height() - $('#page').height()) + 'px';
     $('#cnt-list').css({'height': cntList, 'maxHeight': cntList});
-
+    */
     // 隐藏 loading
     $('#omrss-loader').addClass('hide');
 
@@ -90,7 +92,6 @@ $(document).ready(function () {
         const el = document.documentElement;
         const rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
         rfs.call(el);
-        initLayout();
     })
     /* 事件处理结束 */
 

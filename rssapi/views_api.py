@@ -15,7 +15,7 @@ def get_article_detail(request):
     article = Article.objects.get(uindex=uindex)
     context = dict()
     context['article'] = article
-    time.sleep(1)
+    time.sleep(0.5)
     return render(request, 'article.html', context=context)
 
 
