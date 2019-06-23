@@ -15,10 +15,8 @@ function setUid() {
     localStorage.setItem('UID', genUid());
 }
 
+function initLayout(){
 
-$(document).ready(function () {
-
-    // 页面样式
     const cntHeight = ($(window).height() - $('.page-footer').height() - $('header').height()) + 'px';
 
     $('.cnt-right').css({'height': cntHeight, 'maxHeight': cntHeight});
@@ -32,13 +30,26 @@ $(document).ready(function () {
     // 隐藏 loading
     $('#omrss-loader').addClass('hide');
 
+    $('.tooltipped').tooltip();
+
+    // 使页面主内容区域获得焦点，这样快捷键就生效了
+    $('#omrss-main').click();
+}
+
+$(document).ready(function () {
+    /* 样式初始化开始 */
+    initLayout();
+    /* 样式初始化结束 */
+
     /* 登录初始化 TODO 特性支持检测 */
     if (!getUid()) {
         setUid()
     }
+    /* 登录初始化结束 */
 
 
-    /* 事件处理 */
+    /* 事件处理开始 */
+    // 文章内容点击
     $('.ev-cnt-list').click(function () {
         // UI状态切换
         $('.ev-cnt-list.active').removeClass('active');
@@ -53,5 +64,35 @@ $(document).ready(function () {
             $('#omrss-loader').addClass('hide');
         })
     });
+
+    // 我的订阅点击
+    $('.ev-my-feed').click(function () {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/feeds", {uid: getUid()}, function (data) {
+            $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
+    $('.ev-settings').click(function () {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/settings", {uid: getUid()}, function (data) {
+            $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
+    $('.ev-fullscreen').click(function () {
+        const el = document.documentElement;
+        const rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        rfs.call(el);
+        initLayout();
+    })
+    /* 事件处理结束 */
+
 
 });

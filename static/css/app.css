@@ -218,28 +218,77 @@ h6 {
 }
 
 li.collection-item:not(.active):hover{
-    background-color:#ddd
+    background-color:#ddd;
+    cursor: pointer;
 }
 
 #omrss-loader {
     position: fixed;
     top: 45%;
-    left: 50%;
+    left: 60%;
     z-index: 999999;
 }
 
 #omrss-nav {
-    background-lcolor: #e65100;
+    background-color: #29353b;
 }
 #omrss-footer {
-    background-lcolor: #6d4c41;
+    background-color: #29353b;
 }
 
-/* 适配高分辨率屏幕 */
-/*
-@media only screen and (min-width: 800px) and (max-width: 1200px) {
-    .unread {
-        font-size: 8px;
-    }
+/* 适配不同分辨率屏幕，主要是内容的字体 */
+@media only screen and (min-width: 660px) {
+ .flow-text {
+  font-size:1.296rem;
+ }
 }
-*/
+@media only screen and (min-width: 690px) {
+ .flow-text {
+  font-size:1.318rem;
+ }
+}
+@media only screen and (min-width: 720px) {
+ .flow-text {
+  font-size:1.339rem;
+ }
+}
+@media only screen and (min-width: 750px) {
+ .flow-text {
+  font-size:1.361rem;
+ }
+}
+@media only screen and (min-width: 780px) {
+ .flow-text {
+  font-size:1.382rem;
+ }
+}
+@media only screen and (min-width: 810px) {
+ .flow-text {
+  font-size:1.404rem;
+ }
+}
+@media only screen and (min-width: 840px) {
+ .flow-text {
+  font-size:1.426rem;
+ }
+}
+@media only screen and (min-width: 870px) {
+ .flow-text {
+  font-size:1.447rem;
+ }
+}
+@media only screen and (min-width: 900px) {
+ .flow-text {
+  font-size:1.469rem;
+ }
+}
+@media only screen and (min-width: 930px) {
+ .flow-text {
+  font-size:1.49rem;
+ }
+}
+@media only screen and (min-width: 960px) {
+ .flow-text {
+  font-size:1.512rem;
+ }
+}

@@ -1,3 +1,4 @@
+{% load helpers %}
 <ul class="collection">
     {% for article in articles %}
         <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
@@ -14,7 +15,7 @@
             <div>
                 <i class="material-icons unread meta-left">lens</i>
 
-                <span class="meta-left meta-time">一小时前</span>
+                <span prettydate class="meta-left meta-time">{{ article.ctime |to_date_fmt }}</span>
                 <span class="meta-left">0人浏览</span>
 
                 <span class="right meta-right meta-num">0</span>

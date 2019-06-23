@@ -1047,7 +1047,7 @@ V.addKeypress('nextArticle', {
 
 V.addKeypress('prevArticle', {
     pattern: {
-        value: 'p'
+        value: 'N'
     },
     fns: {
         filter: filterByTarget,
@@ -1057,6 +1057,22 @@ V.addKeypress('prevArticle', {
         }
     }
 });
+
+V.addKeypress('refreshSite', {
+    pattern: {
+        value: 'r'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            $('#omrss-loader').removeClass('hide');
+            location.reload();
+            $('#omrss-loader').addClass('hide');
+            return true;
+        }
+    }
+});
+
 
 (function() {
     var tagContainer,

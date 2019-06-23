@@ -15,6 +15,7 @@ def get_article_detail(request):
     article = Article.objects.get(uindex=uindex)
     context = dict()
     context['article'] = article
+    time.sleep(1)
     return render(request, 'article.html', context=context)
 
 
@@ -25,7 +26,7 @@ def get_issues_html(request):
     :return:
     """
     # TODO 校验 uid 合法性
-    uuid = request.POST.get('uuid')
+    uuid = request.POST.get('uid')
     # TODO 适配内容
     context = dict()
     return render(request, 'article.html', context=context)
@@ -38,8 +39,21 @@ def get_feeds_html(request):
     :return:
     """
     # TODO 校验 uid 合法性
-    uuid = request.POST.get('uuid')
+    uuid = request.POST.get('uid')
     feeds = Site.objects.filter(status='active')
     context = dict()
     context['feeds'] = feeds
+    time.sleep(2)
     return render(request, 'feeds.html', context=context)
+
+
+def get_settings_html(request):
+    """
+    获取设置页面
+    :param request:
+    :return:
+    """
+    # TODO 校验 uid 合法性
+    uuid = request.POST.get('uid')
+    time.sleep(1)
+    return render(request, 'settings.html')
