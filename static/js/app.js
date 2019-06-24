@@ -105,7 +105,7 @@ $(document).ready(function () {
         })
     });
 
-    $('.ev-toogle-fullscreen').click(function () {
+    $('.ev-toggle-fullscreen').click(function () {
         if (isInFullscreen()){
             exitFullscreen();
             $(this).find('i').text('fullscreen');

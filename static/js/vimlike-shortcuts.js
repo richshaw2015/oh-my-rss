@@ -1062,6 +1062,20 @@ V.addKeypress('prevArticle', {
     }
 });
 
+V.addKeypress('toggleFullscreen', {
+    pattern: {
+        value: 'F'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            $('.ev-toggle-fullscreen').click();
+            M.toast({html: '切换全屏', displayLength: 1000});
+            return true;
+        }
+    }
+});
+
 V.addKeypress('refreshSite', {
     pattern: {
         value: 'r'
