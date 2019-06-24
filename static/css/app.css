@@ -252,10 +252,10 @@ li.collection-item:not(.active):hover{
 }
 
 #omrss-nav {
-    background-color: #29353b;
+    background-color: #384449;
 }
 #omrss-footer {
-    background-color: #29353b;
+    background-color: #364246;
 }
 
 /* 适配不同分辨率屏幕，主要是内容的字体 */

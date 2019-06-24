@@ -15,20 +15,37 @@ function setUid() {
     localStorage.setItem('UID', genUid());
 }
 
+function enterFullscreen() {
+    /* 全屏 */
+    const el = document.documentElement;
+    const rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    rfs.call(el);
+}
+
+function isInFullscreen() {
+    /* 是否全屏 */
+    return (document.fullscreenElement && document.fullscreenElement !== null) ||
+        (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+        (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+        (document.msFullscreenElement && document.msFullscreenElement !== null);
+}
+
+
+function exitFullscreen() {
+    /* 退出全屏 */
+    try {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+        else if (document.msExitFullscreen) document.msExitFullscreen();
+    } catch(err) {
+        console.warn("退出全屏时遇到异常", err.msg)
+    }
+    return true;
+}
+
+
 function initLayout(){
-    /*
-    const cntHeight = ($(window).height() - $('.page-footer').height() - $('header').height()) + 'px';
-
-    console.log("内容高度", cntHeight);
-
-    $('.cnt-right').css({'height': cntHeight, 'maxHeight': cntHeight});
-    $('.cnt-left').css({'height': cntHeight, 'maxHeight': cntHeight});
-
-    $('#page').css({'bottom': $('.page-footer').height() + 'px'});
-
-    const cntList = ($(window).height() - $('.page-footer').height() - $('header').height() - $('#page').height()) + 'px';
-    $('#cnt-list').css({'height': cntList, 'maxHeight': cntList});
-    */
     // 隐藏 loading
     $('#omrss-loader').addClass('hide');
 
@@ -88,11 +105,16 @@ $(document).ready(function () {
         })
     });
 
-    $('.ev-fullscreen').click(function () {
-        const el = document.documentElement;
-        const rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-        rfs.call(el);
-    })
+    $('.ev-toogle-fullscreen').click(function () {
+        if (isInFullscreen()){
+            exitFullscreen();
+            $(this).find('i').text('fullscreen');
+        } else {
+            enterFullscreen();
+            $(this).find('i').text('fullscreen_exit');
+        }
+    });
+
     /* 事件处理结束 */
 
 

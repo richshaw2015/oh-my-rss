@@ -1226,7 +1226,7 @@ V.addKeypress('refreshSite', {
         var links,
             keyStrokes = keyStrokes;
 
-        if (keyStrokes.toLowerCase() == 'f') { // 'f' 编号
+        if (keyStrokes.toLowerCase() == 'o') { // 'f' 编号
             links = document.links;
             links = DOM.getElementsInView(links);
 
@@ -1237,7 +1237,7 @@ V.addKeypress('refreshSite', {
             if (links.length == 0) {
                 return true;
             }
-
+            M.toast({html: '链接全览', displayLength: 1000});
             return;
         } else { // 筛选
             findedLinkTagPair = filterLinks(findedLinkTagPair, keyStrokes, tagContainer); // 过滤 & 更新 tag
@@ -1251,7 +1251,6 @@ V.addKeypress('refreshSite', {
             click(links[0][1], true);
             clear();
         }
-
         return true;
     }
 
@@ -1268,7 +1267,7 @@ V.addKeypress('refreshSite', {
             }
         };
     };
-    V.addKeypress('findf', finderFactory('^f.*'));
+    V.addKeypress('findf', finderFactory('^o.*'));
     V.addKeyup('clearFind', {
         fns: {
             filter: function (c, s, keyStroke) {
