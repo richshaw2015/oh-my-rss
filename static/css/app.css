@@ -184,8 +184,9 @@ h6 {
     overflow-y: hidden;
 }
 
-#page {
-    position: absolute;
+#omrss-pager {
+    position: fixed;
+    bottom: 50px;
 }
 
 #modal-qrcode {
@@ -252,10 +253,19 @@ li.collection-item:not(.active):hover{
 }
 
 #omrss-nav {
-    background-color: #384449;
+    background-color: #24292e;
 }
 #omrss-footer {
     background-color: #364246;
+}
+#omrss-logo {
+    width: 40px;
+    vertical-align: middle;
+    margin: auto 20px;
+}
+#omrss-logo-font {
+    font-size: 1.5rem;
+    color: #f26522;
 }
 
 /* 适配不同分辨率屏幕，主要是内容的字体 */
