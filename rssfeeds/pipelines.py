@@ -37,11 +37,11 @@ class DomPipeline(object):
         content_soup = BeautifulSoup(item['content'], "html.parser")
 
         # 图片点击处理
-        for img in content_soup.find_all('img'):
-            if img.attrs.get('class'):
-                img.attrs['class'] += ' materialboxed'
-            else:
-                img.attrs['class'] = 'materialboxed'
+        # for img in content_soup.find_all('img'):
+        #    if img.attrs.get('class'):
+        #        img.attrs['class'] += ' materialboxed'
+        #    else:
+        #        img.attrs['class'] = 'materialboxed'
 
         # 外链处理
         for a in content_soup.find_all('a'):

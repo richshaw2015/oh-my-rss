@@ -1,5 +1,6 @@
 
 from django import template
+from django.utils.timezone import localtime
 
 register = template.Library()
 
@@ -21,5 +22,6 @@ def to_date_fmt(dt):
     :param dt:
     :return:
     """
+    dt = localtime(dt)
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
