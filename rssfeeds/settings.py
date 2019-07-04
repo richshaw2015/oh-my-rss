@@ -66,6 +66,7 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'rssfeeds.pipelines.ValidPipeline': 10,
+    'rssfeeds.pipelines.DomPipeline': 200,
     'rssfeeds.pipelines.TodbPipeline': 300,
 }
 
