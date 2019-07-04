@@ -81,13 +81,13 @@ h6 {
 
 .unread {
     font-size: 8px;
-    color: red;
+    color: #f26522;
     width: 1rem;
 }
 
 .read {
     font-size: 10px;
-    color: darkgreen;
+    color: #26a69a;
     width: 1rem;
 }
 
@@ -218,7 +218,7 @@ h6 {
     display: inline-block;
 }
 
-.rss-item {
+.omrss-item {
     margin-top: 15px;
     margin-bottom: 5px;
 }
@@ -228,7 +228,7 @@ h6 {
     display: inline-block;
 }
 
-.rss-item .favico {
+.omrss-item .favico {
     vertical-align: text-bottom;
 }
 
@@ -238,6 +238,10 @@ h6 {
 
 #cnt-list {
     overflow-y: hidden;
+}
+
+.ev-toggle-feed {
+    width: 7em;
 }
 
 li.collection-item:not(.active):hover{
@@ -265,6 +269,8 @@ li.collection-item:not(.active):hover{
 }
 #omrss-logo-font {
     font-size: 1.5rem;
+}
+.omrss-color {
     color: #f26522;
 }
 

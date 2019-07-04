@@ -43,7 +43,6 @@ def get_feeds_html(request):
     feeds = Site.objects.filter(status='active')
     context = dict()
     context['feeds'] = feeds
-    time.sleep(2)
     return render(request, 'feeds.html', context=context)
 
 
