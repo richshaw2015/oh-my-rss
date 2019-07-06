@@ -94,11 +94,20 @@ function exitFullscreen() {
     return true;
 }
 
+function getPageSize() {
+    console.log($(window).height(), $('#omrss-footer').height(), $('#omrss-header').height());
+    let pageSize = localStorage.getItem('PAGESIZE');
+    if (pageSize) {
+        return pageSize;
+    } else {
+        pageSize = Math.floor(($(window).height() - $('#omrss-footer').height() - $('#omrss-header').height() -
+            60 - 16*1.5) / 70);
+        localStorage.setItem('PAGESIZE', pageSize);
+        return pageSize;
+    }
+}
 
 function initLayout(){
-    // 隐藏 loading
-    $('#omrss-loader').addClass('hide');
-
     $('.tooltipped').tooltip();
 
     // 使页面主内容区域获得焦点，这样快捷键就生效了
@@ -114,21 +123,28 @@ $(document).ready(function () {
     getOrSetUid();
     /* 登录初始化结束 */
 
-
-    /* 已读未读状态判断 */
-    $('.collection li[id]').each(function (index) {
-        if (hasReadArticle(this.id)) {
-            const target = $(this).find('i.unread');
-            target.removeClass('unread').addClass('read');
-            target.text('check');
-        }
+    // 加载列表内容
+    $.post("/api/ajax/myarticles", {uid: getOrSetUid(), page_size: getPageSize(), page: 1,
+        sub_feeds: Object.keys(getSubFeeds()), unsub_feeds: Object.keys(getUnsubFeeds())}, function (data) {
+        let destDom = $(data);
+        // 是否已读
+        destDom.find('.collection li[id]').each(function(index) {
+            if (hasReadArticle(this.id)) {
+                const target = $(this).find('i.unread');
+                target.removeClass('unread').addClass('read');
+                target.text('check');
+            }
+        });
+        // 时间更新
+        destDom.find(".prettydate").prettydate();
+        $('#omrss-left').html(destDom);
+    }).always(function () {
+        $('#omrss-loader').addClass('hide');
     });
-    /* 已读未读状态判断 */
-
 
     /* 事件处理开始 */
-    // 文章内容点击
-    $('.ev-cnt-list').click(function () {
+    // 文章内容点击，事件委托
+    $(document).on('click', '.ev-cnt-list', function () {
         // UI状态切换
         $('.ev-cnt-list.active').removeClass('active');
         $(this).addClass('active');
@@ -138,7 +154,7 @@ $(document).ready(function () {
         const ev_target = $(this);
 
         // 网络请求
-        $.post("/api/article", {uid: getOrSetUid(), id: article_id}, function (data) {
+        $.post("/api/html/article", {uid: getOrSetUid(), id: article_id}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
 
@@ -160,7 +176,7 @@ $(document).ready(function () {
     $('.ev-my-feed').click(function () {
         $('#omrss-loader').removeClass('hide');
 
-        $.post("/api/feeds", {uid: getOrSetUid()}, function (data) {
+        $.post("/api/html/feeds", {uid: getOrSetUid()}, function (data) {
             let destDom = $(data);
             const subFeeds = getSubFeeds();
             const unsubFeeds = getUnsubFeeds();
@@ -194,7 +210,7 @@ $(document).ready(function () {
         });
     });
 
-    // 切换订阅状态
+    // 切换订阅状态，事件委托
     $(document).on('click', '.ev-toggle-feed', function () {
         const curStat = $(this).text();
         const feedName = $(this).attr('data-name');
@@ -210,9 +226,10 @@ $(document).ready(function () {
         }
     });
 
+    // 设置页面
     $('.ev-settings').click(function () {
         $('#omrss-loader').removeClass('hide');
-        $.post("/api/settings", {uid: getOrSetUid()}, function (data) {
+        $.post("/api/html/settings", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
         }).always(function () {
@@ -220,6 +237,7 @@ $(document).ready(function () {
         })
     });
 
+    // 切换全屏
     $('.ev-toggle-fullscreen').click(function () {
         if (isInFullscreen()){
             exitFullscreen();
@@ -231,6 +249,4 @@ $(document).ready(function () {
     });
 
     /* 事件处理结束 */
-
-
 });

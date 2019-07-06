@@ -134,6 +134,10 @@ h6 {
     display: inline-block;
 }
 
+.ev-cnt-list {
+    max-height: 70px;
+}
+
 .cnt-left {
     position: fixed;
     top: 64px;
@@ -236,7 +240,7 @@ h6 {
     margin-right: 2em;
 }
 
-#cnt-list {
+#omrss-cnt-list {
     overflow-y: hidden;
 }
 
