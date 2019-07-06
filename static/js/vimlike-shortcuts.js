@@ -1008,7 +1008,7 @@ V.addKeypress('goTop', {
         execute: function (c, keyStrokes) {
             logger.log('gotop');
             $('#omrss-main').scrollTop(0);
-            M.toast({html: '回到顶部', displayLength: 1000});
+            toast('回到顶部');
             return true;
         }
     }
@@ -1023,7 +1023,7 @@ V.addKeypress('goBottom', {
         execute: function () {
             var offsetHeight = $('#omrss-main')[0].scrollHeight;
             $('#omrss-main').scrollTop(offsetHeight);
-            M.toast({html: '达到底部', displayLength: 1000});
+            toast('达到底部');
             return true;
         }
     }
@@ -1042,7 +1042,7 @@ V.addKeypress('nextArticle', {
             }else {
                 $('.ev-cnt-list.active').next().click();
             }
-            M.toast({html: '下一篇', displayLength: 1000});
+            toast('下一篇');
             return true;
         }
     }
@@ -1056,7 +1056,7 @@ V.addKeypress('prevArticle', {
         filter: filterByTarget,
         execute: function() {
             $('.ev-cnt-list.active').prev().click();
-            M.toast({html: '上一篇', displayLength: 1000});
+            toast('上一篇');
             return true;
         }
     }
@@ -1070,7 +1070,7 @@ V.addKeypress('toggleFullscreen', {
         filter: filterByTarget,
         execute: function() {
             $('.ev-toggle-fullscreen').click();
-            M.toast({html: '切换全屏', displayLength: 1000});
+            toast('切换全屏');
             return true;
         }
     }
@@ -1086,7 +1086,7 @@ V.addKeypress('refreshSite', {
             $('#omrss-loader').removeClass('hide');
             location.reload();
             $('#omrss-loader').addClass('hide');
-            M.toast({html: '刷新', displayLength: 1000});
+            toast('刷新');
             return true;
         }
     }
@@ -1100,8 +1100,13 @@ V.addKeypress('nextPage', {
         filter: filterByTarget,
         execute: function() {
             const target = $('.ev-page-next');
-            target.click();
-            M.toast({html: '下一页', displayLength: 1000});
+            if (target.length === 1) {
+                target.click();
+                toast('下一页');
+            } else {
+                warnToast('已经是最后一页了');
+            }
+
             return true;
         }
     }
@@ -1115,8 +1120,12 @@ V.addKeypress('previousPage', {
         filter: filterByTarget,
         execute: function() {
             const target = $('.ev-page-previous');
-            target.click();
-            M.toast({html: '上一页', displayLength: 1000});
+            if (target.length === 1) {
+                target.click();
+                toast('上一页');
+            } else {
+                warnToast('已经是第一页了');
+            }
             return true;
         }
     }
@@ -1280,7 +1289,7 @@ V.addKeypress('previousPage', {
             if (links.length == 0) {
                 return true;
             }
-            M.toast({html: '链接全览', displayLength: 1000});
+            toast('链接全览');
             return;
         } else { // 筛选
             findedLinkTagPair = filterLinks(findedLinkTagPair, keyStrokes, tagContainer); // 过滤 & 更新 tag

@@ -7,6 +7,17 @@ function genUid() {
     return uuid_str + atob(sec_ver) + sign
 }
 
+function toast(msg) {
+    // 普通
+    M.toast({html: msg, displayLength: 1000});
+}
+
+function warnToast(msg) {
+    // 带样式的
+    const html = '<span style="color: #eeff41;">' + msg + '</span>';
+    M.toast({html: html, displayLength: 3000});
+}
+
 function getOrSetUid() {
     const uid = localStorage.getItem('UID');
     if (uid) {
@@ -95,7 +106,6 @@ function exitFullscreen() {
 }
 
 function getPageSize() {
-    console.log($(window).height(), $('#omrss-footer').height(), $('#omrss-header').height());
     let pageSize = localStorage.getItem('PAGESIZE');
     if (pageSize) {
         return pageSize;
@@ -133,7 +143,7 @@ function loadPage(page){
         $('#omrss-left').html(destDom);
         initLayout();
     }).fail(function(xhr) {
-        M.toast({html: xhr.responseText, displayLength: 3000});
+        toast(xhr.responseText);
     }).always(function () {
         $('#omrss-loader').addClass('hide');
     });
@@ -226,11 +236,11 @@ $(document).ready(function () {
 
         if (curStat === '订阅') {
             subFeed(feedName);
-            M.toast({html: '订阅成功', displayLength: 1000});
+            toast('订阅成功');
             $(this).text('取消订阅');
         } else if (curStat === '取消订阅') {
             unsubFeed(feedName);
-            M.toast({html: '取消订阅成功', displayLength: 1000});
+            toast('取消订阅成功');
             $(this).text('订阅');
         }
     });
