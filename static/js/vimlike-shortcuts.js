@@ -1036,13 +1036,19 @@ V.addKeypress('nextArticle', {
     fns: {
         filter: filterByTarget,
         execute: function() {
-            const target = $('.ev-cnt-list.active')
-            if (target.length == 0) {
+            const curItem = $('.ev-cnt-list.active');
+            if (curItem.length === 0) {
                 $('.ev-cnt-list')[0].click();
+                toast('下一篇');
             }else {
-                $('.ev-cnt-list.active').next().click();
+                const target = $('.ev-cnt-list.active').next();
+                if (target.length === 1) {
+                    target.click();
+                    toast('下一篇');
+                } else {
+                    toast('本页已经浏览完了');
+                }
             }
-            toast('下一篇');
             return true;
         }
     }
@@ -1055,8 +1061,13 @@ V.addKeypress('prevArticle', {
     fns: {
         filter: filterByTarget,
         execute: function() {
-            $('.ev-cnt-list.active').prev().click();
-            toast('上一篇');
+            const target = $('.ev-cnt-list.active').prev();
+            if (target.length === 1) {
+                target.click();
+                toast('上一篇');
+            } else {
+                toast('已经是第一篇了');
+            }
             return true;
         }
     }

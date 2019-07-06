@@ -112,6 +112,14 @@ function getPageSize() {
     return pageSize;
 }
 
+function getCurPage() {
+    const page = localStorage.getItem('CURPG');
+    if (page) {
+        return page;
+    }
+    return '1';
+}
+
 function initLayout(){
     $('.tooltipped').tooltip();
 
@@ -120,11 +128,14 @@ function initLayout(){
 }
 
 function loadPage(page){
+    // UI状态
     $('#omrss-loader').removeClass('hide');
 
+    // 网络请求
     $.post("/api/ajax/myarticles", {uid: getOrSetUid(), page_size: getPageSize(), page: page,
         sub_feeds: Object.keys(getSubFeeds()).join(','), unsub_feeds: Object.keys(getUnsubFeeds()).join(',')}, function (data) {
         let destDom = $(data);
+
         // 是否已读
         destDom.find('.collection li[id]').each(function(index) {
             if (hasReadArticle(this.id)) {
@@ -133,14 +144,22 @@ function loadPage(page){
                 target.text('check');
             }
         });
+
         // 时间更新
         destDom.find(".prettydate").prettydate();
+        // 渲染
         $('#omrss-left').html(destDom);
+
+        // 初始化
         initLayout();
     }).fail(function(xhr) {
         warnToast(xhr.responseText);
     }).always(function () {
+        // UI状态
         $('#omrss-loader').addClass('hide');
+
+        // 记录当前页数
+        localStorage.setItem('CURPG', page);
     });
 }
 
@@ -296,9 +315,18 @@ $(document).ready(function () {
         if (isInFullscreen()){
             exitFullscreen();
             $(this).find('i').text('fullscreen');
+            // 重新加载页面
+            setTimeout(function () {
+                loadPage(getCurPage());
+            }, 100);
+
         } else {
             enterFullscreen();
             $(this).find('i').text('fullscreen_exit');
+            // 重新加载页面
+            setTimeout(function () {
+                loadPage(getCurPage());
+            }, 100);
         }
     });
 
