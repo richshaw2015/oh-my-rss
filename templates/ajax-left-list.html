@@ -35,23 +35,25 @@
     {# 翻页 #}
     <ul class="pagination">
         {% if pg.has_previous %}
-            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+            <li class="waves-effect ev-page ev-page-previous" title="上一页" data-page="{{ pg.previous_page_number }}">
+                <a href="#!"><i class="material-icons">chevron_left</i></a></li>
         {% else %}
             <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
         {% endif %}
 
-        {% if pg.number > 1 %}
-            <li class="waves-effect"><a href="#!">1</a></li>
-        {% endif %}
+        <li class="waves-effect ev-page" title="首页" data-page="1">
+            <a href="#!">1</a></li>
 
-        <li class="active"><a href="#!">{{ pg.number }}</a></li>
+        <li id="omrss-active-pager"><a href="#!">{{ pg.number }}</a></li>
 
         {% if pg.number < num_pages %}
-            <li class="waves-effect"><a href="#!">{{ num_pages }}</a></li>
+            <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}">
+                <a href="#!">{{ num_pages }}</a></li>
         {% endif %}
 
         {% if pg.has_next %}
-            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+            <li class="waves-effect ev-page ev-page-next" title="下一页" data-page="{{ pg.next_page_number }}">
+                <a href="#!"><i class="material-icons">chevron_right</i></a></li>
         {% else %}
             <li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
         {% endif %}

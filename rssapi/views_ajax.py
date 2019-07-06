@@ -25,8 +25,8 @@ def get_my_article_list(request):
     """
     # TODO 校验 uid 合法性
     uid = request.POST.get('uid')
-    sub_feeds = request.POST.get('sub_feeds', [])
-    unsub_feeds = request.POST.get('unsub_feeds', [])
+    sub_feeds = request.POST.get('sub_feeds', '').split(',')
+    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
 
@@ -38,13 +38,15 @@ def get_my_article_list(request):
 
     # 分页处理
     paginator_obj = Paginator(my_articles, page_size)
-    try:
-        pg = paginator_obj.page(page)
-        num_pages = paginator_obj.num_pages
+    if my_articles:
+        try:
+            pg = paginator_obj.page(page)
+            num_pages = paginator_obj.num_pages
 
-        context = dict()
-        context['pg'] = pg
-        context['num_pages'] = num_pages
-        return render(request, 'ajax-left-list.html', context=context)
-    except:
-        return HttpResponseNotFound("分页参数错误")
+            context = dict()
+            context['pg'] = pg
+            context['num_pages'] = num_pages
+            return render(request, 'ajax-left-list.html', context=context)
+        except:
+            return HttpResponseNotFound("分页参数错误")
+    return HttpResponseNotFound("没有订阅任何内容")

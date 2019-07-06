@@ -114,18 +114,11 @@ function initLayout(){
     $('#omrss-main').click();
 }
 
-$(document).ready(function () {
-    /* 样式初始化开始 */
-    initLayout();
-    /* 样式初始化结束 */
+function loadPage(page){
+    $('#omrss-loader').removeClass('hide');
 
-    /* 登录初始化 TODO 特性支持检测 */
-    getOrSetUid();
-    /* 登录初始化结束 */
-
-    // 加载列表内容
-    $.post("/api/ajax/myarticles", {uid: getOrSetUid(), page_size: getPageSize(), page: 1,
-        sub_feeds: Object.keys(getSubFeeds()), unsub_feeds: Object.keys(getUnsubFeeds())}, function (data) {
+    $.post("/api/ajax/myarticles", {uid: getOrSetUid(), page_size: getPageSize(), page: page,
+        sub_feeds: Object.keys(getSubFeeds()).join(','), unsub_feeds: Object.keys(getUnsubFeeds()).join(',')}, function (data) {
         let destDom = $(data);
         // 是否已读
         destDom.find('.collection li[id]').each(function(index) {
@@ -138,9 +131,25 @@ $(document).ready(function () {
         // 时间更新
         destDom.find(".prettydate").prettydate();
         $('#omrss-left').html(destDom);
+        initLayout();
+    }).fail(function(xhr) {
+        M.toast({html: xhr.responseText, displayLength: 3000});
     }).always(function () {
         $('#omrss-loader').addClass('hide');
     });
+}
+
+$(document).ready(function () {
+    /* 样式初始化开始 */
+    initLayout();
+    /* 样式初始化结束 */
+
+    /* 登录初始化 TODO 特性支持检测 */
+    getOrSetUid();
+    /* 登录初始化结束 */
+
+    // 加载列表内容
+    loadPage(1);
 
     /* 事件处理开始 */
     // 文章内容点击，事件委托
@@ -224,6 +233,12 @@ $(document).ready(function () {
             M.toast({html: '取消订阅成功', displayLength: 1000});
             $(this).text('订阅');
         }
+    });
+
+    // 翻页处理
+    $(document).on('click', '.ev-page', function () {
+        const page = $(this).attr('data-page');
+        loadPage(page);
     });
 
     // 设置页面

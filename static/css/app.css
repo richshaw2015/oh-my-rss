@@ -191,6 +191,21 @@ h6 {
 #omrss-pager {
     position: fixed;
     bottom: 50px;
+    width: 28%;
+}
+
+#omrss-active-pager {
+    background-color: #f26522;
+    margin: 0 20%;
+}
+#omrss-active-pager a {
+    color: #fff;
+}
+
+.pagination {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #modal-qrcode {

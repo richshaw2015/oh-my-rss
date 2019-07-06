@@ -1092,6 +1092,35 @@ V.addKeypress('refreshSite', {
     }
 });
 
+V.addKeypress('nextPage', {
+    pattern: {
+        value: 'p'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            const target = $('.ev-page-next');
+            target.click();
+            M.toast({html: '下一页', displayLength: 1000});
+            return true;
+        }
+    }
+});
+
+V.addKeypress('previousPage', {
+    pattern: {
+        value: 'P'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            const target = $('.ev-page-previous');
+            target.click();
+            M.toast({html: '上一页', displayLength: 1000});
+            return true;
+        }
+    }
+});
 
 (function() {
     var tagContainer,
