@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import HttpResponseForbidden, HttpResponseNotFound
+from django.http import HttpResponseForbidden, HttpResponseNotFound, JsonResponse
 from .models import *
+from datetime import date, timedelta
 import time
 
 
@@ -34,7 +35,7 @@ def get_my_article_list(request):
     my_sub_sites = get_sub_sites(sub_feeds, unsub_feeds)
     my_articles = Article.objects.filter(status='active', site__name__in=my_sub_sites).order_by('-id')
 
-    time.sleep(2)
+    # time.sleep(2)
 
     # 分页处理
     paginator_obj = Paginator(my_articles, page_size)
@@ -50,3 +51,21 @@ def get_my_article_list(request):
         except:
             return HttpResponseNotFound("分页参数错误")
     return HttpResponseNotFound("没有订阅任何内容")
+
+
+def get_my_lastweek_articles(request):
+    """
+    过去一周的文章id列表
+    :param request:
+    :return:
+    """
+    # TODO 校验 uid 合法性
+    uid = request.POST.get('uid')
+    sub_feeds = request.POST.get('sub_feeds', '').split(',')
+    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+
+    lastweek_date = date.today() - timedelta(days=7)
+    my_sub_sites = get_sub_sites(sub_feeds, unsub_feeds)
+    my_lastweek_articles = list(Article.objects.filter(status='active', site__name__in=my_sub_sites,
+                                                       ctime__gte=lastweek_date).values_list('uindex', flat=True))
+    return JsonResponse({"result": my_lastweek_articles})

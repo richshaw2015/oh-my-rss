@@ -106,15 +106,10 @@ function exitFullscreen() {
 }
 
 function getPageSize() {
-    let pageSize = localStorage.getItem('PAGESIZE');
-    if (pageSize) {
-        return pageSize;
-    } else {
-        pageSize = Math.floor(($(window).height() - $('#omrss-footer').height() - $('#omrss-header').height() -
-            60 - 16*1.5) / 70);
-        localStorage.setItem('PAGESIZE', pageSize);
-        return pageSize;
-    }
+    // 每次都动态取，以防窗口变化
+    const pageSize = Math.floor(($(window).height() - $('#omrss-footer').height() - $('#omrss-header').height() -
+        60 - 16*1.5) / 70);
+    return pageSize;
 }
 
 function initLayout(){
@@ -143,26 +138,59 @@ function loadPage(page){
         $('#omrss-left').html(destDom);
         initLayout();
     }).fail(function(xhr) {
-        toast(xhr.responseText);
+        warnToast(xhr.responseText);
     }).always(function () {
         $('#omrss-loader').addClass('hide');
     });
 }
 
-$(document).ready(function () {
-    /* 样式初始化开始 */
-    initLayout();
-    /* 样式初始化结束 */
+function updateUnreadCount(){
+    // 设置未读数
+    const toReads = JSON.parse(localStorage.getItem('TOREADS'));
+    let unread = 0;
+    if (toReads) {
+        for(let i = 0; i < toReads.length; i++) {
+            if(!hasReadArticle(toReads[i])) {
+                unread += 1;
+            }
+        }
+        if (unread > 0) {
+            $('#omrss-unread').html(`<a href="#!"><span class="new badge">${unread}</span></a>`);
+        } else {
+            $('#omrss-unread').html('');
+        }
+    }
+}
 
-    /* 登录初始化 TODO 特性支持检测 */
+function setToreadList(){
+    // 从网络读取列表
+    $.post("/api/ajax/mytoreads", {uid: getOrSetUid(), sub_feeds: Object.keys(getSubFeeds()).join(','), unsub_feeds: Object.keys(getUnsubFeeds()).join(',')}, function (data) {
+        localStorage.setItem('TOREADS', JSON.stringify(data.result));
+        updateUnreadCount();
+    }).fail(function(xhr) {
+        warnToast(xhr.responseText);
+    })
+}
+
+
+$(document).ready(function () {
+    /* 首页初始化开始 */
+    // 样式初始化
+    initLayout();
+
+    // 登录初始化 TODO 特性支持检测
     getOrSetUid();
-    /* 登录初始化结束 */
 
     // 加载列表内容
     loadPage(1);
 
+    // 计算未读数
+    setToreadList();
+    /* 首页初始化结束 */
+
+
     /* 事件处理开始 */
-    // 文章内容点击，事件委托
+    // 文章内容点击
     $(document).on('click', '.ev-cnt-list', function () {
         // UI状态切换
         $('.ev-cnt-list.active').removeClass('active');
@@ -185,6 +213,7 @@ $(document).ready(function () {
                 const target = ev_target.find('i.unread');
                 target.removeClass('unread').addClass('read');
                 target.text('check');
+                updateUnreadCount();
             }
         }).always(function () {
             $('#omrss-loader').addClass('hide');
@@ -229,7 +258,7 @@ $(document).ready(function () {
         });
     });
 
-    // 切换订阅状态，事件委托
+    // 切换订阅状态
     $(document).on('click', '.ev-toggle-feed', function () {
         const curStat = $(this).text();
         const feedName = $(this).attr('data-name');

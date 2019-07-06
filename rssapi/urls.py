@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/html/issues', views_api.get_issues_html, name='get_issues_html'),
 
     path('api/ajax/myarticles', views_ajax.get_my_article_list, name='get_my_article_list'),
+    path('api/ajax/mytoreads', views_ajax.get_my_lastweek_articles, name='get_my_lastweek_articles'),
 ]
