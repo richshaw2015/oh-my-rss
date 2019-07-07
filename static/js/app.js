@@ -345,7 +345,7 @@ $(document).ready(function () {
             // 重新加载页面
             setTimeout(function () {
                 loadPage(getCurPage());
-            }, 100);
+            }, 200);
 
         } else {
             enterFullscreen();
@@ -353,7 +353,7 @@ $(document).ready(function () {
             // 重新加载页面
             setTimeout(function () {
                 loadPage(getCurPage());
-            }, 100);
+            }, 200);
         }
     });
 
