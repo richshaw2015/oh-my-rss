@@ -15,11 +15,11 @@
                     <i class="material-icons unread meta-left">lens</i>
 
                     <span class="meta-left meta-time prettydate">{{ article.ctime |to_date_fmt }}</span>
-                    <span>0人浏览</span>
+                    <span>{{ uv |to_view_uv:article.uindex }}人浏览</span>
 
-                    <span class="right meta-right meta-num">0</span>
+                    <span class="right meta-right meta-num">{{ uv |to_addgp_uv:article.uindex }}</span>
                     <i class="material-icons meta-icon right group-icon">group_add</i>
-                    <span class="right meta-right meta-num">0</span>
+                    <span class="right meta-right meta-num">{{ uv |to_like_uv:article.uindex }}</span>
                     <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
 
                     {% if article.site.star >= 30 %}

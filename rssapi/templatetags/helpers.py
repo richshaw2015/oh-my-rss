@@ -1,6 +1,7 @@
 
 from django import template
 from django.utils.timezone import localtime
+from django.conf import settings
 
 register = template.Library()
 
@@ -25,3 +26,32 @@ def to_date_fmt(dt):
     dt = localtime(dt)
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
+
+@register.filter
+def to_view_uv(uv_dict, uindex):
+    """
+    转换成UV数据
+    :param uv_dict:
+    :param uindex:
+    :return:
+    """
+    uv = uv_dict.get(settings.REDIS_VIEW_KEY % uindex)
+    if uv is not None:
+        return uv
+    return 0
+
+
+@register.filter
+def to_like_uv(uv_dict, uindex):
+    uv = uv_dict.get(settings.REDIS_LIKE_KEY % uindex)
+    if uv is not None:
+        return uv
+    return 0
+
+
+@register.filter
+def to_addgp_uv(uv_dict, uindex):
+    uv = uv_dict.get(settings.REDIS_ADDGP_KEY % uindex)
+    if uv is not None:
+        return uv
+    return 0

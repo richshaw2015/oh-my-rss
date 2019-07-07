@@ -195,11 +195,11 @@ function setToreadList(){
     })
 }
 
-// 全局LRU缓存服务，80条，每条最大25KB
-let lruCache = new Cache(80, false, new Cache.LocalStorageCacheStorage('OMRSS'));
+// 全局LRU缓存服务
+let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 
 function setLruCache(key, value) {
-    if (value.length < 25*1024 && value.length > 512) {
+    if (value.length < 40*1024 && value.length > 512) {
         lruCache.setItem(key, value);
         return true;
     }
@@ -268,6 +268,11 @@ $(document).ready(function () {
 
                 // 剩余未读数
                 updateUnreadCount();
+
+                // 浏览打点
+                setTimeout(function () {
+                    $.post("/api/ajax/actionlog", {uid: getOrSetUid(), id: article_id, action: "VIEW"}, function () {});
+                }, 1000);
             }
         }).always(function () {
             $('#omrss-loader').addClass('hide');

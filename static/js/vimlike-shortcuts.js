@@ -1023,7 +1023,7 @@ V.addKeypress('goBottom', {
         execute: function () {
             var offsetHeight = $('#omrss-main')[0].scrollHeight;
             $('#omrss-main').scrollTop(offsetHeight);
-            toast('达到底部');
+            toast('到达底部');
             return true;
         }
     }

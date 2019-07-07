@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden, HttpResponseNotFound, JsonResponse
 from .models import *
 from datetime import date, timedelta
-import time
+from .utils import incr_redis_key, get_page_uv
 
 
 def get_sub_sites(sub_feeds, unsub_feeds):
@@ -41,11 +41,14 @@ def get_my_article_list(request):
     paginator_obj = Paginator(my_articles, page_size)
     if my_articles:
         try:
+            # 页面及数据
             pg = paginator_obj.page(page)
             num_pages = paginator_obj.num_pages
+            uv = get_page_uv(pg)
 
             context = dict()
             context['pg'] = pg
+            context['uv'] = uv
             context['num_pages'] = num_pages
             return render(request, 'ajax-left-list.html', context=context)
         except:
@@ -69,3 +72,20 @@ def get_my_lastweek_articles(request):
     my_lastweek_articles = list(Article.objects.filter(status='active', site__name__in=my_sub_sites,
                                                        ctime__gte=lastweek_date).values_list('uindex', flat=True))
     return JsonResponse({"result": my_lastweek_articles})
+
+
+def log_action(request):
+    """
+    增加文章浏览数据打点
+    :param request:
+    :return:
+    """
+    # TODO 校验 uid 合法性
+    uid = request.POST.get('uid')
+    uindex = request.POST.get('id')
+    action = request.POST.get('action')
+
+    if incr_redis_key(action, uindex):
+        return JsonResponse({})
+    else:
+        return HttpResponseNotFound("类型错误")

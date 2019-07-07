@@ -133,3 +133,8 @@ REDIS_PORT = '6379'
 REDIS_FEEDS_DB = 0
 # 后台计数用
 REDIS_API_DB = 1
+
+# 计数的key，浏览数，点赞数，加群数
+REDIS_VIEW_KEY = 'VIEW/%s'
+REDIS_LIKE_KEY = 'LIKE/%s'
+REDIS_ADDGP_KEY = 'ADDGP/%s'
