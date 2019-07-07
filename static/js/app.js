@@ -139,9 +139,13 @@ function loadPage(page){
         // 是否已读
         destDom.find('.collection li[id]').each(function(index) {
             if (hasReadArticle(this.id)) {
+                // 提示图标
                 const target = $(this).find('i.unread');
                 target.removeClass('unread').addClass('read');
                 target.text('check');
+
+                // 文字样式
+                $(this).find('.omrss-title').removeClass('omrss-title-unread');
             }
         });
 
@@ -259,6 +263,10 @@ $(document).ready(function () {
                 const target = ev_target.find('i.unread');
                 target.removeClass('unread').addClass('read');
                 target.text('check');
+                // 文字样式
+                ev_target.find('.omrss-title').removeClass('omrss-title-unread');
+
+                // 剩余未读数
                 updateUnreadCount();
             }
         }).always(function () {
