@@ -197,17 +197,19 @@ function setToreadList(){
 
 // 全局LRU缓存服务
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
+// 缓存版本号，每次上线需要更新
+const cacheVer = '01';
 
 function setLruCache(key, value) {
     if (value.length < 40*1024 && value.length > 512) {
-        lruCache.setItem(key, value);
+        lruCache.setItem(cacheVer + key, value);
         return true;
     }
     return false;
 }
 
 function getLruCache(key) {
-    return lruCache.getItem(key);
+    return lruCache.getItem(cacheVer + key);
 }
 
 $(document).ready(function () {

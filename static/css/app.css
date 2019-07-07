@@ -199,7 +199,6 @@ h6 {
 }
 
 #omrss-active-pager {
-    background-color: #f26522;
     margin: 0 20%;
 }
 #omrss-active-pager a {
@@ -298,6 +297,11 @@ li.collection-item:not(.active):hover{
 .omrss-color {
     color: #f26522;
 }
+
+.omrss-bgcolor {
+    background: #f26522 !important;
+}
+
 nav .brand-logo {
     color: #f26522;
 }
