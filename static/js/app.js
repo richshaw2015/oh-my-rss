@@ -191,6 +191,20 @@ function setToreadList(){
     })
 }
 
+// 全局LRU缓存服务，80条，每条最大25KB
+let lruCache = new Cache(80, false, new Cache.LocalStorageCacheStorage('OMRSS'));
+
+function setLruCache(key, value) {
+    if (value.length < 25*1024 && value.length > 512) {
+        lruCache.setItem(key, value);
+        return true;
+    }
+    return false;
+}
+
+function getLruCache(key) {
+    return lruCache.getItem(key);
+}
 
 $(document).ready(function () {
     /* 首页初始化开始 */
@@ -214,19 +228,32 @@ $(document).ready(function () {
         // UI状态切换
         $('.ev-cnt-list.active').removeClass('active');
         $(this).addClass('active');
-        $('#omrss-loader').removeClass('hide');
 
         const article_id = this.id;
         const ev_target = $(this);
 
-        // 网络请求
-        $.post("/api/html/article", {uid: getOrSetUid(), id: article_id}, function (data) {
-            $('#omrss-main').html(data);
-            $('#omrss-main').scrollTop(0);
+        // 是否有本地缓存
+        const cachedData = getLruCache(article_id);
+        if (cachedData) {
+            // 直接渲染
+            const target = $('#omrss-main');
+            target.html(cachedData);
+            target.scrollTop(0);
+            return true;
+        }
 
-            if (hasReadArticle(article_id)) {
-                // 已经是已读了
-            } else {
+        // 继续走网络请求
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/article", {uid: getOrSetUid(), id: article_id}, function (data) {
+            // 缓存数据
+            setLruCache(article_id, data);
+
+            // 渲染
+            const target = $('#omrss-main');
+            target.html(data);
+            target.scrollTop(0);
+
+            if (!hasReadArticle(article_id)) {
                 // 未读变为已读
                 setReadArticle(article_id);
                 const target = ev_target.find('i.unread');
