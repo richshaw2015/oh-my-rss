@@ -36,6 +36,14 @@ function setReadArticle(id) {
     localStorage.setItem('READ/' + id, '1');
 }
 
+function hasLikeArticle(id) {
+    return localStorage.getItem('LIKE/' + id);
+}
+
+function setLikeArticle(id) {
+    localStorage.setItem('LIKE/' + id, '1');
+}
+
 function getSubFeeds() {
     const subFeeds = localStorage.getItem('SUBS');
     if (subFeeds) {
@@ -136,16 +144,21 @@ function loadPage(page){
         sub_feeds: Object.keys(getSubFeeds()).join(','), unsub_feeds: Object.keys(getUnsubFeeds()).join(',')}, function (data) {
         let destDom = $(data);
 
-        // 是否已读
+        // 是否已读，是否点赞
         destDom.find('.collection li[id]').each(function(index) {
             if (hasReadArticle(this.id)) {
                 // 提示图标
-                const target = $(this).find('i.unread');
-                target.removeClass('unread').addClass('read');
-                target.text('check');
+                const unread_el = $(this).find('i.unread');
+                unread_el.removeClass('unread').addClass('read');
+                unread_el.text('check');
 
                 // 文字样式
                 $(this).find('.omrss-title').removeClass('omrss-title-unread');
+            }
+            if (hasLikeArticle(this.id)) {
+                // 点赞图标
+                const thumb_el = $(this).find('i.thumb-icon');
+                thumb_el.addClass('omrss-color');
             }
         });
 
@@ -198,7 +211,7 @@ function setToreadList(){
 // 全局LRU缓存服务
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 // 缓存版本号，每次上线需要更新
-const cacheVer = '01';
+const cacheVer = '03';
 
 function setLruCache(key, value) {
     if (value.length < 40*1024 && value.length > 512) {
@@ -339,6 +352,19 @@ $(document).ready(function () {
     $(document).on('click', '.ev-page', function () {
         const page = $(this).attr('data-page');
         loadPage(page);
+    });
+
+    // 点赞处理
+    $(document).on('click', '#omrss-like', function () {
+        const id = $(this).attr('data-id');
+        if (hasLikeArticle(id)) {
+            warnToast("已经点赞过了");
+        } else {
+            $.post("/api/ajax/actionlog", {uid: getOrSetUid(), id: id, action: "LIKE"}, function (data) {
+                setLikeArticle(id);
+                toast("点赞成功");
+            });
+        }
     });
 
     // 设置页面

@@ -306,6 +306,7 @@ nav .brand-logo {
     color: #f26522;
 }
 
+
 /* 适配不同分辨率屏幕，主要是内容的字体 */
 @media only screen and (min-width: 660px) {
  .flow-text {
