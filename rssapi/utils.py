@@ -27,7 +27,7 @@ def incr_redis_key(action, uindex):
     if key is not None:
         try:
             return R.incr(key, amount=1)
-        except ConnectionError:
+        except redis.exceptions.ConnectionError:
             logging.warning(f"写入Redis出现异常：{key}")
     return False
 
@@ -38,9 +38,12 @@ def get_page_uv(page):
     :param page:
     :return:
     """
-    key_list = []
+    key_list, data_list = [], []
     for article in page.object_list:
         key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_LIKE_KEY % article.uindex,
                          settings.REDIS_ADDGP_KEY % article.uindex])
-    data_list = R.mget(*key_list)
+    try:
+        data_list = R.mget(*key_list)
+    except redis.exceptions.ConnectionError:
+        logging.error("Redis连接异常")
     return dict(zip(key_list, data_list))

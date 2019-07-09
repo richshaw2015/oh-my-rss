@@ -21,7 +21,7 @@
         </a>
         <ul>
             <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger" data-position="left"
-                   data-tooltip="不看该站点" data-target="omrss-unsub-feed">
+                   data-tooltip="不看该站点所有文章" data-target="omrss-unsub-feed">
                 <i class="material-icons">delete</i></a>
             </li>
             <li><a target="_blank" href="{{ article.src_url }}" class="btn-floating blue tooltipped" data-position="left" data-tooltip="新窗口打开">
@@ -61,12 +61,5 @@
     /* 文章置顶 */
     $(document).on('click', '#omrss-top', function () {
         $('#omrss-main').scrollTop(0);
-    });
-
-    // 确定取消订阅
-    $(document).on('click', '#omrss-unlike', function () {
-        const site = $(this).attr('data-site');
-        unsubFeed(site);
-        toast("取消订阅成功");
     });
 </script>
