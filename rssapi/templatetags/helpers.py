@@ -50,8 +50,8 @@ def to_like_uv(uv_dict, uindex):
 
 
 @register.filter
-def to_addgp_uv(uv_dict, uindex):
-    uv = uv_dict.get(settings.REDIS_ADDGP_KEY % uindex)
+def to_open_uv(uv_dict, uindex):
+    uv = uv_dict.get(settings.REDIS_OPEN_KEY % uindex)
     if uv is not None:
         return uv
     return 0

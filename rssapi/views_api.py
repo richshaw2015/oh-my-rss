@@ -30,7 +30,7 @@ def get_issues_html(request):
     uuid = request.POST.get('uid')
     # TODO 适配内容
     context = dict()
-    return render(request, 'article.html', context=context)
+    return render(request, 'issues.html', context=context)
 
 
 def get_feeds_html(request):

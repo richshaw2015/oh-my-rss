@@ -1,6 +1,10 @@
 <h1>{{ article.title }}</h1>
 
 <blockquote>
-    本文预计阅读时间<b>{{ article.readtime }}</b>分钟。
-    原文出处：<a href="{{ article.src_url }}" target="_blank">{{ article.site.cname }}</a>（侵犯了您的权益？请<a href="#!">在此</a>留言）
+    原文转载自 [{{ article.site.cname }}] (<a href="{{ article.src_url }}"
+                                         target="_blank" class="ev-open-src" data-id="{{ article.uindex }}">{{ article.src_url }}</a>)
+
+    <p>预计阅读时间<b> {{ article.readtime }} </b>分钟</p>
+
+    <p>侵犯了您的权益？请<a href="#!" class="ev-leave-msg">在此</a>留言</p>
 </blockquote>

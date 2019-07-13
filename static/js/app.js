@@ -44,12 +44,12 @@ function setLikeArticle(id) {
     localStorage.setItem('LIKE/' + id, '1');
 }
 
-function hasAddGroup(id) {
-    return localStorage.getItem('ADDGP/' + id);
+function hasOpenSrc(id) {
+    return localStorage.getItem('OPEN/' + id);
 }
 
-function setAddGroup(id) {
-    localStorage.setItem('ADDGP/' + id, '1');
+function setOpenSrc(id) {
+    localStorage.setItem('OPEN/' + id, '1');
 }
 
 function getSubFeeds() {
@@ -170,6 +170,11 @@ function loadPage(page) {
                 const thumb_el = $(this).find('i.thumb-icon');
                 thumb_el.addClass('omrss-color');
             }
+            if (hasOpenSrc(this.id)) {
+                // 打开图标
+                const open_el = $(this).find('i.open-icon');
+                open_el.addClass('omrss-color');
+            }
         });
 
         // 时间更新
@@ -225,7 +230,7 @@ function setToreadList() {
 // 全局LRU缓存服务
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 // 缓存版本号，每次上线需要更新
-const cacheVer = '03';
+const cacheVer = '07';
 
 function setLruCache(key, value) {
     if (value.length < 40 * 1024 && value.length > 512) {
@@ -254,9 +259,6 @@ $(document).ready(function () {
     // 加载列表内容
     loadPage(1);
 
-    // 申请通知权限
-    Notification.requestPermission();
-
     // 先更新未读数
     setToreadList();
 
@@ -270,6 +272,7 @@ $(document).ready(function () {
                 if (window.Notification && Notification.permission === "granted") {
                     const notify = new Notification(`您有${newNum}条未读订阅`, {
                         tag: "OMRSS",
+                        // TODO 增加logo
                         icon: "",
                         body: "请刷新页面后查看"
                     });
@@ -331,7 +334,14 @@ $(document).ready(function () {
             }
         }).always(function () {
             $('#omrss-loader').addClass('hide');
-        })
+        });
+
+        // 申请通知权限，5分钟以后
+        setTimeout(function () {
+            if (Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }, 300000);
     });
 
     // 我的订阅点击
@@ -414,12 +424,12 @@ $(document).ready(function () {
         }
     });
 
-    // 加群处理
-    $(document).on('click', '#omrss-addgp', function () {
+    // 打开原站
+    $(document).on('click', '.ev-open-src', function () {
         const id = $(this).attr('data-id');
-        if (!hasAddGroup(id)) {
-            $.post("/api/ajax/actionlog", {uid: getOrSetUid(), id: id, action: "ADDGP"}, function (data) {
-                setAddGroup(id);
+        if (!hasOpenSrc(id)) {
+            $.post("/api/ajax/actionlog", {uid: getOrSetUid(), id: id, action: "OPEN"}, function (data) {
+                setOpenSrc(id);
             });
         }
     });
@@ -428,6 +438,17 @@ $(document).ready(function () {
     $('.ev-settings').click(function () {
         $('#omrss-loader').removeClass('hide');
         $.post("/api/html/settings", {uid: getOrSetUid()}, function (data) {
+            $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
+    // 留言页面
+    $(document).on('click', '.ev-leave-msg', function() {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/issues", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
         }).always(function () {

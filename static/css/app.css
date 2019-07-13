@@ -102,6 +102,10 @@ h6 {
     width: 1.5rem;
     height: 1.5rem;
 }
+.open-icon {
+    font-size: 1.05rem;
+    font-weight: bold;
+}
 
 .thumb-icon {
     font-size: 1rem;

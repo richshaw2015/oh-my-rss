@@ -21,8 +21,8 @@ def incr_redis_key(action, uindex):
         key = settings.REDIS_VIEW_KEY % uindex
     elif action == 'LIKE':
         key = settings.REDIS_LIKE_KEY % uindex
-    elif action == 'ADDGP':
-        key = settings.REDIS_ADDGP_KEY % uindex
+    elif action == 'OPEN':
+        key = settings.REDIS_OPEN_KEY % uindex
 
     if key is not None:
         try:
@@ -41,7 +41,7 @@ def get_page_uv(page):
     key_list, data_list = [], []
     for article in page.object_list:
         key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_LIKE_KEY % article.uindex,
-                         settings.REDIS_ADDGP_KEY % article.uindex])
+                         settings.REDIS_OPEN_KEY % article.uindex])
     try:
         data_list = R.mget(*key_list)
     except redis.exceptions.ConnectionError:

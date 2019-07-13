@@ -17,8 +17,8 @@
                     <span class="meta-left meta-time prettydate">{{ article.ctime |to_date_fmt }}</span>
                     <span>{{ uv |to_view_uv:article.uindex }}人浏览</span>
 
-                    <span class="right meta-right meta-num">{{ uv |to_addgp_uv:article.uindex }}</span>
-                    <i class="material-icons meta-icon right group-icon">group_add</i>
+                    <span class="right meta-right meta-num">{{ uv |to_open_uv:article.uindex }}</span>
+                    <i class="material-icons meta-icon right open-icon">open_in_new</i>
                     <span class="right meta-right meta-num">{{ uv |to_like_uv:article.uindex }}</span>
                     <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
 
