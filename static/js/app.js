@@ -230,7 +230,7 @@ function setToreadList() {
 // 全局LRU缓存服务
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 // 缓存版本号，每次上线需要更新
-const cacheVer = '07';
+const cacheVer = '10';
 
 function setLruCache(key, value) {
     if (value.length < 40 * 1024 && value.length > 512) {
@@ -299,6 +299,10 @@ $(document).ready(function () {
             // 直接渲染
             const target = $('#omrss-main');
             target.html(cachedData);
+
+            // 代码样式
+            Prism.highlightAll();
+
             target.scrollTop(0);
             return true;
         }
@@ -312,6 +316,10 @@ $(document).ready(function () {
             // 渲染
             const target = $('#omrss-main');
             target.html(data);
+
+            // 代码样式
+            Prism.highlightAll();
+
             target.scrollTop(0);
 
             if (!hasReadArticle(article_id)) {
