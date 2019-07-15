@@ -1123,6 +1123,37 @@ V.addKeypress('nextPage', {
     }
 });
 
+V.addKeypress('markAndNextPage', {
+    pattern: {
+        value: 'D'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            // 设置已读
+            $('.collection li[id]').each(function (index) {
+                setReadArticle(this.id);
+
+                // 图标
+                const target = $(this).find('i.unread');
+                target.removeClass('unread').addClass('read');
+                target.text('check');
+
+                // 文字样式
+                $(this).find('.omrss-title').removeClass('omrss-title-unread');
+            });
+            // 未读数
+            updateUnreadCount();
+
+            // 加载下一页
+            loadPage(parseInt(getCurPage()) + 1);
+
+            toast('标记本页已读');
+            return true;
+        }
+    }
+});
+
 V.addKeypress('previousPage', {
     pattern: {
         value: 'P'
@@ -1289,7 +1320,8 @@ V.addKeypress('previousPage', {
         var links,
             keyStrokes = keyStrokes;
 
-        if (keyStrokes.toLowerCase() == 'o') { // 'f' 编号
+        // 链接全览
+        if (keyStrokes.toLowerCase() == 'f') {
             links = document.links;
             links = DOM.getElementsInView(links);
 
@@ -1330,7 +1362,7 @@ V.addKeypress('previousPage', {
             }
         };
     };
-    V.addKeypress('findf', finderFactory('^o.*'));
+    V.addKeypress('findf', finderFactory('^f.*'));
     V.addKeyup('clearFind', {
         fns: {
             filter: function (c, s, keyStroke) {

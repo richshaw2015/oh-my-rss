@@ -325,6 +325,7 @@ $(document).ready(function () {
             if (!hasReadArticle(article_id)) {
                 // 未读变为已读
                 setReadArticle(article_id);
+
                 const target = ev_target.find('i.unread');
                 target.removeClass('unread').addClass('read');
                 target.text('check');
@@ -446,6 +447,17 @@ $(document).ready(function () {
     $('.ev-settings').click(function () {
         $('#omrss-loader').removeClass('hide');
         $.post("/api/html/settings", {uid: getOrSetUid()}, function (data) {
+            $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
+    // 首页
+    $('#omrss-logo-font').click(function () {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/homepage", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
         }).always(function () {

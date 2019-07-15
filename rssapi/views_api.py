@@ -47,13 +47,12 @@ def get_feeds_html(request):
     return render(request, 'feeds.html', context=context)
 
 
-def get_settings_html(request):
+def get_homepage_html(request):
     """
-    获取设置页面
+    获取首页介绍
     :param request:
     :return:
     """
     # TODO 校验 uid 合法性
     uuid = request.POST.get('uid')
-    time.sleep(1)
-    return render(request, 'settings.html')
+    return render(request, 'intro.html')
