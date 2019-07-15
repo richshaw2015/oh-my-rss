@@ -1,10 +1,18 @@
 <h1>{{ article.title }}</h1>
 
 <blockquote>
-    原文转载自 [{{ article.site.cname }}] (<a href="{{ article.src_url }}"
+    {% if article.site.copyright == 20 %}
+        摘要
+    {% elif article.site.copyright == 30 or article.site.copyright == 0 %}
+        原文
+    {% endif %}
+    转载自 [{{ article.site.cname }}] (<a href="{{ article.src_url }}"
                                          target="_blank" class="ev-open-src" data-id="{{ article.uindex }}">{{ article.src_url }}</a>)
 
     <p>预计阅读时间<b> {{ article.readtime }} </b>分钟</p>
 
-    <p>侵犯了您的权益？请<a href="#!" class="ev-leave-msg">在此</a>留言</p>
+    {% if article.copyright == 0 %}
+        <p>侵犯了您的权益？请<a href="#!" class="ev-leave-msg">在此</a>留言</p>
+    {% endif %}
+
 </blockquote>

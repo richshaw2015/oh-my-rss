@@ -21,6 +21,12 @@ class Site(models.Model):
         ('active', '激活'),
         ('close', '关闭，下线'),
     ), default='active')
+    copyright = models.IntegerField('版权', choices=(
+        (0, '未知'),
+        (10, '不可转载'),
+        (20, '仅可转载摘要'),
+        (30, '可以全文转载'),
+    ), default=0, null=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
@@ -40,7 +46,7 @@ class Article(models.Model):
         ('active', '激活'),
         ('close', '关闭，下线'),
     ), default='active')
-    readtime = models.IntegerField('预计阅读时间，分钟', default=1)
+    readtime = models.IntegerField('预计阅读时间，分钟', default=5)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
