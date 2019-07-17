@@ -2,6 +2,8 @@
 from django import template
 from django.utils.timezone import localtime
 from django.conf import settings
+import hashlib
+import urllib
 
 register = template.Library()
 
@@ -55,3 +57,19 @@ def to_open_uv(uv_dict, uindex):
     if uv is not None:
         return uv
     return 0
+
+
+@register.filter
+def to_fuzzy_uid(uid):
+    """
+    模糊处理
+    :param uid:
+    :return:
+    """
+    return uid[:3] + '**' + uid[-3:]
+
+
+@register.filter
+def gravatar_url(uid, size=64):
+    return "https://www.gravatar.com/avatar/%s?d=monsterid&s=%d" % (hashlib.md5(uid.lower().encode('utf8')).hexdigest(),
+                                                                   size)

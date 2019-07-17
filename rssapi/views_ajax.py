@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import HttpResponseForbidden, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from .models import *
 from datetime import date, timedelta
 from .utils import incr_redis_key, get_page_uv
+from .views_api import get_issues_html
 
 
 def get_sub_sites(sub_feeds, unsub_feeds):
@@ -89,3 +90,25 @@ def log_action(request):
         return JsonResponse({})
     else:
         return HttpResponseNotFound("类型错误")
+
+
+def leave_a_message(request):
+    """
+    添加留言
+    :param request:
+    :return:
+    """
+    uid = request.POST.get('uid', '').strip()[:100]
+    content = request.POST.get('content', '').strip()[:500]
+    nickname = request.POST.get('nickname', '').strip()[:20]
+    contact = request.POST.get('contact', '').strip()[:50]
+
+    if uid and content:
+        try:
+            msg = Message(uid=uid, content=content, nickname=nickname, contact=contact)
+            msg.save()
+            return get_issues_html(request)
+        except:
+            return HttpResponseServerError('内部错误')
+
+    return HttpResponseNotFound("参数错误")

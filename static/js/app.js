@@ -476,6 +476,23 @@ $(document).ready(function () {
         })
     });
 
+    // 提交留言
+    $(document).on('click', '.ev-submit-msg', function() {
+        $('#omrss-loader').removeClass('hide');
+        const content = $('#issue-input-detail').val();
+        const nickname = $('#issue-input-name').val();
+        const contact = $('#issue-input-contact').val();
+
+        $.post("/api/ajax/leavemsg", {uid: getOrSetUid(), content: content, nickname: nickname,
+            contact: contact}, function (data) {
+            $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
+            toast("留言成功");
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
     // 切换全屏
     $('.ev-toggle-fullscreen').click(function () {
         if (isInFullscreen()) {

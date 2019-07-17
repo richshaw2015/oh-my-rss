@@ -3,7 +3,7 @@ from django.db import models
 
 class Site(models.Model):
     """
-    内容站点定义
+    站点表
     """
     name = models.CharField('对应 scrapy 的 name 代号（不对外显示）', max_length=100, unique=True, db_index=True)
     author = models.CharField('来源站点的作者名', max_length=100)
@@ -47,6 +47,26 @@ class Article(models.Model):
         ('close', '关闭，下线'),
     ), default='active')
     readtime = models.IntegerField('预计阅读时间，分钟', default=5)
+
+    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+    mtime = models.DateTimeField('更新时间', auto_now=True)
+    remark = models.TextField('备注', default='')
+
+
+class Message(models.Model):
+    """
+    留言表
+    """
+    uid = models.CharField('用户id', max_length=100)
+    content = models.TextField('内容')
+    nickname = models.CharField('用户id', max_length=20, null=True)
+    contact = models.CharField('用户id', max_length=50, null=True)
+
+    status = models.CharField('状态', max_length=20, choices=(
+        ('active', '激活'),
+        ('close', '关闭，下线'),
+    ), default='active')
+    reply = models.TextField('回复', null=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)

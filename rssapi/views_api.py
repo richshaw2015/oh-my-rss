@@ -20,19 +20,6 @@ def get_article_detail(request):
     return render(request, 'article.html', context=context)
 
 
-def get_issues_html(request):
-    """
-    获取留言页面
-    :param request:
-    :return:
-    """
-    # TODO 校验 uid 合法性
-    uuid = request.POST.get('uid')
-    # TODO 适配内容
-    context = dict()
-    return render(request, 'issues.html', context=context)
-
-
 def get_feeds_html(request):
     """
     获取订阅列表
@@ -40,7 +27,7 @@ def get_feeds_html(request):
     :return:
     """
     # TODO 校验 uid 合法性
-    uuid = request.POST.get('uid')
+    uid = request.POST.get('uid')
     feeds = Site.objects.filter(status='active')
     context = dict()
     context['feeds'] = feeds
@@ -54,5 +41,20 @@ def get_homepage_html(request):
     :return:
     """
     # TODO 校验 uid 合法性
-    uuid = request.POST.get('uid')
+    uid = request.POST.get('uid')
     return render(request, 'intro.html')
+
+
+def get_issues_html(request):
+    """
+    获取首页介绍
+    :param request:
+    :return:
+    """
+    # TODO 校验 uid 合法性
+    uid = request.POST.get('uid')
+
+    msgs = Message.objects.filter(status='active').order_by('-id')[:100]
+    context = dict()
+    context['msgs'] = msgs
+    return render(request, 'issues.html', context=context)

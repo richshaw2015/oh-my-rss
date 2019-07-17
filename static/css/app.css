@@ -167,9 +167,18 @@ h6 {
     margin-right: 1rem;
 }
 
+.omrss-reply {
+    background-color: rgba(242,242,242,0.8);
+    padding: 10px 25px;
+    font-size: 0.8em;
+}
 .omrss-title {
     font-size: 1.2rem;
     max-width: 25rem;
+}
+
+.omrss-msg p{
+    line-height: 150%;
 }
 
 .omrss-title-unread {
