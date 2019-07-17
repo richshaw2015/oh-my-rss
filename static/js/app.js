@@ -230,7 +230,7 @@ function setToreadList() {
 // 全局LRU缓存服务
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 // 缓存版本号，每次上线需要更新
-const cacheVer = '12';
+const cacheVer = '13';
 
 function setLruCache(key, value) {
     if (value.length < 40 * 1024 && value.length > 512) {

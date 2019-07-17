@@ -2,10 +2,11 @@
 
 <blockquote>
     {% if article.site.copyright == 20 %}
-        摘要
+        摘要转载自
     {% elif article.site.copyright == 30 or article.site.copyright == 0 %}
-        原文
-    {% endif %}转载自 [{{ article.site.cname }}] (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
+        原文转载自
+    {% endif %}
+    [{{ article.site.cname }}] (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
                                                   data-id="{{ article.uindex }}">{{ article.src_url }}</a>)
 
     <p>预计阅读时间<b> {{ article.readtime }} </b>分钟</p>
