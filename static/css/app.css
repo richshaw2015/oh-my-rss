@@ -276,8 +276,13 @@ h6 {
 .issues {
     border: none;
 }
-.issue-time {
-    padding-left: 2rem;
+
+.omrss-issue-meta {
+    font-size: 1rem;
+}
+
+.omrss-issue-name {
+    width: 20em;
 }
 
 #cancel {

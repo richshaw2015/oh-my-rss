@@ -1,3 +1,6 @@
+// 异常提示
+const NET_ERROR_MSG = '网络异常，请稍后重试！';
+
 function genUid() {
     /* 生成用户id，自带校验  */
     const sec_key = "bDNsU3BxNXM2b1NyRFJ0dFQwa1o="; // l3lSpq5s6oSrDRttT0kZ
@@ -38,6 +41,14 @@ function setReadArticle(id) {
 
 function hasLikeArticle(id) {
     return localStorage.getItem('LIKE/' + id);
+}
+
+function setLeaveMsgToday() {
+    localStorage.setItem('LMSG/' + (new Date()).toDateString(), '1');
+}
+
+function hasLeaveMsgToday() {
+    return localStorage.getItem('LMSG/' + (new Date()).toDateString());
 }
 
 function setLikeArticle(id) {
@@ -136,6 +147,20 @@ function getCurPage() {
     return '1';
 }
 
+function updateReadStats() {
+    const third = $('#omrss-third');
+
+    const thirdTextCount = third.text().trim().length;
+    const thirdImgCount = third.find('img').length;
+    const thirdHrefCount = third.find('a').length;
+
+    const thirdReadTime = parseInt(thirdTextCount / 275) + parseInt(thirdImgCount * 5 / 60) +
+        parseInt(thirdHrefCount / 10);
+    const stats = `预计阅读时间<b> ${thirdReadTime} </b>分钟（共 ${thirdTextCount} 个字， ${thirdImgCount} 张图片， ${thirdHrefCount} 个链接）`;
+
+    $('#omrss-read-stats').html(stats);
+}
+
 function initLayout() {
     $('.tooltipped').tooltip();
 
@@ -230,7 +255,7 @@ function setToreadList() {
 // 全局LRU缓存服务
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 // 缓存版本号，每次上线需要更新
-const cacheVer = '13';
+const cacheVer = '15';
 
 function setLruCache(key, value) {
     if (value.length < 40 * 1024 && value.length > 512) {
@@ -259,6 +284,9 @@ $(document).ready(function () {
     // 加载列表内容
     loadPage(1);
 
+    // 首页文章统计数据
+    updateReadStats();
+
     // 先更新未读数
     setToreadList();
 
@@ -279,7 +307,7 @@ $(document).ready(function () {
                 }
             }
         }
-    }, 14400000);
+    }, 4 * 3600 * 1000);
     /* 首页初始化结束 */
 
 
@@ -302,6 +330,8 @@ $(document).ready(function () {
 
             // 代码样式
             Prism.highlightAll();
+            // 数据统计
+            updateReadStats();
 
             target.scrollTop(0);
             return true;
@@ -322,6 +352,9 @@ $(document).ready(function () {
 
             target.scrollTop(0);
 
+            // 更新统计
+            updateReadStats();
+
             if (!hasReadArticle(article_id)) {
                 // 未读变为已读
                 setReadArticle(article_id);
@@ -341,6 +374,8 @@ $(document).ready(function () {
                     });
                 }, 1000);
             }
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         });
@@ -385,7 +420,8 @@ $(document).ready(function () {
             });
 
             $('#omrss-main').html(destDom).scrollTop(0);
-
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         });
@@ -424,11 +460,13 @@ $(document).ready(function () {
     $(document).on('click', '#omrss-like', function () {
         const id = $(this).attr('data-id');
         if (hasLikeArticle(id)) {
-            warnToast("已经点赞过了");
+            warnToast("已经点过赞了");
         } else {
             $.post("/api/ajax/actionlog", {uid: getOrSetUid(), id: id, action: "LIKE"}, function (data) {
                 setLikeArticle(id);
                 toast("点赞成功");
+            }).fail(function () {
+                warnToast(NET_ERROR_MSG);
             });
         }
     });
@@ -460,6 +498,9 @@ $(document).ready(function () {
         $.post("/api/html/homepage", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
+            updateReadStats();
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         })
@@ -471,6 +512,8 @@ $(document).ready(function () {
         $.post("/api/html/issues", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         })
@@ -478,19 +521,26 @@ $(document).ready(function () {
 
     // 提交留言
     $(document).on('click', '.ev-submit-msg', function() {
-        $('#omrss-loader').removeClass('hide');
-        const content = $('#issue-input-detail').val();
-        const nickname = $('#issue-input-name').val();
-        const contact = $('#issue-input-contact').val();
+        if (hasLeaveMsgToday()) {
+            warnToast("您今天已经留过言了，明天再来吧！");
+        } else {
+            $('#omrss-loader').removeClass('hide');
+            const content = $('#issue-input-detail').val();
+            const nickname = $('#issue-input-name').val();
+            const contact = $('#issue-input-contact').val();
 
-        $.post("/api/ajax/leavemsg", {uid: getOrSetUid(), content: content, nickname: nickname,
-            contact: contact}, function (data) {
-            $('#omrss-main').html(data);
-            $('#omrss-main').scrollTop(0);
-            toast("留言成功");
-        }).always(function () {
-            $('#omrss-loader').addClass('hide');
-        })
+            $.post("/api/ajax/leavemsg", {uid: getOrSetUid(), content: content, nickname: nickname,
+                contact: contact}, function (data) {
+                $('#omrss-main').html(data);
+                $('#omrss-main').scrollTop(0);
+                setLeaveMsgToday();
+                toast("留言成功");
+            }).fail(function () {
+                warnToast(NET_ERROR_MSG);
+            }).always(function () {
+                $('#omrss-loader').addClass('hide');
+            })
+        }
     });
 
     // 切换全屏

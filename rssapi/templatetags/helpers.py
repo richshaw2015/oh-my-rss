@@ -3,7 +3,6 @@ from django import template
 from django.utils.timezone import localtime
 from django.conf import settings
 import hashlib
-import urllib
 
 register = template.Library()
 

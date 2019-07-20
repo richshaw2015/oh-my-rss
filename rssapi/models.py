@@ -46,7 +46,6 @@ class Article(models.Model):
         ('active', '激活'),
         ('close', '关闭，下线'),
     ), default='active')
-    readtime = models.IntegerField('预计阅读时间，分钟', default=5)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
