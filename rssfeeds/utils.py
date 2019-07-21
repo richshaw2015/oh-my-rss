@@ -43,13 +43,3 @@ def set_crawled_url(url):
 
 def current_ts():
     return int(time.time() * 1000)
-
-
-def cal_readtime(content):
-    """
-    预计阅读时间，分钟
-    :param content:
-    :return:
-    """
-    # TODO 设计计算算法
-    return 10

@@ -7,14 +7,18 @@
     {% for feed in feeds %}
     <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
         <img src="{{ feed.favicon }}" class="circle responsive-img favico rss-text"/>
-        <div class="rss-text rss-title rss-text">
+        <div class="rss-title rss-text">
             <a href="{{ feed.link }}" class="tooltipped" data-tooltip="{{ feed.brief }}" data-position="top">{{ feed.cname }}</a>
         </div>
 
-        <a class="waves-effect waves-light btn-small right rss-text rss-meta ev-toggle-feed"
+        <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed"
            data-name="{{ feed.name }}">取消订阅</a>
-        <span class="rss-text right rss-text rss-meta">{{ feed.freq }}</span>
-        <span class="right rss-text rss-meta yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
+        <span class="rss-text right omrss-right-space omrss-tag">{{ feed.tag }}</span>
+        <span class="right rss-text omrss-right-space yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
     </div>
     {% endfor %}
 </div>
+
+<script>
+    $('.tooltipped').tooltip();
+</script>

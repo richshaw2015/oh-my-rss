@@ -67,7 +67,7 @@ class TodbPipeline(object):
 
         if site_obj.status == 'active':
             article_obj = Article(site=site_obj, title=item['title'], uindex=current_ts(), content=item['content'],
-                                  remark='', readtime=cal_readtime(item['content']), src_url=item['url'])
+                                  remark='', src_url=item['url'])
             article_obj.save()
 
             # 更新标记

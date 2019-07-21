@@ -11,7 +11,7 @@
 
     <div class="divider"></div>
 
-    <!-- 文章底部的加群入口 -->
+    <!-- 文章底部 -->
     {% include 'cnt-bottom.html' %}
 
     <!-- 悬浮球 -->
@@ -38,7 +38,7 @@
     <div id="omrss-unsub-feed" class="modal">
         <div class="modal-content">
             <h2>确定吗？</h2>
-            <h4>取消订阅后将收不到该站点的更新，你可以通过右上角的
+            <h4>取消后将收不到「{{ article.site.cname }}」的更新，您可以通过右上角的
                 <i class="material-icons omrss-color">rss_feed</i>重新订阅</h4>
         </div>
         <div class="modal-footer">

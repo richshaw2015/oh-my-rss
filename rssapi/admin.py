@@ -6,7 +6,7 @@ from .models import *
 @admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
     list_display = ('name', 'cname', 'author', 'link', 'favicon', 'brief', 'star', 'freq', 'status', 'ctime', 'mtime',
-                    'remark')
+                    'remark', 'tag')
     list_per_page = 50
 
 

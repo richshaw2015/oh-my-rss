@@ -28,6 +28,20 @@ class Site(models.Model):
         (30, '可以全文转载'),
     ), default=0, null=True)
 
+    tag = models.CharField('站点所属领域', choices=(
+        ('前端', '前端'),
+        ('客户端', '客户端'),
+        ('后端', '后端'),
+        ('全栈', '全栈'),
+        ('产品', '产品'),
+        ('安全', '安全'),
+        ('设计', '设计'),
+        ('测试', '测试'),
+        ('刊物', '刊物'),
+        ('算法', '算法'),
+        ('大数据', '大数据'),
+    ), max_length=20, null=True)
+
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True)

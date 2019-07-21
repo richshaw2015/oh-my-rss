@@ -142,7 +142,6 @@ h6 {
 }
 .open-icon {
     font-size: 1.05rem;
-    font-weight: bold;
 }
 
 .thumb-icon {
@@ -266,8 +265,10 @@ h6 {
     max-width: 50%;
 }
 
-.add-group {
+.omrss-article-bottom {
     font-size: 1.2rem;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .user-photo {
@@ -310,8 +311,12 @@ h6 {
     vertical-align: text-bottom;
 }
 
-.rss-meta {
+.omrss-right-space {
     margin-right: 2em;
+}
+
+.omrss-tag {
+    width: 4em;
 }
 
 #omrss-cnt-list {

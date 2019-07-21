@@ -28,7 +28,7 @@ def get_feeds_html(request):
     """
     # TODO 校验 uid 合法性
     uid = request.POST.get('uid')
-    feeds = Site.objects.filter(status='active')
+    feeds = Site.objects.filter(status='active').order_by('-star')
     context = dict()
     context['feeds'] = feeds
     return render(request, 'feeds.html', context=context)
