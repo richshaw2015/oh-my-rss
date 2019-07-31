@@ -6,7 +6,7 @@
     <ul class="collection issues">
         {% for msg in msgs %}
         <li class="collection-item avatar omrss-msg">
-            <img src="{{ msg.uid |gravatar_url }}" alt="" class="circle">
+            <img src="{{ msg.uid |to_gravatar_url }}" alt="" class="circle">
             <span class="grey-text text-darken-1 omrss-issue-meta omrss-issue-name">
                 {% if msg.nickname %}
                     {{ msg.nickname }}

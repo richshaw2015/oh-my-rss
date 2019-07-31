@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'rssapi.apps.RssapiConfig',
+    'web.apps.WebConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -56,7 +56,7 @@ ROOT_URLCONF = 'ohmyrss.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'tmpl')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,21 +120,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/assets/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "assets"),
 ]
 
-
-# 提供一个 redis 服务
+# redis service
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
-# 爬虫使用
+
+# for scrapy use db
 REDIS_FEEDS_DB = 0
-# 后台计数用
+# for web use db
 REDIS_API_DB = 1
 
-# 计数的key，浏览数，点赞数，打开原站数
+# page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'
-REDIS_LIKE_KEY = 'LIKE/%s'
+REDIS_THUMB_KEY = 'THUMB/%s'
 REDIS_OPEN_KEY = 'OPEN/%s'

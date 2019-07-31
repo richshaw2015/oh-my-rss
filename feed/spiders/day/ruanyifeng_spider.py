@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from rssfeeds.utils import *
-from rssfeeds.items import *
+from feed.utils import *
+from feed.items import *
 
 
 class RuanyifengSpider(scrapy.Spider):
@@ -26,4 +26,4 @@ class RuanyifengSpider(scrapy.Spider):
         title = response.xpath('//*[@id="page-title"]/text()').extract_first().strip()
         content = response.xpath('//*[@id="main-content"]').extract_first()
         url = response.url
-        yield RssfeedsItem(title=title, content=content, url=url, name=self.name)
+        yield FeedItem(title=title, content=content, url=url, name=self.name)

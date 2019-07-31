@@ -20,7 +20,7 @@ def incr_redis_key(action, uindex):
     if action == 'VIEW':
         key = settings.REDIS_VIEW_KEY % uindex
     elif action == 'LIKE':
-        key = settings.REDIS_LIKE_KEY % uindex
+        key = settings.REDIS_THUMB_KEY % uindex
     elif action == 'OPEN':
         key = settings.REDIS_OPEN_KEY % uindex
 
@@ -40,7 +40,7 @@ def get_page_uv(page):
     """
     key_list, data_list = [], []
     for article in page.object_list:
-        key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_LIKE_KEY % article.uindex,
+        key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_THUMB_KEY % article.uindex,
                          settings.REDIS_OPEN_KEY % article.uindex])
     try:
         data_list = R.mget(*key_list)

@@ -8,7 +8,7 @@
 import scrapy
 
 
-class RssfeedsItem(scrapy.Item):
+class FeedItem(scrapy.Item):
     # 必填
     title = scrapy.Field()
     content = scrapy.Field()

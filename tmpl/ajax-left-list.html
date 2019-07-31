@@ -19,7 +19,7 @@
 
                     <span class="right meta-right meta-num">{{ uv |to_open_uv:article.uindex }}</span>
                     <i class="material-icons meta-icon right open-icon">open_in_new</i>
-                    <span class="right meta-right meta-num">{{ uv |to_like_uv:article.uindex }}</span>
+                    <span class="right meta-right meta-num">{{ uv |to_thumb_uv:article.uindex }}</span>
                     <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
 
                     {% if article.site.star >= 30 %}

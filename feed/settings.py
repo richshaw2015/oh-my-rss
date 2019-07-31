@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for rssfeeds project
+# Scrapy settings for feed project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,14 +9,14 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'rssfeeds'
+BOT_NAME = 'feed'
 
-SPIDER_MODULES = ['rssfeeds.spiders']
-NEWSPIDER_MODULE = 'rssfeeds.spiders'
+SPIDER_MODULES = ['feed.spiders']
+NEWSPIDER_MODULE = 'feed.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your ohmyrss) on the user-agent
-#USER_AGENT = 'rssfeeds (+http://www.yourdomain.com)'
+#USER_AGENT = 'feed (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -47,13 +47,13 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'rssfeeds.middlewares.RssfeedsSpiderMiddleware': 543,
+#    'feed.middlewares.FeedSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'rssfeeds.middlewares.RssfeedsDownloaderMiddleware': 543,
+#    'feed.middlewares.FeedDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -65,9 +65,9 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'rssfeeds.pipelines.ValidPipeline': 10,
-    'rssfeeds.pipelines.DomPipeline': 200,
-    'rssfeeds.pipelines.TodbPipeline': 300,
+    'feed.pipelines.ValidPipeline': 10,
+    'feed.pipelines.DomPipeline': 200,
+    'feed.pipelines.TodbPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

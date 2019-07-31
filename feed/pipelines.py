@@ -5,7 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-from rssfeeds.utils import *
+from feed.utils import *
 from scrapy.exceptions import DropItem
 import django
 from bs4 import BeautifulSoup
@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ohmyrss.settings")
 django.setup()
 
-from rssapi.models import *
+from web.models import *
 
 
 class ValidPipeline(object):
