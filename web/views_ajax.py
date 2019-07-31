@@ -51,7 +51,7 @@ def get_my_article_list(request):
             context['pg'] = pg
             context['uv'] = uv
             context['num_pages'] = num_pages
-            return render(request, 'ajax-left-list.html', context=context)
+            return render(request, 'left/../tmpl/ajax/list.html', context=context)
         except:
             return HttpResponseNotFound("分页参数错误")
     return HttpResponseNotFound("没有订阅任何内容")

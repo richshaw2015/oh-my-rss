@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Oh My RSS - 这才是我要的RSS</title>
-    <link rel="stylesheet" href="/static/css/materialize.min.css">
-    <link rel="stylesheet" href="/static/css/prism.css">
-    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="stylesheet" href="/assets/css/materialize.min.css">
+    <link rel="stylesheet" href="/assets/css/prism.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 <header id="omrss-header">
     <nav id="omrss-nav">
         {# 顶部导航栏 #}
-        {% include 'top-nav.html' %}
+        {% include 'top/nav.html' %}
     </nav>
 </header>
 
@@ -37,29 +37,29 @@
         <div class="eal lighten-2 cnt-left" id="omrss-left">
             <div id="omrss-cnt-list">
                 {# 内容列表 #}
-                {% include 'left-list.html' %}
+                {% include 'left/default.html' %}
             </div>
 
         </div>
 
         <div class="eal lighten-5 cnt-right" id="omrss-main">
-            {% include 'intro.html' %}
+            {% include 'ajax/intro.html' %}
         </div>
     </div>
 </main>
 
 {# 底部 #}
-{% include 'bottom-footer.html' %}
+{% include 'bottom/footer.html' %}
 
-<script src="/static/js/jquery-3.4.1.min.js"></script>
-<script src="/static/js/prettydate.min.js"></script>
-<script src="/static/js/prettydate.zh-CN.min.js"></script>
-<script src="/static/js/materialize.min.js"></script>
-<script src="/static/js/uuid.js"></script>
-<script src="/static/js/md5.min.js"></script>
-<script src="/static/js/cache.js"></script>
-<script src="/static/js/prism.js"></script>
-<script src="/static/js/app.js"></script>
-<script src="/static/js/vimlike-shortcuts.js"></script>
+<script src="/assets/js/jquery-3.4.1.min.js"></script>
+<script src="/assets/js/prettydate.min.js"></script>
+<script src="/assets/js/prettydate.zh-CN.min.js"></script>
+<script src="/assets/js/materialize.min.js"></script>
+<script src="/assets/js/uuid.js"></script>
+<script src="/assets/js/md5.min.js"></script>
+<script src="/assets/js/cache.js"></script>
+<script src="/assets/js/prism.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/vimlike-shortcuts.js"></script>
 </body>
 </html>

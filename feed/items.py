@@ -9,12 +9,12 @@ import scrapy
 
 
 class FeedItem(scrapy.Item):
-    # 必填
+    # required
     title = scrapy.Field()
     content = scrapy.Field()
     url = scrapy.Field()
     name = scrapy.Field()
 
-    # 选填，下载防盗链的图片
+    # optional
     image_urls = scrapy.Field()
     image_paths = scrapy.Field()

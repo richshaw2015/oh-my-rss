@@ -19,7 +19,7 @@ NEWSPIDER_MODULE = 'feed.spiders'
 #USER_AGENT = 'feed (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -67,7 +67,7 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
     'feed.pipelines.ValidPipeline': 10,
     'feed.pipelines.DomPipeline': 200,
-    'feed.pipelines.TodbPipeline': 300,
+    'feed.pipelines.InsertDBPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

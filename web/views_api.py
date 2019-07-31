@@ -17,7 +17,7 @@ def get_article_detail(request):
     context = dict()
     context['article'] = article
     time.sleep(0.5)
-    return render(request, 'article.html', context=context)
+    return render(request, 'article/index.html', context=context)
 
 
 def get_feeds_html(request):
@@ -31,7 +31,7 @@ def get_feeds_html(request):
     feeds = Site.objects.filter(status='active').order_by('-star')
     context = dict()
     context['feeds'] = feeds
-    return render(request, 'feeds.html', context=context)
+    return render(request, 'ajax/myfeeds.html', context=context)
 
 
 def get_homepage_html(request):
@@ -42,7 +42,7 @@ def get_homepage_html(request):
     """
     # TODO 校验 uid 合法性
     uid = request.POST.get('uid')
-    return render(request, 'intro.html')
+    return render(request, 'ajax/intro.html')
 
 
 def get_issues_html(request):
@@ -57,4 +57,4 @@ def get_issues_html(request):
     msgs = Message.objects.filter(status='active').order_by('-id')[:100]
     context = dict()
     context['msgs'] = msgs
-    return render(request, 'issues.html', context=context)
+    return render(request, 'ajax/issues.html', context=context)

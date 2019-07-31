@@ -16,3 +16,4 @@ build
 project.egg-info
 setup.py
 *.sqlite3
+assets

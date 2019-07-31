@@ -130,7 +130,7 @@ REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
 
 # for scrapy use db
-REDIS_FEEDS_DB = 0
+REDIS_FEED_DB = 0
 # for web use db
 REDIS_API_DB = 1
 
