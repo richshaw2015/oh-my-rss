@@ -1,6 +1,5 @@
 scrapy
 bs4
 requests
-pillow
 django
 redis
