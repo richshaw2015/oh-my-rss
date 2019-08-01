@@ -17,3 +17,5 @@ project.egg-info
 setup.py
 *.sqlite3
 assets
+fabfile.py
+logs
