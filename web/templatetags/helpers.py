@@ -35,10 +35,7 @@ def to_view_uv(uv_dict, uindex):
     :param uindex:
     :return:
     """
-    uv = uv_dict.get(settings.REDIS_VIEW_KEY % uindex)
-    if uv is not None:
-        return uv
-    return 0
+    return uv_dict.get(settings.REDIS_VIEW_KEY % uindex) or 0
 
 
 @register.filter
@@ -49,10 +46,7 @@ def to_thumb_uv(uv_dict, uindex):
     :param uindex:
     :return:
     """
-    uv = uv_dict.get(settings.REDIS_THUMB_KEY % uindex)
-    if uv is not None:
-        return uv
-    return 0
+    return uv_dict.get(settings.REDIS_THUMB_KEY % uindex) or 0
 
 
 @register.filter
@@ -63,10 +57,7 @@ def to_open_uv(uv_dict, uindex):
     :param uindex:
     :return:
     """
-    uv = uv_dict.get(settings.REDIS_OPEN_KEY % uindex)
-    if uv is not None:
-        return uv
-    return 0
+    return uv_dict.get(settings.REDIS_OPEN_KEY % uindex) or 0
 
 
 @register.filter

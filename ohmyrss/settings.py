@@ -132,7 +132,7 @@ REDIS_PORT = '6379'
 # for scrapy use db
 REDIS_FEED_DB = 0
 # for web use db
-REDIS_API_DB = 1
+REDIS_WEB_DB = 1
 
 # page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'

@@ -9,7 +9,7 @@ class Site(models.Model):
     author = models.CharField('来源站点的作者名', max_length=100)
     cname = models.CharField('来源站点的名称', max_length=100)
     link = models.CharField('来源站点的主页', max_length=200)
-    favicon = models.CharField('来源站点的图标，单独制作', max_length=100, default='')
+    favicon = models.CharField('来源站点的图标', max_length=100, default='')
     brief = models.CharField('简介', max_length=200)
     star = models.IntegerField('评级，10，20，30', default=20)
     freq = models.CharField('更新频率', choices=(
@@ -28,7 +28,7 @@ class Site(models.Model):
         (30, '可以全文转载'),
     ), default=0, null=True)
 
-    tag = models.CharField('站点所属领域', choices=(
+    tag = models.CharField('所属领域，一个词形容', choices=(
         ('前端', '前端'),
         ('客户端', '客户端'),
         ('后端', '后端'),
