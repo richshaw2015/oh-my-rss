@@ -19,3 +19,4 @@ setup.py
 assets
 fabfile.py
 logs
+docs

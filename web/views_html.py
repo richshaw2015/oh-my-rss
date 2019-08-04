@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+from django.http import HttpResponseNotFound, HttpResponseServerError
 from .models import *
-from .utils import get_page_uv, get_sub_sites
+from .utils import get_page_uv, get_subscribe_sites
+from .verify import verify_request
 
 
+@verify_request
 def get_article_detail(request):
     """
     获取文章详情
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
     uindex = request.POST.get('id')
 
     article = Article.objects.get(uindex=uindex)
@@ -21,13 +21,11 @@ def get_article_detail(request):
     return render(request, 'article/index.html', context=context)
 
 
+@verify_request
 def get_all_feeds(request):
     """
     获取订阅列表
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
-
     feeds = Site.objects.filter(status='active').order_by('-star')
 
     context = dict()
@@ -36,23 +34,19 @@ def get_all_feeds(request):
     return render(request, 'feeds.html', context=context)
 
 
+@verify_request
 def get_homepage_intro(request):
     """
     获取首页介绍
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
-
     return render(request, 'intro.html')
 
 
+@verify_request
 def get_all_issues(request):
     """
     获取首页介绍
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
-
     msgs = Message.objects.filter(status='active').order_by('-id')[:100]
 
     context = dict()
@@ -61,19 +55,18 @@ def get_all_issues(request):
     return render(request, 'issues.html', context=context)
 
 
+@verify_request
 def get_articles_list(request):
     """
     获取我的文章列表
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
 
     # 个人订阅处理
-    my_sub_sites = get_sub_sites(sub_feeds, unsub_feeds)
+    my_sub_sites = get_subscribe_sites(sub_feeds, unsub_feeds)
     my_articles = Article.objects.filter(status='active', site__name__in=my_sub_sites).order_by('-id')
 
     # 分页处理

@@ -8,7 +8,7 @@ def index(request):
     :param request:
     :return:
     """
-    # TODO 适配用户订阅参数
+    # render default article list
     articles = Article.objects.filter(status='active').order_by('-id')[:10]
 
     context = dict()

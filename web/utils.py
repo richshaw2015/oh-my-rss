@@ -50,7 +50,7 @@ def get_page_uv(page):
     return dict(zip(key_list, data_list))
 
 
-def get_sub_sites(sub_feeds, unsub_feeds):
+def get_subscribe_sites(sub_feeds, unsub_feeds):
     """
     获取订阅的站点，已订阅 + 推荐 - 取消订阅
     TODO 增加缓存处理

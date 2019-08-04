@@ -1,36 +1,33 @@
 
-from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError, JsonResponse
+from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from .models import *
 from datetime import date, timedelta
-from .utils import incr_redis_key, get_sub_sites
+from .utils import incr_redis_key, get_subscribe_sites
 from .views_html import get_all_issues
+from .verify import verify_request
 
 
+@verify_request
 def get_lastweek_articles(request):
     """
     过去一周的文章id列表
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
-
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
 
     lastweek_date = date.today() - timedelta(days=7)
     
-    my_sub_feeds = get_sub_sites(sub_feeds, unsub_feeds)
+    my_sub_feeds = get_subscribe_sites(sub_feeds, unsub_feeds)
     my_lastweek_articles = list(Article.objects.filter(status='active', site__name__in=my_sub_feeds,
                                                        ctime__gte=lastweek_date).values_list('uindex', flat=True))
     return JsonResponse({"result": my_lastweek_articles})
 
 
+@verify_request
 def add_log_action(request):
     """
     增加文章浏览数据打点
     """
-    # TODO 校验 uid 合法性
-    uid = request.POST.get('uid')
-
     uindex = request.POST.get('id')
     action = request.POST.get('action')
 
@@ -40,6 +37,7 @@ def add_log_action(request):
         return HttpResponseNotFound("Param error")
 
 
+@verify_request
 def leave_a_message(request):
     """
     添加留言
