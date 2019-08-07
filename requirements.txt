@@ -1,5 +1,6 @@
 scrapy
 bs4
+lxml
 requests
 django
 redis
