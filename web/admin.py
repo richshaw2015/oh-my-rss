@@ -12,7 +12,7 @@ class SiteAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Article._meta.get_fields()]
+    list_display = [field.name for field in Article._meta.get_fields() if field.name not in ('content', )]
     list_per_page = 50
 
 
