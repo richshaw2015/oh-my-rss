@@ -15,5 +15,6 @@ class HelloGithubSpider(Spider):
                         article_content_xpath='//article',
                         article_trim_xpaths=[
                             '//h1'
-                        ]
+                        ],
+                        index_limit_count=3,
                         )

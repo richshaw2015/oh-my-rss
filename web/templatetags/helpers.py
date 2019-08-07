@@ -2,6 +2,7 @@ from django import template
 from django.utils.timezone import localtime
 from django.conf import settings
 import hashlib
+import urllib
 
 register = template.Library()
 
@@ -69,3 +70,8 @@ def to_fuzzy_uid(uid):
 def to_gravatar_url(uid, size=64):
     return "https://cdn.v2ex.co/gravatar/%s?d=retro&s=%d" % (hashlib.md5(uid.lower().encode('utf8')).hexdigest(),
                                                                  size)
+
+
+@register.filter
+def unquote(url):
+    return urllib.parse.unquote(url)

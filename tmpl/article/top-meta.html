@@ -1,3 +1,4 @@
+{% load helpers %}
 <h1 id="omrss-article-title">{{ article.title }}</h1>
 
 <blockquote id="omrss-article-stats">
@@ -7,7 +8,7 @@
         原文转载自
     {% endif %}
     「{{ article.site.cname }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
-                                                  data-id="{{ article.uindex }}">{{ article.src_url }}</a>)
+                                                  data-id="{{ article.uindex }}">{{ article.src_url |unquote }}</a>)
 
     <p id="omrss-read-stats">预计阅读时间<b> 0 </b>分钟（共 0 个字， 0 张图片， 0 个链接）</p>
 
