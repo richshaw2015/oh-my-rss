@@ -12,5 +12,8 @@ class HelloGithubSpider(Spider):
                         ],
                         index_xpath="//a[contains(text(),'第 ')]/@href",
                         article_title_xpath='//article//h1/text()',
-                        article_content_xpath='//article'
+                        article_content_xpath='//article',
+                        article_trim_xpaths=[
+                            '//h1'
+                        ]
                         )

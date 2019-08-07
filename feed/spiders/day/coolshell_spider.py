@@ -2,7 +2,7 @@
 from feed.spiders.spider import Spider
 
 
-class CoolshellSpider(Spider):
+class CoolShellSpider(Spider):
     name = 'coolshell'
 
     def __init__(self):
@@ -17,5 +17,6 @@ class CoolshellSpider(Spider):
                             "//*[@id='wp_rp_first']",
                             "//*[@class='post-ratings-loading']",
                             "//*[@class='post-ratings']",
-                        ]
+                        ],
+                        index_limit_count=3,
                         )

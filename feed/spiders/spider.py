@@ -8,15 +8,19 @@ class Spider(scrapy.Spider):
     father class of article content spiders
     """
 
-    def __init__(self, start_urls, index_xpath, article_title_xpath, article_content_xpath, article_trim_xpaths=None):
+    def __init__(self, start_urls, index_xpath, article_title_xpath, article_content_xpath, article_trim_xpaths=None,
+                 index_limit_count=None):
         self.start_urls = start_urls
         self.index_xpath = index_xpath
         self.article_title_xpath = article_title_xpath
         self.article_content_xpath = article_content_xpath
         self.article_trim_xpaths = article_trim_xpaths
+        self.index_limit_count = index_limit_count
 
     def parse(self, response):
-        content_urls = response.xpath(self.index_xpath).extract()[:3]
+        content_urls = response.xpath(self.index_xpath).extract()
+        if self.index_limit_count:
+            content_urls = content_urls[:self.index_limit_count]
 
         if content_urls:
             for content_url in content_urls:

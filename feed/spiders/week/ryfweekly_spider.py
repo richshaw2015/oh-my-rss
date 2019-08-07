@@ -2,7 +2,7 @@
 from feed.spiders.spider import Spider
 
 
-class RyfweeklySpider(Spider):
+class RyfWeeklySpider(Spider):
     name = 'ryfweekly'
 
     def __init__(self):
@@ -12,5 +12,9 @@ class RyfweeklySpider(Spider):
                         ],
                         index_xpath="//a[contains(text(),'第 ')]/@href",
                         article_title_xpath='//article//h1/text()',
-                        article_content_xpath='//article'
+                        article_content_xpath='//article',
+                        article_trim_xpaths=[
+                            '//h1'
+                        ],
+                        index_limit_count=3,
                         )

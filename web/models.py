@@ -63,7 +63,7 @@ class Article(models.Model):
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='')
+    remark = models.TextField('备注', default='', null=True)
 
 
 class Message(models.Model):
@@ -83,4 +83,4 @@ class Message(models.Model):
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='')
+    remark = models.TextField('备注', default='', null=True)
