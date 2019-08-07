@@ -12,6 +12,7 @@ class FeedItem(scrapy.Item):
     # required
     title = scrapy.Field()
     content = scrapy.Field()
+    trims = scrapy.Field()
     url = scrapy.Field()
     name = scrapy.Field()
 
