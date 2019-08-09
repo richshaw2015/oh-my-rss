@@ -44,6 +44,12 @@ class DomPipeline(object):
             a.attrs['href'] = abs_href
             a.attrs['target'] = '_blank'
 
+        # to absolute src
+        for img in content_soup.find_all('img'):
+            rel_src = img.attrs.get('src')
+            abs_src = urllib.parse.urljoin(item['url'], rel_src)
+            img.attrs['src'] = abs_src
+
         # deny exec js
         for script in content_soup.find_all('script'):
             script.name = 'noscript'
