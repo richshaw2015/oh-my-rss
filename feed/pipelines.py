@@ -48,15 +48,19 @@ class DomPipeline(object):
         for script in content_soup.find_all('script'):
             script.name = 'noscript'
 
+        # for tencent crayon code theme, keep space symbols
+        for s in content_soup.find_all('span', class_='crayon-h'):
+            s.attrs['style'] = "white-space:pre;"
+
         # trim contents
         if item.get('trims'):
-            content_etree = etree.fromstring(content_soup.prettify(), etree.HTMLParser())
+            content_etree = etree.fromstring(str(content_soup), etree.HTMLParser())
             for xpath in item['trims']:
                 for node in content_etree.xpath(xpath):
                     node.clear()
-            item['content'] = etree.tostring(content_etree, pretty_print=True, encoding="utf-8").decode('utf8')
+            item['content'] = etree.tostring(content_etree, pretty_print=False, encoding="utf-8").decode('utf8')
         else:
-            item['content'] = content_soup.prettify()
+            item['content'] = str(content_soup)
 
         return item
 

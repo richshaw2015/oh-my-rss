@@ -13,4 +13,5 @@ class DtfeWeeklySpider(Spider):
                                     "not(contains(text(),'readme.md'))]/@href",
                         article_title_xpath="//h2//*[@class='final-path']/text()",
                         article_content_xpath='//article',
+                        index_reverse=True,
                         )
