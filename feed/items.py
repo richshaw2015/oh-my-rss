@@ -14,6 +14,8 @@ class FeedItem(scrapy.Item):
     content = scrapy.Field()
     trims = scrapy.Field()
     url = scrapy.Field()
+    # request url before redirect
+    req_url = scrapy.Field()
     name = scrapy.Field()
 
     # optional

@@ -20,8 +20,9 @@ def is_crawled_url(url):
     return False
 
 
-def mark_crawled_url(url):
-    if not R.set(CRAWL_PREFIX + url, 1):
+def mark_crawled_url(url, req_url):
+    # both set before and after redirect url
+    if not R.set(CRAWL_PREFIX + url, 1) and R.set(CRAWL_PREFIX + req_url, 1):
         # TODO add logging
         pass
 

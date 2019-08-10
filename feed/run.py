@@ -2,5 +2,5 @@
 
 from scrapy import cmdline
 
-cmd = 'scrapy crawl alloyteam'
+cmd = 'scrapy crawl gityuan'
 cmdline.execute(cmd.split())

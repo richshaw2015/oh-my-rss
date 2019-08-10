@@ -39,4 +39,6 @@ class Spider(scrapy.Spider):
         title = response.xpath(self.article_title_xpath).extract_first().strip()
         content = response.xpath(self.article_content_xpath).extract_first()
         url = response.url
-        yield FeedItem(title=title, content=content, url=url, name=self.name, trims=self.article_trim_xpaths)
+        req_url = response.meta['redirect_urls'][0]
+        yield FeedItem(title=title, content=content, url=url, name=self.name, trims=self.article_trim_xpaths,
+                       req_url=req_url)
