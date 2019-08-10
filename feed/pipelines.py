@@ -49,6 +49,16 @@ class DomPipeline(object):
 
         # to absolute src
         for img in content_soup.find_all('img'):
+            if img.attrs.get('file'):
+                img.attrs['src'] = img.attrs['file']
+            elif img.attrs.get('data-src'):
+                img.attrs['src'] = img.attrs['data-src']
+            try:
+                for attr in ('srcset', 'data-srcset', 'data-s', 'data-w', 'data-type', 'data-ratio'):
+                    del img.attrs[attr]
+            except KeyError:
+                pass
+
             rel_src = img.attrs.get('src')
             abs_src = urllib.parse.urljoin(item['url'], rel_src)
             img.attrs['src'] = abs_src
