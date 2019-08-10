@@ -10,8 +10,8 @@ class MeituanSpider(Spider):
                         start_urls=[
                             'https://tech.meituan.com',
                         ],
-                        index_xpath='//header/a/@href',
-                        article_title_xpath='//*[@id="post_detail"]/article/header/h1/text()',
-                        article_content_xpath='//*[@id="post_detail"]/article/div[@class="article__content"]',
+                        index_xpath="//h2[@class='post-title']/a/@href",
+                        article_title_xpath='//h1[@class="post-title"]/a/text()',
+                        article_content_xpath='//div[@class="post-content"]',
                         index_limit_count=3,
                         )
