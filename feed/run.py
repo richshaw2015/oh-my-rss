@@ -2,5 +2,5 @@
 
 from scrapy import cmdline
 
-cmd = 'scrapy crawl jdc'
+cmd = 'scrapy crawl tencentcdc'
 cmdline.execute(cmd.split())
