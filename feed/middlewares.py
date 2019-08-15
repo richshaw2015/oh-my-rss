@@ -6,6 +6,10 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.http import HtmlResponse
+from selenium import webdriver
+from scrapy.utils.python import to_bytes
+from selenium.webdriver.chrome.options import Options
 
 
 class FeedSpiderMiddleware(object):
@@ -78,7 +82,13 @@ class FeedDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        if spider.browser:
+            request.meta['browser'] = self.browser  # to access driver from response
+            self.browser.get(request.url)
+            body = to_bytes(self.browser.page_source)  # body must be of type bytes
+            return HtmlResponse(self.browser.current_url, body=body, encoding='utf-8', request=request)
+        else:
+            return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
@@ -101,3 +111,18 @@ class FeedDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+        if spider.browser:
+            chrome_options = Options()
+            chrome_options.add_argument("--disable-extensions")
+            chrome_options.add_argument("--window-size=1920,1080")
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--ignore-certificate-errors')
+            chrome_options.add_argument('--single-process')
+
+            self.browser = webdriver.Chrome(options=chrome_options)
+
+    def spider_closed(self, spider):
+        if spider.browser:
+            self.browser.quit()

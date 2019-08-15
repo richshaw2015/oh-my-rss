@@ -9,7 +9,7 @@ class Spider(scrapy.Spider):
     """
 
     def __init__(self, start_urls, index_xpath, article_title_xpath, article_content_xpath, article_trim_xpaths=None,
-                 index_limit_count=None, index_reverse=False):
+                 index_limit_count=None, index_reverse=False, browser=False):
         self.start_urls = start_urls
         self.index_xpath = index_xpath
         self.article_title_xpath = article_title_xpath
@@ -17,6 +17,7 @@ class Spider(scrapy.Spider):
         self.article_trim_xpaths = article_trim_xpaths
         self.index_limit_count = index_limit_count
         self.index_reverse = index_reverse
+        self.browser = browser
 
     def parse(self, response):
         content_urls = response.xpath(self.index_xpath).extract()

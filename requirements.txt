@@ -4,3 +4,4 @@ lxml
 requests
 django
 redis
+selenium
