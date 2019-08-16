@@ -2,9 +2,9 @@
 <h1 id="omrss-article-title">{{ article.title }}</h1>
 
 <blockquote id="omrss-article-stats">
-    {% if article.site.copyright == 20 %}
+    {% if article.site.copyright == 20 or article.site.copyright == 0 %}
         摘要转载自
-    {% elif article.site.copyright == 30 or article.site.copyright == 0 %}
+    {% elif article.site.copyright == 30 %}
         原文转载自
     {% endif %}
     「{{ article.site.cname }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"

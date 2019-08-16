@@ -96,9 +96,13 @@ class InsertDBPipeline(object):
         site = Site.objects.get(name=item['name'])
 
         if site.status == 'active':
-            article = Article(site=site, title=item['title'], uindex=current_ts(), content=item['content'],
-                              remark='', src_url=item['url'])
-            article.save()
+            try:
+                article = Article(site=site, title=item['title'], uindex=current_ts(), content=item['content'],
+                                  remark='', src_url=item['url'])
+                article.save()
 
-            # mark status
-            mark_crawled_url(item['url'], item['req_url'])
+                # mark status
+                mark_crawled_url(item['url'], item['req_url'])
+            except django.db.utils.IntegrityError:
+                # repeat item
+                mark_crawled_url(item['url'], item['req_url'])

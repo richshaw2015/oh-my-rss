@@ -5,7 +5,7 @@
            data-position="top" id="omrss-addgp" data-id="{{ article.uindex }}">
             <i class="material-icons add-group">touch_app</i>点此加群互动</a></span>
     -->
-    {% if article.site.copyright == 20 %}
+    {% if article.site.copyright == 20 or article.site.copyright == 0 %}
         <div class="text-darken-2 omrss-article-bottom center-align">
             <a href="{{ article.src_url }}" target="_blank" class="tooltipped ev-open-src" data-tooltip="查看原文"
                data-position="top" data-id="{{ article.uindex }}">
@@ -32,7 +32,7 @@
 
 <script>
     $('#omrss-modal-qrcode').modal({"dismissible": true});
-    {% if article.site.copyright == 20 %}
+    {% if article.site.copyright == 20 or article.site.copyright == 0 %}
         $('#omrss-third').css('overflow', 'hidden');
         $('#omrss-third').css('max-height', getBriefHeight());
     {% endif %}
