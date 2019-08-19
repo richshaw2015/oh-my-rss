@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'feed.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your ohmyrss) on the user-agent
-#USER_AGENT = 'feed (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 OhMyRSS/1.0'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
