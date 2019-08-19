@@ -14,4 +14,7 @@ class WjdiankongSpider(Spider):
                         article_title_xpath='//header/h1/a/text()',
                         article_content_xpath="//div/article",
                         index_limit_count=3,
+                        article_trim_xpaths=[
+                            '//div[@class="article-social"]'
+                        ]
                         )
