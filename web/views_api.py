@@ -5,6 +5,9 @@ from datetime import date, timedelta
 from .utils import incr_redis_key, get_subscribe_sites
 from .views_html import get_all_issues
 from .verify import verify_request
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @verify_request
@@ -14,6 +17,8 @@ def get_lastweek_articles(request):
     """
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+
+    logger.info(f"收到订阅源查询请求：`{sub_feeds}`{unsub_feeds}")
 
     lastweek_date = date.today() - timedelta(days=7)
     
@@ -34,6 +39,7 @@ def add_log_action(request):
     if incr_redis_key(action, uindex):
         return JsonResponse({})
     else:
+        logger.warning(f"打点增加失败：`{uindex}`{action}")
         return HttpResponseNotFound("Param error")
 
 
@@ -54,6 +60,8 @@ def leave_a_message(request):
             msg.save()
             return get_all_issues(request)
         except:
+            logger.error(f"留言增加失败：`{uid}`{content}`{nickname}`{contact}")
             return HttpResponseServerError('Inter error')
 
+    logger.warning(f"参数错误：`{uid}`{content}")
     return HttpResponseNotFound("Param error")

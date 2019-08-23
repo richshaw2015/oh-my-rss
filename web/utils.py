@@ -8,6 +8,7 @@ import logging
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
+logger = logging.getLogger(__name__)
 
 
 def incr_redis_key(action, uindex):
@@ -29,7 +30,7 @@ def incr_redis_key(action, uindex):
         try:
             return R.incr(key, amount=1)
         except redis.exceptions.ConnectionError:
-            logging.warning(f"写入Redis出现异常：{key}")
+            logger.warning(f"写入Redis出现异常：`{key}")
     return False
 
 
@@ -46,7 +47,7 @@ def get_page_uv(page):
     try:
         data_list = R.mget(*key_list)
     except redis.exceptions.ConnectionError:
-        logging.error("Redis连接异常")
+        logger.error("Redis连接异常")
     return dict(zip(key_list, data_list))
 
 
@@ -60,3 +61,12 @@ def get_subscribe_sites(sub_feeds, unsub_feeds):
     """
     recommend_feeds = list(Site.objects.filter(status='active', star__gte=20).values_list('name', flat=True))
     return list(set(sub_feeds + recommend_feeds) - set(unsub_feeds))
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

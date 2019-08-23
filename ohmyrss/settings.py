@@ -141,3 +141,72 @@ REDIS_WEB_DB = 1
 REDIS_VIEW_KEY = 'VIEW/%s'
 REDIS_THUMB_KEY = 'THUMB/%s'
 REDIS_OPEN_KEY = 'OPEN/%s'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'my_info': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'info.log'),
+            'formatter': 'verbose',
+            'when': 'D',
+            'interval': 1,
+            'backupCount': 90,
+        },
+        'my_warn': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'warn.log'),
+            'formatter': 'verbose',
+            'when': 'D',
+            'interval': 1,
+            'backupCount': 60,
+        },
+        'my_error': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'error.log'),
+            'formatter': 'verbose',
+            'when': 'D',
+            'interval': 1,
+            'backupCount': 30,
+        },
+        'django_warn': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'formatter': 'verbose',
+            'when': 'D',
+            'interval': 1,
+            'backupCount': 90,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'django_warn'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'web': {
+            'handlers': ['console', 'my_info', 'my_warn', 'my_error'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

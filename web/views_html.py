@@ -4,6 +4,9 @@ from django.http import HttpResponseNotFound, HttpResponseServerError
 from .models import *
 from .utils import get_page_uv, get_subscribe_sites
 from .verify import verify_request
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @verify_request
@@ -13,12 +16,16 @@ def get_article_detail(request):
     """
     uindex = request.POST.get('id')
 
-    article = Article.objects.get(uindex=uindex)
+    try:
+        article = Article.objects.get(uindex=uindex)
 
-    context = dict()
-    context['article'] = article
+        context = dict()
+        context['article'] = article
 
-    return render(request, 'article/index.html', context=context)
+        return render(request, 'article/index.html', context=context)
+    except:
+        logger.warning(f"获取文章详情请求处理异常：`{uindex}")
+    return HttpResponseNotFound("Param error")
 
 
 @verify_request
@@ -84,7 +91,7 @@ def get_articles_list(request):
             context['num_pages'] = num_pages
             return render(request, 'list.html', context=context)
         except:
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
             return HttpResponseNotFound("Page number error")
+    logger.warning("没有订阅任何内容")
     return HttpResponseNotFound("No Feeds subscribed")
-
-

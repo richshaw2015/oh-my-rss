@@ -33,7 +33,7 @@ ROBOTSTXT_OBEY = False
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -69,6 +69,10 @@ ITEM_PIPELINES = {
     'feed.pipelines.DomPipeline': 200,
     'feed.pipelines.InsertDBPipeline': 300,
 }
+
+DOWNLOAD_TIMEOUT = 15
+
+LOG_LEVEL = 'WARNING'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
