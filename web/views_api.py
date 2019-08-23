@@ -18,7 +18,8 @@ def get_lastweek_articles(request):
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
 
-    logger.info(f"收到订阅源查询请求：`{sub_feeds}`{unsub_feeds}")
+    if sub_feeds or unsub_feeds:
+        logger.info(f"收到订阅源查询请求：`{sub_feeds}`{unsub_feeds}")
 
     lastweek_date = date.today() - timedelta(days=7)
     
