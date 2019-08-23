@@ -5,3 +5,5 @@ requests
 django
 redis
 selenium
+gunicorn
+gevent
