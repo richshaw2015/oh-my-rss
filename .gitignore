@@ -6,7 +6,7 @@
 *.egg
 .idea
 .tgz
-
+/assets/*.tgz
 tmp
 dist
 tests/.pytest_cache
@@ -16,7 +16,6 @@ build
 project.egg-info
 setup.py
 *.sqlite3
-assets
 fabfile.py
 logs
 docs
