@@ -70,7 +70,7 @@ ITEM_PIPELINES = {
     'feed.pipelines.InsertDBPipeline': 300,
 }
 
-DOWNLOAD_TIMEOUT = 15
+DOWNLOAD_TIMEOUT = 30
 
 LOG_LEVEL = 'WARNING'
 
