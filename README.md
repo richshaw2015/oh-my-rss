@@ -82,4 +82,5 @@ scrapy crawl coolshell
 详见 CONTRIBUTING.md
 
 ## 交流群
-待建
+请扫码加群，备注 RSS
+![预览](https://raw.githubusercontent.com/richshaw2015/oh-my-rss/master/assets/img/qrcode.jpg)
