@@ -25,11 +25,11 @@ class ValidPipeline(object):
 
         if item['title'] and item['content'] and item['url'] and item['name'] and item['req_url']:
             if 'github' in item['url'] and '，禁止转载' in item['content']:
-                return DropItem(f"Data not allowed：{item}")
+                return DropItem(f"Data not allowed`{item}")
             else:
                 return item
         else:
-            raise DropItem(f"Data not valid：{item}")
+            raise DropItem(f"Data not valid`{item}")
 
 
 class DomPipeline(object):

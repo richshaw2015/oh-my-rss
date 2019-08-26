@@ -34,11 +34,14 @@ class Spider(scrapy.Spider):
                 if not is_crawled_url(full_url):
                     yield response.follow(content_url, self.content_parse)
         else:
-            self.logger.error("Site maybe has changed %s", self.name)
+            self.logger.error("Site maybe has changed`%s", self.name)
 
     def content_parse(self, response):
-        title = response.xpath(self.article_title_xpath).extract_first().strip()
-        content = response.xpath(self.article_content_xpath).extract_first()
+        try:
+            title = response.xpath(self.article_title_xpath).extract_first().strip()
+            content = response.xpath(self.article_content_xpath).extract_first()
+        except AttributeError:
+            self.logger.warning("Xpath Error`%s`%s", response.url, response.body)
         url = response.url
         try:
             req_url = response.meta['redirect_urls'][0]
