@@ -41,7 +41,7 @@ class Spider(scrapy.Spider):
             title = response.xpath(self.article_title_xpath).extract_first().strip()
             content = response.xpath(self.article_content_xpath).extract_first()
         except AttributeError:
-            self.logger.warning("Xpath Error`%s`%s", response.url, response.body)
+            self.logger.warning("Xpath Error`%s`%s", response.url, response.body.decode('utf8'))
         url = response.url
         try:
             req_url = response.meta['redirect_urls'][0]
