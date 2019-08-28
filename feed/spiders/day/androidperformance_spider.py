@@ -10,7 +10,7 @@ class AndroidPerformanceSpider(Spider):
                         start_urls=[
                             'https://www.androidperformance.com',
                         ],
-                        index_xpath="//header/h2/a/@href",
+                        index_xpath="//article/a/@href",
                         article_title_xpath="//*[@class='site-intro-meta']/h1/text()",
                         article_content_xpath="//*[@class='article-entry']",
                         index_limit_count=3,

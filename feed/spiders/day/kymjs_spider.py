@@ -14,4 +14,7 @@ class KymjsSpider(Spider):
                         article_title_xpath="//*[@id='myArticle']//header/h2/text()",
                         article_content_xpath="//*[@id='page']",
                         index_limit_count=3,
+                        article_trim_xpaths=[
+                            "//div[@class='only-phone']"
+                        ]
                         )

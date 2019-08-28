@@ -32,7 +32,7 @@ class Spider(scrapy.Spider):
             for content_url in content_urls:
                 full_url = urllib.parse.urljoin(self.start_urls[0], content_url)
                 if not is_crawled_url(full_url):
-                    self.logger.error(f"Begin crawl`{full_url}")
+                    self.logger.info(f"Begin crawl`{full_url}")
                     yield response.follow(content_url, self.content_parse)
         else:
             self.logger.error("Site maybe has changed`%s", self.name)
@@ -42,7 +42,8 @@ class Spider(scrapy.Spider):
             title = response.xpath(self.article_title_xpath).extract_first().strip()
             content = response.xpath(self.article_content_xpath).extract_first()
         except AttributeError:
-            self.logger.warning("Xpath Error`%s`%s", response.url, response.body.decode('utf8'))
+            self.logger.warning("Xpath Error`%s", response.url)
+            return False
         url = response.url
         try:
             req_url = response.meta['redirect_urls'][0]

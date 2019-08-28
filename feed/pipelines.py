@@ -11,6 +11,7 @@ import django
 import urllib
 from bs4 import BeautifulSoup
 import lxml.etree as etree
+import re
 
 # to use django models
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ohmyrss.settings")
@@ -76,6 +77,11 @@ class DomPipeline(object):
         # for tencent crayon code theme, keep space symbols
         for s in content_soup.find_all('span', class_='crayon-h'):
             s.attrs['style'] = "white-space:pre;"
+
+        # reset span font size
+        for span in content_soup.find_all('span'):
+            if span.attrs.get('style'):
+                span.attrs['style'] = re.sub(r'font-size\s*:\s*[^;]+;', '', span.attrs['style'])
 
         # trim contents
         if item.get('trims'):
