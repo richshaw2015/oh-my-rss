@@ -11,7 +11,7 @@ class AndroidPerformanceSpider(Spider):
                             'https://www.androidperformance.com',
                         ],
                         index_xpath="//article/a/@href",
-                        article_title_xpath="//*[@class='site-intro-meta']/h1/text()",
+                        article_title_xpath="//*[@class='post-title']/a/text()",
                         article_content_xpath="//*[@class='article-entry']",
                         index_limit_count=3,
                         )

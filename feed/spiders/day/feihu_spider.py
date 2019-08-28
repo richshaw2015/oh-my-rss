@@ -16,7 +16,7 @@ class FeihuSpider(Spider):
                         index_limit_count=3,
                         article_trim_xpaths=[
                             "//h1[@class='post-title']",
-                            "//p[@class='post-meta']"
-                            "//div[@id='disqus_thread']"
+                            "//p[@class='post-meta']",
+                            "//div[@id='disqus_thread']",
                         ]
                         )

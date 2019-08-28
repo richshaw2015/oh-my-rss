@@ -79,7 +79,7 @@ class DomPipeline(object):
             s.attrs['style'] = "white-space:pre;"
 
         # reset span font size
-        for span in content_soup.find_all('span'):
+        for span in (content_soup.find_all('span') + content_soup.find_all('p')):
             if span.attrs.get('style'):
                 span.attrs['style'] = re.sub(r'font-size\s*:\s*[^;]+;', '', span.attrs['style'])
 
