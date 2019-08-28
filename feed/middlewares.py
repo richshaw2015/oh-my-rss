@@ -9,6 +9,7 @@ from scrapy import signals
 from scrapy.http import HtmlResponse
 from selenium import webdriver
 from scrapy.utils.python import to_bytes
+import time
 from selenium.webdriver.chrome.options import Options
 
 
@@ -86,6 +87,8 @@ class FeedDownloaderMiddleware(object):
         if spider.browser:
             request.meta['browser'] = self.browser  # to access driver from response
             self.browser.get(request.url)
+            # wait js eval
+            time.sleep(15)
             body = to_bytes(self.browser.page_source)  # body must be of type bytes
             return HtmlResponse(self.browser.current_url, body=body, encoding='utf-8', request=request)
         else:
