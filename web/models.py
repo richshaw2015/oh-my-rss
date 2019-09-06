@@ -74,8 +74,8 @@ class Message(models.Model):
     """
     uid = models.CharField('用户id', max_length=100)
     content = models.TextField('内容')
-    nickname = models.CharField('用户id', max_length=20, null=True)
-    contact = models.CharField('用户id', max_length=50, null=True)
+    nickname = models.CharField('用户昵称', max_length=20, null=True)
+    contact = models.CharField('用户联系方式', max_length=50, null=True)
 
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
