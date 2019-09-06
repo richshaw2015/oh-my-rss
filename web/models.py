@@ -26,7 +26,7 @@ class Site(models.Model):
         (10, '不可转载'),
         (20, '仅可转载摘要'),
         (30, '可以全文转载'),
-    ), default=0, null=True)
+    ), default=0, null=True, blank=True)
 
     tag = models.CharField('一个词形容', choices=(
         ('前端', '前端'),
@@ -42,11 +42,11 @@ class Site(models.Model):
         ('刊物', '刊物'),
         ('算法', '算法'),
         ('大数据', '大数据'),
-    ), max_length=20, null=True)
+    ), max_length=20, null=True, blank=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='', null=True)
+    remark = models.TextField('备注', default='', null=True, blank=True)
 
 
 class Article(models.Model):
@@ -65,7 +65,7 @@ class Article(models.Model):
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='', null=True)
+    remark = models.TextField('备注', default='', null=True, blank=True)
 
 
 class Message(models.Model):
@@ -74,15 +74,15 @@ class Message(models.Model):
     """
     uid = models.CharField('用户id', max_length=100)
     content = models.TextField('内容')
-    nickname = models.CharField('用户昵称', max_length=20, null=True)
-    contact = models.CharField('用户联系方式', max_length=50, null=True)
+    nickname = models.CharField('用户昵称', max_length=20, null=True, blank=True)
+    contact = models.CharField('用户联系方式', max_length=50, null=True, blank=True)
 
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
     ), default='active')
-    reply = models.TextField('回复', null=True)
+    reply = models.TextField('回复', null=True, blank=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='', null=True)
+    remark = models.TextField('备注', default='', null=True, blank=True)
