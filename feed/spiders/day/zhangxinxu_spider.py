@@ -12,6 +12,10 @@ class ZhangxinxuSpider(Spider):
                         ],
                         index_xpath='//h2/a/@href',
                         article_title_xpath='//div[@id="content"]//h2/text()',
-                        article_content_xpath='//div[@class="entry"]',
+                        article_content_xpath='//div[@class="entry"]//article',
                         index_limit_count=3,
+                        article_trim_xpaths=[
+                            "//article/p[@class='link']",
+                            "//div[@class='similarity']",
+                        ]
                         )

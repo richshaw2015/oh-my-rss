@@ -6,7 +6,6 @@
 *.egg
 .idea
 .tgz
-/assets/*.tgz
 tmp
 dist
 tests/.pytest_cache
