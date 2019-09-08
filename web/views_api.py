@@ -15,11 +15,12 @@ def get_lastweek_articles(request):
     """
     过去一周的文章id列表
     """
+    uid = request.POST.get('uid', '')
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+    ext = request.POST.get('ext', '')
 
-    if sub_feeds or unsub_feeds:
-        logger.info(f"收到订阅源查询请求：`{sub_feeds}`{unsub_feeds}")
+    logger.info(f"收到订阅源查询请求：`{uid}`{sub_feeds}`{unsub_feeds}`{ext}")
 
     lastweek_date = date.today() - timedelta(days=7)
     
