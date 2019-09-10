@@ -14,4 +14,8 @@ class RaychaseSpider(Spider):
                         article_title_xpath='//h1[@class="entry-title"]/text()',
                         article_content_xpath='//*[@class="entry-content"]',
                         index_limit_count=3,
+                        article_trim_xpaths=[
+                            '//div[@class="yarpp-related"]',
+                            '//div[@class="open_social_box share_box"]',
+                        ]
                         )
