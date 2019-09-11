@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
+    path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
 ]

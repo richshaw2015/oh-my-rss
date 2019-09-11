@@ -4,18 +4,32 @@
 <div class="divider"></div>
 
 <div class="row">
-    {% for feed in feeds %}
-    <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
-        <img src="{{ feed.favicon }}" class="circle responsive-img favico rss-text"/>
-        <div class="rss-title rss-text">
-            <a href="{{ feed.link }}" class="tooltipped" data-tooltip="{{ feed.brief }}" data-position="top">{{ feed.cname }}</a>
-        </div>
-
-        <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed"
-           data-name="{{ feed.name }}">取消订阅</a>
-        <span class="rss-text right omrss-right-space omrss-tag">{{ feed.tag }}</span>
-        <span class="right rss-text omrss-right-space yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
+    <div class="input-field col s6">
+        <input id="omrss-atom-input" type="text" class="validate">
+        <label for="omrss-atom-input">提交自定义订阅源，例如 http://www.ruanyifeng.com/blog/atom.xml</label>
     </div>
+    <div class="input-field col s6">
+        <button class="btn waves-effect waves-light" type="submit">提交
+            <i class="material-icons right">send</i>
+        </button>
+    </div>
+</div>
+
+
+<div class="row">
+    {% for feed in feeds %}
+        <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
+            <img src="{{ feed.favicon }}" class="circle responsive-img favico rss-text"/>
+            <div class="rss-title rss-text">
+                <a href="{{ feed.link }}" class="tooltipped" data-tooltip="{{ feed.brief }}"
+                   data-position="top">{{ feed.cname }}</a>
+            </div>
+
+            <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed"
+               data-name="{{ feed.name }}">取消订阅</a>
+            <span class="rss-text right omrss-right-space omrss-tag">{{ feed.tag }}</span>
+            <span class="right rss-text omrss-right-space yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
+        </div>
     {% endfor %}
 </div>
 

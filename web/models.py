@@ -6,13 +6,14 @@ class Site(models.Model):
     站点表
     """
     name = models.CharField('scrapy代号', max_length=100, unique=True, db_index=True)
-    author = models.CharField('作者', max_length=100)
+    author = models.CharField('作者', max_length=100, null=True, blank=True)
     cname = models.CharField('站点名称', max_length=100)
     link = models.CharField('站点主页', max_length=200)
-    favicon = models.CharField('favicon', max_length=100, default='')
+    favicon = models.CharField('favicon', max_length=100, default='', null=True, blank=True)
     brief = models.CharField('简介', max_length=200)
     star = models.IntegerField('评级，10，20，30', default=20)
     freq = models.CharField('更新频率', choices=(
+        ('小时', '每小时更新'),
         ('日更', '每天更新'),
         ('周更', '每周更新'),
         ('月更', '每月更新'),
@@ -42,7 +43,13 @@ class Site(models.Model):
         ('刊物', '刊物'),
         ('算法', '算法'),
         ('大数据', '大数据'),
+        ('RSS', 'RSS'),
     ), max_length=20, null=True, blank=True)
+
+    creator = models.CharField('创建人', choices=(
+        ('system', '系统录入'),
+        ('user', '用户提交'),
+    ), max_length=20, null=True, blank=True, default='system')
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
@@ -55,6 +62,7 @@ class Article(models.Model):
     """
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     title = models.CharField('标题', max_length=200, unique=True)
+    author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
     content = models.TextField('内容')
     src_url = models.CharField('原始链接', max_length=500)

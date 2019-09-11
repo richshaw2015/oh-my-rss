@@ -6,6 +6,9 @@ from .utils import incr_redis_key, get_subscribe_sites
 from .views_html import get_all_issues
 from .verify import verify_request
 import logging
+import feedparser
+import hashlib
+import django
 
 logger = logging.getLogger(__name__)
 
@@ -66,4 +69,29 @@ def leave_a_message(request):
             return HttpResponseServerError('Inter error')
 
     logger.warning(f"参数错误：`{uid}`{content}")
+    return HttpResponseNotFound("Param error")
+
+
+@verify_request
+def submit_a_feed(request):
+    """
+    用户添加一个自定义的订阅源
+    """
+    feed_url = request.POST.get('url', '').strip()[:200]
+    if feed_url:
+        feed_obj = feedparser.parse(feed_url)
+        if feed_obj.feed.get('title') and feed_obj.feed.get('id'):
+            name = hashlib.md5(feed_obj.feed.id.encode('utf8')).hexdigest()
+            cname = feed_obj.feed.title
+            link = feed_obj.feed.link
+            brief = feed_obj.feed.subtitle
+            try:
+                site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
+                            creator='user', remark=feed_url)
+                site.save()
+                return JsonResponse({"name": name})
+            except django.db.utils.IntegrityError:
+                logger.warning(f"数据插入失败：`{feed_url}")
+                return HttpResponseServerError('Inter error')
+    logger.warning(f"参数错误：`{feed_url}")
     return HttpResponseNotFound("Param error")
