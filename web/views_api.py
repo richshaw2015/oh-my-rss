@@ -2,12 +2,11 @@
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from .models import *
 from datetime import date, timedelta
-from .utils import incr_redis_key, get_subscribe_sites
+from .utils import incr_redis_key, get_subscribe_sites, get_hash_name
 from .views_html import get_all_issues
 from .verify import verify_request
 import logging
 import feedparser
-import hashlib
 import django
 
 logger = logging.getLogger(__name__)
@@ -80,14 +79,20 @@ def submit_a_feed(request):
     feed_url = request.POST.get('url', '').strip()[:200]
     if feed_url:
         feed_obj = feedparser.parse(feed_url)
-        if feed_obj.feed.get('title') and feed_obj.feed.get('id'):
-            name = hashlib.md5(feed_obj.feed.id.encode('utf8')).hexdigest()
-            cname = feed_obj.feed.title
-            link = feed_obj.feed.link
-            brief = feed_obj.feed.subtitle
+        if feed_obj.feed.get('title'):
+            name = get_hash_name(feed_obj.feed.title)
+            try:
+                cname = feed_obj.feed.title
+                link = feed_obj.feed.link
+                brief = feed_obj.feed.subtitle
+            except AttributeError:
+                logger.warning(f'订阅源属性获取异常：`{feed_url}')
+                return HttpResponseNotFound("Attribute error")
+            favicon = f"https://cdn.v2ex.co/gravatar/{name}?d=monsterid&s=32"
+
             try:
                 site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
-                            creator='user', remark=feed_url)
+                            creator='user', rss=feed_url, favicon=favicon)
                 site.save()
                 return JsonResponse({"name": name})
             except django.db.utils.IntegrityError:

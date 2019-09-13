@@ -46,6 +46,7 @@ class Site(models.Model):
         ('RSS', 'RSS'),
     ), max_length=20, null=True, blank=True)
 
+    rss = models.CharField('RSS地址', max_length=200, null=True, blank=True)
     creator = models.CharField('创建人', choices=(
         ('system', '系统录入'),
         ('user', '用户提交'),

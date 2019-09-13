@@ -8,7 +8,7 @@
                 <div>
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     <span class="omrss-title truncate omrss-title-unread">{{ article.title }}</span>
-                    <span class="right">@{{ article.site.author }}</span>
+                    <span class="right">@{{ article.site.author |default:article.author }}</span>
                 </div>
 
                 <div>

@@ -4,11 +4,11 @@
 <div class="divider"></div>
 
 <div class="row">
-    <div class="input-field col s6">
+    <div class="input-field col s8">
         <input id="omrss-atom-input" type="text" class="validate">
-        <label for="omrss-atom-input">提交自定义订阅源，例如 http://www.ruanyifeng.com/blog/atom.xml</label>
+        <label for="omrss-atom-input">这里添加自定义订阅源，例如 http://www.demo.com/rss/atom.xml</label>
     </div>
-    <div class="input-field col s6">
+    <div class="input-field col s4">
         <button class="btn waves-effect waves-light" type="submit">提交
             <i class="material-icons right">send</i>
         </button>
@@ -19,9 +19,9 @@
 <div class="row">
     {% for feed in feeds %}
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
-            <img src="{{ feed.favicon }}" class="circle responsive-img favico rss-text"/>
+            <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
             <div class="rss-title rss-text">
-                <a href="{{ feed.link }}" class="tooltipped" data-tooltip="{{ feed.brief }}"
+                <a href="{{ feed.link }}" target="_blank" class="tooltipped" data-tooltip="{{ feed.brief }}"
                    data-position="top">{{ feed.cname }}</a>
             </div>
 
