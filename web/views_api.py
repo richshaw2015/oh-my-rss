@@ -82,9 +82,9 @@ def submit_a_feed(request):
         if feed_obj.feed.get('title'):
             name = get_hash_name(feed_obj.feed.title)
             try:
-                cname = feed_obj.feed.title
-                link = feed_obj.feed.link
-                brief = feed_obj.feed.subtitle
+                cname = feed_obj.feed.title[:20]
+                link = feed_obj.feed.link[:100]
+                brief = feed_obj.feed.subtitle[:100]
             except AttributeError:
                 logger.warning(f'订阅源属性获取异常：`{feed_url}')
                 return HttpResponseNotFound("Attribute error")
@@ -94,9 +94,8 @@ def submit_a_feed(request):
                 site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
                             creator='user', rss=feed_url, favicon=favicon)
                 site.save()
-                return JsonResponse({"name": name})
             except django.db.utils.IntegrityError:
                 logger.warning(f"数据插入失败：`{feed_url}")
-                return HttpResponseServerError('Inter error')
+            return JsonResponse({"name": name})
     logger.warning(f"参数错误：`{feed_url}")
     return HttpResponseNotFound("Param error")
