@@ -11,6 +11,8 @@ Oh My RSS 是一个开源的在线RSS服务，通过爬虫汇聚互联网上的�
 - 技术大拿的博客
 - 互联网名站的热门
 
+ 除了爬虫支持，也可以提交自定义的订阅源^o^
+ 
 ### VimLike的快捷键
 Vim 党的福音来了~
 
@@ -36,9 +38,6 @@ Vim 党的福音来了~
         <td><code> f </code> 链接全览</td>
     </tr>
 </table>
-
-### Webapp助力隐私保护
-基于 Web 本地存储技术构建，无需登录注册，从源头杜绝隐私问题。
 
 ### 更多
 欢迎Issue、PR或加群讨论。
@@ -70,13 +69,15 @@ python3 manage.py migrate
 
 数据录入：
 
-在 django 管理后台录入站点信息，例如 `coolshell`
+在 django 管理后台录入站点信息，或者在线提交订阅源地址。
 
 ### 爬虫
 运行爬虫采集命令，例如：
 ```shell
 scrapy crawl coolshell
 ```
+
+提交的订阅源会以每小时一次的频率更新。
 
 ## 贡献
 详见 CONTRIBUTING.md
