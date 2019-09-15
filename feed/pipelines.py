@@ -93,6 +93,9 @@ class DomPipeline(object):
         else:
             item['content'] = str(content_soup)
 
+        # add custom css
+        if item.get('css'):
+            item['content'] = f"""<style>%s</style>%s""" % (item.get('css'), item['content'])
         return item
 
 

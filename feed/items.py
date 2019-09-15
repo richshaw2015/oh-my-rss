@@ -17,6 +17,7 @@ class FeedItem(scrapy.Item):
     # request url before redirect
     req_url = scrapy.Field()
     name = scrapy.Field()
+    css = scrapy.Field()
 
     # optional
     image_urls = scrapy.Field()

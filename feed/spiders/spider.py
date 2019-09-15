@@ -9,7 +9,7 @@ class Spider(scrapy.Spider):
     """
 
     def __init__(self, start_urls, index_xpath, article_title_xpath, article_content_xpath, article_trim_xpaths=None,
-                 index_limit_count=None, index_reverse=False, browser=False):
+                 index_limit_count=None, index_reverse=False, browser=False, css=None):
         self.start_urls = start_urls
         self.index_xpath = index_xpath
         self.article_title_xpath = article_title_xpath
@@ -18,6 +18,7 @@ class Spider(scrapy.Spider):
         self.index_limit_count = index_limit_count
         self.index_reverse = index_reverse
         self.browser = browser
+        self.css = css
 
     def parse(self, response):
         content_urls = response.xpath(self.index_xpath).extract()
@@ -50,7 +51,7 @@ class Spider(scrapy.Spider):
         except KeyError:
             req_url = url
         yield FeedItem(title=title, content=content, url=url, name=self.name, trims=self.article_trim_xpaths,
-                       req_url=req_url)
+                       req_url=req_url, css=self.css)
 
 
 class TitleSpider(Spider):
@@ -59,9 +60,9 @@ class TitleSpider(Spider):
     """
 
     def __init__(self, start_urls, index_xpath, article_title_xpath, article_content_xpath, article_trim_xpaths=None,
-                 index_limit_count=None, index_reverse=False, browser=False):
+                 index_limit_count=None, index_reverse=False, browser=False, css=None):
         super(TitleSpider, self).__init__(start_urls, index_xpath, article_title_xpath, article_content_xpath,
-                                          article_trim_xpaths, index_limit_count, index_reverse, browser)
+                                          article_trim_xpaths, index_limit_count, index_reverse, browser, css)
 
     def parse(self, response):
         content_urls = response.xpath(self.index_xpath).extract()
@@ -102,4 +103,4 @@ class TitleSpider(Spider):
             req_url = url
 
         yield FeedItem(title=title, content=content, url=url, name=self.name, trims=self.article_trim_xpaths,
-                       req_url=req_url)
+                       req_url=req_url, css=self.css)
