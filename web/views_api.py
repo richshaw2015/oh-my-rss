@@ -93,7 +93,7 @@ def submit_a_feed(request):
             else:
                 brief = cname
 
-            favicon = f"https://cdn.v2ex.co/gravatar/{name}?d=monsterid&s=32"
+            favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=32"
 
             try:
                 site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',

@@ -68,7 +68,7 @@ def to_fuzzy_uid(uid):
 
 @register.filter
 def to_gravatar_url(uid, size=64):
-    return "https://cdn.v2ex.co/gravatar/%s?d=retro&s=%d" % (hashlib.md5(uid.lower().encode('utf8')).hexdigest(),
+    return "https://cdn.v2ex.com/gravatar/%s?d=retro&s=%d" % (hashlib.md5(uid.lower().encode('utf8')).hexdigest(),
                                                                  size)
 
 
