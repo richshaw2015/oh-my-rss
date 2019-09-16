@@ -81,13 +81,18 @@ def submit_a_feed(request):
         feed_obj = feedparser.parse(feed_url)
         if feed_obj.feed.get('title'):
             name = get_hash_name(feed_obj.feed.title)
-            try:
-                cname = feed_obj.feed.title[:20]
+            cname = feed_obj.feed.title[:20]
+
+            if feed_obj.feed.get('link'):
                 link = feed_obj.feed.link[:100]
+            else:
+                link = feed_url
+
+            if feed_obj.feed.get('subtitle'):
                 brief = feed_obj.feed.subtitle[:100]
-            except AttributeError:
-                logger.warning(f'订阅源属性获取异常：`{feed_url}')
-                return HttpResponseNotFound("Attribute error")
+            else:
+                brief = cname
+
             favicon = f"https://cdn.v2ex.co/gravatar/{name}?d=monsterid&s=32"
 
             try:
