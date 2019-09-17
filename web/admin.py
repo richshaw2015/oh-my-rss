@@ -8,7 +8,7 @@ class SiteAdmin(admin.ModelAdmin):
     list_display = ('name', 'cname', 'author', 'link', 'favicon', 'brief', 'star', 'freq', 'status', 'ctime', 'mtime',
                     'remark', 'tag', 'copyright')
     search_fields = ('name', 'cname', 'author', 'brief')
-    list_filter = ('status', 'freq', 'tag', 'copyright')
+    list_filter = ('status', 'freq', 'tag', 'copyright', 'creator')
     list_per_page = 100
 
 
