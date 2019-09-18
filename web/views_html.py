@@ -50,6 +50,14 @@ def get_homepage_intro(request):
 
 
 @verify_request
+def get_homepage_tips(request):
+    """
+    获取 tips
+    """
+    return render(request, 'tips.html')
+
+
+@verify_request
 def get_all_issues(request):
     """
     获取首页介绍

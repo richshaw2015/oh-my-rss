@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),
     path('api/html/feeds/all', views_html.get_all_feeds, name='get_all_feeds'),
     path('api/html/homepage/intro', views_html.get_homepage_intro, name='get_homepage_intro'),
+    path('api/html/homepage/tips', views_html.get_homepage_tips, name='get_homepage_tips'),
     path('api/html/issues/all', views_html.get_all_issues, name='get_all_issues'),
     path('api/html/articles/list', views_html.get_articles_list, name='get_articles_list'),
 
