@@ -60,4 +60,6 @@ def update_all_user_feed():
                 article.save()
                 mark_crawled_url(link)
             except django.db.utils.IntegrityError:
+                pass
+            except:
                 logger.warning(f'数据插入异常：`{title}`{link}')
