@@ -18,6 +18,7 @@ class FeedItem(scrapy.Item):
     req_url = scrapy.Field()
     name = scrapy.Field()
     css = scrapy.Field()
+    trim_style_tags = scrapy.Field()
 
     # optional
     image_urls = scrapy.Field()

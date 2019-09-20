@@ -83,6 +83,13 @@ class DomPipeline(object):
             if span.attrs.get('style'):
                 span.attrs['style'] = re.sub(r'font-size\s*:\s*[^;]+;', '', span.attrs['style'])
 
+        # trim style tags
+        if item.get('trim_style_tags'):
+            for tag in item['trim_style_tags']:
+                for t in content_soup.find_all(tag):
+                    if t.attrs.get('style'):
+                        t.attrs['style'] = ''
+
         # trim contents
         if item.get('trims'):
             content_etree = etree.fromstring(str(content_soup), etree.HTMLParser())
