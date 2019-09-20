@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views_index, views_html, views_api
+from . import views_index, views_html, views_api, views_dash
 
 urlpatterns = [
     path('', views_index.index, name='index'),
@@ -10,6 +10,9 @@ urlpatterns = [
     path('api/html/homepage/tips', views_html.get_homepage_tips, name='get_homepage_tips'),
     path('api/html/issues/all', views_html.get_all_issues, name='get_all_issues'),
     path('api/html/articles/list', views_html.get_articles_list, name='get_articles_list'),
+
+    path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
+    path('dashboard', views_dash.dashboard, name='dashboard'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),

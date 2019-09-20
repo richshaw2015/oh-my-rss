@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard面板</title>
+    <link rel="stylesheet" href="/assets/css/lib.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <script src="/assets/js/lib.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.js"></script>
+</head>
+<body>
+<h2>Oh My RSS 后台报表</h2>
+
+<div>
+    <div id="uvTrend" style="width: 96%; height:800px;"></div>
+</div>
+<script>
+const chartUv = echarts.init(document.getElementById('uvTrend'));
+
+function renderUvChart() {
+    $.ajax({
+        type: "GET",
+        url: "/api/dashboard/uv",
+        dataType: 'json',
+        success: function (data) {
+            chartUv.setOption(data);
+        }
+    });
+}
+
+$(function () {
+    renderUvChart();
+});
+</script>
+</body>
+</html>

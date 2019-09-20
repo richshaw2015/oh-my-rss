@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
+import time
 import redis
 from django.conf import settings
 from .models import Site
@@ -12,7 +12,7 @@ R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.
 logger = logging.getLogger(__name__)
 
 
-def incr_redis_key(action, uindex):
+def incr_action(action, uindex):
     """
     add operate
     :param key:
@@ -78,3 +78,37 @@ def get_hash_name(feed_id):
     用户提交的订阅源，根据hash值生成唯一标识
     """
     return hashlib.md5(feed_id.encode('utf8')).hexdigest()
+
+
+def current_day():
+    return time.strftime("%Y%m%d", time.localtime(time.time()))
+
+
+def is_visit_today(uid):
+    """
+    当天是否访问过
+    :param uid:
+    :return:
+    """
+    return R.get(settings.REDIS_VISIT_KEY % (current_day(), uid))
+
+
+def set_visit_today(uid):
+    return R.set(settings.REDIS_VISIT_KEY % (current_day(), uid), 1, 24*3600+100)
+
+
+def is_old_user(uid):
+    """
+    是否是老用户（过去一周）
+    :param uid:
+    :return:
+    """
+    return R.get(settings.REDIS_WEEK_KEY % uid)
+
+
+def set_old_user(uid):
+    return R.set(settings.REDIS_WEEK_KEY % uid, 1, 7*24*3600)
+
+
+def incr_redis_key(key):
+    return R.incr(key, amount=1)

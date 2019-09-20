@@ -146,6 +146,12 @@ REDIS_VIEW_KEY = 'VIEW/%s'
 REDIS_THUMB_KEY = 'THUMB/%s'
 REDIS_OPEN_KEY = 'OPEN/%s'
 
+# for dashboard statistics
+REDIS_WEEK_KEY = 'WEEK/%s'
+REDIS_VISIT_KEY = 'VISIT/%s/%s'
+REDIS_UV_ALL_KEY = 'UV/ALL/%s'
+REDIS_UV_NEW_KEY = 'UV/NEW/%s'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

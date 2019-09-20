@@ -2,7 +2,7 @@
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from .models import *
 from datetime import date, timedelta
-from .utils import incr_redis_key, get_subscribe_sites, get_hash_name
+from .utils import incr_action, get_subscribe_sites, get_hash_name
 from .views_html import get_all_issues
 from .verify import verify_request
 import logging
@@ -40,7 +40,7 @@ def add_log_action(request):
     uindex = request.POST.get('id')
     action = request.POST.get('action')
 
-    if incr_redis_key(action, uindex):
+    if incr_action(action, uindex):
         return JsonResponse({})
     else:
         logger.warning(f"打点增加失败：`{uindex}`{action}")
