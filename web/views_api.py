@@ -80,7 +80,7 @@ def submit_a_feed(request):
     if feed_url:
         feed_obj = feedparser.parse(feed_url)
         if feed_obj.feed.get('title'):
-            name = get_hash_name(feed_obj.feed.title)
+            name = get_hash_name(feed_url)
             cname = feed_obj.feed.title[:20]
 
             if feed_obj.feed.get('link'):
