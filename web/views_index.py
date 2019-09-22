@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from .models import *
 from .utils import get_client_ip
+import urllib
 import logging
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,12 @@ def index(request):
 
     # render default article list
     articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:10]
+
+    referer = request.headers.get('Referer', '')
+    if referer:
+        host = urllib.parse.urlparse(referer).netloc
+        if host not in settings.ALLOWED_HOSTS:
+            logger.warning(f"收到外域来源：`{host}")
 
     context = dict()
     context['articles'] = articles
