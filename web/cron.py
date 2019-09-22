@@ -37,6 +37,7 @@ def update_all_user_feed():
 
             if is_crawled_url(link):
                 continue
+
             try:
                 author = entry['author'][:11]
             except:
