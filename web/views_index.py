@@ -19,7 +19,7 @@ def index(request):
     # render default article list
     articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:10]
 
-    referer = request.headers.get('Referer', '')
+    referer = request.headers.get('Referer', '') or request.headers.get('referer', '')
     if referer:
         host = urllib.parse.urlparse(referer).netloc
         if host not in settings.ALLOWED_HOSTS:
