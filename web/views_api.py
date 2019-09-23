@@ -102,5 +102,6 @@ def submit_a_feed(request):
             except django.db.utils.IntegrityError:
                 logger.warning(f"数据插入失败：`{feed_url}")
             return JsonResponse({"name": name})
-    logger.warning(f"参数错误：`{feed_url}")
+        else:
+            logger.warning(f"RSS解析失败：`{feed_url}")
     return HttpResponseNotFound("Param error")
