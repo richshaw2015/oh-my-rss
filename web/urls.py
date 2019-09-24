@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/html/articles/list', views_html.get_articles_list, name='get_articles_list'),
 
     path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
-    path('dashboard', views_dash.dashboard, name='dashboard'),
+    path('dash', views_dash.dashboard, name='dashboard'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
