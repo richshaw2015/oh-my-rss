@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import *
-from .utils import get_client_ip
+from .utils import get_client_ip, add_refer_host, incr_redis_key
 import urllib
 import logging
 from django.conf import settings
@@ -24,6 +24,11 @@ def index(request):
         host = urllib.parse.urlparse(referer).netloc
         if host not in settings.ALLOWED_HOSTS:
             logger.warning(f"收到外域来源：`{host}`{referer}")
+            try:
+                add_refer_host(host)
+                incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
+            except:
+                logger.warning("外域请求统计异常")
 
     context = dict()
     context['articles'] = articles

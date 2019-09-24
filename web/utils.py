@@ -112,3 +112,7 @@ def set_old_user(uid):
 
 def incr_redis_key(key):
     return R.incr(key, amount=1)
+
+
+def add_refer_host(host):
+    return R.sadd(settings.REDIS_REFER_ALL_KEY, host)
