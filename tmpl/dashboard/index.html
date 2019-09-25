@@ -9,28 +9,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.js"></script>
 </head>
 <body>
-<h2><a href="/"> Oh My RSS</a> 后台报表</h2>
+
+<nav style="padding: 5px;">
+    <div class="nav-wrapper">
+        <div class="col s12">
+            <a href="/" class="breadcrumb"> Oh My RSS </a>
+            <a href="#!" class="breadcrumb"> 数据报表 </a>
+        </div>
+    </div>
+</nav>
 
 <div>
-    <div id="uvTrend" style="width: 96%; height:800px;"></div>
+    <div id="uvTrend" style="width: 96%; height:400px; margin: 10px auto;"></div>
+
+    <!--
+    <div id="referTrend" style="width: 90%; height:400px;"></div>
+    -->
+
+    <div id="referPie" style="width: 96%; height: 400px; margin: 10px auto;"></div>
 </div>
+
 <script>
-const chartUv = echarts.init(document.getElementById('uvTrend'));
+    const chartUvTrend = echarts.init(document.getElementById('uvTrend'));
+    const chartReferPie = echarts.init(document.getElementById('referPie'));
 
-function renderUvChart() {
-    $.ajax({
-        type: "GET",
-        url: "/api/dashboard/uv",
-        dataType: 'json',
-        success: function (data) {
-            chartUv.setOption(data);
-        }
-    });
-}
+    function renderChart() {
+        $.ajax({
+            type: "GET",
+            url: "/api/dashboard/uv",
+            dataType: 'json',
+            success: function (data) {
+                chartUvTrend.setOption(data);
+            }
+        });
 
-$(function () {
-    renderUvChart();
-});
+        $.ajax({
+            type: "GET",
+            url: "/api/dashboard/refer/pie",
+            dataType: 'json',
+            success: function (data) {
+                chartReferPie.setOption(data);
+            }
+        });
+    }
+
+
+    renderChart();
 </script>
 </body>
 </html>

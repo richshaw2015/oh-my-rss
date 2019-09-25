@@ -4,7 +4,7 @@ from .utils import *
 import logging
 import json
 from pyecharts import options
-from pyecharts.charts import Line
+from pyecharts.charts import Line, Page, Pie
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +49,26 @@ def uv_line_chart() -> Line:
     return line
 
 
+def refer_pie_chart() -> Pie:
+    refer_hosts = list(R.smembers(settings.REDIS_REFER_ALL_KEY))
+    refer_host_pv_keys = [settings.REDIS_REFER_PV_KEY % host for host in refer_hosts]
+
+    c = (
+        Pie()
+        .add("", [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys))])
+        .set_global_opts(title_opts=options.TitleOpts(title="Referer来源占比"))
+        .set_series_opts(label_opts=options.LabelOpts(formatter="{b}: {c}"))
+        .dump_options()
+    )
+    return c
+
+
 def get_uv_chart_data(request):
     return JsonResponse(json.loads(uv_line_chart()))
+
+
+def get_refer_pie_data(request):
+    return JsonResponse(json.loads(refer_pie_chart()))
 
 
 def dashboard(request):

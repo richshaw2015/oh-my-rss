@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/html/articles/list', views_html.get_articles_list, name='get_articles_list'),
 
     path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
+    path('api/dashboard/refer/pie', views_dash.get_refer_pie_data, name='get_refer_pie_data'),
     path('dash', views_dash.dashboard, name='dashboard'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
