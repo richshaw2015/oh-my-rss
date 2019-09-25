@@ -17,7 +17,7 @@ def index(request):
     logger.info("收到首页请求：`%s", get_client_ip(request))
 
     # render default article list
-    articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:10]
+    articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:8]
 
     referer = request.META.get('HTTP_REFERER', '')
     if referer:
