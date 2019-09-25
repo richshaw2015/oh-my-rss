@@ -156,6 +156,7 @@ REDIS_UV_NEW_KEY = 'UV/NEW/%s'
 # http referer
 REDIS_REFER_ALL_KEY = 'REFER/ALL'
 REDIS_REFER_PV_KEY = 'REFER/%s'
+REDIS_REFER_PV_DAY_KEY = 'REFER/%s/%s'
 
 LOGGING = {
     'version': 1,

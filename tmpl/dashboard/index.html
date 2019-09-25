@@ -5,8 +5,16 @@
     <title>Dashboard面板</title>
     <link rel="stylesheet" href="/assets/css/lib.css">
     <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
     <script src="/assets/js/lib.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.js"></script>
+    <style>
+        .chart {
+            width: 96%;
+            height:450px;
+            margin: 1rem auto;
+        }
+    </style>
 </head>
 <body>
 
@@ -20,18 +28,17 @@
 </nav>
 
 <div>
-    <div id="uvTrend" style="width: 96%; height:400px; margin: 10px auto;"></div>
+    <div id="uvTrend" class="chart"></div>
 
-    <!--
-    <div id="referTrend" style="width: 90%; height:400px;"></div>
-    -->
+    <div id="referPie" class="chart"></div>
 
-    <div id="referPie" style="width: 96%; height: 400px; margin: 10px auto;"></div>
+     <div id="referPvTrend" class="chart"></div>
 </div>
 
 <script>
     const chartUvTrend = echarts.init(document.getElementById('uvTrend'));
     const chartReferPie = echarts.init(document.getElementById('referPie'));
+    const chartReferPvTrend = echarts.init(document.getElementById('referPvTrend'));
 
     function renderChart() {
         $.ajax({
@@ -49,6 +56,15 @@
             dataType: 'json',
             success: function (data) {
                 chartReferPie.setOption(data);
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: "/api/dashboard/refer/pv",
+            dataType: 'json',
+            success: function (data) {
+                chartReferPvTrend.setOption(data);
             }
         });
     }
