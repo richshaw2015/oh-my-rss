@@ -14,5 +14,8 @@ class PmcaffSpider(Spider):
                         article_title_xpath="//div[@class='head']//h2[@class='title']/text()",
                         article_content_xpath="//div[@id='articleContent']",
                         index_limit_count=1,
+                        article_trim_xpaths=[
+                            "//div[@class='mo-fold-ft']",
+                        ],
                         browser=True,
                         )
