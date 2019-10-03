@@ -46,7 +46,7 @@ def update_all_user_feed():
             try:
                 value = entry.content[0].value
             except:
-                value = entry.get('description')
+                value = entry.get('description') or entry.link
 
             try:
                 article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(),
