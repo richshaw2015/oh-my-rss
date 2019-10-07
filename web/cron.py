@@ -20,7 +20,7 @@ def update_all_user_feed():
     for site in feeds:
         try:
             resp = requests.get(site.rss, timeout=30)
-        except requests.ReadTimeout:
+        except:
             logger.warning(f"RSS源可能失效了`{site.rss}")
             continue
 
@@ -54,6 +54,6 @@ def update_all_user_feed():
                 article.save()
                 mark_crawled_url(link)
             except django.db.utils.IntegrityError:
-                pass
+                logger.info(f'数据重复插入：`{title}`{link}')
             except:
                 logger.warning(f'数据插入异常：`{title}`{link}')

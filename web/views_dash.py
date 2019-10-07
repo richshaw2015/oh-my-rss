@@ -96,8 +96,18 @@ def refer_pie_chart() -> Pie:
 
     c = (
         Pie()
-        .add("", [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys))])
-        .set_global_opts(title_opts=options.TitleOpts(title="Referer来源占比"))
+        .add(
+            "",
+            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys))],
+            # radius=["30%", "75%"],
+            # rosetype="radius",
+        )
+        .set_global_opts(
+            title_opts=options.TitleOpts(title="Referer来源占比"),
+            legend_opts=options.LegendOpts(
+                type_="scroll", pos_left="80%", orient="vertical"
+            ),
+        )
         .set_series_opts(label_opts=options.LabelOpts(formatter="{b}: {c}"))
         .dump_options()
     )
