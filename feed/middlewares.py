@@ -117,11 +117,11 @@ class FeedDownloaderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
         if spider.browser:
             chrome_options = Options()
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-extensions")
             chrome_options.add_argument("--window-size=1920,1080")
             chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--ignore-certificate-errors')
             chrome_options.add_argument('--single-process')
 
