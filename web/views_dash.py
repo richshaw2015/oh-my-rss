@@ -61,6 +61,7 @@ def refer_pv_line_chart() -> Line:
     uv_baidu_redis_keys = [settings.REDIS_REFER_PV_DAY_KEY % ('www.baidu.com', day) for day in xaxis]
     uv_google_redis_keys = [settings.REDIS_REFER_PV_DAY_KEY % ('www.google.com', day) for day in xaxis]
     uv_hao123_redis_keys = [settings.REDIS_REFER_PV_DAY_KEY % ('www.hao123.com', day) for day in xaxis]
+    uv_wanqu_redis_keys = [settings.REDIS_REFER_PV_DAY_KEY % ('wanqu.co', day) for day in xaxis]
 
     uv_zhihu = R.mget(*uv_zhihu_redis_keys)
     uv_ryf = R.mget(*uv_ryf_redis_keys)
@@ -68,6 +69,7 @@ def refer_pv_line_chart() -> Line:
     uv_baidu = R.mget(*uv_baidu_redis_keys)
     uv_google = R.mget(*uv_google_redis_keys)
     uv_hao123 = R.mget(*uv_hao123_redis_keys)
+    uv_wanqu = R.mget(*uv_wanqu_redis_keys)
 
     line = (
         Line()
@@ -78,6 +80,7 @@ def refer_pv_line_chart() -> Line:
         .add_yaxis("baidu", uv_baidu, is_connect_nones=True, is_smooth=True)
         .add_yaxis("google", uv_google, is_connect_nones=True, is_smooth=True)
         .add_yaxis("hao123", uv_hao123, is_connect_nones=True, is_smooth=True)
+        .add_yaxis("wanqu", uv_wanqu, is_connect_nones=True, is_smooth=True)
         .set_global_opts(title_opts=options.TitleOpts(title="Referer各域名PV走势"),
                          yaxis_opts=options.AxisOpts(
                              is_scale=True,
