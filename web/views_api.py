@@ -93,11 +93,12 @@ def submit_a_feed(request):
             else:
                 brief = cname
 
+            author = feed_obj.feed.get('author', '')[:10]
             favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=32"
 
             try:
                 site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
-                            creator='user', rss=feed_url, favicon=favicon)
+                            creator='user', rss=feed_url, favicon=favicon, author=author)
                 site.save()
             except django.db.utils.IntegrityError:
                 logger.warning(f"数据插入失败：`{feed_url}")
