@@ -22,7 +22,7 @@ def index(request):
     referer = request.META.get('HTTP_REFERER', '')
     if referer:
         host = urllib.parse.urlparse(referer).netloc
-        if host not in settings.ALLOWED_HOSTS:
+        if host and host not in settings.ALLOWED_HOSTS:
             logger.info(f"收到外域来源：`{host}`{referer}")
             try:
                 add_refer_host(host)

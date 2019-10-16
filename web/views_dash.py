@@ -53,7 +53,7 @@ def refer_pv_line_chart() -> Line:
     """
     UV折线图，外域的每天流量趋势
     """
-    xaxis = get_xaxis_days(days=30)
+    xaxis = get_xaxis_days(days=60)
 
     uv_zhihu_redis_keys = [settings.REDIS_REFER_PV_DAY_KEY % ('link.zhihu.com', day) for day in xaxis]
     uv_ryf_redis_keys = [settings.REDIS_REFER_PV_DAY_KEY % ('www.ruanyifeng.com', day) for day in xaxis]
@@ -91,7 +91,7 @@ def refer_pv_line_chart() -> Line:
 
 
 def refer_pie_chart() -> Pie:
-    refer_hosts = list(R.smembers(settings.REDIS_REFER_ALL_KEY))
+    refer_hosts = list(filter(lambda x: x, R.smembers(settings.REDIS_REFER_ALL_KEY)))
     refer_host_pv_keys = [settings.REDIS_REFER_PV_KEY % host for host in refer_hosts]
 
     c = (
