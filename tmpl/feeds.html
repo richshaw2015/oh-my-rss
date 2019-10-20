@@ -6,10 +6,10 @@
 <div class="row">
     <div class="input-field col s7">
         <input id="omrss-feed-input" type="text" class="validate">
-        <label for="omrss-feed-input">这里添加RSS源，例如 http://www.demo.com/rss/atom.xml</label>
+        <label for="omrss-feed-input" id="omrss-rss-tips">{{ submit_tip }}</label>
     </div>
     <div class="input-field col s5">
-        <button class="btn waves-effect waves-light ev-submit-feed" type="submit">提交
+        <button class="btn waves-effect waves-light ev-submit-feed" type="submit">提交RSS源
             <i class="material-icons right">send</i>
         </button>
     </div>
@@ -59,8 +59,18 @@
     {% endfor %}
 </div>
 
-
-
 <script>
     $('.tooltipped').tooltip();
+
+    // 轮换RSS提示信息
+    let before_tip = '提交RSS源，例如：https://coolshell.cn/feed';
+    let after_tip = '{{ submit_tip }}';
+    setInterval(function () {
+        if ($('#omrss-rss-tips').length === 1) {
+            console.log('开始切换tip');
+            $('#omrss-rss-tips').text(before_tip);
+            before_tip = after_tip;
+            after_tip = $('#omrss-rss-tips').text();
+        }
+    }, 8000);
 </script>

@@ -36,9 +36,16 @@ def get_all_feeds(request):
     show_feeds = Site.objects.filter(status='active', star__gte=9).order_by('-star')
     hide_feeds = Site.objects.filter(status='active', star__lt=9).order_by('-star')
 
+    try:
+        last_site = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-ctime')[0]
+        submit_tip = f"「{last_site.cname}」({last_site.rss}) 最后被用户提交"
+    except:
+        submit_tip = '提交RSS源，例如：https://coolshell.cn/feed'
+
     context = dict()
     context['show_feeds'] = show_feeds
     context['hide_feeds'] = hide_feeds
+    context['submit_tip'] = submit_tip
 
     return render(request, 'feeds.html', context=context)
 
