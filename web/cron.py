@@ -19,9 +19,12 @@ def update_all_user_feed():
     feeds = Site.objects.filter(status='active', creator='user').order_by('-star')
     for site in feeds:
         try:
-            resp = requests.get(site.rss, timeout=30)
+            resp = requests.get(site.rss, timeout=30, verify=False)
         except:
-            logger.warning(f"RSS源可能失效了`{site.rss}")
+            if site.star >= 9:
+                logger.warning(f"RSS源可能失效了`{site.rss}")
+            else:
+                logger.info(f"RSS源可能失效了`{site.rss}")
             continue
 
         content = BytesIO(resp.content)
