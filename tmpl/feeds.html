@@ -17,7 +17,7 @@
 
 
 <div class="row">
-    {% for feed in feeds %}
+    {% for feed in show_feeds %}
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
             <div class="rss-title rss-text">
@@ -32,6 +32,34 @@
         </div>
     {% endfor %}
 </div>
+
+<div class="divider"></div>
+
+<!-- 评分低的隐藏 -->
+<div class="card-panel hoverable ev-display-btn">
+    <div class="text-darken-2 omrss-article-bottom center-align">
+        <a href="#!"><i class="material-icons omrss-article-bottom">unfold_more</i> 查看更多</a>
+    </div>
+</div>
+
+<div class="row hide" id="omrss-rss-hide">
+    {% for feed in hide_feeds %}
+        <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
+            <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
+            <div class="rss-title rss-text">
+                <a href="{{ feed.link }}" target="_blank" class="tooltipped" data-tooltip="{{ feed.brief }}"
+                   data-position="top">{{ feed.cname }}</a>
+            </div>
+
+            <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed"
+               data-name="{{ feed.name }}">取消订阅</a>
+            <span class="rss-text right omrss-right-space omrss-tag">{{ feed.tag }}</span>
+            <span class="right rss-text omrss-right-space yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
+        </div>
+    {% endfor %}
+</div>
+
+
 
 <script>
     $('.tooltipped').tooltip();

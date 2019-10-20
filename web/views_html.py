@@ -33,10 +33,12 @@ def get_all_feeds(request):
     """
     获取订阅列表
     """
-    feeds = Site.objects.filter(status='active').order_by('-star')
+    show_feeds = Site.objects.filter(status='active', star__gte=9).order_by('-star')
+    hide_feeds = Site.objects.filter(status='active', star__lt=9).order_by('-star')
 
     context = dict()
-    context['feeds'] = feeds
+    context['show_feeds'] = show_feeds
+    context['hide_feeds'] = hide_feeds
 
     return render(request, 'feeds.html', context=context)
 
