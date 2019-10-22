@@ -15,7 +15,8 @@ def update_all_user_feed():
     """
     更新所有 site
     """
-    logger.info(f'运行定时更新任务')
+    logger.info('开始运行定时更新RSS任务')
+
     feeds = Site.objects.filter(status='active', creator='user').order_by('-star')
     for site in feeds:
         try:
@@ -60,3 +61,4 @@ def update_all_user_feed():
                 logger.info(f'数据重复插入：`{title}`{link}')
             except:
                 logger.warning(f'数据插入异常：`{title}`{link}')
+    logger.info('定时更新RSS任务运行结束')
