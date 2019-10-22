@@ -5,17 +5,16 @@ from .models import *
 
 @admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'cname', 'author', 'link', 'favicon', 'brief', 'star', 'freq', 'status', 'ctime', 'mtime',
-                    'remark', 'tag', 'copyright')
-    search_fields = ('name', 'cname', 'author', 'brief')
+    list_display = ('cname', 'author', 'link', 'star', 'status', 'ctime', 'mtime', 'tag', 'rss')
+    search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark')
     list_filter = ('status', 'freq', 'tag', 'copyright', 'creator')
     list_per_page = 100
 
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Article._meta.get_fields() if field.name not in ('content', )]
-    search_fields = ['title', 'content', 'src_url']
+    list_display = ('title', 'author', 'status', 'ctime')
+    search_fields = ('title', 'content', 'src_url', 'uindex', 'remark', 'author')
     list_filter = ('status', )
     list_per_page = 50
 
