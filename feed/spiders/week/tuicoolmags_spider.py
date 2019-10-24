@@ -17,5 +17,5 @@ class TuicoolMagsSpider(Spider):
                         article_trim_xpaths=[
                             "//h3[@class='period-title']"
                         ],
-                        index_limit_count=1,
+                        index_limit_count=2,
                         )

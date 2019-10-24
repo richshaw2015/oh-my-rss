@@ -17,5 +17,5 @@ class SegmentfaultSpider(TitleSpider):
                             '//div[@class="edm__footer"]',
                             '//div[@class="edm__heading"]',
                         ],
-                        index_limit_count=1,
+                        index_limit_count=2,
                         )
