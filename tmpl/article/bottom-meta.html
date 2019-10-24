@@ -35,5 +35,8 @@
     {% if article.site.copyright == 20 or article.site.copyright == 0 %}
         $('#omrss-third').css('overflow', 'hidden');
         $('#omrss-third').css('max-height', getBriefHeight());
+        $('.cnt-right').css('overflow-y', 'hidden');
+    {% else %}
+        $('.cnt-right').css('overflow-y', 'scroll');
     {% endif %}
 </script>
