@@ -15,6 +15,7 @@ def get_article_detail(request):
     获取文章详情
     """
     uindex = request.POST.get('id')
+    mobile = request.POST.get('mobile', False)
 
     try:
         article = Article.objects.get(uindex=uindex)
@@ -22,7 +23,10 @@ def get_article_detail(request):
         context = dict()
         context['article'] = article
 
-        return render(request, 'article/index.html', context=context)
+        if mobile:
+            return render(request, 'mobile/article.html', context=context)
+        else:
+            return render(request, 'article/index.html', context=context)
     except:
         logger.warning(f"获取文章详情请求处理异常：`{uindex}")
     return HttpResponseNotFound("Param error")
@@ -55,7 +59,25 @@ def get_homepage_intro(request):
     """
     获取首页介绍
     """
-    return render(request, 'intro.html')
+    mobile = request.POST.get('mobile', False)
+
+    context = dict()
+    context['mobile'] = mobile
+
+    return render(request, 'intro.html', context=context)
+
+
+@verify_request
+def get_faq(request):
+    """
+    获取FAQ
+    """
+    mobile = request.POST.get('mobile', False)
+
+    context = dict()
+    context['mobile'] = mobile
+
+    return render(request, 'faq.html', context=context)
 
 
 @verify_request
@@ -88,6 +110,7 @@ def get_articles_list(request):
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
+    mobile = request.POST.get('mobile', False)
 
     # 个人订阅处理
     my_sub_sites = get_subscribe_sites(sub_feeds, unsub_feeds)
@@ -106,7 +129,10 @@ def get_articles_list(request):
             context['pg'] = pg
             context['uv'] = uv
             context['num_pages'] = num_pages
-            return render(request, 'list.html', context=context)
+            if mobile:
+                return render(request, 'mobile/list.html', context=context)
+            else:
+                return render(request, 'list.html', context=context)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
             return HttpResponseNotFound("Page number error")

@@ -1,0 +1,129 @@
+{% load helpers %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="referrer" content="never">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+
+    <!-- UC浏览器强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <meta name="browsermode" content="application">
+    <!-- QQ浏览器强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-page-mode" content="app">
+    <!-- Safari 7.x 全屏模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+
+    <title>Oh My RSS - 这才是我要的RSS</title>
+    <link rel="stylesheet" href="/assets/css/lib.css">
+    <link rel="stylesheet" href="/assets/css/mobile.css?v=1">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
+</head>
+<body>
+
+{% include 'mobile/nav.html' %}
+
+<div id="omrss-article">
+    <!-- 内容标题及介绍 -->
+    <h1 id="omrss-article-title">{{ article.title }}</h1>
+
+    <blockquote id="omrss-article-stats">
+        {% if article.site.copyright == 20 or article.site.copyright == 0 %}
+            摘要转载自
+        {% elif article.site.copyright == 30 %}
+            原文转载自
+        {% endif %}
+        「{{ article.site.cname }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
+                                       data-id="{{ article.uindex }}">{{ article.src_url |unquote }}</a>)
+
+        <p id="omrss-read-stats">预计阅读时间<b> 0 </b>分钟（共 0 个字， 0 张图片， 0 个链接）</p>
+
+        {% if article.copyright == 0 %}
+            <p>侵犯了您的权益？请<a href="#!" class="ev-leave-msg">在此</a>留言</p>
+        {% endif %}
+
+    </blockquote>
+
+    <!-- 第三方爬虫内容 -->
+    <div class="flow-text" id="omrss-third">
+        {% autoescape off %}
+        {{ article.content }}
+        {% endautoescape %}
+    </div>
+
+    <!-- 文章底部 -->
+
+    <div class="card-panel hoverable flex-container" id="omrss-m-panel">
+        <div class="text-darken-2" style="flex-grow: 1">
+            <a href="#!" class="btn-flat waves-effect ev-window-close">
+                <i class="material-icons left" style="font-size: 1.6rem;">navigate_before</i>返回</a>
+        </div>
+        <div class="text-darken-2" style="flex-grow: 1">
+            <a href="{{ article.src_url |unquote }}" class="btn-flat waves-effect ev-open-src" target="_blank"
+                data-id="{{ article.uindex }}">
+                <i class="material-icons left" style="font-size: 1.13rem;">open_in_new</i>查看原文</a>
+        </div>
+        <div class="text-darken-2" style="flex-grow: 1">
+            <a href="#!" class="btn-flat waves-effect" id="omrss-top">
+                <i class="material-icons left" style="font-size: 1.15rem;">publish</i>回到顶部</a>
+        </div>
+    </div>
+
+    <!-- 悬浮球 -->
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons">more_vert</i>
+        </a>
+        <ul>
+            <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger" data-position="left"
+                   data-tooltip="不看该作者所有文章" data-target="omrss-unsub-feed">
+                <i class="material-icons">delete</i></a>
+            </li>
+
+            <li><a id="omrss-like" class="btn-floating red tooltipped" data-position="left"
+                   data-tooltip="喜欢" data-id="{{ article.uindex }}">
+                <i class="material-icons">thumb_up</i></a></li>
+        </ul>
+    </div>
+
+    <!-- 取消订阅确认框 -->
+    <div id="omrss-unsub-feed" class="modal">
+        <div class="modal-content">
+            <h2>确定吗？</h2>
+            <h4>取消后将收不到「{{ article.site.cname }}」的更新，您可以通过右上角的
+                <i class="material-icons omrss-color">rss_feed</i>重新订阅</h4>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">取消</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="omrss-unlike"
+               data-site="{{ article.site.name }}">确定</a>
+        </div>
+    </div>
+
+</div>
+
+{% include 'mobile/footer.html' %}
+
+<script src="/assets/js/lib.js"></script>
+<script src="/assets/js/mobile.js?v=2"></script>
+<script>
+    $('.fixed-action-btn').floatingActionButton({"hoverEnabled": false});
+    $('.sidenav').sidenav({"edge": "right"});
+    $('.modal').modal({"endingTop": "32%"});
+
+    /* 文章置顶 */
+    $(document).on('click', '#omrss-top', function () {
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
+    });
+</script>
+</body>
+</html>

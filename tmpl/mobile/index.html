@@ -1,0 +1,95 @@
+{% load helpers %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="referrer" content="never">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+
+    <!-- UC浏览器强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <meta name="browsermode" content="application">
+    <!-- QQ浏览器强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-page-mode" content="app">
+    <!-- Safari 7.x 全屏模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+
+    <title>Oh My RSS - 这才是我要的RSS</title>
+    <link rel="stylesheet" href="/assets/css/lib.css">
+    <link rel="stylesheet" href="/assets/css/mobile.css?v=5">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
+</head>
+<body>
+
+{% include 'mobile/nav.html' %}
+
+<div class="preloader-wrapper active" id="omrss-loader">
+    <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
+
+<main id="omrss-main">
+    <div id="omrss-cnt-list">
+        <ul class="collection">
+            {% for article in articles %}
+                <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
+                    <div>
+                        <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
+                        <span class="omrss-title"><a href="/posts/{{ article.uindex }}" target="_blank">{{ article.title }}</a></span>
+                        <span class="right">@{{ article.site.author }}</span>
+                    </div>
+
+                    <div class="omrss-meta">
+                        <i class="material-icons unread meta-left">lens</i>
+
+                        <span class="meta-left meta-time">1小时前</span>
+                        <span>0人浏览</span>
+
+                        <span class="right meta-num">0</span>
+                        <i class="material-icons meta-icon right open-icon">open_in_new</i>
+                        <span class="right meta-num">0</span>
+                        <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
+
+                        {% if article.site.star >= 30 %}
+                            <span class="right meta-recommend new badge" data-badge-caption="">荐</span>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 翻页 -->
+    <div id="omrss-pager"></div>
+</main>
+
+{% include 'mobile/footer.html' %}
+
+<script src="/assets/js/lib.js"></script>
+<script src="/assets/js/mobile.js?v=6"></script>
+<script>
+    $('.fixed-action-btn').floatingActionButton({"hoverEnabled": false});
+    $(document).ready(function () {
+        $('.sidenav').sidenav({"edge": "right"});
+    });
+</script>
+</body>
+</html>
