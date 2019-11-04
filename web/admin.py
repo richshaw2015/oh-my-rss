@@ -7,7 +7,7 @@ from .models import *
 @admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
     def view_link(self):
-        return mark_safe(f"<a href='{self.link}' target='_blank'>{self.link}</a>")
+        return mark_safe(f"<a href='{self.link}' target='_blank'>{self.link[:20]}</a>")
     view_link.short_description = ''
 
     formfield_overrides = {
@@ -15,11 +15,11 @@ class SiteAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
     }
 
-    list_display = ('cname', view_link, 'star', 'remark', 'ctime', 'tag', 'rss')
+    list_display = ('cname', view_link, 'star', 'remark', 'favicon', 'ctime', 'tag', 'rss')
     search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark')
     list_filter = ('status', 'freq', 'tag', 'copyright', 'creator')
     list_editable = ['star', 'remark', 'tag']
-    list_per_page = 50
+    list_per_page = 20
 
 
 @admin.register(Article)
