@@ -11,8 +11,8 @@ class SiteAdmin(admin.ModelAdmin):
     view_link.short_description = ''
 
     formfield_overrides = {
-        models.CharField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
+        models.CharField: {'widget': Textarea(attrs={'rows': 3, 'cols': 20})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 20})},
     }
 
     list_display = ('cname', view_link, 'star', 'remark', 'favicon', 'ctime', 'tag', 'rss')
