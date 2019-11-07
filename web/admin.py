@@ -15,11 +15,11 @@ class SiteAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 20})},
     }
 
-    list_display = ('cname', view_link, 'star', 'remark', 'favicon', 'ctime', 'tag', 'rss')
+    list_display = ('cname', 'author', view_link, 'star', 'remark', 'favicon', 'ctime', 'tag', 'rss')
     search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark')
-    list_filter = ('status', 'freq', 'tag', 'copyright', 'creator')
-    list_editable = ['star', 'remark', 'tag', 'favicon']
-    list_per_page = 20
+    list_filter = ('status', 'freq', 'copyright', 'creator')
+    list_editable = ['star', 'author', 'remark', 'tag', 'favicon']
+    list_per_page = 6
 
 
 @admin.register(Article)
