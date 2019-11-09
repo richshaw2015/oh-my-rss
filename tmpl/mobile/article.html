@@ -84,6 +84,11 @@
             <i class="large material-icons">more_vert</i>
         </a>
         <ul>
+            <li><a class="btn-floating green darken-1 tooltipped modal-trigger ev-window-close" data-position="left"
+                   data-tooltip="返回">
+                <i class="material-icons" style="font-size: 2.2rem;">navigate_before</i></a>
+            </li>
+
             <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger" data-position="left"
                    data-tooltip="不看该作者所有文章" data-target="omrss-unsub-feed">
                 <i class="material-icons">delete</i></a>
@@ -114,7 +119,7 @@
 {% include 'mobile/footer.html' %}
 
 <script src="/assets/js/lib.js"></script>
-<script src="/assets/js/mobile.js?v=3"></script>
+<script src="/assets/js/mobile.js?v=4"></script>
 <script>
     $('.fixed-action-btn').floatingActionButton({"hoverEnabled": false});
     $('.sidenav').sidenav({"edge": "right"});
