@@ -2,5 +2,5 @@
 
 from scrapy import cmdline
 
-cmd = 'scrapy crawl androidperformance'
+cmd = 'scrapy crawl jdon'
 cmdline.execute(cmd.split())
