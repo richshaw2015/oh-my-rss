@@ -95,7 +95,7 @@ class DomPipeline(object):
             content_etree = etree.fromstring(str(content_soup), etree.HTMLParser())
             for xpath in item['trims']:
                 for node in content_etree.xpath(xpath):
-                    node.clear()
+                    node.getparent().remove(node)
             item['content'] = etree.tostring(content_etree, pretty_print=False, encoding="utf-8").decode('utf8')
         else:
             item['content'] = str(content_soup)

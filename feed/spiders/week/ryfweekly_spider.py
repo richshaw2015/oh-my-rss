@@ -14,7 +14,7 @@ class RyfWeeklySpider(Spider):
                         article_title_xpath='//article//h1/text()',
                         article_content_xpath='//article',
                         article_trim_xpaths=[
-                            '//h1'
+                            '//article//h1'
                         ],
                         index_limit_count=3,
                         )
