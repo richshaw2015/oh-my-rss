@@ -1,10 +1,5 @@
 <div class="card-panel hoverable" id="omrss-article-bottom">
-    <!--
-    <span class="text-darken-2 add-group">想要更多技术交流和探讨？欢迎
-        <a href="#omrss-modal-qrcode" class="modal-trigger tooltipped" data-tooltip="加群互动"
-           data-position="top" id="omrss-addgp" data-id="{{ article.uindex }}">
-            <i class="material-icons add-group">touch_app</i>点此加群互动</a></span>
-    -->
+
     {% if article.site.copyright == 20 or article.site.copyright == 0 %}
         <div class="text-darken-2 omrss-article-bottom center-align">
             <a href="{{ article.src_url }}" target="_blank" class="tooltipped ev-open-src" data-tooltip="查看原文"
@@ -21,14 +16,6 @@
 
 
 </div>
-
-<!-- Modal Structure
-<div id="omrss-modal-qrcode" class="modal">
-    <div class="modal-content">
-        <img class="qrcode" src="/assets/img/qrcode.jpg"/>
-    </div>
-</div>
--->
 
 <script>
     $('#omrss-modal-qrcode').modal({"dismissible": true});

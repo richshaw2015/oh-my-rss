@@ -5,6 +5,7 @@ import logging
 import django
 import requests
 from io import BytesIO
+import datetime
 # import pysnooper
 
 logger = logging.getLogger(__name__)
@@ -17,7 +18,18 @@ def update_all_user_feed():
     """
     logger.info('开始运行定时更新RSS任务')
 
-    feeds = Site.objects.filter(status='active', creator='user').order_by('-star')
+    now = datetime.datetime.now()
+
+    # 按照不同频率更新，以 4 小时候为一个大周期
+    if now.hour % 4 == 0:
+        feeds = Site.objects.filter(status='active', creator='user').order_by('-star')
+    elif now.hour % 4 == 1:
+        feeds = []
+    elif now.hour % 4 == 2:
+        feeds = Site.objects.filter(status='active', creator='user', star__gte=20).order_by('-star')
+    elif now.hour % 4 == 3:
+        feeds = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-star')
+
     for site in feeds:
         try:
             resp = requests.get(site.rss, timeout=30, verify=False)

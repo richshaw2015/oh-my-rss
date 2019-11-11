@@ -7,11 +7,11 @@
             <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
                 <div>
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
-                    <span class="omrss-title omrss-title-unread"><a href="/post/{{ article.uindex }}" target="_blank">{{ article.title }}</a></span>
+                    <span class="omrss-title omrss-title-unread"><a href="/post/{{ article.uindex }}" target="_blank">{{ article.title |truncatechars:50 }}</a></span>
                     <span class="right">@{{ article.site.author |default:article.author }}</span>
                 </div>
 
-                <div>
+                <div class="omrss-meta">
                     <i class="material-icons unread meta-left">lens</i>
 
                     <span class="meta-left meta-time prettydate">{{ article.ctime |to_date_fmt }}</span>

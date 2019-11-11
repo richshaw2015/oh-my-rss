@@ -41,7 +41,7 @@ class Spider(scrapy.Spider):
 
     def content_parse(self, response):
         try:
-            title = response.xpath(self.article_title_xpath).extract_first().strip()
+            title = response.xpath(self.article_title_xpath).extract_first().strip()[:100]
             content = response.xpath(self.article_content_xpath).extract_first()
         except AttributeError:
             self.logger.warning("Xpath Error`%s", response.url)

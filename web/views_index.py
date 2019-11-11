@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponse
 from .models import *
 from .utils import get_client_ip, add_refer_host, incr_redis_key, current_day
 import urllib
 import logging
+import os
 from user_agents import parse
 from django.conf import settings
 
@@ -64,3 +65,18 @@ def article(request, uindex):
         logger.warning(f"获取文章详情请求处理异常：`{uindex}")
 
     return HttpResponseNotFound("Param error")
+
+
+def robots(request):
+    sitemap = os.path.join(request.build_absolute_uri(), '/sitemap.txt')
+    return HttpResponse(f'''User-agent: *\nDisallow: /dash\n\nSitemap: {sitemap}''')
+
+
+def sitemap(request):
+    indexs = Article.objects.filter(status='active', site__star__gte=20).order_by('-id').\
+        values_list('uindex', flat=True)[:500]
+
+    url = request.build_absolute_uri('/')[:-1].strip("/")
+    sites = [f'{url}/post/{i}' for i in indexs]
+
+    return HttpResponse('\n'.join(sites))

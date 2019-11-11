@@ -7,11 +7,11 @@ class Site(models.Model):
     """
     name = models.CharField('scrapy代号', max_length=100, unique=True, db_index=True)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
-    cname = models.CharField('站点名称', max_length=100)
-    link = models.CharField('站点主页', max_length=200)
+    cname = models.CharField('名称', max_length=100)
+    link = models.CharField('主页', max_length=200)
     favicon = models.CharField('favicon', max_length=100, default='', null=True, blank=True)
     brief = models.CharField('简介', max_length=200)
-    star = models.IntegerField('评级，1-39', default=20)
+    star = models.IntegerField('评级', default=20)
     freq = models.CharField('更新频率', choices=(
         ('小时', '每小时更新'),
         ('日更', '每天更新'),
