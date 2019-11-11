@@ -16,6 +16,5 @@ project.egg-info
 setup.py
 *.sqlite3
 fabfile.py
-!logs/.gitkeep
-logs/*.log
+logs
 docs
