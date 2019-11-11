@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    '192.168.31.189',
     'localhost',
     'ohmyrss.com',
     'www.ohmyrss.com',
