@@ -116,9 +116,9 @@ def get_articles_list(request):
     my_sub_sites = get_subscribe_sites(sub_feeds, unsub_feeds)
     my_articles = Article.objects.filter(status='active', site__name__in=my_sub_sites).order_by('-id')
 
-    # 分页处理
-    paginator_obj = Paginator(my_articles, page_size)
     if my_articles:
+        # 分页处理，TODO 优化这里的性能
+        paginator_obj = Paginator(my_articles, page_size)
         try:
             # 页面及数据
             pg = paginator_obj.page(page)

@@ -21,7 +21,7 @@ class Site(models.Model):
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
-    ), default='active')
+    ), default='active', db_index=True)
     copyright = models.IntegerField('版权', choices=(
         (0, '未知'),
         (10, '不可转载'),
@@ -61,7 +61,7 @@ class Article(models.Model):
     """
     文章表
     """
-    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, db_index=True)
     title = models.CharField('标题', max_length=200, unique=True)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
@@ -70,7 +70,7 @@ class Article(models.Model):
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
-    ), default='active')
+    ), default='active', db_index=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
