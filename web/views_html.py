@@ -114,7 +114,7 @@ def get_articles_list(request):
 
     # 个人订阅处理
     my_sub_sites = get_subscribe_sites(sub_feeds, unsub_feeds)
-    my_articles = Article.objects.filter(status='active', site__name__in=my_sub_sites).order_by('-id')
+    my_articles = Article.objects.filter(status='active', site__name__in=my_sub_sites).order_by('-id')[:500]
 
     if my_articles:
         # 分页处理，TODO 优化这里的性能
