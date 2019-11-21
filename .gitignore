@@ -12,6 +12,7 @@ tests/.pytest_cache
 migrations/
 .vscode
 build
+assets/img
 project.egg-info
 setup.py
 *.sqlite3

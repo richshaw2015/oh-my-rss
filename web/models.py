@@ -61,7 +61,7 @@ class Article(models.Model):
     """
     文章表
     """
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, db_index=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     title = models.CharField('标题', max_length=200, unique=True)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
@@ -72,7 +72,7 @@ class Article(models.Model):
         ('close', '关闭，下线'),
     ), default='active', db_index=True)
 
-    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+    ctime = models.DateTimeField('创建时间', auto_now_add=True, db_index=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)
 
