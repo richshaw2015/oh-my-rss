@@ -5,7 +5,8 @@ import logging
 import django
 import requests
 from io import BytesIO
-import datetime
+from datetime import datetime
+from django.utils.timezone import timedelta
 # import pysnooper
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ def update_all_user_feed():
     """
     logger.info('开始运行定时更新RSS任务')
 
-    now = datetime.datetime.now()
+    now = datetime.now()
 
     # 按照不同频率更新，以 4 小时候为一个大周期
     if now.hour % 4 == 0:
@@ -74,3 +75,21 @@ def update_all_user_feed():
             except:
                 logger.warning(f'数据插入异常：`{title}`{link}')
     logger.info('定时更新RSS任务运行结束')
+
+
+def clean_history_data():
+    """
+    清除历史数据
+    :return:
+    """
+    logger.info('开始清理历史数据')
+
+    last1month = datetime.now() - timedelta(days=30)
+    last6month = datetime.now() - timedelta(days=180)
+    last1year = datetime.now() - timedelta(days=365)
+
+    Article.objects.all().prefetch_related('site').filter(site__star__lt=10, ctime__lte=last1month).delete()
+    Article.objects.all().prefetch_related('site').filter(site__star__lt=20, ctime__lte=last6month).delete()
+    Article.objects.all().prefetch_related('site').filter(site__star__lt=30, ctime__lte=last1year).delete()
+
+    logger.info('历史数据清理完毕')
