@@ -6,7 +6,6 @@ django
 redis
 selenium
 feedparser
-requests
 django-crontab
 pyecharts
 gunicorn
