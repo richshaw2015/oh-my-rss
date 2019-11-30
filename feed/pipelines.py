@@ -54,6 +54,8 @@ class DomPipeline(object):
                 img.attrs['src'] = img.attrs['file']
             elif img.attrs.get('data-src'):
                 img.attrs['src'] = img.attrs['data-src']
+            elif img.attrs.get('data-original'):
+                img.attrs['src'] = img.attrs['data-original']
             try:
                 for attr in ('srcset', 'data-srcset', 'data-s', 'data-w', 'data-type', 'data-ratio'):
                     del img.attrs[attr]
