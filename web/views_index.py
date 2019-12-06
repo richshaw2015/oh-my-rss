@@ -50,21 +50,24 @@ def index(request):
         return render(request, 'mobile/index.html', context)
 
 
-def article(request, uindex):
+def article(request, id):
     """
     详情页，主要向移动端、搜索引擎提供
     """
     try:
-        article = Article.objects.get(uindex=uindex)
-
-        context = dict()
-        context['article'] = article
-
-        return render(request, 'mobile/article.html', context=context)
+        article = Article.objects.get(uindex=id)
     except:
-        logger.warning(f"获取文章详情请求处理异常：`{uindex}")
+        try:
+            article = Article.objects.get(pk=id)
+        except:
+            logger.warning(f"获取文章详情请求处理异常：`{id}")
+            return HttpResponseNotFound("Param error")
 
-    return HttpResponseNotFound("Param error")
+    context = dict()
+    context['article'] = article
+
+    return render(request, 'mobile/article.html', context=context)
+
 
 
 def robots(request):
