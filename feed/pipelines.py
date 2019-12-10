@@ -48,6 +48,10 @@ class DomPipeline(object):
             a.attrs['href'] = abs_href
             a.attrs['target'] = '_blank'
 
+            # trim empty a tag
+            if not a.contents:
+                a.decompose()
+
         # to absolute src
         for img in content_soup.find_all('img'):
             if img.attrs.get('file'):
@@ -81,9 +85,13 @@ class DomPipeline(object):
             s.attrs['style'] = "white-space:pre;"
 
         # reset span font size
-        for span in (content_soup.find_all('span') + content_soup.find_all('p')):
-            if span.attrs.get('style'):
-                span.attrs['style'] = re.sub(r'font-size\s*:\s*[^;]+;', '', span.attrs['style'])
+        for tag in (content_soup.find_all('span') + content_soup.find_all('p')):
+            if tag.attrs.get('style'):
+                tag.attrs['style'] = re.sub(r'font-size\s*:\s*[^;]+;', '', tag.attrs['style'])
+
+            # trim empty tag
+            if not tag.contents:
+                tag.decompose()
 
         # trim style tags
         if item.get('trim_style_tags'):
@@ -94,7 +102,7 @@ class DomPipeline(object):
 
         # trim contents
         if item.get('trims'):
-            content_etree = etree.fromstring(str(content_soup), etree.HTMLParser())
+            content_etree = etree.fromstring(str(content_soup))
             for xpath in item['trims']:
                 for node in content_etree.xpath(xpath):
                     node.getparent().remove(node)
