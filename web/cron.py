@@ -85,11 +85,11 @@ def clean_history_data():
     logger.info('开始清理历史数据')
 
     last1month = datetime.now() - timedelta(days=30)
-    last6month = datetime.now() - timedelta(days=180)
+    last3month = datetime.now() - timedelta(days=90)
     last1year = datetime.now() - timedelta(days=365)
 
     Article.objects.all().prefetch_related('site').filter(site__star__lt=10, ctime__lte=last1month).delete()
-    Article.objects.all().prefetch_related('site').filter(site__star__lt=20, ctime__lte=last6month).delete()
+    Article.objects.all().prefetch_related('site').filter(site__star__lt=20, ctime__lte=last3month).delete()
     Article.objects.all().prefetch_related('site').filter(site__star__lt=30, ctime__lte=last1year).delete()
 
     logger.info('历史数据清理完毕')

@@ -2,5 +2,5 @@
 
 from scrapy import cmdline
 
-cmd = 'scrapy crawl fefweekly'
+cmd = 'scrapy crawl xingzx'
 cmdline.execute(cmd.split())
