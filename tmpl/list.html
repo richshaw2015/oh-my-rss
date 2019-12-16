@@ -5,13 +5,13 @@
     <ul class="collection">
         {% for article in pg.object_list %}
             <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
-                <div>
+                <div class="omrss-title-line">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     <span class="omrss-title truncate omrss-title-unread">{{ article.title |truncatechars:50 }}</span>
                     <i class="right material-icons unread">lens</i>
                 </div>
 
-                <div class="meta-line">
+                <div class="omrss-meta-line">
                     <span class="omrss-meta meta-author">{{ article.site.author |default:article.author }}</span>
                     <span class="meta-time prettydate omrss-meta">{{ article.ctime |to_date_fmt }}</span>
 

@@ -2,13 +2,13 @@
 <ul class="collection">
     {% for article in articles %}
         <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
-            <div>
+            <div class="omrss-title-line">
                 <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                 <span class="omrss-title truncate">{{ article.title |truncatechars:50 }}</span>
                 <i class="right material-icons unread">lens</i>
             </div>
 
-            <div class="meta-line">
+            <div class="omrss-meta-line">
                 <span class="omrss-meta meta-author">{{ article.site.author |default:article.author }}</span>
                 <span class="meta-time omrss-meta"></span>
 
@@ -27,3 +27,9 @@
         </li>
     {% endfor %}
 </ul>
+
+<div id="omrss-pager">
+    <ul class="pagination">
+        <li class="waves-effect ev-page" title="首页" data-page="1"><a href="#!">1</a></li>
+    </ul>
+</div>
