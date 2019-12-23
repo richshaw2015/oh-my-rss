@@ -2,6 +2,7 @@
 
 import time
 import redis
+from functools import lru_cache
 from django.conf import settings
 from .models import Site
 import logging
@@ -52,16 +53,16 @@ def get_page_uv(page):
     return dict(zip(key_list, data_list))
 
 
+@lru_cache(maxsize=128, typed=True)
 def get_subscribe_sites(sub_feeds, unsub_feeds):
     """
     获取订阅的站点，已订阅 + 推荐 - 取消订阅
-    TODO 增加缓存处理
     :param sub_feeds:
     :param unsub_feeds:
     :return:
     """
     recommend_feeds = list(Site.objects.filter(status='active', star__gte=20).values_list('name', flat=True))
-    return list(set(sub_feeds + recommend_feeds) - set(unsub_feeds))
+    return list(set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds))
 
 
 def get_client_ip(request):

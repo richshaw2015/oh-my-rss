@@ -5,6 +5,8 @@ from .models import *
 from .utils import get_page_uv, get_subscribe_sites
 from .verify import verify_request
 import logging
+from datetime import datetime
+from django.utils.timezone import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -113,12 +115,16 @@ def get_articles_list(request):
     mobile = request.POST.get('mobile', False)
 
     # 个人订阅处理
-    my_sub_sites = get_subscribe_sites(sub_feeds, unsub_feeds)
-    my_articles = Article.objects.filter(status='active', site__name__in=my_sub_sites).order_by('-id')
+    my_sub_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+    # 只查询最近一个月的
+    last1month = datetime.now() - timedelta(days=30)
 
-    # 分页处理
-    paginator_obj = Paginator(my_articles, page_size)
+    my_articles = Article.objects.all().prefetch_related('site').filter(
+        status='active', site__name__in=my_sub_sites, ctime__gte=last1month).order_by('-id')[:990]
+
     if my_articles:
+        # 分页处理，TODO 优化这里的性能
+        paginator_obj = Paginator(my_articles, page_size)
         try:
             # 页面及数据
             pg = paginator_obj.page(page)

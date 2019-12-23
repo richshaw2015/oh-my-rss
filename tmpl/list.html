@@ -5,25 +5,25 @@
     <ul class="collection">
         {% for article in pg.object_list %}
             <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
-                <div>
+                <div class="omrss-title-line">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     <span class="omrss-title truncate omrss-title-unread">{{ article.title |truncatechars:50 }}</span>
-                    <span class="right">@{{ article.site.author |default:article.author }}</span>
+                    <i class="right material-icons unread">lens</i>
                 </div>
 
-                <div>
-                    <i class="material-icons unread meta-left">lens</i>
+                <div class="omrss-meta-line">
+                    <span class="omrss-meta meta-author">@{{ article.site.author |default:article.author }}</span>
+                    <span class="meta-time prettydate omrss-meta">{{ article.ctime |to_date_fmt }}</span>
 
-                    <span class="meta-left meta-time prettydate">{{ article.ctime |to_date_fmt }}</span>
-                    <span>{{ uv |to_view_uv:article.uindex }}人浏览</span>
-
-                    <span class="right meta-num">{{ uv |to_open_uv:article.uindex }}</span>
-                    <i class="material-icons meta-icon right open-icon">open_in_new</i>
-                    <span class="right meta-num">{{ uv |to_thumb_uv:article.uindex }}</span>
-                    <i class="material-icons meta-icon right thumb-icon">thumb_up</i>
+                    <span class="right meta-num-s omrss-meta">{{ uv |to_open_uv:article.uindex }}</span>
+                    <i class="right material-icons meta-icon omrss-meta open-icon">open_in_new</i>
+                    <span class="right meta-num-s omrss-meta">{{ uv |to_thumb_uv:article.uindex }}</span>
+                    <i class="right material-icons meta-icon omrss-meta thumb-icon">thumb_up</i>
+                    <span class="right meta-num-l omrss-meta">{{ uv |to_view_uv:article.uindex }}</span>
+                    <i class="right material-icons meta-icon omrss-meta visibility-icon">visibility</i>
 
                     {% if article.site.star >= 30 %}
-                        <span class="right meta-recommend new badge" data-badge-caption="">荐</span>
+                        <span class="right new badge meta-recommend" data-badge-caption="">荐</span>
                     {% endif %}
                 </div>
             </li>
@@ -46,7 +46,7 @@
 
         <li id="omrss-active-pager" class="omrss-bgcolor"><a href="#!">{{ pg.number }}</a></li>
 
-        {% if pg.number < num_pages %}
+        {% if pg.number <= num_pages %}
             <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}">
                 <a href="#!">{{ num_pages }}</a></li>
         {% endif %}

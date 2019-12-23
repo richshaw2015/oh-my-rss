@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'web.middlewares.StatsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,7 +124,8 @@ USE_L10N = True
 USE_TZ = True
 
 CRONJOBS = [
-   ('*/3600 * * * *', 'web.cron.update_all_user_feed')
+   ('1 0-23 * * *', 'web.cron.update_all_user_feed'),
+   ('11 3 * * *', 'web.cron.clean_history_data')
 ]
 
 # Static files (CSS, JavaScript, Images)

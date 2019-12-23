@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound, HttpResponse
 from .models import *
 from .utils import get_client_ip, add_refer_host, incr_redis_key, current_day
@@ -50,21 +50,23 @@ def index(request):
         return render(request, 'mobile/index.html', context)
 
 
-def article(request, uindex):
+def article(request, id):
     """
     详情页，主要向移动端、搜索引擎提供
     """
     try:
-        article = Article.objects.get(uindex=uindex)
-
-        context = dict()
-        context['article'] = article
-
-        return render(request, 'mobile/article.html', context=context)
+        article = Article.objects.get(uindex=id)
     except:
-        logger.warning(f"获取文章详情请求处理异常：`{uindex}")
+        try:
+            article = Article.objects.get(pk=id)
+        except:
+            logger.warning(f"获取文章详情请求处理异常：`{id}")
+            return redirect('index')
+    context = dict()
+    context['article'] = article
 
-    return HttpResponseNotFound("Param error")
+    return render(request, 'mobile/article.html', context=context)
+
 
 
 def robots(request):
@@ -73,8 +75,8 @@ def robots(request):
 
 
 def sitemap(request):
-    indexs = Article.objects.filter(status='active', site__star__gte=20).order_by('-id').\
-        values_list('uindex', flat=True)[:500]
+    indexs = Article.objects.filter(status='active', site__star__gte=10).order_by('-id').\
+        values_list('uindex', flat=True)[:1000]
 
     url = request.build_absolute_uri('/')[:-1].strip("/")
     sites = [f'{url}/post/{i}' for i in indexs]

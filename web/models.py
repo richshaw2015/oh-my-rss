@@ -21,7 +21,7 @@ class Site(models.Model):
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
-    ), default='active')
+    ), default='active', db_index=True)
     copyright = models.IntegerField('版权', choices=(
         (0, '未知'),
         (10, '不可转载'),
@@ -70,9 +70,9 @@ class Article(models.Model):
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
-    ), default='active')
+    ), default='active', db_index=True)
 
-    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+    ctime = models.DateTimeField('创建时间', auto_now_add=True, db_index=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)
 

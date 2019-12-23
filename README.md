@@ -1,5 +1,5 @@
 # Oh My RSS
-Oh My RSS 是一个开源的在线RSS服务，通过爬虫汇聚互联网上的精华内容，旨在为国内的 IT 从业者提供一个优质的学习圈子。
+Oh My RSS 是一个开源的在线 RSS 服务，旨在汇聚互联网上的精华内容，为中文 IT 从业者提供一个优质的学习圈子。
 
 ![预览](https://raw.githubusercontent.com/richshaw2015/oh-my-rss/master/assets/img/preview.jpg)
 
@@ -77,7 +77,7 @@ python3 manage.py migrate
 scrapy crawl coolshell
 ```
 
-提交的订阅源会以每小时一次的频率更新。
+提交的订阅源会以1~2小时一次的频率更新。
 
 ## 贡献
 详见 CONTRIBUTING.md

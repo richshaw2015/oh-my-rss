@@ -4,7 +4,8 @@ from . import views_index, views_html, views_api, views_dash
 
 urlpatterns = [
     path('', views_index.index, name='index'),
-    path('post/<int:uindex>', views_index.article, name='article'),
+    path('post/<int:id>', views_index.article, name='article'),
+    path('p/<int:id>', views_index.article, name='article'),
 
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),
     path('api/html/feeds/all', views_html.get_all_feeds, name='get_all_feeds'),
