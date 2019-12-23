@@ -94,7 +94,7 @@ def submit_a_feed(request):
                 brief = cname
 
             author = feed_obj.feed.get('author', '')[:10]
-            favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=32"
+            favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=64"
 
             try:
                 site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
