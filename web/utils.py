@@ -7,6 +7,7 @@ from django.conf import settings
 from .models import Site
 import logging
 import hashlib
+import urllib
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -117,3 +118,17 @@ def incr_redis_key(key):
 
 def add_refer_host(host):
     return R.sadd(settings.REDIS_REFER_ALL_KEY, host)
+
+
+def log_refer_request(request):
+    referer = request.META.get('HTTP_REFERER', '')
+    if referer:
+        host = urllib.parse.urlparse(referer).netloc
+        if host and host not in settings.ALLOWED_HOSTS:
+            logger.info(f"收到外域来源：`{host}`{referer}")
+            try:
+                add_refer_host(host)
+                incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
+                incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
+            except:
+                logger.warning("外域请求统计异常")
