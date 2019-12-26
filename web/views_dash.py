@@ -101,7 +101,7 @@ def refer_pie_chart() -> Pie:
         Pie()
         .add(
             "",
-            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys))],
+            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys)) if int(z[1]) > 20],
             # radius=["30%", "75%"],
             # rosetype="radius",
         )
