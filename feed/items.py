@@ -23,3 +23,5 @@ class FeedItem(scrapy.Item):
     # optional
     image_urls = scrapy.Field()
     image_paths = scrapy.Field()
+
+    author = scrapy.Field()

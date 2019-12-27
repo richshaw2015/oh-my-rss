@@ -124,7 +124,7 @@ class InsertDBPipeline(object):
         if site.status == 'active':
             try:
                 article = Article(site=site, title=item['title'], uindex=current_ts(), content=item['content'],
-                                  remark='', src_url=item['url'])
+                                  remark='', src_url=item['url'], author=item.get('author'))
                 article.save()
 
                 # mark status

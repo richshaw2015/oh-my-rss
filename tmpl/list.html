@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="omrss-meta-line">
-                    <span class="omrss-meta meta-author">@{{ article.site.author |default:article.author }}</span>
+                    <span class="omrss-meta meta-author">@{{ article.author |default:article.site.author }}</span>
                     <span class="meta-time prettydate omrss-meta">{{ article.ctime |to_date_fmt }}</span>
 
                     <span class="right meta-num-s omrss-meta">{{ uv |to_open_uv:article.uindex }}</span>
