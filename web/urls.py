@@ -1,12 +1,22 @@
 from django.urls import path
 
 from . import views_index, views_html, views_api, views_dash
+from .feeds import SiteFeed
 
 urlpatterns = [
+    # public urls
     path('', views_index.index, name='index'),
-    path('post/<int:id>', views_index.article, name='article'),
-    path('p/<int:id>', views_index.article, name='article'),
 
+    path('post/<int:id>', views_index.article, name='article'),
+    path('p/<int:id>', views_index.article, name='article_short_url'),
+
+    path('feed/<name>', SiteFeed(), name='get_feed_entries'),
+    path('dash', views_dash.dashboard, name='dashboard'),
+
+    path('robots.txt', views_index.robots, name='robots'),
+    path('sitemap.txt', views_index.sitemap, name='sitemap'),
+
+    # private urls
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),
     path('api/html/feeds/all', views_html.get_all_feeds, name='get_all_feeds'),
     path('api/html/homepage/intro', views_html.get_homepage_intro, name='get_homepage_intro'),
@@ -19,13 +29,8 @@ urlpatterns = [
     path('api/dashboard/refer/pie', views_dash.get_refer_pie_data, name='get_refer_pie_data'),
     path('api/dashboard/refer/pv', views_dash.get_refer_pv_chart_data, name='get_refer_uv_chart_data'),
 
-    path('dash', views_dash.dashboard, name='dashboard'),
-
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
     path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
-
-    path('robots.txt', views_index.robots, name='robots'),
-    path('sitemap.txt', views_index.sitemap, name='sitemap'),
 ]

@@ -1,11 +1,14 @@
 from django import template
 from django.utils.timezone import localtime
 from django.conf import settings
+from django.urls import reverse
 import hashlib
 import urllib
+import logging
 from functools import lru_cache
 
 register = template.Library()
+logger = logging.getLogger(__name__)
 
 
 @register.filter
@@ -105,3 +108,19 @@ def to_short_author(author1, author2=''):
                 break
 
     return short_author
+
+
+@register.filter
+@lru_cache(maxsize=512)
+def to_rss(site):
+    rss = ''
+
+    if site.creator == 'user':
+        rss = site.rss
+    elif site.creator == 'system':
+        rss = reverse('get_feed_entries', kwargs={"name": site.name})
+
+    if not rss:
+        logger.error(f'生成 RSS 失败：`{site.name}`{site.creator}')
+
+    return rss

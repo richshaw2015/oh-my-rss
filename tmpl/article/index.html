@@ -1,3 +1,4 @@
+{% load helpers %}
 <div>
     <!-- 内容标题及介绍 -->
     {% include 'article/top-meta.html' %}
@@ -20,12 +21,14 @@
             <i class="large material-icons">more_vert</i>
         </a>
         <ul>
+            <li><a class="btn-floating green darken-1 tooltipped ev-copy-rsslink" data-position="left"
+                   data-tooltip="查看站点源" href="{{ article.site |to_rss }}" target="_blank">
+                <i class="material-icons">rss_feed</i></a>
+            </li>
+
             <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger" data-position="left"
                    data-tooltip="不看该作者所有文章" data-target="omrss-unsub-feed">
                 <i class="material-icons">delete</i></a>
-            </li>
-            <li><a id="omrss-top" class="btn-floating green darken-1 tooltipped" data-position="left"
-                   data-tooltip="回到顶部"><i class="material-icons">publish</i></a>
             </li>
 
             <li><a id="omrss-like" class="btn-floating red tooltipped" data-position="left"
