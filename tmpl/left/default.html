@@ -9,7 +9,7 @@
             </div>
 
             <div class="omrss-meta-line">
-                <span class="omrss-meta meta-author">@{{ article.author |default:article.site.author }}</span>
+                <span class="omrss-meta meta-author">@{{ article.author |to_short_author:article.site.author }}</span>
                 <span class="meta-time omrss-meta"></span>
 
                 <span class="right meta-num-s omrss-meta">0</span>

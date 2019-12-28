@@ -49,12 +49,12 @@ class Spider(scrapy.Spider):
             self.logger.warning("Xpath Error`%s", response.url)
             return False
 
+        author = ''
         if self.article_author_xpath:
             try:
-                # max 12 chars, 6 chinese
-                author = response.xpath(self.article_author_xpath).extract_first().strip()[:12]
+                author = response.xpath(self.article_author_xpath).extract_first().strip()[:100]
             except:
-                author = ''
+                pass
 
         url = response.url
         try:

@@ -3,6 +3,7 @@ from django.utils.timezone import localtime
 from django.conf import settings
 import hashlib
 import urllib
+from functools import lru_cache
 
 register = template.Library()
 
@@ -75,3 +76,32 @@ def to_gravatar_url(uid, size=64):
 @register.filter
 def unquote(url):
     return urllib.parse.unquote(url)
+
+
+@register.filter
+@lru_cache(maxsize=1024)
+def to_short_author(author1, author2=''):
+    """
+    max 12 chars and 6 chinese chars
+    :param author1:
+    :param author2:
+    :return:
+    """
+    author = author1 if author1 else author2
+
+    display_len = 0
+    short_author = ''
+
+    if author:
+        for char in author[:12]:
+            if len(char.encode('utf8')) > 1:
+                display_len += 2
+            else:
+                display_len += 1
+
+            if display_len <= 12:
+                short_author += char
+            else:
+                break
+
+    return short_author
