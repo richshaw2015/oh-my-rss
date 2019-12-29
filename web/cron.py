@@ -7,6 +7,8 @@ import requests
 from io import BytesIO
 from datetime import datetime
 from django.utils.timezone import timedelta
+import urllib
+from bs4 import BeautifulSoup
 # import pysnooper
 
 logger = logging.getLogger(__name__)
@@ -40,7 +42,11 @@ def update_all_user_feed():
         content = BytesIO(resp.content)
         feed_obj = feedparser.parse(content)
 
-        for entry in feed_obj.entries[:100]:
+        max_count = 10
+        if site.star < 20:
+            max_count = 50
+
+        for entry in feed_obj.entries[:max_count]:
             try:
                 title = entry.title
                 link = entry.link
@@ -52,7 +58,7 @@ def update_all_user_feed():
                 continue
 
             try:
-                author = entry['author'][:11]
+                author = entry['author'][:20]
             except:
                 author = None
 
@@ -60,6 +66,19 @@ def update_all_user_feed():
                 value = entry.content[0].value
             except:
                 value = entry.get('description') or entry.link
+
+            # to absolute image url
+            try:
+                content_soup = BeautifulSoup(value, "html.parser")
+
+                for img in content_soup.find_all('img'):
+                    rel_src = img.attrs.get('src')
+                    abs_src = urllib.parse.urljoin(link, rel_src)
+                    img.attrs['src'] = abs_src
+
+                value = str(content_soup)
+            except:
+                logger.warning(f'修复图片路径异常：`{title}`{link}')
 
             try:
                 article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(),
