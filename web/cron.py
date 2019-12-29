@@ -21,14 +21,10 @@ def update_all_user_feed():
 
     now = datetime.now()
 
-    # 按照不同频率更新，以 4 小时候为一个大周期
-    if now.hour % 4 == 0:
+    # 按照不同频率更新
+    if now.hour % 2 == 0:
         feeds = Site.objects.filter(status='active', creator='user').order_by('-star')
-    elif now.hour % 4 == 1:
-        feeds = []
-    elif now.hour % 4 == 2:
-        feeds = Site.objects.filter(status='active', creator='user', star__gte=20).order_by('-star')
-    elif now.hour % 4 == 3:
+    elif now.hour % 2 == 1:
         feeds = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-star')
 
     for site in feeds:
@@ -44,7 +40,7 @@ def update_all_user_feed():
         content = BytesIO(resp.content)
         feed_obj = feedparser.parse(content)
 
-        for entry in feed_obj.entries[:10]:
+        for entry in feed_obj.entries[:100]:
             try:
                 title = entry.title
                 link = entry.link
