@@ -1,6 +1,5 @@
 from django.urls import path
-
-from . import views_index, views_html, views_api, views_dash
+from . import views_index, views_html, views_api, views_dash, views_oauth
 from .feeds import SiteFeed
 
 urlpatterns = [
@@ -15,6 +14,8 @@ urlpatterns = [
 
     path('robots.txt', views_index.robots, name='robots'),
     path('sitemap.txt', views_index.sitemap, name='sitemap'),
+
+    path('oauth/github/redirect', views_oauth.github_callback, name='github_callback'),
 
     # private urls
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),

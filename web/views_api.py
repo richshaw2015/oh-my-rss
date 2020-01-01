@@ -17,6 +17,7 @@ def get_lastweek_articles(request):
     """
     过去一周的文章id列表
     """
+    # TODO 适配已登录用户
     uid = request.POST.get('uid', '')
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
@@ -52,6 +53,7 @@ def leave_a_message(request):
     """
     添加留言
     """
+    # TODO 适配已登录用户
     uid = request.POST.get('uid', '').strip()[:100]
 
     content = request.POST.get('content', '').strip()[:500]
@@ -106,3 +108,8 @@ def submit_a_feed(request):
         else:
             logger.warning(f"RSS解析失败：`{feed_url}")
     return HttpResponseNotFound("Param error")
+
+
+# TODO 增加已登录用户的订阅源更新接口
+# TODO 增加已登录用户的未读文章同步
+# TODO 增加已登录用户的账号数据同步

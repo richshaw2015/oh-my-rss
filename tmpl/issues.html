@@ -26,14 +26,14 @@
 
 <!-- 悬浮球 -->
 <div class="fixed-action-btn">
-    <a class="btn-floating btn-large red modal-trigger tooltipped" href="#model-add-issue" data-position="left"
+    <a class="btn-floating btn-large red modal-trigger tooltipped" href="#modal-add-issue" data-position="left"
         data-tooltip="添加留言">
         <i class="large material-icons">edit</i>
     </a>
 </div>
 
 <!-- 添加留言窗口 -->
-<div id="model-add-issue" class="modal">
+<div id="modal-add-issue" class="modal">
     <div class="modal-content">
         <h3>添加留言</h3>
 
@@ -69,7 +69,7 @@
 <script>
     $('.fixed-action-btn').floatingActionButton();
     $('.tooltipped').tooltip();
-    $('.modal').modal({"dismissible": false});
+    $('#modal-add-issue').modal({"dismissible": false});
     $(".prettydate").prettydate();
     $('textarea#issue-input-detail, input#issue-input-name, input#issue-input-contact').characterCounter();
 </script>

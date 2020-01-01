@@ -164,6 +164,10 @@ REDIS_REFER_ALL_KEY = 'REFER/ALL'
 REDIS_REFER_PV_KEY = 'REFER/%s'
 REDIS_REFER_PV_DAY_KEY = 'REFER/%s/%s'
 
+# github OAuth
+GITHUB_OAUTH_KEY = '4b40da1eb0585bf03dda'
+GITHUB_OAUTH_SECRET = 'c985780931b223658064d3218095d916106238d7'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

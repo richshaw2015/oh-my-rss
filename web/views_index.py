@@ -27,11 +27,14 @@ def index(request):
     else:
         index_number = 10
 
+    # TODO 判断是否登录用户
+
     # render default article list
     articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:index_number]
 
     context = dict()
     context['articles'] = articles
+    context['github_oauth_key'] = settings.GITHUB_OAUTH_KEY
 
     if user_agent.is_pc:
         return render(request, 'index.html', context)

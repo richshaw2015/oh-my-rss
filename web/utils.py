@@ -132,3 +132,16 @@ def log_refer_request(request):
                 incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
             except:
                 logger.warning("外域请求统计异常")
+
+
+def get_login_user(request):
+    """
+    获取登录用户信息
+    :param request:
+    :return: User，未登录则返回 None
+    """
+    login_id = request.get_signed_cookie('login_id', False)
+    if login_id:
+        # TODO 从数据库查找对象
+        return True
+    return None

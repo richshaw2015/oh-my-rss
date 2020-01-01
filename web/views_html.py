@@ -39,6 +39,7 @@ def get_all_feeds(request):
     """
     获取订阅列表
     """
+    # TODO 增加已登录用户判断
     show_feeds = Site.objects.filter(status='active', star__gte=9).order_by('-star')
     hide_feeds = Site.objects.filter(status='active', star__lt=9).order_by('-star')
 
@@ -108,6 +109,7 @@ def get_articles_list(request):
     """
     获取我的文章列表
     """
+    # TODO 增加已登录用户判断
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
     page_size = int(request.POST.get('page_size', 10))

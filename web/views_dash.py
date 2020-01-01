@@ -129,5 +129,8 @@ def get_refer_pv_chart_data(request):
     return JsonResponse(json.loads(refer_pv_line_chart()))
 
 
+# TODO 调整用户数统计，增加注册用户数趋势
+
+
 def dashboard(request):
     return render(request, 'dashboard/index.html')
