@@ -95,3 +95,24 @@ class Message(models.Model):
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)
+
+
+class User(models.Model):
+    """
+    用户表，使用第三方的才会入库
+    """
+    oauth_id = models.CharField('平台+id', max_length=100, unique=True, db_index=True)
+    oauth_name = models.CharField('昵称', max_length=100)
+    oauth_avatar = models.CharField('头像', max_length=200)
+    oauth_email = models.CharField('email', max_length=100, null=True, blank=True)
+    oauth_blog = models.CharField('blog', max_length=200, null=True, blank=True)
+    oauth_ext = models.TextField('完整信息', default='', null=True, blank=True)
+
+    status = models.CharField('状态', max_length=20, choices=(
+        ('active', '激活'),
+        ('close', '关闭，下线'),
+    ), default='active')
+
+    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+    mtime = models.DateTimeField('更新时间', auto_now=True)
+    remark = models.TextField('备注', default='', null=True, blank=True)
