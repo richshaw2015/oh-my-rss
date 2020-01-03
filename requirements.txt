@@ -1,15 +1,15 @@
-scrapy
+scrapy ~= 1.8
 bs4
-lxml
-requests
-django
-redis
+lxml ~= 4.4
+requests ~= 2.22
+django ~= 2.2
+redis ~= 3.3
 selenium
-feedparser
-django-crontab
+feedparser ~= 5.2
+django-crontab ~= 0.7
 pyecharts
 gunicorn
 gevent
-pyyaml
-ua-parser
-user-agents
+pyyaml ~= 5.2
+ua-parser ~= 0.8
+user-agents ~= 2.0
