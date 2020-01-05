@@ -1,3 +1,4 @@
+{% load helpers %}
 <ul class="sidenav" id="omrss-sidenav">
 
     <li class="ev-toggle-fullscreen sidenav-close" data-tooltip="切换全屏" data-position="bottom">
@@ -53,10 +54,17 @@
                 <a href="#!"><i class="material-icons omrss-color">format_quote</i></a>
             </li>
 
+            {% if not user %}
             <li class="tooltipped" data-tooltip="登录" data-position="bottom">
                 <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
             </li>
+            {% else %}
+            <li class="tooltipped" data-tooltip="我" data-position="bottom" data-oauth-id="{{ user.oauth_id }}"
+                data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
+                <img src="{{ user.oauth_avatar |to_avatar_size }}" class="omrss-avatar" />
+            </li>
 
+            {% endif %}
             <li><a data-target="omrss-sidenav" class="sidenav-trigger show-on-large">
                 <i class="material-icons omrss-color">menu</i></a>
             </li>

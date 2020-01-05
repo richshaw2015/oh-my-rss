@@ -40,14 +40,16 @@
     <!-- 取消订阅确认框 -->
     <div id="omrss-unsub-feed" class="modal">
         <div class="modal-content">
-            <h2>确定吗？</h2>
-            <h4>取消后将收不到「{{ article.site.cname }}」的更新，您可以通过右上角的
-                <i class="material-icons omrss-color">rss_feed</i>重新订阅</h4>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-red btn-flat">取消</a>
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="omrss-unlike"
-               data-site="{{ article.site.name }}">确定</a>
+            <h3>确定吗？</h3>
+            <p>取消订阅将收不到「{{ article.site.cname }}」的更新，您可以通过右上角的
+                <i class="material-icons omrss-color">rss_feed</i> 重新订阅</p>
+
+            <div class="modal-footer">
+                <a href="#!" class="modal-close" id="omrss-unlike"
+                   data-site="{{ article.site.name }}">
+                    <button class="btn waves-effect waves-light">取消订阅</button>
+                </a>
+            </div>
         </div>
     </div>
 

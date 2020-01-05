@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound, HttpResponse
 from .models import *
-from .utils import get_client_ip, log_refer_request
+from .utils import get_client_ip, log_refer_request, get_login_user, get_user_sub_feeds
 import logging
 import os
 from user_agents import parse
@@ -17,23 +17,31 @@ def index(request):
     :return:
     """
     logger.info("收到首页请求：`%s", get_client_ip(request))
+    # 记录访问来源
     log_refer_request(request)
 
     # PC 版、手机版适配
     user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
 
+    index_number = 10
     if user_agent.is_pc:
         index_number = 8
+
+    # 判断是否登录用户
+    user = get_login_user(request)
+
+    # 默认的渲染列表，区分是否登录用户
+    if user is None:
+        articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:index_number]
     else:
-        index_number = 10
-
-    # TODO 判断是否登录用户
-
-    # render default article list
-    articles = Article.objects.filter(status='active', site__star__gte=20).order_by('-id')[:index_number]
+        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        if not user_sub_feeds:
+            logger.warning(f'用户未订阅任何内容：`{user.oauth_id}')
+        articles = Article.objects.filter(status='active', site__name__in=user_sub_feeds).order_by('-id')[:index_number]
 
     context = dict()
     context['articles'] = articles
+    context['user'] = user
     context['github_oauth_key'] = settings.GITHUB_OAUTH_KEY
 
     if user_agent.is_pc:
@@ -46,6 +54,7 @@ def article(request, id):
     """
     详情页，主要向移动端、搜索引擎提供
     """
+    # TODO 适配已登录用户
     log_refer_request(request)
 
     try:

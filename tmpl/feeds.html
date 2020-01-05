@@ -25,7 +25,7 @@
                    data-position="top">{{ feed.cname }}</a>
             </div>
 
-            <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed"
+            <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed omrss-bgcolor"
                data-name="{{ feed.name }}">取消订阅</a>
             <span class="rss-text right omrss-right-space omrss-tag">{{ feed.tag }}</span>
             <span class="right rss-text omrss-right-space yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
@@ -38,7 +38,13 @@
 <!-- 评分低的隐藏 -->
 <div class="card-panel hoverable ev-display-btn">
     <div class="text-darken-2 omrss-article-bottom center-align">
-        <a href="#!"><i class="material-icons omrss-article-bottom">unfold_more</i> 查看更多</a>
+        <a href="#!"><i class="material-icons omrss-article-bottom">unfold_more</i>
+            {% if not user %}
+            发现更多源
+            {% else %}
+            查看我没有订阅的源
+            {% endif %}
+        </a>
     </div>
 </div>
 
@@ -52,7 +58,7 @@
             </div>
 
             <a class="waves-effect waves-light btn-small right rss-text omrss-right-space ev-toggle-feed"
-               data-name="{{ feed.name }}">取消订阅</a>
+               data-name="{{ feed.name }}">订阅</a>
             <span class="rss-text right omrss-right-space omrss-tag">{{ feed.tag }}</span>
             <span class="right rss-text omrss-right-space yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
         </div>

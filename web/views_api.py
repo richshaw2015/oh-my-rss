@@ -2,7 +2,8 @@
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from .models import *
 from datetime import date, timedelta, datetime
-from .utils import incr_action, get_subscribe_sites, get_hash_name
+from .utils import incr_action, get_subscribe_sites, get_hash_name, get_user_sub_feeds, get_login_user, \
+    add_user_sub_feeds, del_user_sub_feed
 from .views_html import get_all_issues
 from .verify import verify_request
 import logging
@@ -17,19 +18,25 @@ def get_lastweek_articles(request):
     """
     过去一周的文章id列表
     """
-    # TODO 适配已登录用户
     uid = request.POST.get('uid', '')
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
     ext = request.POST.get('ext', '')
 
-    logger.info(f"收到订阅源查询请求：`{uid}`{sub_feeds}`{unsub_feeds}`{ext}")
+    user = get_login_user(request)
+
+    logger.info(f"收到订阅源查询请求：`{uid}`{unsub_feeds}`{ext}")
 
     lastweek_dt = datetime.now() - timedelta(days=7)
-    
-    my_sub_feeds = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+
+    if user is None:
+        my_sub_feeds = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+    else:
+        my_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
     my_lastweek_articles = list(Article.objects.all().prefetch_related('site').filter(
         status='active', site__name__in=my_sub_feeds, ctime__gte=lastweek_dt).values_list('uindex', flat=True))
+
     return JsonResponse({"result": my_lastweek_articles})
 
 
@@ -95,7 +102,7 @@ def submit_a_feed(request):
             else:
                 brief = cname
 
-            author = feed_obj.feed.get('author', '')[:10]
+            author = feed_obj.feed.get('author', '')[:12]
             favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=64"
 
             try:
@@ -110,6 +117,39 @@ def submit_a_feed(request):
     return HttpResponseNotFound("Param error")
 
 
-# TODO 增加已登录用户的订阅源更新接口
+@verify_request
+def user_subscribe_feed(request):
+    """
+    已登录用户订阅源
+    """
+    feed = request.POST.get('feed', '').strip()[:32]
+
+    user = get_login_user(request)
+
+    if user and feed:
+        try:
+            Site.objects.get(name=feed)
+            add_user_sub_feeds(user.oauth_id, [feed, ])
+            return JsonResponse({"name": feed})
+        except:
+            logger.warning(f'订阅出现异常：`{feed}`{user.oauth_id}')
+    return HttpResponseNotFound("Param error")
+
+
+@verify_request
+def user_unsubscribe_feed(request):
+    """
+    已登录用户取消订阅源
+    """
+    feed = request.POST.get('feed', '').strip()[:32]
+
+    user = get_login_user(request)
+
+    if user and feed:
+        del_user_sub_feed(user.oauth_id, feed)
+        return JsonResponse({"name": feed})
+    return HttpResponseNotFound("Param error")
+
+
 # TODO 增加已登录用户的未读文章同步
 # TODO 增加已登录用户的账号数据同步

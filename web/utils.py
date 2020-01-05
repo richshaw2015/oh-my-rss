@@ -4,7 +4,7 @@ import time
 import redis
 from functools import lru_cache
 from django.conf import settings
-from .models import Site
+from .models import Site, User
 import logging
 import hashlib
 import urllib
@@ -134,14 +134,28 @@ def log_refer_request(request):
                 logger.warning("外域请求统计异常")
 
 
+def add_user_sub_feeds(oauth_id, feeds):
+    return R.sadd(settings.REDIS_USER_SUB_KEY % oauth_id, *feeds)
+
+
+def del_user_sub_feed(oauth_id, feed):
+    return R.srem(settings.REDIS_USER_SUB_KEY % oauth_id, feed)
+
+
+def get_user_sub_feeds(oauth_id):
+    return R.smembers(settings.REDIS_USER_SUB_KEY % oauth_id)
+
+
 def get_login_user(request):
     """
-    获取登录用户信息
+    获取已登录用户信息
     :param request:
-    :return: User，未登录则返回 None
+    :return: 获取成功返回 User 对象；用户不存在则返回 None
     """
-    login_id = request.get_signed_cookie('login_id', False)
-    if login_id:
-        # TODO 从数据库查找对象
-        return True
+    oauth_id = request.get_signed_cookie('oauth_id', False)
+    if oauth_id:
+        try:
+            return User.objects.get(oauth_id=oauth_id)
+        except:
+            logger.warning(f'用户不存在：`{oauth_id}')
     return None
