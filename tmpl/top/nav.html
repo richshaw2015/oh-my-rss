@@ -1,5 +1,18 @@
 {% load helpers %}
 <ul class="sidenav" id="omrss-sidenav">
+    {% if user %}
+    <li>
+        <div class="user-view">
+            <div class="background">
+                <img src="/assets/img/avatar-bg.jpg">
+            </div>
+            <a href="{{ user.oauth_blog }}" target="_blank">
+                <img class="circle" src="{{ user.oauth_avatar |to_avatar_size }}"></a>
+            <a href="{{ user.oauth_blog }}" target="_blank">
+                <span class="white-text name nav-name">{{ user.oauth_name }}</span></a>
+        </div>
+    </li>
+    {% endif %}
 
     <li class="ev-toggle-fullscreen sidenav-close" data-tooltip="切换全屏" data-position="bottom">
         <a href="#!"><i class="material-icons omrss-color">fullscreen</i>切换全屏</a>
@@ -14,6 +27,8 @@
         <a href="/dash" target="_blank" class="sidenav-close">
             <i class="material-icons omrss-color">trending_up</i>后台报表</a>
     </li>
+
+    <div class="divider nav-divider"></div>
 
     <li class="ev-intro sidenav-close">
         <a href="#!"><i class="material-icons omrss-color">info_outline</i>关于</a>
@@ -55,14 +70,14 @@
             </li>
 
             {% if not user %}
-            <li class="tooltipped" data-tooltip="登录" data-position="bottom">
-                <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
-            </li>
+                <li class="tooltipped" data-tooltip="登录" data-position="bottom">
+                    <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
+                </li>
             {% else %}
-            <li class="tooltipped" data-tooltip="我" data-position="bottom" data-oauth-id="{{ user.oauth_id }}"
-                data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
-                <img src="{{ user.oauth_avatar |to_avatar_size }}" class="omrss-avatar" />
-            </li>
+                <li class="tooltipped" data-tooltip="我" data-position="bottom" data-oauth-id="{{ user.oauth_id }}"
+                    data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
+                    <img src="{{ user.oauth_avatar |to_avatar_size }}" class="omrss-avatar"/>
+                </li>
 
             {% endif %}
             <li><a data-target="omrss-sidenav" class="sidenav-trigger show-on-large">
@@ -83,7 +98,8 @@
 
         <div class="modal-footer">
             <a href="https://github.com/login/oauth/authorize?client_id={{ github_oauth_key }}">
-                <button class="btn waves-effect waves-light">我知道了</button></a>
+                <button class="btn waves-effect waves-light">我知道了</button>
+            </a>
         </div>
     </div>
 </div>

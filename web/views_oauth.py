@@ -38,10 +38,10 @@ def github_callback(request):
                     if rsp.ok:
                         if rsp.json().get('id'):
                             oauth_id = f'github/{rsp.json()["id"]}'
-                            oauth_name = rsp.json().get('login')
+                            oauth_name = rsp.json().get('name') or rsp.json().get('login')
                             oauth_avatar = rsp.json().get('avatar_url')
                             oauth_email = rsp.json().get('email')
-                            oauth_blog = rsp.json().get('blog')
+                            oauth_blog = rsp.json().get('blog') or rsp.json().get('url')
                             oauth_ext = json.dumps(rsp.json())
 
                             # 用户信息入库 TODO 用户头像存储到本地一份，国内网络会丢图
