@@ -41,9 +41,10 @@ def api_profile_line_chart() -> Line:
                          )
     )
     for api in apis:
-        api_redis_keys = [settings.REDIS_API_AVG_KEY % (api, day) for day in xaxis]
-        api_profile = R.mget(*api_redis_keys)
-        line.add_yaxis(api, api_profile, is_connect_nones=True, is_smooth=True)
+        if api in ('/', '/dash') or api.startswith('/api/') or api.startswith('/feed/') or api.startswith('/oauth/'):
+            api_redis_keys = [settings.REDIS_API_AVG_KEY % (api, day) for day in xaxis]
+            api_profile = R.mget(*api_redis_keys)
+            line.add_yaxis(api, api_profile, is_connect_nones=True, is_smooth=True)
 
     return line.dump_options()
 
