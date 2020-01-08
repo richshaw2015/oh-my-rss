@@ -52,7 +52,7 @@ def index(request):
 
 def article(request, id):
     """
-    详情页，主要向移动端、搜索引擎提供
+    详情页，主要向移动端、搜索引擎提供，这个页面需要做风控
     """
     # TODO 适配已登录用户
     log_refer_request(request)
@@ -65,6 +65,23 @@ def article(request, id):
         except:
             logger.warning(f"获取文章详情请求处理异常：`{id}")
             return redirect('index')
+
+    # 判断是否命中敏感词
+    is_sensitive = False
+    for word in settings.SENSITIVE_WORDS:
+        if word in article.content:
+            is_sensitive = True
+            break
+
+    if is_sensitive:
+        user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
+        if user_agent.is_mobile or user_agent.is_bot:
+            logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{id}')
+            return redirect(article.src_url)
+        else:
+            logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{id}')
+            return redirect('index')
+
     context = dict()
     context['article'] = article
 
