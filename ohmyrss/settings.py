@@ -153,6 +153,15 @@ REDIS_VIEW_KEY = 'VIEW/%s'
 REDIS_THUMB_KEY = 'THUMB/%s'
 REDIS_OPEN_KEY = 'OPEN/%s'
 
+# register user count
+REDIS_REG_KEY = 'REG/%s'
+
+# api response time
+REDIS_API_KEY = 'API/ALL'
+REDIS_API_AVG_KEY = 'API/AVG/%s/%s'
+REDIS_API_TOTAL_KEY = 'API/TOTAL/%s/%s'
+REDIS_API_COUNT_KEY = 'API/COUNT/%s/%s'
+
 # for dashboard statistics
 REDIS_WEEK_KEY = 'WEEK/%s'
 REDIS_VISIT_KEY = 'VISIT/%s/%s'

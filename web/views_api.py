@@ -152,4 +152,3 @@ def user_unsubscribe_feed(request):
 
 
 # TODO 增加已登录用户的未读文章同步
-# TODO 增加已登录用户的账号数据同步

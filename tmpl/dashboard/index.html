@@ -6,8 +6,7 @@
     <link rel="stylesheet" href="/assets/css/lib.css">
     <link rel="stylesheet" href="/assets/css/app.css">
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
-    <script src="/assets/js/lib.js"></script>
-    <script src="/assets/js/echarts.min.js"></script>
+
     <style>
         .chart {
             width: 96%;
@@ -30,15 +29,21 @@
 <div>
     <div id="uvTrend" class="chart"></div>
 
+    <div id="apiProfileTrend" class="chart"></div>
+
     <div id="referPie" class="chart"></div>
 
      <div id="referPvTrend" class="chart"></div>
 </div>
 
+<script src="/assets/js/lib.js"></script>
+<script src="/assets/js/echarts.min.js"></script>
+
 <script>
     const chartUvTrend = echarts.init(document.getElementById('uvTrend'));
     const chartReferPie = echarts.init(document.getElementById('referPie'));
     const chartReferPvTrend = echarts.init(document.getElementById('referPvTrend'));
+    const chartApiProfileTrend = echarts.init(document.getElementById('apiProfileTrend'));
 
     function renderChart() {
         $.ajax({
@@ -47,6 +52,15 @@
             dataType: 'json',
             success: function (data) {
                 chartUvTrend.setOption(data);
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: "/api/dashboard/api/profile",
+            dataType: 'json',
+            success: function (data) {
+                chartApiProfileTrend.setOption(data);
             }
         });
 

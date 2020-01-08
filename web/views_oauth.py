@@ -7,7 +7,7 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 import logging
 from django.conf import settings
 import json
-from .utils import add_user_sub_feeds, get_subscribe_sites
+from .utils import add_user_sub_feeds, get_subscribe_sites, add_register_count
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def github_callback(request):
                             oauth_name = rsp.json().get('name') or rsp.json().get('login')
                             oauth_avatar = rsp.json().get('avatar_url')
                             oauth_email = rsp.json().get('email')
-                            oauth_blog = rsp.json().get('blog') or rsp.json().get('url')
+                            oauth_blog = rsp.json().get('blog') or rsp.json().get('html_url')
                             oauth_ext = json.dumps(rsp.json())
 
                             # 用户信息入库 TODO 用户头像存储到本地一份，国内网络会丢图
@@ -56,15 +56,18 @@ def github_callback(request):
                             })
                             if created:
                                 logger.info(f"新用户登录：`{user.oauth_name}")
-                                # 给新用户默认推荐列表 TODO 消息通知
                                 add_user_sub_feeds(oauth_id, get_subscribe_sites('', ''))
+                                add_register_count()
 
                             response = redirect('index')
                             response.set_signed_cookie('oauth_id', oauth_id, max_age=10 * 365 * 86400)
+                            response.set_signed_cookie('toast', 'LOGIN_SUCC_MSG', max_age=20)
                             return response
     except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
         logger.warning("OAuth 认证网络出现异常！")
     except:
         logger.warning("OAuth 认证出现未知异常！")
-    # TODO 返回错误提示信息
-    return redirect('index')
+
+    response = redirect('index')
+    response.set_signed_cookie('toast', 'LOGIN_ERROR_MSG', max_age=20)
+    return response

@@ -32,9 +32,38 @@ def incr_action(action, uindex):
     if key is not None:
         try:
             return R.incr(key, amount=1)
-        except redis.exceptions.ConnectionError:
-            logger.warning(f"写入Redis出现异常：`{key}")
+        except:
+            logger.error(f"写入Redis出现异常：`{key}")
     return False
+
+
+def add_register_count():
+    """
+    注册用户数统计
+    :return:
+    """
+    key = settings.REDIS_REG_KEY % current_day()
+
+    return incr_redis_key(key)
+
+
+def add_api_profile(api, elapsed):
+    """
+    按天进行平均耗时计算
+    :param api:
+    :param elapsed:
+    :return:
+    """
+    day = current_day()
+    count = total = 0
+    try:
+        R.sadd(settings.REDIS_API_KEY, api)
+
+        count = R.incr(settings.REDIS_API_COUNT_KEY % (api, day))
+        total = R.incr(settings.REDIS_API_TOTAL_KEY % (api, day), amount=elapsed)
+        R.set(settings.REDIS_API_AVG_KEY % (api, day), int(total/count))
+    except:
+        logger.error(f"api 平均耗时计算异常！`{count}`{total}")
 
 
 def get_page_uv(page):
@@ -49,7 +78,7 @@ def get_page_uv(page):
                          settings.REDIS_OPEN_KEY % article.uindex])
     try:
         data_list = R.mget(*key_list)
-    except redis.exceptions.ConnectionError:
+    except:
         logger.error("Redis连接异常")
     return dict(zip(key_list, data_list))
 
@@ -57,7 +86,7 @@ def get_page_uv(page):
 @lru_cache(maxsize=128, typed=True)
 def get_subscribe_sites(sub_feeds, unsub_feeds):
     """
-    获取订阅的站点，已订阅 + 推荐 - 取消订阅
+    获取游客订阅的站点，已订阅 + 推荐 - 取消订阅
     :param sub_feeds:
     :param unsub_feeds:
     :return:
@@ -92,11 +121,20 @@ def is_visit_today(uid):
     :param uid:
     :return:
     """
-    return R.get(settings.REDIS_VISIT_KEY % (current_day(), uid))
+    key = settings.REDIS_VISIT_KEY % (current_day(), uid)
+    try:
+        return R.get(key)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
+    return False
 
 
 def set_visit_today(uid):
-    return R.set(settings.REDIS_VISIT_KEY % (current_day(), uid), 1, 24*3600+100)
+    key = settings.REDIS_VISIT_KEY % (current_day(), uid)
+    try:
+        return R.set(key, 1, 24*3600+100)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
 
 
 def is_old_user(uid):
@@ -105,19 +143,35 @@ def is_old_user(uid):
     :param uid:
     :return:
     """
-    return R.get(settings.REDIS_WEEK_KEY % uid)
+    key = settings.REDIS_WEEK_KEY % uid
+    try:
+        return R.get(settings.REDIS_WEEK_KEY % uid)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
+    return False
 
 
 def set_old_user(uid):
-    return R.set(settings.REDIS_WEEK_KEY % uid, 1, 7*24*3600)
+    key = settings.REDIS_WEEK_KEY % uid
+    try:
+        return R.set(key, 1, 7*24*3600)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
 
 
 def incr_redis_key(key):
-    return R.incr(key, amount=1)
+    try:
+        return R.incr(key, amount=1)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
 
 
 def add_refer_host(host):
-    return R.sadd(settings.REDIS_REFER_ALL_KEY, host)
+    key = settings.REDIS_REFER_ALL_KEY
+    try:
+        return R.sadd(key, host)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
 
 
 def log_refer_request(request):
@@ -131,19 +185,32 @@ def log_refer_request(request):
                 incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
                 incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
             except:
-                logger.warning("外域请求统计异常")
+                logger.error("外域请求统计异常")
 
 
 def add_user_sub_feeds(oauth_id, feeds):
-    return R.sadd(settings.REDIS_USER_SUB_KEY % oauth_id, *feeds)
+    key = settings.REDIS_USER_SUB_KEY % oauth_id
+    try:
+        return R.sadd(key, *feeds)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
 
 
 def del_user_sub_feed(oauth_id, feed):
-    return R.srem(settings.REDIS_USER_SUB_KEY % oauth_id, feed)
+    key = settings.REDIS_USER_SUB_KEY % oauth_id
+    try:
+        return R.srem(key, feed)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
 
 
 def get_user_sub_feeds(oauth_id):
-    return R.smembers(settings.REDIS_USER_SUB_KEY % oauth_id)
+    key = settings.REDIS_USER_SUB_KEY % oauth_id
+    try:
+        return R.smembers(key)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
+    return []
 
 
 def get_login_user(request):

@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
     path('api/dashboard/refer/pie', views_dash.get_refer_pie_data, name='get_refer_pie_data'),
     path('api/dashboard/refer/pv', views_dash.get_refer_pv_chart_data, name='get_refer_uv_chart_data'),
+    path('api/dashboard/api/profile', views_dash.get_api_profile_chart_data, name='get_api_profile_chart_data'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
