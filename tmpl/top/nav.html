@@ -1,18 +1,25 @@
 {% load helpers %}
 <ul class="sidenav" id="omrss-sidenav">
-    {% if user %}
+
     <li>
         <div class="user-view">
             <div class="background">
                 <img src="/assets/img/avatar-bg.jpg">
             </div>
+            {% if user %}
             <a href="{{ user.oauth_blog }}" target="_blank">
-                <img class="circle" src="{{ user.oauth_avatar |to_avatar_size }}"></a>
+                <img class="circle" alt="头像" src="{{ user.avatar }}"></a>
             <a href="{{ user.oauth_blog }}" target="_blank">
                 <span class="white-text name nav-name">{{ user.oauth_name }}</span></a>
+            {% else %}
+            <a href="#model-omrss-login" class="modal-trigger">
+                <i class="material-icons white-text circle omrss-visitor-avatar">person</i></a>
+            <a href="#model-omrss-login" class="modal-trigger">
+                <span class="white-text name nav-name">点击登录</span></a>
+            {% endif %}
         </div>
     </li>
-    {% endif %}
+
 
     <li class="ev-toggle-fullscreen sidenav-close" data-tooltip="切换全屏" data-position="bottom">
         <a href="#!"><i class="material-icons omrss-color">fullscreen</i>切换全屏</a>
@@ -74,9 +81,9 @@
                     <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
                 </li>
             {% else %}
-                <li class="tooltipped" data-tooltip="我" data-position="bottom" data-oauth-id="{{ user.oauth_id }}"
+                <li data-oauth-id="{{ user.oauth_id }}"
                     data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
-                    <img src="{{ user.oauth_avatar |to_avatar_size }}" class="omrss-avatar circle"/>
+                    <img src="{{ user.avatar }}" class="omrss-avatar circle" alt="头像" />
                 </li>
 
             {% endif %}
@@ -94,7 +101,7 @@
         <h3>即将跳转到三方平台登录</h3>
 
         <p>登录后可以跨平台同步数据</p>
-        <p>目前仅支持<i> Github OAuth </i>认证，只会获取您的公开信息</p>
+        <p>目前仅支持<i> Github OAuth </i>认证，只会获取您的公开信息，过程可能需要几秒钟时间</p>
 
         <div class="modal-footer">
             <a href="https://github.com/login/oauth/authorize?client_id={{ github_oauth_key }}">

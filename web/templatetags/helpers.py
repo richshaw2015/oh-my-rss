@@ -77,16 +77,6 @@ def to_gravatar_url(uid, size=64):
 
 
 @register.filter
-def to_avatar_size(avatar, size=64):
-    # TODO 优化这里的算法
-    if 'githubusercontent' in avatar:
-        return urllib.parse.urljoin(avatar, f'?s={size}')
-    else:
-        logger.warning(f'未处理的头像地址：`{avatar}')
-    return avatar
-
-
-@register.filter
 def unquote(url):
     return urllib.parse.unquote(url)
 

@@ -13,3 +13,4 @@ gevent
 pyyaml ~= 5.2
 ua-parser ~= 0.8
 user-agents ~= 2.0
+pillow

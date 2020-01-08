@@ -7,7 +7,10 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 import logging
 from django.conf import settings
 import json
-from .utils import add_user_sub_feeds, get_subscribe_sites, add_register_count
+from PIL import Image
+from io import BytesIO
+import os
+from .utils import add_user_sub_feeds, get_subscribe_sites, add_register_count, get_hash_name
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +47,7 @@ def github_callback(request):
                             oauth_blog = rsp.json().get('blog') or rsp.json().get('html_url')
                             oauth_ext = json.dumps(rsp.json())
 
-                            # 用户信息入库 TODO 用户头像存储到本地一份，国内网络会丢图
+                            # 用户信息入库
                             user, created = User.objects.update_or_create(
                                 oauth_id=oauth_id, 
                                 defaults={
@@ -53,11 +56,31 @@ def github_callback(request):
                                     "oauth_email": oauth_email,
                                     "oauth_blog": oauth_blog,
                                     "oauth_ext": oauth_ext,
-                            })
+                                }
+                            )
+
                             if created:
                                 logger.info(f"新用户登录：`{user.oauth_name}")
                                 add_user_sub_feeds(oauth_id, get_subscribe_sites('', ''))
                                 add_register_count()
+
+                                # 用户头像存储到本地一份，国内网络会丢图
+                                try:
+                                    rsp = requests.get(oauth_avatar, timeout=10)
+                                    if rsp.ok:
+                                        img_obj = Image.open(BytesIO(rsp.content))
+                                        img_obj.thumbnail((100, 100))
+                                        jpg = get_hash_name(oauth_id) + '.jpg'
+                                        img_obj.save(os.path.join(settings.AVATAR_DIR, jpg))
+
+                                        user.avatar = f'/assets/avatar/{jpg}'
+                                        user.save()
+                                    else:
+                                        logger.error(f"同步用户头像出现网络异常！`{oauth_id}`{oauth_avatar}")
+                                except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+                                    logger.error(f"同步用户头像网络异常！`{oauth_id}`{oauth_avatar}")
+                                except:
+                                    logger.error(f"同步用户头像未知异常！`{oauth_id}`{oauth_avatar}")
 
                             response = redirect('index')
                             response.set_signed_cookie('oauth_id', oauth_id, max_age=10 * 365 * 86400)

@@ -108,6 +108,8 @@ class User(models.Model):
     oauth_blog = models.CharField('blog', max_length=200, null=True, blank=True)
     oauth_ext = models.TextField('完整信息', default='', null=True, blank=True)
 
+    avatar = models.CharField('头像', max_length=200, default='', null=True, blank=True)
+
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
