@@ -58,10 +58,10 @@ def article(request, id):
     log_refer_request(request)
 
     try:
-        article = Article.objects.get(uindex=id)
+        article = Article.objects.get(uindex=id, status='active')
     except:
         try:
-            article = Article.objects.get(pk=id)
+            article = Article.objects.get(pk=id, status='active')
         except:
             logger.warning(f"获取文章详情请求处理异常：`{id}")
             return redirect('index')
