@@ -50,7 +50,8 @@ class UserAdmin(admin.ModelAdmin):
         models.CharField: {'widget': TextInput(attrs={'size': '10'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
     }
-    list_display = [field.name for field in User._meta.get_fields()]
+    list_display = ['oauth_id', 'oauth_name', 'oauth_email', 'oauth_blog', 'avatar', 'status', 'ctime', 'mtime',
+                    'remark']
     list_editable = ['remark', ]
     list_filter = ('status', )
     list_per_page = 50
