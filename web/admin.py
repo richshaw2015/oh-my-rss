@@ -42,3 +42,15 @@ class MessageAdmin(admin.ModelAdmin):
     list_editable = ['reply', ]
     list_filter = ('status',)
     list_per_page = 50
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
+    }
+    list_display = [field.name for field in User._meta.get_fields()]
+    list_editable = ['remark', ]
+    list_filter = ('status', )
+    list_per_page = 50
