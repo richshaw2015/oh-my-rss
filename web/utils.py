@@ -4,6 +4,7 @@ import time
 import redis
 from functools import lru_cache
 from django.conf import settings
+from django.urls import reverse
 from .models import Site, User
 import logging
 import hashlib
@@ -81,6 +82,14 @@ def get_page_uv(page):
     except:
         logger.error("Redis连接异常")
     return dict(zip(key_list, data_list))
+
+
+@lru_cache(maxsize=4)
+def get_profile_apis():
+    return (
+        reverse('index'), reverse('submit_a_feed'), reverse('add_log_action'),
+        reverse('get_all_feeds'), reverse('get_articles_list'), reverse('get_lastweek_articles')
+    )
 
 
 @lru_cache(maxsize=128, typed=True)

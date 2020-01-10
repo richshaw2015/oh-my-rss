@@ -2,7 +2,7 @@
 
 import logging
 import time
-from .utils import add_api_profile
+from .utils import add_api_profile, get_profile_apis
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +19,11 @@ class StatsMiddleware:
         end_t = int(time.time() * 1000)
 
         elapsed = end_t - start_t
-        if elapsed > 100:
-            logger.info(f'接口处理时间：`{request.path}`{elapsed} ms')
-            add_api_profile(request.path, elapsed)
 
+        if elapsed > 100:
+            if request.path in get_profile_apis():
+                add_api_profile(request.path, elapsed)
+
+        if elapsed > 1000:
+            logger.warning(f'接口处理时间：`{request.path}`{elapsed} ms')
         return response
