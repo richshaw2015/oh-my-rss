@@ -53,7 +53,6 @@ def github_callback(request):
                                 defaults={
                                     "oauth_name": oauth_name,
                                     "oauth_avatar": oauth_avatar,
-                                    "avatar": oauth_avatar,
                                     "oauth_email": oauth_email,
                                     "oauth_blog": oauth_blog,
                                     "oauth_ext": oauth_ext,

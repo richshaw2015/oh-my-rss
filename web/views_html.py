@@ -20,7 +20,7 @@ def get_article_detail(request):
     mobile = request.POST.get('mobile', False)
 
     try:
-        article = Article.objects.get(uindex=uindex)
+        article = Article.objects.get(uindex=uindex, status='active')
 
         context = dict()
         context['article'] = article
