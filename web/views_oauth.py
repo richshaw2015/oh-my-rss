@@ -72,6 +72,9 @@ def github_callback(request):
                                         img_obj = Image.open(BytesIO(rsp.content))
                                         img_obj.thumbnail((100, 100))
                                         jpg = get_hash_name(oauth_id) + '.jpg'
+
+                                        if img_obj.mode != 'RGB':
+                                            img_obj = img_obj.convert('RGB')
                                         img_obj.save(os.path.join(settings.AVATAR_DIR, jpg))
 
                                         user.avatar = f'/assets/avatar/{jpg}'
