@@ -1,5 +1,4 @@
 
-from django.http import JsonResponse
 from .models import User
 from django.shortcuts import redirect
 import requests
@@ -7,10 +6,7 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 import logging
 from django.conf import settings
 import json
-from PIL import Image
-from io import BytesIO
-import os
-from .utils import add_user_sub_feeds, get_subscribe_sites, add_register_count, get_hash_name
+from .utils import add_user_sub_feeds, get_subscribe_sites, add_register_count, save_avatar
 
 logger = logging.getLogger(__name__)
 
@@ -65,25 +61,9 @@ def github_callback(request):
                                 add_register_count()
 
                                 # 用户头像存储到本地一份，国内网络会丢图
-                                try:
-                                    rsp = requests.get(oauth_avatar, timeout=10)
-                                    if rsp.ok:
-                                        img_obj = Image.open(BytesIO(rsp.content))
-                                        img_obj.thumbnail((100, 100))
-                                        jpg = get_hash_name(oauth_id) + '.jpg'
-
-                                        if img_obj.mode != 'RGB':
-                                            img_obj = img_obj.convert('RGB')
-                                        img_obj.save(os.path.join(settings.AVATAR_DIR, jpg))
-
-                                        user.avatar = f'/assets/avatar/{jpg}'
-                                        user.save()
-                                    else:
-                                        logger.error(f"同步用户头像出现网络异常！`{oauth_id}`{oauth_avatar}")
-                                except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-                                    logger.error(f"同步用户头像网络异常！`{oauth_id}`{oauth_avatar}")
-                                except:
-                                    logger.error(f"同步用户头像未知异常！`{oauth_id}`{oauth_avatar}")
+                                avatar = save_avatar(oauth_avatar, oauth_id)
+                                user.avatar = avatar
+                                user.save()
 
                             response = redirect('index')
                             response.set_signed_cookie('oauth_id', oauth_id, max_age=10 * 365 * 86400)

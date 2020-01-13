@@ -9,6 +9,9 @@ from .verify import verify_request
 import logging
 import feedparser
 import django
+import urllib
+from web.omrssparser.wemp import parse_wemp_ershicimi
+from web.omrssparser.atom import parse_atom
 
 logger = logging.getLogger(__name__)
 
@@ -85,35 +88,21 @@ def submit_a_feed(request):
     """
     用户添加一个自定义的订阅源
     """
-    feed_url = request.POST.get('url', '').strip()[:200]
+    feed_url = request.POST.get('url', '').strip()[:1024]
+
     if feed_url:
-        feed_obj = feedparser.parse(feed_url)
-        if feed_obj.feed.get('title'):
-            name = get_hash_name(feed_url)
-            cname = feed_obj.feed.title[:20]
+        host = urllib.parse.urlparse(feed_url).netloc
 
-            if feed_obj.feed.get('link'):
-                link = feed_obj.feed.link[:100]
-            else:
-                link = feed_url
+        if 'ershicimi.com' in host:
+            rsp = parse_wemp_ershicimi(feed_url)
+        else:
+            rsp = parse_atom(feed_url)
 
-            if feed_obj.feed.get('subtitle'):
-                brief = feed_obj.feed.subtitle[:100]
-            else:
-                brief = cname
-
-            author = feed_obj.feed.get('author', '')[:12]
-            favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=64"
-
-            try:
-                site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
-                            creator='user', rss=feed_url, favicon=favicon, author=author)
-                site.save()
-            except django.db.utils.IntegrityError:
-                logger.warning(f"数据插入失败：`{feed_url}")
-            return JsonResponse({"name": name})
+        if rsp:
+            return JsonResponse(rsp)
         else:
             logger.warning(f"RSS解析失败：`{feed_url}")
+
     return HttpResponseNotFound("Param error")
 
 

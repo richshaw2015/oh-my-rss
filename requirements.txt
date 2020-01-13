@@ -1,16 +1,16 @@
-scrapy ~= 1.8
+scrapy
 bs4
-lxml ~= 4.4
-requests ~= 2.22
+lxml
+requests
 django ~= 2.2
-redis ~= 3.3
+redis
 selenium
-feedparser ~= 5.2
-django-crontab ~= 0.7
+feedparser
+django-crontab
 pyecharts
 gunicorn
 gevent
-pyyaml ~= 5.2
-ua-parser ~= 0.8
-user-agents ~= 2.0
+pyyaml
+ua-parser
+user-agents
 pillow

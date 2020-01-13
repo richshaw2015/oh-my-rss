@@ -115,17 +115,3 @@ class TitleSpider(Spider):
 
         yield FeedItem(title=title, content=content, url=url, name=self.name, trims=self.article_trim_xpaths,
                        req_url=req_url, css=self.css)
-
-
-class WeixinSpider(Spider):
-    """
-    father class of mp.weixin.qq.com spiders
-    """
-
-    def __init__(self, start_urls, index_xpath, index_limit_count=None):
-        super(WeixinSpider, self).__init__(start_urls, index_xpath, '//h2[@id="activity-name"]/text()',
-                                           '//div[@id="js_content"]', index_limit_count=index_limit_count,
-                                           article_author_xpath='//a[@id="js_name"]/text()',
-                                           trim_style_tags=['code', 'strong', 'ul', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                                                            'a', 'blockquote'],
-                                           css='.code-snippet__line-index{ display: none; }')

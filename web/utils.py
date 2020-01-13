@@ -6,6 +6,11 @@ from functools import lru_cache
 from django.conf import settings
 from django.urls import reverse
 from .models import Site, User
+import requests
+import os
+from PIL import Image
+from io import BytesIO
+from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 import logging
 import hashlib
 import urllib
@@ -235,3 +240,34 @@ def get_login_user(request):
         except:
             logger.warning(f'用户不存在：`{oauth_id}')
     return None
+
+
+def save_avatar(avatar, userid, size=100):
+    """
+    保存网络头像
+    :param avatar:
+    :param userid:
+    :param size:
+    :return: 保存后的头像地址
+    """
+    try:
+        rsp = requests.get(avatar, timeout=10)
+
+        if rsp.ok:
+            img_obj = Image.open(BytesIO(rsp.content))
+            img_obj.thumbnail((size, size))
+            jpg = get_hash_name(userid) + '.jpg'
+
+            if img_obj.mode != 'RGB':
+                img_obj = img_obj.convert('RGB')
+
+            img_obj.save(os.path.join(settings.AVATAR_DIR, jpg))
+            return f'/assets/avatar/{jpg}'
+        else:
+            logger.error(f"同步用户头像出现网络异常！`{userid}`{avatar}")
+    except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+        logger.error(f"同步用户头像网络异常！`{userid}`{avatar}")
+    except:
+        logger.error(f"同步用户头像未知异常！`{userid}`{avatar}")
+
+    return ''

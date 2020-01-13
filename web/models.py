@@ -8,7 +8,7 @@ class Site(models.Model):
     name = models.CharField('scrapy代号', max_length=100, unique=True, db_index=True)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     cname = models.CharField('名称', max_length=100)
-    link = models.CharField('主页', max_length=200)
+    link = models.CharField('主页', max_length=1024)
     favicon = models.CharField('favicon', max_length=100, default='', null=True, blank=True)
     brief = models.CharField('简介', max_length=200)
     star = models.IntegerField('评级', default=20, db_index=True)
@@ -46,11 +46,12 @@ class Site(models.Model):
         ('RSS', 'RSS'),
     ), max_length=20, null=True, blank=True)
 
-    rss = models.CharField('RSS地址', max_length=200, null=True, blank=True)
+    rss = models.CharField('RSS地址', max_length=1024, null=True, blank=True)
     creator = models.CharField('创建人', choices=(
         ('system', '系统录入'),
         ('user', '用户提交'),
-    ), max_length=20, null=True, blank=True, default='system')
+        ('wemp', '微信公众号'),
+    ), max_length=20, null=True, blank=True, default='system', db_index=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
@@ -66,7 +67,7 @@ class Article(models.Model):
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
     content = models.TextField('内容')
-    src_url = models.CharField('原始链接', max_length=500)
+    src_url = models.CharField('原始链接', max_length=1024)
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
