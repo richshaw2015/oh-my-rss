@@ -12,6 +12,7 @@ tests/.pytest_cache
 .vscode
 build
 assets/img
+assets/avatar
 project.egg-info
 setup.py
 *.sqlite3
