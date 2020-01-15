@@ -9,7 +9,6 @@
 tmp
 dist
 tests/.pytest_cache
-migrations/
 .vscode
 build
 assets/img

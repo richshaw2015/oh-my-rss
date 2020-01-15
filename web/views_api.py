@@ -1,14 +1,12 @@
 
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from .models import *
-from datetime import date, timedelta, datetime
-from .utils import incr_action, get_subscribe_sites, get_hash_name, get_user_sub_feeds, get_login_user, \
+from datetime import timedelta, datetime
+from .utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed
 from .views_html import get_all_issues
 from .verify import verify_request
 import logging
-import feedparser
-import django
 import urllib
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.omrssparser.atom import parse_atom

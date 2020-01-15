@@ -43,6 +43,7 @@ class Site(models.Model):
         ('刊物', '刊物'),
         ('算法', '算法'),
         ('大数据', '大数据'),
+        ('公众号', '公众号'),
         ('RSS', 'RSS'),
     ), max_length=20, null=True, blank=True)
 
@@ -63,11 +64,11 @@ class Article(models.Model):
     文章表
     """
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
-    title = models.CharField('标题', max_length=200, unique=True)
+    title = models.CharField('标题', max_length=200)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
     content = models.TextField('内容')
-    src_url = models.CharField('原始链接', max_length=1024)
+    src_url = models.CharField('原始链接', max_length=1024, unique=True)
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),

@@ -92,7 +92,7 @@ def get_page_uv(page):
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (
-        reverse('index'), reverse('submit_a_feed'), reverse('add_log_action'),
+        reverse('index'), reverse('add_log_action'),
         reverse('get_all_feeds'), reverse('get_articles_list'), reverse('get_lastweek_articles')
     )
 

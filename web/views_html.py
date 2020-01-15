@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound, HttpResponseServerError
+from django.http import HttpResponseNotFound
 from .models import *
 from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds
 from .verify import verify_request
@@ -128,12 +128,15 @@ def get_articles_list(request):
 
     if user is None:
         visitor_sub_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+
         my_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name__in=visitor_sub_sites, ctime__gte=last1month).order_by('-id')[:500]
+            status='active', site__name__in=visitor_sub_sites, ctime__gte=last1month).order_by('-id')[:300]
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
         if not user_sub_feeds:
             logger.warning(f'用户未订阅任何内容：`{user.oauth_id}')
+
         my_articles = Article.objects.all().prefetch_related('site').filter(
             status='active', site__name__in=user_sub_feeds, ctime__gte=last1month).order_by('-id')[:999]
 
