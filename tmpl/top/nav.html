@@ -15,7 +15,7 @@
             <a href="#model-omrss-login" class="modal-trigger">
                 <i class="material-icons white-text circle omrss-visitor-avatar">person</i></a>
             <a href="#model-omrss-login" class="modal-trigger">
-                <span class="white-text name nav-name">点击登录</span></a>
+                <span class="white-text name nav-name">一键登录</span></a>
             {% endif %}
         </div>
     </li>
@@ -54,7 +54,7 @@
 <nav id="omrss-nav">
     <div class="nav-wrapper">
         <a href="#!" class="brand-logo tooltipped" id="omrss-logo-font" data-tooltip="首页"
-           data-position="bottom"><img src="/assets/img/logo.png" id="omrss-logo">Oh My RSS</a>
+           data-position="bottom"><img src="/assets/img/logo.png" id="omrss-logo">己思</a>
         <!--
         <form class="omrss-top-form">
             <div class="input-field">
@@ -81,7 +81,7 @@
             </li>
 
             {% if not user %}
-                <li class="tooltipped" data-tooltip="登录" data-position="bottom">
+                <li class="tooltipped" data-tooltip="一键登录" data-position="bottom">
                     <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
                 </li>
             {% else %}
@@ -105,7 +105,7 @@
         <h3>即将跳转到三方平台登录</h3>
 
         <p>登录后可以跨平台同步数据，享受更多特权</p>
-        <p>目前仅支持<i> Github OAuth </i>认证，过程只会获取您的公开信息，预计需要几秒钟时间</p>
+        <p>目前仅支持<i> GitHub OAuth </i>认证，过程只会获取您的公开信息，预计需要几秒钟时间</p>
 
         <div class="modal-footer">
             <a href="https://github.com/login/oauth/authorize?client_id={{ github_oauth_key }}">

@@ -1,12 +1,12 @@
-# Oh My RSS
-Oh My RSS 是一个开源的在线 RSS 服务，旨在汇聚互联网上的精华内容，为中文 IT 从业者提供一个优质的学习圈子。
+# 己思 - Oh My RSS
+己思 - Oh My RSS 是一个开源的在线 RSS 服务，旨在汇聚互联网上的精华内容，为中文 IT 从业者提供一个优质的学习圈子。
 
 ![预览](https://raw.githubusercontent.com/richshaw2015/oh-my-rss/master/assets/img/preview.jpg)
 
 ## 功能特性
 
 ### 持续扩充的订阅源
-为了确保内容质量，Oh My RSS 对订阅源有严格的筛选标准：
+为了确保内容质量，己思对订阅源有严格的筛选标准：
 - 巨头公司的技术博客
 - 技术大拿的博客
 - 互联网名站的热门
