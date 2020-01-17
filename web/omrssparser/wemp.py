@@ -88,10 +88,15 @@ def wemp_spider(urls, site):
                 response = HtmlResponse(url=url, body=rsp.text, encoding='utf8')
     
                 title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
-                author = response.selector.xpath('//span[@class="rich_media_meta rich_media_meta_text"]/text()').extract_first().strip()
                 content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+
+                try:
+                    author = response.selector.xpath('//span[@id="js_author_name"]/text()').\
+                        extract_first().strip()
+                except:
+                    author = response.selector.xpath('//a[@id="js_name"]/text()').extract_first().strip()
     
-                if title and author and content:
+                if title and content:
                     article = Article(title=title, author=author, site=site, uindex=current_ts(), content=content,
                                       src_url=url)
                     article.save()
@@ -101,4 +106,4 @@ def wemp_spider(urls, site):
         except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
             logger.warning(f'公众号爬取出现网络异常：`{url}')
         except:
-            logger.warning(f'公众号爬取出现未知异常：`{url}')
+            logger.error(f'公众号爬取出现未知异常：`{url}')

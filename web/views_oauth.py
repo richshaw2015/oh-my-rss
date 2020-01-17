@@ -72,7 +72,7 @@ def github_callback(request):
     except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
         logger.warning("OAuth 认证网络出现异常！")
     except:
-        logger.warning("OAuth 认证出现未知异常！")
+        logger.error("OAuth 认证出现未知异常")
 
     response = redirect('index')
     response.set_signed_cookie('toast', 'LOGIN_ERROR_MSG', max_age=20)

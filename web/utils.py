@@ -92,8 +92,8 @@ def get_page_uv(page):
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (
-        reverse('index'), reverse('add_log_action'),
-        reverse('get_all_feeds'), reverse('get_articles_list'), reverse('get_lastweek_articles')
+        reverse('add_log_action'), reverse('get_all_feeds'), reverse('get_articles_list'),
+        reverse('get_lastweek_articles')
     )
 
 
@@ -268,6 +268,6 @@ def save_avatar(avatar, userid, size=100):
     except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
         logger.error(f"同步用户头像网络异常！`{userid}`{avatar}")
     except:
-        logger.error(f"同步用户头像未知异常！`{userid}`{avatar}")
+        logger.error(f"同步用户头像未知异常`{userid}`{avatar}")
 
     return ''
