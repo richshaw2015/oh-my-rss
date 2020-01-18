@@ -113,10 +113,10 @@ def to_short_author(author1, author2=''):
 @register.filter
 @lru_cache(maxsize=512)
 def to_rss(site):
-    if site.creator == 'system':
-        rss = reverse('get_feed_entries', kwargs={"name": site.name})
-    else:
+    if site.creator == 'user':
         rss = site.rss
+    else:
+        rss = reverse('get_feed_entries', kwargs={"name": site.name})
 
     if not rss:
         logger.error(f'生成 RSS 失败：`{site.name}`{site.creator}')

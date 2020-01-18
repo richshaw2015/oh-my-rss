@@ -8,7 +8,7 @@ class SiteFeed(Feed):
     ttl = 7200
 
     def get_object(self, request, name):
-        return Site.objects.get(name=name, status='active', creator='system')
+        return Site.objects.get(name=name, status='active', creator__in=('system', 'wemp'))
 
     def title(self, site):
         return site.cname
