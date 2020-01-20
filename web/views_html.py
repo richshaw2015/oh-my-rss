@@ -21,17 +21,17 @@ def get_article_detail(request):
 
     try:
         article = Article.objects.get(uindex=uindex, status='active')
-
-        context = dict()
-        context['article'] = article
-
-        if mobile:
-            return render(request, 'mobile/article.html', context=context)
-        else:
-            return render(request, 'article/index.html', context=context)
     except:
         logger.warning(f"获取文章详情请求处理异常：`{uindex}")
-    return HttpResponseNotFound("Param error")
+        return HttpResponseNotFound("Param error")
+
+    context = dict()
+    context['article'] = article
+
+    if mobile:
+        return render(request, 'mobile/article.html', context=context)
+    else:
+        return render(request, 'article/index.html', context=context)
 
 
 @verify_request
@@ -162,5 +162,5 @@ def get_articles_list(request):
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
             return HttpResponseNotFound("Page number error")
-    logger.warning("没有订阅任何内容")
+
     return HttpResponseNotFound("No Feeds subscribed")

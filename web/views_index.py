@@ -16,7 +16,6 @@ def index(request):
     :param request:
     :return:
     """
-    logger.info("收到首页请求：`%s", get_client_ip(request))
     # 记录访问来源
     log_refer_request(request)
 

@@ -87,6 +87,7 @@ def submit_a_feed(request):
     用户添加一个自定义的订阅源
     """
     feed_url = request.POST.get('url', '').strip()[:1024]
+    user = get_login_user(request)
 
     if feed_url:
         host = urllib.parse.urlparse(feed_url).netloc
@@ -97,9 +98,12 @@ def submit_a_feed(request):
             rsp = parse_atom(feed_url)
 
         if rsp:
+            # 已登录用户，自动订阅
+            if user:
+                add_user_sub_feeds(user.oauth_id, [rsp['name'], ])
             return JsonResponse(rsp)
         else:
-            logger.warning(f"RSS解析失败：`{feed_url}")
+            logger.warning(f"RSS 解析失败：`{feed_url}")
 
     return HttpResponseNotFound("Param error")
 
@@ -119,7 +123,8 @@ def user_subscribe_feed(request):
             add_user_sub_feeds(user.oauth_id, [feed, ])
             return JsonResponse({"name": feed})
         except:
-            logger.warning(f'订阅出现异常：`{feed}`{user.oauth_id}')
+            logger.warning(f'用户订阅出现异常：`{feed}`{user.oauth_id}')
+
     return HttpResponseNotFound("Param error")
 
 

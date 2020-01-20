@@ -92,7 +92,7 @@ def get_page_uv(page):
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (
-        reverse('add_log_action'), reverse('get_all_feeds'), reverse('get_articles_list'),
+        reverse('get_all_feeds'), reverse('get_articles_list'),
         reverse('get_lastweek_articles')
     )
 
@@ -236,7 +236,7 @@ def get_login_user(request):
     oauth_id = request.get_signed_cookie('oauth_id', False)
     if oauth_id:
         try:
-            return User.objects.get(oauth_id=oauth_id)
+            return User.objects.get(oauth_id=oauth_id, status='active')
         except:
             logger.warning(f'用户不存在：`{oauth_id}')
     return None
