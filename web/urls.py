@@ -34,8 +34,9 @@ urlpatterns = [
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
-    path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
+    path('api/mark/read', views_api.user_mark_read_all, name='user_mark_read_all'),
 
+    path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
     path('api/feed/subscribe', views_api.user_subscribe_feed, name='user_subscribe_feed'),
     path('api/feed/unsubscribe', views_api.user_unsubscribe_feed, name='user_unsubscribe_feed'),
 ]

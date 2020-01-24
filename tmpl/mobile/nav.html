@@ -1,20 +1,54 @@
+{% load helpers %}
 <header id="omrss-header">
     <nav>
         <div class="nav-wrapper">
             <a href="/" class="brand-logo omrss-color left">
                 <img src="/assets/img/logo.png" class="omrss-logo">己思</a>
 
-            <a href="#" data-target="omrss-menu-slide" class="sidenav-trigger omrss-color right show-on-large"><i
-                    class="material-icons">menu</i></a>
-
             <ul class="right">
-                <li id="omrss-unread"><a href="#!"></a></li>
+                <li id="omrss-unread"></li>
+
+            {% if not user %}
+                <li class="tooltipped" data-tooltip="一键登录" data-position="bottom">
+                    <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
+                </li>
+            {% else %}
+                <li data-oauth-id="{{ user.oauth_id }}"
+                    data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
+                    <img src="{{ user.avatar }}" class="omrss-avatar circle" alt="头像" />
+                </li>
+            {% endif %}
+
+                <li>
+                    <a href="#" data-target="omrss-menu-slide" class="sidenav-trigger omrss-color right show-on-large">
+                        <i class="material-icons">menu</i></a>
+                </li>
             </ul>
+
         </div>
     </nav>
 </header>
 
 <ul id="omrss-menu-slide" class="sidenav">
+
+    <li>
+        <div class="user-view">
+            <div class="background">
+                <img src="/assets/img/avatar-bg.jpg">
+            </div>
+            {% if user %}
+            <a href="{{ user.oauth_blog }}" target="_blank">
+                <img class="circle" alt="头像" src="{{ user.avatar }}"></a>
+            <a href="{{ user.oauth_blog }}" target="_blank">
+                <span class="white-text name nav-name">{{ user.oauth_name }}</span></a>
+            {% else %}
+            <a href="#model-omrss-login" class="modal-trigger">
+                <i class="material-icons white-text circle omrss-visitor-avatar">person</i></a>
+            <a href="#model-omrss-login" class="modal-trigger">
+                <span class="white-text name nav-name">一键登录</span></a>
+            {% endif %}
+        </div>
+    </li>
 
     <li><a href="#!" class="waves-effect sidenav-close ev-my-feed">
         <i class="material-icons omrss-color">rss_feed</i>我的订阅</a></li>
@@ -25,9 +59,31 @@
     <li><a href="/dash" target="_blank" class="waves-effect sidenav-close">
         <i class="material-icons omrss-color">trending_up</i>后台报表</a></li>
 
+    <div class="divider nav-divider"></div>
+
     <li><a href="#!" class="waves-effect sidenav-close ev-intro">
         <i class="material-icons omrss-color">info_outline</i>关于</a></li>
 
     <li><a href="#!" class="waves-effect sidenav-close ev-faq">
         <i class="material-icons omrss-color">help_outline</i>FAQ</a></li>
+
+    <li class="sidenav-close">
+        <a href="https://github.com/richshaw2015/oh-my-rss" target="_blank"><i class="material-icons omrss-color">code</i>GitHub</a>
+    </li>
 </ul>
+
+<!-- 登录窗口 -->
+<div id="model-omrss-login" class="modal">
+    <div class="modal-content">
+        <h3>即将跳转到三方平台登录</h3>
+
+        <p>登录后可以跨平台同步数据，享受更多特权</p>
+        <p>目前仅支持<i> GitHub OAuth </i>认证，过程只会获取您的公开信息，预计需要几秒钟时间</p>
+
+        <div class="modal-footer">
+            <a href="https://github.com/login/oauth/authorize?client_id={{ github_oauth_key }}">
+                <button class="btn waves-effect waves-light">我知道了</button>
+            </a>
+        </div>
+    </div>
+</div>

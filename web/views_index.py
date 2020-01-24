@@ -55,6 +55,7 @@ def article(request, id):
     """
     # TODO 适配已登录用户
     log_refer_request(request)
+    user = get_login_user(request)
 
     try:
         article = Article.objects.get(uindex=id, status='active')
@@ -83,6 +84,7 @@ def article(request, id):
 
     context = dict()
     context['article'] = article
+    context['user'] = user
 
     return render(request, 'mobile/article.html', context=context)
 

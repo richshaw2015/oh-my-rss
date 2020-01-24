@@ -92,8 +92,7 @@ def get_page_uv(page):
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (
-        reverse('get_all_feeds'), reverse('get_articles_list'),
-        reverse('get_lastweek_articles')
+        reverse('get_articles_list'), reverse('get_lastweek_articles')
     )
 
 
@@ -225,6 +224,36 @@ def get_user_sub_feeds(oauth_id):
     except:
         logger.error(f"写入Redis出现异常：`{key}")
     return []
+
+
+def set_user_read_article(oauth_id, uindex):
+    """
+    已登录用户同步已读文章状态
+    """
+    key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
+    try:
+        return R.set(key, 1, 14*24*3600)
+    except:
+        logger.error(f"写入Redis出现异常：`{key}")
+    return None
+
+
+def get_user_unread_articles(oauth_id, articles):
+    """
+    获取用户过去一周未读的文章列表
+    """
+    user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
+    user_unread_list = []
+    try:
+        user_read_info_dict = dict(zip(articles, R.mget(*user_read_keys)))
+    except:
+        logger.error(f"获取用户未读文章列表：`{oauth_id}")
+        return []
+
+    for article in articles:
+        if user_read_info_dict.get(article) is None:
+            user_unread_list.append(article)
+    return user_unread_list
 
 
 def get_login_user(request):

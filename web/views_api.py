@@ -1,13 +1,15 @@
 
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
-from .models import *
+from web.models import *
 from datetime import timedelta, datetime
-from .utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
-    add_user_sub_feeds, del_user_sub_feed
-from .views_html import get_all_issues
-from .verify import verify_request
+from web.utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
+    add_user_sub_feeds, del_user_sub_feed, get_user_unread_articles, set_user_read_article
+from web.views_html import get_all_issues
+from web.verify import verify_request
 import logging
+from django.conf import settings
 import urllib
+import json
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.omrssparser.atom import parse_atom
 
@@ -17,14 +19,13 @@ logger = logging.getLogger(__name__)
 @verify_request
 def get_lastweek_articles(request):
     """
-    过去一周的文章id列表
+    过去一周的文章 id 列表（游客）；已登录用户返回过去一周的未读 id 列表
     """
     uid = request.POST.get('uid', '')
+    user = get_login_user(request)
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
     ext = request.POST.get('ext', '')
-
-    user = get_login_user(request)
 
     logger.info(f"收到订阅源查询请求：`{uid}`{unsub_feeds}`{ext}")
 
@@ -37,6 +38,8 @@ def get_lastweek_articles(request):
 
     my_lastweek_articles = list(Article.objects.all().prefetch_related('site').filter(
         status='active', site__name__in=my_sub_feeds, ctime__gte=lastweek_dt).values_list('uindex', flat=True))
+    if user:
+        my_lastweek_articles = get_user_unread_articles(user.oauth_id, my_lastweek_articles)
 
     return JsonResponse({"result": my_lastweek_articles})
 
@@ -143,4 +146,17 @@ def user_unsubscribe_feed(request):
     return HttpResponseNotFound("Param error")
 
 
-# TODO 增加已登录用户的未读文章同步
+@verify_request
+def user_mark_read_all(request):
+    """
+    设置全部已读
+    """
+    ids = request.POST.get('ids', '').split(',')
+    user = get_login_user(request)
+
+    if user:
+        for uindex in ids:
+            set_user_read_article(user.oauth_id, uindex)
+        return JsonResponse({})
+
+    return HttpResponseNotFound("Param error")

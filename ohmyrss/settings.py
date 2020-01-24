@@ -179,6 +179,9 @@ REDIS_REFER_PV_DAY_KEY = 'REFER/%s/%s'
 # user subscribe list
 REDIS_USER_SUB_KEY = 'SUB/%s'
 
+# user read article flag
+REDIS_USER_READ_KEY = 'READ/%s/%s'
+
 SENSITIVE_WORDS = ('科学上网', )
 
 # github OAuth

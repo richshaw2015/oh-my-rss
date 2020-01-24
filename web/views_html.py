@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from .models import *
-from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds
+from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article
 from .verify import verify_request
 import logging
 from datetime import datetime
@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 @verify_request
 def get_article_detail(request):
     """
-    获取文章详情
+    获取文章详情；已登录用户记录已读
     """
     uindex = request.POST.get('id')
+    user = get_login_user(request)
     mobile = request.POST.get('mobile', False)
 
     try:
@@ -24,6 +25,9 @@ def get_article_detail(request):
     except:
         logger.warning(f"获取文章详情请求处理异常：`{uindex}")
         return HttpResponseNotFound("Param error")
+
+    if user:
+        set_user_read_article(user.oauth_id, uindex)
 
     context = dict()
     context['article'] = article
