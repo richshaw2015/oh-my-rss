@@ -28,7 +28,7 @@ function jsPcTask() {
             compilation_level: 'SIMPLE',
             compilerFlags: {
                 language_in: 'ECMASCRIPT6',
-                language_out: 'ES5_STRICT'
+                language_out: 'ES5'
             }
         }))
         .pipe(dest('assets/js'))
@@ -42,7 +42,7 @@ function jsMobileTask() {
             compilation_level: 'SIMPLE',
             compilerFlags: {
                 language_in: 'ECMASCRIPT6',
-                language_out: 'ES5_STRICT'
+                language_out: 'ES5'
             }
         }))
         .pipe(dest('assets/js'))

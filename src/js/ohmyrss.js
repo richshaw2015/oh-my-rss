@@ -318,7 +318,7 @@ function fixThirdStyleTag() {
 }
 
 function getLoginName() {
-    loginEl = $('#omrss-my');
+    const loginEl = $('#omrss-my');
     if (loginEl.length === 0) {
         return '';
     } else {
@@ -327,7 +327,7 @@ function getLoginName() {
 }
 
 function getLoginId() {
-    loginEl = $('#omrss-my');
+    const loginEl = $('#omrss-my');
     if (loginEl.length === 0) {
         return '';
     } else {
