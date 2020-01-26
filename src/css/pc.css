@@ -24,13 +24,6 @@
 
 /* end */
 
-/* Sticky Footer */
-/*
-body {
-    display: flex;
-    flex-direction: column;
-}
-*/
 main {
     position: fixed;
     top: 64px;

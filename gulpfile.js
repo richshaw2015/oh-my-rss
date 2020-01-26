@@ -1,8 +1,12 @@
 
-const { gulp, series, parallel, src, dest } = require('gulp');
+const { gulp, series, parallel, src, dest, watch } = require('gulp');
 const concat = require('gulp-concat');
 const compiler = require('gulp-closure-compiler');
 const cleancss = require('gulp-clean-css');
+const gulpif = require('gulp-if');
+
+let prod = true;
+
 
 function jsLibTask() {
     return src('src/js/vendor/*.js', {ignore: 'src/js/vendor/echarts.min.js'})
@@ -22,7 +26,7 @@ function jsEchartsTask() {
 
 function jsPcTask() {
     return src(['src/js/ohmyrss.js', 'src/js/pc.js', 'src/js/vimlike-shortcuts.js'])
-        .pipe(compiler({
+        .pipe(gulpif(prod === true, compiler({
             compilerPath: './node_modules/google-closure-compiler/compiler.jar',
             fileName: 'pc.js',
             compilation_level: 'SIMPLE',
@@ -30,13 +34,14 @@ function jsPcTask() {
                 language_in: 'ECMASCRIPT6',
                 language_out: 'ES5'
             }
-        }))
+        })))
+        .pipe(gulpif(prod === false ,concat('pc.js')))
         .pipe(dest('assets/js'))
 }
 
 function jsMobileTask() {
     return src(['src/js/ohmyrss.js', 'src/js/mobile.js'])
-        .pipe(compiler({
+        .pipe(gulpif(prod === true, compiler({
             compilerPath: './node_modules/google-closure-compiler/compiler.jar',
             fileName: 'mobile.js',
             compilation_level: 'SIMPLE',
@@ -44,7 +49,8 @@ function jsMobileTask() {
                 language_in: 'ECMASCRIPT6',
                 language_out: 'ES5'
             }
-        }))
+        })))
+        .pipe(gulpif(prod === false ,concat('mobile.js')))
         .pipe(dest('assets/js'))
 }
 
@@ -67,6 +73,14 @@ function cssMobileTask() {
         .pipe(dest('assets/css'))
 }
 
-exports.default = parallel(jsEchartsTask, fontTask, jsLibTask, jsPcTask, jsMobileTask, cssLibTask, cssPcTask,
-    cssMobileTask
+exports.build = series(jsEchartsTask, fontTask, 
+    jsLibTask, cssLibTask,
+    parallel(cssMobileTask, cssPcTask),
+    parallel(jsPcTask, jsMobileTask),
 );
+
+exports.default = function() {
+    prod = false;
+    watch(['src/js/*.js'], parallel(jsPcTask, jsMobileTask));
+    watch(['src/css/*.css'], parallel(cssMobileTask, cssPcTask));
+};
