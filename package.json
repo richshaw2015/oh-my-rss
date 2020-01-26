@@ -1,0 +1,29 @@
+{
+  "name": "ohmyrss",
+  "version": "1.0.0",
+  "description": "ohmyrss frontend project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richshaw2015/oh-my-rss.git"
+  },
+  "keywords": [
+    "RSS"
+  ],
+  "author": "richshaw2015",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/richshaw2015/oh-my-rss/issues"
+  },
+  "homepage": "https://ohmyrss.com/",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-closure-compiler": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+  }
+}

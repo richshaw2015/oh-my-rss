@@ -1,0 +1,77 @@
+.article-entry .highlight,.article-entry pre {
+    background: #272822;
+    margin: 10px 0;
+    padding: 10px;
+    overflow: auto;
+    color: #fff;
+    font-size: .9em;
+}
+
+.article-entry .gist .gist-file .gist-data .line-numbers,.article-entry .highlight .gutter pre,.article-entry .highlight .gutter pre .line {
+    color: #666
+}
+
+.article-entry code,.article-entry pre {
+    font-family: Source Code Pro,Consolas,Monaco,Menlo,monospace
+}
+
+.article-entry code {
+    background: #eee;
+    padding: 0 .3em;
+    border: none
+}
+
+.article-entry pre code {
+    background: none;
+    text-shadow: none;
+    padding: 0;
+    color: #fff
+}
+
+.article-entry .highlight pre {
+    border: none;
+    margin: 0;
+    padding: 0
+}
+
+.article-entry .highlight table {
+    margin: 0;
+    width: auto
+}
+
+.article-entry .highlight td {
+    border: none;
+    padding: 0
+}
+
+.article-entry .highlight figcaption {
+    color: highlight-comment;
+    margin-bottom: 1em
+}
+
+.article-entry .highlight figcaption:after,.article-entry .highlight figcaption:before {
+    content: "";
+    display: table
+}
+
+.article-entry .highlight figcaption:after {
+    clear: both
+}
+
+.article-entry .highlight figcaption a {
+    float: right
+}
+
+.article-entry .highlight .gutter pre {
+    text-align: right;
+    padding-right: 20px
+}
+
+.article-entry .highlight .gutter pre .line {
+    text-shadow: none
+}
+
+.article-entry .highlight .line {
+    color: #fff;
+    min-height: 19px
+}
