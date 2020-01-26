@@ -11,8 +11,7 @@ dist
 tests/.pytest_cache
 .vscode
 build
-assets/img
-assets/avatar
+assets/
 project.egg-info
 setup.py
 *.sqlite3
@@ -20,3 +19,5 @@ fabfile.py
 logs
 docs
 venv
+node_modules/
+dist/
