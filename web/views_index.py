@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound, HttpResponse
 from .models import *
-from .utils import get_client_ip, log_refer_request, get_login_user, get_user_sub_feeds
+from .utils import log_refer_request, get_login_user, get_user_sub_feeds
 import logging
 import os
 from user_agents import parse

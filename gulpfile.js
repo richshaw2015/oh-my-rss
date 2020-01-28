@@ -4,12 +4,24 @@ const concat = require('gulp-concat');
 const compiler = require('gulp-closure-compiler');
 const cleancss = require('gulp-clean-css');
 const gulpif = require('gulp-if');
+const del = require('del');
 
 let prod = true;
 
+function cleanTask() {
+    return del([
+        'assets/js/*.js',
+        'assets/css/*.css',
+        'assets/font/*',
+    ])
+}
 
 function jsLibTask() {
-    return src('src/js/vendor/*.js', {ignore: 'src/js/vendor/echarts.min.js'})
+    return src(['src/js/vendor/jquery.min.js', 'src/js/vendor/materialize.min.js',
+        'src/js/vendor/prettydate.min.js', 'src/js/vendor/prettydate.zh-CN.min.js', 
+        'src/js/vendor/uuid.js', 'src/js/vendor/md5.min.js', 'src/js/vendor/js.cookie.min.js',
+        'src/js/vendor/cache.js', 'src/js/vendor/prism.js', 'src/js/vendor/highlight.min.js',
+        'src/js/vendor/linkify.min.js', 'src/js/vendor/linkify-jquery.min.js'])
         .pipe(concat('lib.js'))
         .pipe(dest('assets/js'))
 }
@@ -73,14 +85,18 @@ function cssMobileTask() {
         .pipe(dest('assets/css'))
 }
 
-exports.build = series(jsEchartsTask, fontTask, 
+exports.build = series(
+    cleanTask,
+    jsEchartsTask, fontTask, 
     jsLibTask, cssLibTask,
     parallel(cssMobileTask, cssPcTask),
     parallel(jsPcTask, jsMobileTask),
 );
 
 exports.default = function() {
-    // prod = false;
+    prod = false;
     watch(['src/js/*.js'], parallel(jsPcTask, jsMobileTask));
     watch(['src/css/*.css'], parallel(cssMobileTask, cssPcTask));
 };
+
+exports.clean = series(cleanTask)

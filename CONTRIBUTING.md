@@ -1,6 +1,6 @@
-## 代码导读
+## 1. 代码导读
 
-本项目有 django 工程和 scrapy 工程组成，工程目录结构如下：
+本项目有 django、scrapy、gulp 等工程组成，工程目录结构如下：
 
 ```
 ├── README.md  项目介绍
@@ -21,7 +21,11 @@
 │   └── views_index.py  首页请求的控制器
 ├── tmpl  django工程模板
 ├── manage.py  django的管理入口
-├── feed  scrapy工程
+├── src  前端工程源码，构建生成的文件输出到 assets 目录
+│   ├── js
+│   ├── css
+│   ├── font
+├── feed  scrapy 工程
 │   ├── items.py
 │   ├── middlewares.py
 │   ├── pipelines.py
@@ -33,12 +37,15 @@
 │   │   ├── week  以周为单位进行的爬虫
 │   │   ├── month  以月为单位进行的爬虫
 │   │   └── spider.py  爬虫实现父类
-├── scrapy.cfg  scrapy工程配置
-├── assets  前端的静态文件，包括图片、脚本、样式、字体等
-└── requirements.txt  依赖库声明
+├── scrapy.cfg  scrapy 工程配置
+├── assets  前端的静态文件，包括图片、脚本、样式、字体等，gulp 构建会覆盖其中的文件
+├── gulpfile.js  前端构建规则
+├── package.json 前端构建工程的开发依赖
+├── package-lock.js  前端依赖包
+└── requirements.txt  python3 依赖库声明
 ```
 
-## 如何增加自定义爬虫
+## 2. 如何增加自定义 scrapy 爬虫
 根据目标站点的更新频率，在对应目录（day、week、month）下新建爬虫文件，例如 demo_spider.py，该文件需自定义 xpath 规则等参数，例如：
 
 ```python
@@ -66,12 +73,103 @@ class DemoSpider(Spider):
 - `article_trim_xpaths` 需要屏蔽的文章内容节点，获取的是DOM节点，默认None（不屏蔽）
 - `browser` 是否使用浏览器爬虫，只有纯JS渲染的页面才需要，默认 False
 
-提交该文件后，系统会根据定时任务（day、week、month）配置自动爬取文章内容并入库。
+提交该文件后，系统会根据定时任务（day、week、month）配置自动爬取文章内容并入库
 
-注意：爬虫站点的内容必须为优质。
+注意：爬虫站点的内容必须为优质
 
-## 前端文件的处理？
-前端的处理是另外一个工程，采用 JQuery 构建，由于代码比较乱，暂时只放置构建后的代码，后续视情况再考虑。
+## 3. 前端工程的处理
 
-## 更多
-欢迎Issue、PR或加群讨论。
+前端主要使用 JQuery 开发，使用 gulp 构建
+
+### 3.1 安装前端开发依赖
+
+需要提前安装好 node、npm 命令
+
+```shell script
+npm install
+```
+
+### 3.2 运行 gulp
+
+生成目标文件（assets 目录）：
+
+```shell script
+gulp build
+```
+
+开发过程监控文件变化，实时生成目标文件：
+
+```shell script
+gulp
+```
+
+## 4. 运行环境安装
+以 Centos 服务器为例，对相关的运行环境进行说明
+
+### 4.1 安装系统命令
+
+```
+yum groupinstall 'Development Tools'
+yum install gcc openssl-devel bzip2-devel libffi-devel
+yum install telnet telnet-server
+yum install sqlite-devel
+```
+
+### 4.2 安装 nginx
+
+```shell script
+yum install nginx
+```
+参考 https://www.cyberciti.biz/faq/how-to-install-and-use-nginx-on-centos-7-rhel-7/
+
+注意配置静态文件的可执行权限，配置网站的配置
+
+### 4.3 安装 python3
+参考 https://tecadmin.net/install-python-3-7-on-centos/
+
+```shell script
+yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+sudo yum -y install gcc gcc-c++
+sudo yum -y install zlib zlib-devel
+sudo yum -y install libffi-devel
+./configure --enable-optimizations --enable-loadable-sqlite-extensions
+make
+make install
+```
+
+### 4.4 安装及配置 centbot
+用于证书的自动续期
+
+```
+yum install certbot
+```
+
+### 4.5 编译及安装 redis
+下载源码，make 即可，注意修改配置文件几个项目：
+
+```shell script
+daemonize yes
+maxmemory 100000000
+maxmemory-policy volatile-lru
+```
+
+启动命令：
+```shell script
+./src/redis-server redis.conf
+```
+
+### 4.6 编译及安装 sqlite3
+注意替换掉系统的 sqlite3，那个版本比较老
+
+### 4.7 pyhton3 依赖包安装
+按照 requirements.txt 安装即可
+
+### 4.8 chromium 及 driver 环境安装
+```
+yum install chromium
+```
+
+安装完后要下载匹配版本的 chromedriver 放到系统 PATH 里
+
+## 5. 更多
+欢迎 Issue、PR 或加群讨论。

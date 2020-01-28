@@ -127,14 +127,14 @@ def get_articles_list(request):
     mobile = request.POST.get('mobile', False)
 
     user = get_login_user(request)
-    # 只查询最近一个月的
-    last1month = datetime.now() - timedelta(days=30)
+    # 只查询最近一段时间的
+    last2week = datetime.now() - timedelta(days=14)
 
     if user is None:
         visitor_sub_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
 
         my_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name__in=visitor_sub_sites, ctime__gte=last1month).order_by('-id')[:300]
+            status='active', site__name__in=visitor_sub_sites, ctime__gte=last2week).order_by('-id')[:300]
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
@@ -142,7 +142,7 @@ def get_articles_list(request):
             logger.warning(f'用户未订阅任何内容：`{user.oauth_id}')
 
         my_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name__in=user_sub_feeds, ctime__gte=last1month).order_by('-id')[:999]
+            status='active', site__name__in=user_sub_feeds, ctime__gte=last2week).order_by('-id')[:999]
 
     if my_articles:
         # 分页处理，TODO 优化这里的性能

@@ -77,7 +77,6 @@ function hasReadArticle(id) {
     }
 }
 
-
 function setReadArticle(id, ev_target=null) {
     // 登录用户更新本地未读集合，需要在网络请求之后调用
     if (getLoginId()) {

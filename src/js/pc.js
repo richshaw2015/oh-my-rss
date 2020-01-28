@@ -12,6 +12,7 @@ function initLayout() {
     $('#omrss-main').click();
 }
 
+
 function getPageSize() {
     // 每次都动态取，以防窗口变化
     const itemHeight = $('#omrss-cnt-list ul li:first').outerHeight(true);
