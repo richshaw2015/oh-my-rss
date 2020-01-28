@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound, HttpResponse
 from .models import *
-from .utils import log_refer_request, get_login_user, get_user_sub_feeds
+from .utils import log_refer_request, get_login_user, get_user_sub_feeds, set_user_read_article
 import logging
 import os
 from user_agents import parse
@@ -53,7 +53,6 @@ def article(request, id):
     """
     详情页，主要向移动端、搜索引擎提供，这个页面需要做风控
     """
-    # TODO 适配已登录用户
     log_refer_request(request)
     user = get_login_user(request)
 
@@ -65,6 +64,9 @@ def article(request, id):
         except:
             logger.warning(f"获取文章详情请求处理异常：`{id}")
             return redirect('index')
+
+    if user:
+        set_user_read_article(user.oauth_id, id)
 
     # 判断是否命中敏感词
     is_sensitive = False
