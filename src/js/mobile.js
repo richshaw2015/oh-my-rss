@@ -92,13 +92,7 @@ $(document).ready(function () {
 
         // 未读变为已读
         if (!hasReadArticle(article_id)) {
-            setReadArticle(article_id);
-
-            const target = ev_target.find('i.unread');
-            target.removeClass('unread').addClass('read');
-            target.text('check');
-            // 文字样式
-            ev_target.find('.omrss-title').removeClass('omrss-title-unread');
+            setReadArticle(article_id, ev_target);
 
             // 剩余未读数
             updateUnreadCount();
@@ -209,10 +203,6 @@ $(document).ready(function () {
     // tips 广告暂时不在移动端适配
 
     // RSS加载更多
-    $(document).on('click', '.ev-display-btn', function() {
-        $(this).addClass('hide');
-        $('#omrss-rss-hide').removeClass('hide');
-    });
 
     $(document).on('click', '.ev-window-close', function() {
         if (isInWebview()) {

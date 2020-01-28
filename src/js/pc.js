@@ -6,7 +6,7 @@ function initLayout() {
     $('.sidenav').sidenav({"edge": "right"});
 
     // 右侧滚动条
-    resetRightFlow();
+    resetHeight();
 
     // 使页面主内容区域获得焦点，这样快捷键就生效了
     $('#omrss-main').click();
@@ -25,18 +25,20 @@ function getPageSize() {
 }
 
 function getBriefHeight() {
+    // 文章摘要的高度计算
     const briefHeight = $(window).outerHeight(true) - $('#omrss-header').outerHeight(true) -
         $('#omrss-article-title').outerHeight(true) - $('#omrss-article-stats').outerHeight(true) -
         $('#omrss-article-bottom').outerHeight(true);
     return parseInt(briefHeight);
 }
 
-function resetRightFlow() {
+function resetHeight() {
     // 右侧滚动条
     $('.cnt-right').css({
         'overflow-y': 'auto',
         'height': ($(window).height() - 64) + 'px'
     });
+    // 左侧内容栏
     if ($(window).width() >= 1600 ) {
         $('#omrss-cnt-list').css({
             'max-height': ($(window).height() - 64 - 60) + 'px'
@@ -97,7 +99,7 @@ function loadPage(page) {
         // 初始化
         initLayout();
     }).fail(function (xhr) {
-        warnToast(xhr.responseText);
+        warnToast(NET_ERROR_MSG);
     }).always(function () {
         // UI状态
         $('#omrss-loader').addClass('hide');
@@ -133,7 +135,7 @@ $(document).ready(function () {
         if (isBgWin === true) {
             setToreadList(notify=true);
         }
-    }, 2 * 3600 * 1000);
+    }, 4 * 3600 * 1000);
     /* 首页初始化结束 */
 
 
@@ -149,6 +151,7 @@ $(document).ready(function () {
 
         // 是否有本地缓存
         const cachedData = getLruCache(article_id);
+
         if (cachedData) {
             // 直接渲染
             const target = $('#omrss-main');
@@ -158,15 +161,7 @@ $(document).ready(function () {
             fixThirdStyleTag();
 
             // 代码样式
-            if ($('#omrss-third pre[class*="language-"]').length > 0 || $('#omrss-third code[class*="language-"]').length > 0) {
-                Prism.highlightAll();
-                console.log('Prism init');
-            } else {
-                $('pre > code').each(function() {
-                    hljs.highlightBlock(this);
-                });
-                console.log('Hljs init');
-            }
+            codeHighlight();
 
             // 数据统计
             updateReadStats();
@@ -174,22 +169,14 @@ $(document).ready(function () {
             // 同步状态
             if (!hasReadArticle(article_id)) {
                 // 未读变为已读
-                setReadArticle(article_id);
-
-                const target = ev_target.find('i.unread');
-                target.removeClass('unread').addClass('read');
-                target.text('check');
-                // 文字样式
-                ev_target.find('.omrss-title').removeClass('omrss-title-unread').addClass('omrss-title-read');
+                setReadArticle(article_id, ev_target);
 
                 // 剩余未读数
                 updateUnreadCount();
             }
 
             // linkify
-            $('#omrss-third').linkify({
-                target: "_blank"
-            });
+            setThirdLinkify();
 
             target.scrollTop(0);
         } else {
@@ -207,41 +194,25 @@ $(document).ready(function () {
                 fixThirdStyleTag();
 
                 // 代码样式
-                if ($('#omrss-third pre[class*="language-"]').length > 0 || $('#omrss-third code[class*="language-"]').length > 0) {
-                    Prism.highlightAll();
-                    console.log('Prism init');
-                } else {
-                    $('pre > code').each(function() {
-                        hljs.highlightBlock(this);
-                    });
-                    console.log('Hljs init');
-                }
-
-                target.scrollTop(0);
+                codeHighlight();
 
                 // 更新统计
                 updateReadStats();
 
                 // 未读变为已读
-                setReadArticle(article_id);
-
-                const tgt = ev_target.find('i.unread');
-                tgt.removeClass('unread').addClass('read');
-                tgt.text('check');
-                // 文字样式
-                ev_target.find('.omrss-title').removeClass('omrss-title-unread').addClass('omrss-title-read');
+                setReadArticle(article_id, ev_target);
 
                 // 剩余未读数
                 updateUnreadCount();
 
                 // linkify
-                $('#omrss-third').linkify({
-                    target: "_blank"
-                });
+                setThirdLinkify();
+
+                target.scrollTop(0);
 
                 // 浏览打点
                 setTimeout(function () {
-                    $.post("/api/actionlog/add", {uid: getOrSetUid(), id: article_id, action: "VIEW"}, function () {
+                    $.post("/api/actionlog/add", {uid: getOrSetUid(), id: article_id, action: "VIEW"}, function(){
                     });
                 }, 1000);
 
@@ -252,12 +223,12 @@ $(document).ready(function () {
             });
         }
 
-        // 申请通知权限，10分钟以后
+        // 申请通知权限
         setTimeout(function () {
             if (Notification.permission === 'default') {
                 Notification.requestPermission();
             }
-        }, 600000);
+        }, 3600*1000);
     });
 
     // 我的订阅点击
@@ -301,7 +272,7 @@ $(document).ready(function () {
             } else {
                 $('#omrss-main').html(data).scrollTop(0);
             }
-            resetRightFlow();
+            resetHeight();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -452,7 +423,7 @@ $(document).ready(function () {
             target = $('#omrss-main');
             target.html(data);
             target.scrollTop(0);
-            resetRightFlow();
+            resetHeight();
             updateReadStats();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
@@ -469,7 +440,7 @@ $(document).ready(function () {
             target = $('#omrss-main');
             target.html(data);
             target.scrollTop(0);
-            resetRightFlow();
+            resetHeight();
             updateReadStats();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
@@ -495,7 +466,7 @@ $(document).ready(function () {
         $.post("/api/html/homepage/intro", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
-            resetRightFlow();
+            resetHeight();
             updateReadStats();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
@@ -510,7 +481,7 @@ $(document).ready(function () {
         $.post("/api/html/homepage/tips", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
-            resetRightFlow();
+            resetHeight();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -530,7 +501,7 @@ $(document).ready(function () {
         $.post("/api/html/issues/all", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
             $('#omrss-main').scrollTop(0);
-            resetRightFlow();
+            resetHeight();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {

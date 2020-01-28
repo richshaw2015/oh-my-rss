@@ -1,5 +1,5 @@
 
-const { gulp, series, parallel, src, dest, watch } = require('gulp');
+const { series, parallel, src, dest, watch } = require('gulp');
 const concat = require('gulp-concat');
 const compiler = require('gulp-closure-compiler');
 const cleancss = require('gulp-clean-css');
@@ -80,7 +80,7 @@ exports.build = series(jsEchartsTask, fontTask,
 );
 
 exports.default = function() {
-    prod = false;
+    // prod = false;
     watch(['src/js/*.js'], parallel(jsPcTask, jsMobileTask));
     watch(['src/css/*.css'], parallel(cssMobileTask, cssPcTask));
 };
