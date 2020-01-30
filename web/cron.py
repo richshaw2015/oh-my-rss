@@ -54,17 +54,31 @@ def update_all_wemp_feed():
 
 def clean_history_data():
     """
-    清除历史数据
+    清除历史数据，TODO 评分大于 10 的改为更新，不清除
     :return:
     """
     logger.info('开始清理历史数据')
 
-    last2week = datetime.now() - timedelta(days=15)
+    lastweek = datetime.now() - timedelta(days=7)
     last3month = datetime.now() - timedelta(days=90)
     last1year = datetime.now() - timedelta(days=365)
 
-    Article.objects.all().prefetch_related('site').filter(site__star__lt=10, ctime__lte=last2week).delete()
+    Article.objects.all().prefetch_related('site').filter(site__star__lt=10, ctime__lte=lastweek).delete()
     Article.objects.all().prefetch_related('site').filter(site__star__lt=20, ctime__lte=last3month).delete()
     Article.objects.all().prefetch_related('site').filter(site__star__lt=30, ctime__lte=last1year).delete()
 
     logger.info('历史数据清理完毕')
+
+
+def set_is_recent_article():
+    """
+    设置最近一周的文章标识，每隔几分钟计算一次
+    :return:
+    """
+    lastweek = datetime.now() - timedelta(days=7)
+
+    logger.info('开始设置最近文章状态')
+
+    Article.objects.filter(is_recent=True, ctime__lte=lastweek).update(is_recent=False)
+
+    logger.info('设置最近文章状态结束')

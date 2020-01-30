@@ -127,25 +127,24 @@ def get_articles_list(request):
     mobile = request.POST.get('mobile', False)
 
     user = get_login_user(request)
-    # 只查询最近一段时间的
-    last2week = datetime.now() - timedelta(days=14)
 
     if user is None:
         visitor_sub_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
 
         my_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name__in=visitor_sub_sites, ctime__gte=last2week).order_by('-id')[:300]
+            status='active', is_recent=True, site__name__in=visitor_sub_sites).order_by('-id')[:300]
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
         if not user_sub_feeds:
             logger.warning(f'用户未订阅任何内容：`{user.oauth_id}')
 
+        # TODO 这个 sql 比较耗时
         my_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name__in=user_sub_feeds, ctime__gte=last2week).order_by('-id')[:999]
+            status='active', is_recent=True, site__name__in=user_sub_feeds).order_by('-id')[:999]
 
     if my_articles:
-        # 分页处理，TODO 优化这里的性能
+        # 分页处理
         paginator_obj = Paginator(my_articles, page_size)
         try:
             # 页面及数据

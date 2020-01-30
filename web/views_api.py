@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 @verify_request
 def get_lastweek_articles(request):
     """
-    过去一周的文章 id 列表（游客）；已登录用户返回过去一周的未读 id 列表
+    游客用户返回过去一周的文章 id 列表；登录用户返回过去一周的未读文章 id 列表
     """
     uid = request.POST.get('uid', '')
     user = get_login_user(request)
@@ -29,15 +29,14 @@ def get_lastweek_articles(request):
 
     logger.info(f"过去一周文章查询：`{uid}`{unsub_feeds}`{ext}")
 
-    lastweek_dt = datetime.now() - timedelta(days=7)
-
     if user is None:
         my_sub_feeds = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
     else:
         my_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
     my_lastweek_articles = list(Article.objects.all().prefetch_related('site').filter(
-        status='active', site__name__in=my_sub_feeds, ctime__gte=lastweek_dt).values_list('uindex', flat=True))
+        status='active', site__name__in=my_sub_feeds, is_recent=True).values_list('uindex', flat=True))
+
     if user:
         my_lastweek_articles = get_user_unread_articles(user.oauth_id, my_lastweek_articles)
 

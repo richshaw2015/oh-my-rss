@@ -129,7 +129,8 @@ USE_TZ = True
 CRONJOBS = [
    ('1 6-23 * * *', 'web.cron.update_all_user_feed'),
    ('30 1,12,18 * * *', 'web.cron.update_all_wemp_feed'),
-   ('11 3 * * *', 'web.cron.clean_history_data')
+   ('11 3 * * *', 'web.cron.clean_history_data'),
+   ('*/3 * * * *', 'web.cron.set_is_recent_article')
 ]
 
 # Static files (CSS, JavaScript, Images)

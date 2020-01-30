@@ -74,7 +74,12 @@ class Article(models.Model):
         ('close', '关闭，下线'),
     ), default='active', db_index=True)
 
-    ctime = models.DateTimeField('创建时间', auto_now_add=True, db_index=True)
+    is_recent = models.BooleanField('最近的文章', choices=(
+        (True, '最近文章'),
+        (False, '历史文章'),
+    ), default=True, db_index=True)
+
+    ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)
 

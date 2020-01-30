@@ -60,6 +60,7 @@ def article(request, id):
         article = Article.objects.get(uindex=id, status='active')
     except:
         try:
+            # 仅用于短链分享
             article = Article.objects.get(pk=id, status='active')
         except:
             logger.warning(f"获取文章详情请求处理异常：`{id}")
