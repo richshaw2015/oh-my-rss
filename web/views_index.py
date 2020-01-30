@@ -66,6 +66,10 @@ def article(request, id):
             logger.warning(f"获取文章详情请求处理异常：`{id}")
             return redirect('index')
 
+    # 历史的文章
+    if not article.content.strip():
+        return redirect(article.src_url)
+
     if user:
         set_user_read_article(user.oauth_id, id)
 

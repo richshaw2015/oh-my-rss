@@ -54,18 +54,24 @@ def update_all_wemp_feed():
 
 def clean_history_data():
     """
-    清除历史数据，TODO 评分大于 10 的改为更新，不清除
+    清除历史数据
     :return:
     """
     logger.info('开始清理历史数据')
 
     lastweek = datetime.now() - timedelta(days=7)
-    last3month = datetime.now() - timedelta(days=90)
-    last1year = datetime.now() - timedelta(days=365)
+    last6month = datetime.now() - timedelta(days=180)
+    lastyear = datetime.now() - timedelta(days=365)
 
+    # (, 10)，直接删除
     Article.objects.all().prefetch_related('site').filter(site__star__lt=10, ctime__lte=lastweek).delete()
-    Article.objects.all().prefetch_related('site').filter(site__star__lt=20, ctime__lte=last3month).delete()
-    Article.objects.all().prefetch_related('site').filter(site__star__lt=30, ctime__lte=last1year).delete()
+
+    # [10, 20)，创建时间超过半年，内容置空
+    Article.objects.all().prefetch_related('site').filter(site__star__gte=10, site__star__lt=20,
+                                                          ctime__lte=last6month).update(content=' ')
+
+    # [20, )，创建时间超过一年，内容置空
+    Article.objects.all().prefetch_related('site').filter(site__star__gte=20, ctime__lte=lastyear).update(content=' ')
 
     logger.info('历史数据清理完毕')
 
