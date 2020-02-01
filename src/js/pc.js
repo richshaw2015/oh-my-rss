@@ -241,18 +241,16 @@ $(document).ready(function () {
             // 游客需要本地判断订阅状态
             if (!user) {
                 let destDom = $(data);
-                const subFeeds = getSubFeeds();
-                const unsubFeeds = getUnsubFeeds();
 
                 destDom.find('.omrss-item').each(function (index) {
                     const siteName = $(this).attr('data-name');
                     const siteStar = parseInt($(this).attr('data-star'));
 
-                    if (siteName in subFeeds) {
+                    if (isVisitorSubFeed(siteName)) {
                         // 取消订阅
                         $(this).find('a.ev-toggle-feed').text('取消订阅');
                         $(this).find('a.ev-toggle-feed').addClass('omrss-bgcolor');
-                    } else if (siteName in unsubFeeds) {
+                    } else if (isVisitorUnSubFeed(siteName)) {
                         // 订阅
                         $(this).find('a.ev-toggle-feed').text('订阅');
                         $(this).find('a.ev-toggle-feed').removeClass('omrss-bgcolor');
@@ -508,6 +506,62 @@ $(document).ready(function () {
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         })
+    });
+
+    // 发现页面
+    $(document).on('click', '.ev-explore', function() {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/explore", {uid: getOrSetUid()}, function (data) {
+            if (!getLoginId()) {
+                // 游客用户
+                let destDom = $(data);
+
+                destDom.find('span.ev-sub-feed').each(function () {
+                    const siteName = $(this).attr('data-name');
+
+                    if (isVisitorSubFeed(siteName)) {
+                        $(this).text('已订阅');
+                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                    }
+                });
+
+                $('#omrss-main').html(destDom);
+            } else {
+                $('#omrss-main').html(data);
+            }
+            
+            $('#omrss-main').scrollTop(0);
+            resetHeight();
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
+    // 发现界面订阅
+    $(document).on('click', '.ev-sub-feed', function () {
+        const feedName = $(this).attr('data-name');
+        const user = getLoginId();
+        const evTarget = $(this);
+
+        if (!user) {
+            subFeed(feedName);
+            toast('订阅成功^o^');
+            evTarget.text('已订阅');
+            evTarget.removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+        } else {
+            $('#omrss-loader').removeClass('hide');
+            $.post("/api/feed/subscribe", {uid: getOrSetUid(), feed: feedName}, function (data) {
+                toast('订阅成功^o^');
+                evTarget.text('已订阅');
+                evTarget.removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+            }).fail(function () {
+                warnToast(NET_ERROR_MSG);
+            }).always(function () {
+                $('#omrss-loader').addClass('hide');
+            });
+        }
     });
 
     // 提交留言

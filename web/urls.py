@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/html/feeds/all', views_html.get_all_feeds, name='get_all_feeds'),
     path('api/html/homepage/intro', views_html.get_homepage_intro, name='get_homepage_intro'),
     path('api/html/faq', views_html.get_faq, name='get_faq'),
+    path('api/html/explore', views_html.get_explore, name='get_explore'),
     path('api/html/homepage/tips', views_html.get_homepage_tips, name='get_homepage_tips'),
     path('api/html/issues/all', views_html.get_all_issues, name='get_all_issues'),
     path('api/html/articles/list', views_html.get_articles_list, name='get_articles_list'),

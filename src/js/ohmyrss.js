@@ -172,6 +172,14 @@ function unsubFeed(name) {
     localStorage.setItem('UNSUBS', JSON.stringify(unsubFeeds));
 }
 
+function isVisitorSubFeed(name) {
+    return getSubFeeds()[name] === 1;
+}
+
+function isVisitorUnSubFeed(name) {
+    return getUnsubFeeds()[name] === 1;
+}
+
 function enterFullscreen() {
     /* 全屏 */
     const el = document.documentElement;

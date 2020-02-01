@@ -81,33 +81,47 @@ def unquote(url):
     return urllib.parse.unquote(url)
 
 
+def cut_to_short(text, size):
+    """
+    剪切指定的显示字符数；英文字符占1个显示宽度，中文占2个显示宽度
+    :param text:
+    :param size:
+    :return:
+    """
+    display_len = 0
+    short = ''
+
+    for char in text[:size]:
+        if len(char.encode('utf8')) > 1:
+            display_len += 2
+        else:
+            display_len += 1
+
+        if display_len <= size:
+            short += char
+        else:
+            break
+    return short
+
+
 @register.filter
 @lru_cache(maxsize=1024)
 def to_short_author(author1, author2=''):
     """
-    max 12 chars and 6 chinese chars
-    :param author1:
-    :param author2:
-    :return:
+    作者显示名称，最多 6 个汉字
     """
     author = author1 if author1 else author2
 
-    display_len = 0
-    short_author = ''
+    return cut_to_short(author, 12)
 
-    if author:
-        for char in author[:12]:
-            if len(char.encode('utf8')) > 1:
-                display_len += 2
-            else:
-                display_len += 1
 
-            if display_len <= 12:
-                short_author += char
-            else:
-                break
-
-    return short_author
+@register.filter
+@lru_cache(maxsize=1024)
+def to_short_site_name(name):
+    """
+    订阅源显示名称，最多 10 个汉字
+    """
+    return cut_to_short(name, 20)
 
 
 @register.filter

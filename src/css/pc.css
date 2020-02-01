@@ -31,6 +31,10 @@ main {
     width: 100%;
     height: 100%;
 }
+
+.omrss-card-content a {
+    color: unset !important;
+}
 /* end */
 
 /* 代码样式 */
@@ -180,6 +184,33 @@ i.meta-icon {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0 10px;
+}
+.omrss-recent-badge{
+    margin-left: 0;
+    margin-right: 2em;
+    line-height: 32.4px;
+}
+
+/* 最近更新文章 */
+.omrss-recent-avatar {
+    height: 32.4px !important;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+}
+
+.omrss-recent-site {
+    vertical-align: middle;
+}
+
+.omrss-recent-title {
+    font-size: 18px !important;
+    word-wrap: break-word;
+}
+
+.omrss-recent-article {
+}
+.omrss-card-content {
+    padding: 12px !important;
 }
 
 @media only screen and (max-width: 992px) {
@@ -537,7 +568,7 @@ i.meta-icon {
 }
 
 .rss-text {
-    line-height: 32.4px;
+    line-height: 32.4px !important;
     display: inline-block;
 }
 

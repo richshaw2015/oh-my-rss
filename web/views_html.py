@@ -5,8 +5,7 @@ from .models import *
 from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article
 from .verify import verify_request
 import logging
-from datetime import datetime
-from django.utils.timezone import timedelta
+from .sql import *
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +77,28 @@ def get_homepage_intro(request):
     context['mobile'] = mobile
 
     return render(request, 'intro.html', context=context)
+
+
+@verify_request
+def get_explore(request):
+    """
+    获取发现页面
+    """
+    user = get_login_user(request)
+
+    articles = Article.objects.raw(get_recent_articles_sql)
+
+    user_sub_feeds = []
+    if user:
+        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
+    context = dict()
+    context['articles'] = articles
+    context['user'] = user
+    context['user_sub_feeds'] = user_sub_feeds
+    context['articles'] = articles
+
+    return render(request, 'explore.html', context=context)
 
 
 @verify_request
