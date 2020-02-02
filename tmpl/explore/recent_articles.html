@@ -1,26 +1,15 @@
 {% load helpers %}
-<h1><i class="material-icons">highlight</i> 发现</h1>
-
-<div class="divider"></div>
-
-<div class="row">
-    <div class="col s12">
-        <ul class="tabs">
-            <li class="tab col s4"><a class="omrss-color active" href="#">最近更新</a></li>
-            <li class="tab col s4"><a class="omrss-color" href="#">思友点评</a></li>
-            <li class="tab col s4"><a class="omrss-color" href="#">新提交源</a></li>
-        </ul>
-    </div>
-</div>
 
 <div class="row">
     {% for article in articles %}
     <div class="col s6 omrss-recent-article">
         <div class="card">
             <div class="card-content omrss-card-content">
-                <a href="{{ article.src_url }}" target="_blank">
-                    <p class="card-title omrss-recent-title">{{ article.title }}</p>
-                </a>
+                <div>
+                    <a href="{{ article.src_url }}" target="_blank">
+                        <span class="card-title omrss-recent-title">{{ article.title }}</span>
+                    </a>
+                </div>
 
                 <div class="divider nav-divider"></div>
 
@@ -32,13 +21,13 @@
                     </a>
                     {% if user %}
                         {% if article.site.name in user_sub_feeds %}
-                            <span class="waves-light right rss-text" data-name="{{ article.site.name }}">已订阅</span>
+                            <span class="waves-light right rss-text omrss-sub-btn" data-name="{{ article.site.name }}">已订阅</span>
                         {% else %}
-                            <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed"
+                            <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
                                   data-name="{{ article.site.name }}">订阅</span>
                         {% endif %}
                     {% else %}
-                        <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed"
+                        <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
                               data-name="{{ article.site.name }}">订阅</span>
                     {% endif %}
 
@@ -50,8 +39,3 @@
     </div>
     {% endfor %}
 </div>
-
-<script>
-    $('.tabs').tabs();
-    $('.tooltipped').tooltip();
-</script>

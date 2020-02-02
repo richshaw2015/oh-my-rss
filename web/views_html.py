@@ -80,6 +80,27 @@ def get_homepage_intro(request):
 
 
 @verify_request
+def get_recent_articles(request):
+    """
+    获取发现页面
+    """
+    user = get_login_user(request)
+
+    articles = Article.objects.raw(get_recent_articles_sql)
+
+    user_sub_feeds = []
+    if user:
+        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
+    context = dict()
+    context['articles'] = articles
+    context['user'] = user
+    context['user_sub_feeds'] = user_sub_feeds
+
+    return render(request, 'explore/recent_articles.html', context=context)
+
+
+@verify_request
 def get_explore(request):
     """
     获取发现页面
@@ -96,9 +117,29 @@ def get_explore(request):
     context['articles'] = articles
     context['user'] = user
     context['user_sub_feeds'] = user_sub_feeds
-    context['articles'] = articles
 
-    return render(request, 'explore.html', context=context)
+    return render(request, 'explore/explore.html', context=context)
+
+
+@verify_request
+def get_recent_sites(request):
+    """
+    获取最近提交源
+    """
+    user = get_login_user(request)
+
+    user_sub_feeds = []
+    if user:
+        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
+    sites = Site.objects.filter(status='active').order_by('-id')[:100]
+    context = dict()
+
+    context['user'] = user
+    context['sites'] = sites
+    context['user_sub_feeds'] = user_sub_feeds
+
+    return render(request, 'explore/recent_sites.html', context=context)
 
 
 @verify_request

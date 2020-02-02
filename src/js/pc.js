@@ -3,6 +3,7 @@ function initLayout() {
     // 初始化组件
     $('.tooltipped').tooltip();
     $('.modal').modal();
+    $('.tabs').tabs();
     $('.sidenav').sidenav({"edge": "right"});
 
     // 右侧滚动条
@@ -271,6 +272,9 @@ $(document).ready(function () {
             } else {
                 $('#omrss-main').html(data).scrollTop(0);
             }
+            // 初始化组件
+            $('.tooltipped').tooltip();
+            $('.tabs').tabs();
             resetHeight();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
@@ -488,12 +492,6 @@ $(document).ready(function () {
         })
     });
 
-    // RSS加载更多
-    $(document).on('click', '.ev-display-btn', function() {
-        $(this).addClass('hide');
-        $('#omrss-rss-hide').removeClass('hide');
-    });
-
     // 留言页面
     $(document).on('click', '.ev-leave-msg', function() {
         $('#omrss-loader').removeClass('hide');
@@ -529,14 +527,73 @@ $(document).ready(function () {
             } else {
                 $('#omrss-main').html(data);
             }
-            
-            $('#omrss-main').scrollTop(0);
             resetHeight();
+            $('#omrss-main').scrollTop(0);
+            $('.tabs').tabs();
+            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
         })
+    });
+    // 发现界面切换到 最近提交内容 TAB
+    $(document).on('click', '.ev-recent-article', function () {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/recent/articles", {uid: getOrSetUid()}, function (data) {
+            if (!getLoginId()) {
+                // 游客用户
+                let destDom = $(data);
+
+                destDom.find('span.ev-sub-feed').each(function () {
+                    const siteName = $(this).attr('data-name');
+
+                    if (isVisitorSubFeed(siteName)) {
+                        $(this).text('已订阅');
+                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                    }
+                });
+
+                $('#omrss-explore').html(destDom);
+            } else {
+                $('#omrss-explore').html(data);
+            }
+            $('#omrss-explore').scrollTop(0);
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        });
+    });
+
+    // 发现界面切换到 新提交源 TAB
+    $(document).on('click', '.ev-new-site', function () {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/recent/sites", {uid: getOrSetUid()}, function (data) {
+            if (!getLoginId()) {
+                // 游客用户
+                let destDom = $(data);
+
+                destDom.find('span.ev-sub-feed').each(function () {
+                    const siteName = $(this).attr('data-name');
+
+                    if (isVisitorSubFeed(siteName)) {
+                        $(this).text('已订阅');
+                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                    }
+                });
+
+                $('#omrss-explore').html(destDom);
+            } else {
+                $('#omrss-explore').html(data);
+            }
+
+            $('#omrss-explore').scrollTop(0);
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        });
     });
 
     // 发现界面订阅

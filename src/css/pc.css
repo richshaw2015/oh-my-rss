@@ -185,7 +185,7 @@ i.meta-icon {
     overflow-x: hidden;
     padding: 0 10px;
 }
-.omrss-recent-badge{
+.omrss-recent-badge {
     margin-left: 0;
     margin-right: 2em;
     line-height: 32.4px;
@@ -207,10 +207,13 @@ i.meta-icon {
     word-wrap: break-word;
 }
 
-.omrss-recent-article {
-}
 .omrss-card-content {
     padding: 12px !important;
+}
+
+.omrss-sub-btn {
+    min-width: 4rem !important;
+    text-align: center;
 }
 
 @media only screen and (max-width: 992px) {

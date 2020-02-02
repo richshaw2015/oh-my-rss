@@ -125,6 +125,15 @@ def to_short_site_name(name):
 
 
 @register.filter
+@lru_cache(maxsize=1024)
+def to_clean_brief(brief):
+    """
+    去掉第三方说明性的文字
+    """
+    return brief.replace(' - Made with love by RSSHub(https://github.com/DIYgod/RSSHub)', '')[:100]
+
+
+@register.filter
 @lru_cache(maxsize=512)
 def to_rss(site):
     if site.creator == 'user':

@@ -249,7 +249,7 @@ function updateUnreadCount() {
     }
 
     if (unread > 0) {
-        $('#omrss-unread').html(`<a href="#!"><span class="new badge">${unread}</span></a>`);
+        $('#omrss-unread').html(`<a href="#"><span class="new badge">${unread}</span></a>`);
         localStorage.setItem('NEW', unread.toString());
     } else {
         $('#omrss-unread').html('');
