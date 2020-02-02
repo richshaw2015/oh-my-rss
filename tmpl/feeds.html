@@ -45,8 +45,7 @@
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
             <div class="rss-title rss-text">
-                <a href="{{ feed.link }}" target="_blank" class="tooltipped" data-tooltip="{{ feed.brief }}"
-                   data-position="top">{{ feed.cname }}</a>
+                <a href="{{ feed.link }}" target="_blank">{{ feed.cname }}</a>
             </div>
 
             <a class="waves-effect waves-light btn-small right rss-text omrss-recent-badge ev-toggle-feed omrss-bgcolor"
@@ -61,8 +60,7 @@
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
             <div class="rss-title rss-text">
-                <a href="{{ feed.link }}" target="_blank" class="tooltipped" data-tooltip="{{ feed.brief }}"
-                   data-position="top">{{ feed.cname }}</a>
+                <a href="{{ feed.link }}" target="_blank">{{ feed.cname }}</a>
             </div>
 
             <a class="waves-effect waves-light btn-small right rss-text omrss-recent-badge ev-toggle-feed"
