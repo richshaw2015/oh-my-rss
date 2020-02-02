@@ -1,4 +1,5 @@
 {% load helpers %}
+
 <h1><i class="material-icons">rss_feed</i> 我的订阅</h1>
 
 <div class="divider"></div>
@@ -15,6 +16,7 @@
     </div>
 </div>
 
+{% if user %}
 <div class="row">
     <div class="col s12">
         <ul class="tabs">
@@ -25,9 +27,21 @@
         </ul>
     </div>
 </div>
+{% else %}
+<div class="row">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab col s6 ev-my-subs">
+                <a class="omrss-color active" href="#omrss-my-subs">推荐订阅</a></li>
+            <li class="tab col s6 ev-my-unsubs">
+                <a class="omrss-color" href="#omrss-my-unsubs">更多订阅</a></li>
+        </ul>
+    </div>
+</div>
+{% endif %}
 
 <div class="row" id="omrss-my-subs">
-    {% for feed in show_feeds %}
+    {% for feed in sub_sites %}
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
             <div class="rss-title rss-text">
@@ -43,7 +57,7 @@
 </div>
 
 <div class="row" id="omrss-my-unsubs">
-    {% for feed in hide_feeds %}
+    {% for feed in unsub_sites %}
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
             <div class="rss-title rss-text">
@@ -57,6 +71,7 @@
         </div>
     {% endfor %}
 </div>
+
 
 <script>
     // 轮换RSS提示信息

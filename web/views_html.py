@@ -40,16 +40,18 @@ def get_article_detail(request):
 @verify_request
 def get_all_feeds(request):
     """
-    获取订阅列表，已登录用户默认展示已订阅内容；游客展示推荐列表
+    获取订阅列表，已登录用户默认展示已订阅内容；区分已订阅、未订阅
     """
     user = get_login_user(request)
+    
     if user is None:
-        show_feeds = Site.objects.filter(status='active', star__gte=9).order_by('-star')
-        hide_feeds = Site.objects.filter(status='active', star__lt=9).order_by('-star')
+        # 游客按照推荐和普通
+        sub_sites = Site.objects.filter(status='active', star__gte=20).order_by('-star')
+        unsub_sites = Site.objects.filter(status='active', star__lt=20).order_by('-star')
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
-        show_feeds = Site.objects.filter(status='active', name__in=user_sub_feeds).order_by('-star')
-        hide_feeds = Site.objects.filter(status='active').exclude(name__in=user_sub_feeds).order_by('-star')
+        sub_sites = Site.objects.filter(status='active', name__in=user_sub_feeds).order_by('-star')
+        unsub_sites = Site.objects.filter(status='active').exclude(name__in=user_sub_feeds).order_by('-star')
 
     try:
         last_site = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-ctime')[0]
@@ -58,8 +60,8 @@ def get_all_feeds(request):
         submit_tip = '提交RSS源，例如：https://coolshell.cn/feed'
 
     context = dict()
-    context['show_feeds'] = show_feeds
-    context['hide_feeds'] = hide_feeds
+    context['sub_sites'] = sub_sites
+    context['unsub_sites'] = unsub_sites
     context['submit_tip'] = submit_tip
     context['user'] = user
 

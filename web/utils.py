@@ -93,7 +93,7 @@ def get_page_uv(page):
 def get_profile_apis():
     return (
         reverse('get_articles_list'), reverse('get_lastweek_articles'), reverse('get_explore'),
-        reverse('get_recent_sites'), reverse('get_recent_articles')
+        reverse('get_recent_sites'), reverse('get_recent_articles'), reverse('get_all_feeds')
     )
 
 

@@ -248,11 +248,9 @@ $(document).ready(function () {
                     const siteStar = parseInt($(this).attr('data-star'));
 
                     if (isVisitorSubFeed(siteName)) {
-                        // 取消订阅
                         $(this).find('a.ev-toggle-feed').text('取消订阅');
                         $(this).find('a.ev-toggle-feed').addClass('omrss-bgcolor');
                     } else if (isVisitorUnSubFeed(siteName)) {
-                        // 订阅
                         $(this).find('a.ev-toggle-feed').text('订阅');
                         $(this).find('a.ev-toggle-feed').removeClass('omrss-bgcolor');
                     } else {
