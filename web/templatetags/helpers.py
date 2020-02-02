@@ -88,6 +88,9 @@ def cut_to_short(text, size):
     :param size:
     :return:
     """
+    if not text:
+        return ''
+
     display_len = 0
     short = ''
 
