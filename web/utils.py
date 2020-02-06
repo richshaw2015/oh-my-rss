@@ -97,6 +97,22 @@ def get_profile_apis():
     )
 
 
+def set_active_rss(feeds):
+    """
+    访问过的源，设置一个标识
+    :param feeds:
+    :return:
+    """
+    with R.pipeline(transaction=False) as p:
+        for feed in feeds:
+            p.set(settings.REDIS_ACTIVE_RSS_KEY % feed, 1, 3*24*3600)
+        p.execute()
+
+
+def is_active_rss(feed):
+    return R.get(settings.REDIS_ACTIVE_RSS_KEY % feed) == '1'
+
+
 @lru_cache(maxsize=128, typed=True)
 def get_subscribe_sites(sub_feeds, unsub_feeds):
     """
@@ -105,6 +121,9 @@ def get_subscribe_sites(sub_feeds, unsub_feeds):
     :param unsub_feeds:
     :return:
     """
+    # 设置订阅源缓存
+    set_active_rss(sub_feeds)
+
     recommend_feeds = list(Site.objects.filter(status='active', star__gte=20).values_list('name', flat=True))
     return list(set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds))
 
@@ -221,7 +240,12 @@ def del_user_sub_feed(oauth_id, feed):
 def get_user_sub_feeds(oauth_id):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
     try:
-        return R.smembers(key)
+        sub_feeds = R.smembers(key)
+
+        # 设置订阅源缓存
+        set_active_rss(sub_feeds)
+
+        return sub_feeds
     except:
         logger.error(f"写入Redis出现异常：`{key}")
     return []

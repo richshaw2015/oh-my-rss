@@ -134,7 +134,7 @@ def get_recent_sites(request):
     if user:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-    sites = Site.objects.filter(status='active').order_by('-id')[:50]
+    sites = Site.objects.filter(status='active').order_by('-id')[:30]
     context = dict()
 
     context['user'] = user

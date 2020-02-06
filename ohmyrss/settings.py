@@ -183,7 +183,10 @@ REDIS_USER_SUB_KEY = 'SUB/%s'
 # user read article flag
 REDIS_USER_READ_KEY = 'READ/%s/%s'
 
-SENSITIVE_WORDS = ('科学上网', )
+# active rss in 3 days
+REDIS_ACTIVE_RSS_KEY = 'ACTIVE/%s'
+
+SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 
 # github OAuth
 GITHUB_OAUTH_KEY = '4b40da1eb0585bf03dda'

@@ -5,6 +5,7 @@ from datetime import datetime
 from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
+from web.utils import is_active_rss
 # import pysnooper
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,12 @@ def update_all_user_feed():
 
     for site in feeds:
         try:
+            if not is_active_rss(site.name):
+                if site.star < 9:
+                    logger.warning(f'非活跃源，本次不更新：`{site.cname}')
+                    continue
+                else:
+                    logger.warning(f'非活跃源，请注意确认：`{site.cname}')
             atom_spider(site)
         except:
             logger.warning(f'爬取站点出现异常：`{site.cname}')
