@@ -6,6 +6,7 @@ import hashlib
 import urllib
 import logging
 from functools import lru_cache
+import re
 
 register = template.Library()
 logger = logging.getLogger(__name__)
@@ -133,7 +134,7 @@ def to_clean_brief(brief):
     """
     去掉第三方说明性的文字
     """
-    return brief.replace(' - Made with love by RSSHub(https://github.com/DIYgod/RSSHub)', '')[:100]
+    return re.sub(r' - Made with love by RSSHub.*$', '', brief)[:100]
 
 
 @register.filter
