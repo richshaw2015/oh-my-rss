@@ -269,15 +269,16 @@ def get_user_unread_articles(oauth_id, articles):
     """
     user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
     user_unread_list = []
-    try:
-        user_read_info_dict = dict(zip(articles, R.mget(*user_read_keys)))
-    except:
-        logger.error(f"获取用户未读文章列表：`{oauth_id}")
-        return []
 
-    for article in articles:
-        if user_read_info_dict.get(article) is None:
-            user_unread_list.append(article)
+    if articles:
+        try:
+            user_read_info_dict = dict(zip(articles, R.mget(*user_read_keys)))
+            for article in articles:
+                if user_read_info_dict.get(article) is None:
+                    user_unread_list.append(article)
+        except:
+            logger.error(f"获取用户未读文章列表异常：`{oauth_id}")
+
     return user_unread_list
 
 
