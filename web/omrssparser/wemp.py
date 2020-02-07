@@ -106,4 +106,4 @@ def wemp_spider(urls, site):
         except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
             logger.warning(f'公众号爬取出现网络异常：`{url}')
         except:
-            logger.error(f'公众号爬取出现未知异常：`{url}')
+            logger.info(f'公众号爬取出现未知异常：`{url}')
