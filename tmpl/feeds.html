@@ -70,11 +70,10 @@
     {% endfor %}
 </div>
 
-
 <script>
     // 轮换RSS提示信息
-    let before_tip = '提交RSS源，例如：https://coolshell.cn/feed';
-    let after_tip = '{{ submit_tip }}';
+    var before_tip = '提交RSS源，例如：https://coolshell.cn/feed';
+    var after_tip = '{{ submit_tip }}';
     setInterval(function () {
         if ($('#omrss-rss-tips').length === 1) {
             console.log('开始切换tip');

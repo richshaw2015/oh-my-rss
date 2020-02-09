@@ -538,7 +538,10 @@ $(document).ready(function () {
     // 发现界面切换到 最近提交内容 TAB
     $(document).on('click', '.ev-recent-article', function () {
         $('#omrss-loader').removeClass('hide');
-        $.post("/api/html/recent/articles", {uid: getOrSetUid()}, function (data) {
+        
+        const recommend = $(this).attr('data-type');
+
+        $.post("/api/html/recent/articles", {uid: getOrSetUid(), recommend: recommend}, function (data) {
             if (!getLoginId()) {
                 // 游客用户
                 let destDom = $(data);

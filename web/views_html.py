@@ -84,11 +84,17 @@ def get_homepage_intro(request):
 @verify_request
 def get_recent_articles(request):
     """
-    获取发现页面
+    获取最近更新内容
     """
     user = get_login_user(request)
+    recommend = request.POST.get('recommend', 'recommend')
 
-    articles = Article.objects.raw(get_recent_articles_sql)
+    if recommend == 'unrecommend':
+        articles = Article.objects.raw(get_other_articles_sql)
+    elif recommend == 'recommend':
+        articles = Article.objects.raw(get_recommend_articles_sql)
+    else:
+        logger.warning(f'未知的类型：{recommend}')
 
     user_sub_feeds = []
     if user:
@@ -109,7 +115,7 @@ def get_explore(request):
     """
     user = get_login_user(request)
 
-    articles = Article.objects.raw(get_recent_articles_sql)
+    articles = Article.objects.raw(get_recommend_articles_sql)
 
     user_sub_feeds = []
     if user:
