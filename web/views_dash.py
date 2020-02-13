@@ -25,7 +25,7 @@ def api_profile_line_chart() -> Line:
     接口平均耗时
     :return:
     """
-    xaxis = get_xaxis_days()
+    xaxis = get_xaxis_days(days=10)
 
     apis = list(filter(lambda x: x, R.smembers(settings.REDIS_API_KEY)))
 
@@ -131,7 +131,7 @@ def refer_pie_chart() -> Pie:
         Pie()
         .add(
             "",
-            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys)) if int(z[1]) > 50],
+            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys)) if int(z[1]) > 100],
             # radius=["30%", "75%"],
             # rosetype="radius",
         )
