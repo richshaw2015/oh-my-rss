@@ -22,7 +22,7 @@ def index(request):
     # PC 版、手机版适配
     user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
 
-    index_number = 10
+    index_number = 12
     if user_agent.is_pc:
         index_number = 8
 
