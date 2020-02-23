@@ -1,6 +1,6 @@
 
 function getPageSize() {
-    return 10;
+    return 12;
 }
 
 function loadPage(page) {
