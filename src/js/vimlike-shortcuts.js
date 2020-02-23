@@ -950,7 +950,7 @@ var CONSTANTS = {
     SCROLL_STEP: 200,
     FIND_STYLE: {
         STYLE_ID: 'vimlike:findStyleId',
-        STYLE: '.vimlike-shortcuts-found-tag{position:absolute;z-index:99999;background-color:yellow;color:black;padding:0 1px;border:solid 1px #E3BE23;text-decoration:none;font:bold 12px "Helvetica Neue", "Helvetica", "Arial", "Sans";}'
+        STYLE: '.vimlike-shortcuts-found-tag{position:fixed;z-index:9999999;background-color:#eeff41;color:black;padding:0 1px;border:solid 1px #E3BE23;text-decoration:none;font:bold 12px "Helvetica Neue", "Helvetica", "Arial", "Sans";}'
     }
 };
 var filterByTarget = function(c, s, keyStroke) {
@@ -1290,18 +1290,14 @@ V.addKeypress('previousPage', {
 
         return findedLinkTagPair;
     }
-    function click(ele, new_tab) {
+    function click(ele) {
+        // 根据原始链接的状态决定是否新窗口打开
         var attr_target = ele.getAttribute('target');
+        var new_tab = (attr_target === '_blank');
         if (new_tab) {
             ele.setAttribute('target', '_blank');
         }
         fireClick(ele);
-        if (new_tab) {
-            setTimeout(function() {
-                ele.setAttribute('target', attr_target);
-                ele = null;
-            }, 10);
-        }
     }
     function fireClick(ele) {
         // hack for so safe Firefox;
@@ -1385,7 +1381,7 @@ V.addKeypress('previousPage', {
         if (len > 1) {
             return;
         } else if (len === 1){
-            click(links[0][1], true);
+            click(links[0][1]);
             clear();
         }
         return true;

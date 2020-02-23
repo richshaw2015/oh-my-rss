@@ -90,8 +90,4 @@ def set_is_recent_article():
     """
     lastweek = datetime.now() - timedelta(days=7)
 
-    logger.info('开始设置最近文章状态')
-
     Article.objects.filter(is_recent=True, ctime__lte=lastweek).update(is_recent=False)
-
-    logger.info('设置最近文章状态结束')
