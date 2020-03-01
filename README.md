@@ -1,5 +1,5 @@
 # 己思 - Oh My RSS
-己思 - Oh My RSS 是一个开源的在线 RSS 服务，旨在为 IT 从业者提供一个优质的学习圈子。
+己思是一个开源的在线 RSS 阅读服务，旨在为 IT 从业者提供一个优质的学习圈子。 
 
 ![预览](https://raw.githubusercontent.com/richshaw2015/oh-my-rss/master/assets/img/preview.jpg)
 
@@ -11,9 +11,15 @@
 - 技术大拿的博客
 - 互联网名站的热门
 
-除了爬虫支持，也可以提交自定义的订阅源^o^
+一些支持的订阅源： 
+`酷 壳 – CoolShell` 、  `科技爱好者周刊` 、  `GitHub 热门` 、  `湾区日报` 、  `前端精读周刊` 、  `... `
 
-喜欢哪个就订阅哪个~
+
+订阅源主要支持三种类型以满足您的个性化订阅需求：
+
+- 通过其他途径生成的 RSS 源（在线提交）
+- 微信公众号（在线提交）
+- 自定义 Scrapy 爬虫（贡献源码）
 
 ### VimLike的快捷键
 Vim 党的福音来了~
@@ -77,8 +83,6 @@ python3 manage.py migrate web
 ```shell
 scrapy crawl coolshell
 ```
-
-提交的订阅源会以1~2小时一次的频率更新。
 
 ## 贡献
 详见 CONTRIBUTING.md
