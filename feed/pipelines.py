@@ -69,6 +69,7 @@ class DomPipeline(object):
             rel_src = img.attrs.get('src')
             abs_src = urllib.parse.urljoin(item['url'], rel_src)
             img.attrs['src'] = abs_src
+
         # code style
         for pre in content_soup.find_all('pre'):
             try:

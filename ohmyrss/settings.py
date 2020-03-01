@@ -141,8 +141,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
-AVATAR_DIR = os.path.join(BASE_DIR, "assets", "avatar")
-
 # redis service
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'

@@ -289,6 +289,7 @@ def get_login_user(request):
     :return: 获取成功返回 User 对象；用户不存在则返回 None
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
+
     if oauth_id:
         try:
             return User.objects.get(oauth_id=oauth_id, status='active')
@@ -316,7 +317,7 @@ def save_avatar(avatar, userid, size=100):
             if img_obj.mode != 'RGB':
                 img_obj = img_obj.convert('RGB')
 
-            img_obj.save(os.path.join(settings.AVATAR_DIR, jpg))
+            img_obj.save(os.path.join(settings.BASE_DIR, 'assets', 'avatar', jpg))
             return f'/assets/avatar/{jpg}'
         else:
             logger.error(f"同步用户头像出现网络异常！`{userid}`{avatar}")

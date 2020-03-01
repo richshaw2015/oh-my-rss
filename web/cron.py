@@ -52,7 +52,7 @@ def update_all_wemp_feed():
 
     for site in feeds:
         try:
-            parse_wemp_ershicimi(site.rss)
+            parse_wemp_ershicimi(site.rss, update=True)
         except:
             logger.warning(f'爬取公众号出现异常：`{site.cname}')
 

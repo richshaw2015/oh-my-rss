@@ -30,6 +30,7 @@ def get_article_detail(request):
 
     context = dict()
     context['article'] = article
+    context['user'] = user
 
     if mobile:
         return render(request, 'mobile/article.html', context=context)

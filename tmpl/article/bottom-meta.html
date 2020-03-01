@@ -7,19 +7,11 @@
             <i class="material-icons omrss-article-bottom">rss_feed</i> 查看站点源</a>
     </div>
 
-    {% if article.site.copyright == 20 or article.site.copyright == 0 %}
-        <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
-            <a href="{{ article.src_url }}" target="_blank" class="tooltipped ev-open-src btn-flat waves-effect" data-tooltip="查看原文"
-               data-position="top" data-id="{{ article.uindex }}">
-                <i class="material-icons omrss-article-bottom" style="font-size: 1.15rem;">open_in_new</i> 查看原文</a>
-        </div>
-    {% else %}
-        <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
-            <a href="{{ article.src_url }}" target="_blank" class="tooltipped ev-open-src btn-flat waves-effect" data-tooltip="去原文留言"
-               data-position="top" data-id="{{ article.uindex }}">
-                <i class="material-icons omrss-article-bottom" style="font-size: 1.15rem;">open_in_new</i> 去原文留言</a>
-        </div>
-    {% endif %}
+    <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
+        <a href="{{ article.src_url }}" target="_blank" class="tooltipped ev-open-src btn-flat waves-effect" data-tooltip="去原文留言"
+           data-position="top" data-id="{{ article.uindex }}">
+            <i class="material-icons omrss-article-bottom" style="font-size: 1.15rem;">open_in_new</i> 去原文留言</a>
+    </div>
 
     <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
         <a href="#" class="tooltipped btn-flat waves-effect" id="omrss-top" data-tooltip="回到顶部"
@@ -30,10 +22,14 @@
 
 <script>
     $('#omrss-modal-qrcode').modal({"dismissible": true});
-    {% if article.site.copyright == 20 or article.site.copyright == 0 %}
-        $('#omrss-third').css('overflow', 'hidden');
-        $('#omrss-third').css('max-height', getBriefHeight());
-        $('.cnt-right').css('overflow-y', 'hidden');
+    {% if not user %}
+        {% if article.site.copyright < 30 %}
+            $('#omrss-third').css('overflow', 'hidden');
+            $('#omrss-third').css('max-height', getBriefHeight());
+            $('.cnt-right').css('overflow-y', 'hidden');
+        {% else %}
+            $('.cnt-right').css('overflow-y', 'scroll');
+        {% endif %}
     {% else %}
         $('.cnt-right').css('overflow-y', 'scroll');
     {% endif %}
