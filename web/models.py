@@ -84,26 +84,6 @@ class Article(models.Model):
     remark = models.TextField('备注', default='', null=True, blank=True)
 
 
-class Message(models.Model):
-    """
-    留言表
-    """
-    uid = models.CharField('用户id', max_length=100)
-    content = models.TextField('内容')
-    nickname = models.CharField('用户昵称', max_length=20, null=True, blank=True)
-    contact = models.CharField('用户联系方式', max_length=50, null=True, blank=True)
-
-    status = models.CharField('状态', max_length=20, choices=(
-        ('active', '激活'),
-        ('close', '关闭，下线'),
-    ), default='active')
-    reply = models.TextField('回复', null=True, blank=True)
-
-    ctime = models.DateTimeField('创建时间', auto_now_add=True)
-    mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='', null=True, blank=True)
-
-
 class User(models.Model):
     """
     用户表，使用第三方的才会入库
@@ -121,6 +101,28 @@ class User(models.Model):
         ('active', '激活'),
         ('close', '关闭，下线'),
     ), default='active')
+
+    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+    mtime = models.DateTimeField('更新时间', auto_now=True)
+    remark = models.TextField('备注', default='', null=True, blank=True)
+
+
+class Message(models.Model):
+    """
+    留言表，是否登录用户都可以留言
+    """
+    uid = models.CharField('用户id', max_length=100)
+    content = models.TextField('内容')
+    nickname = models.CharField('用户昵称', max_length=20, null=True, blank=True)
+    contact = models.CharField('用户联系方式', max_length=50, null=True, blank=True)
+
+    status = models.CharField('状态', max_length=20, choices=(
+        ('active', '激活'),
+        ('close', '关闭，下线'),
+    ), default='active')
+    reply = models.TextField('回复', null=True, blank=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)

@@ -6,6 +6,7 @@
     <ul class="collection issues">
         {% for msg in msgs %}
         <li class="collection-item avatar omrss-msg">
+        {% if msg.user is None %}
             <img src="{{ msg.uid |to_gravatar_url }}" alt="" class="circle">
             <span class="grey-text text-darken-1 omrss-issue-meta omrss-issue-name">
                 {% if msg.nickname %}
@@ -19,6 +20,17 @@
             {% if msg.reply %}
                 <div class="omrss-reply">{{ msg.reply }}</div>
             {% endif %}
+        {% else %}
+            <img src="{{ msg.user.avatar }}" alt="" class="circle">
+            <span class="grey-text text-darken-1 omrss-issue-meta omrss-issue-name">
+                {{ msg.user.oauth_name }}
+            </span>
+            <span class="omrss-issue-meta prettydate grey-text text-darken-1">{{ msg.ctime |to_date_fmt }}</span>
+            <p><i class="material-icons">format_quote</i> {{ msg.content }}</p>
+            {% if msg.reply %}
+                <div class="omrss-reply">{{ msg.reply }}</div>
+            {% endif %}
+        {% endif %}
         </li>
         {% endfor %}
     </ul>
@@ -45,11 +57,13 @@
                 <label for="issue-input-detail">问题说明（必填，公开显示）</label>
             </div>
 
+            {% if not user %}
             <div class="input-field col s6">
                 <i class="material-icons prefix">person</i>
                 <input id="issue-input-name" class="validate" type="text" data-length="20" maxlength="20">
                 <label for="issue-input-name">您的昵称（选填，公开显示）</label>
             </div>
+            {% endif %}
 
             <div class="input-field col s6">
                 <i class="material-icons prefix">contact_mail</i>

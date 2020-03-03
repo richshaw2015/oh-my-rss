@@ -177,10 +177,13 @@ def get_all_issues(request):
     """
     获取首页介绍
     """
+    user = get_login_user(request)
+
     msgs = Message.objects.filter(status='active').order_by('-id')[:100]
 
     context = dict()
     context['msgs'] = msgs
+    context['user'] = user
 
     return render(request, 'issues.html', context=context)
 

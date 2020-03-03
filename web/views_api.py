@@ -63,23 +63,24 @@ def leave_a_message(request):
     """
     添加留言
     """
-    # TODO 适配已登录用户
     uid = request.POST.get('uid', '').strip()[:100]
 
     content = request.POST.get('content', '').strip()[:500]
     nickname = request.POST.get('nickname', '').strip()[:20]
     contact = request.POST.get('contact', '').strip()[:50]
 
-    if uid and content:
+    user = get_login_user(request)
+
+    if content:
         try:
-            msg = Message(uid=uid, content=content, nickname=nickname, contact=contact)
+            msg = Message(uid=uid, content=content, nickname=nickname, contact=contact, user=user)
             msg.save()
             return get_all_issues(request)
         except:
             logger.error(f"留言增加失败：`{uid}`{content}`{nickname}`{contact}")
             return HttpResponseServerError('Inter error')
 
-    logger.warning(f"参数错误：`{uid}`{content}")
+    logger.warning(f"参数错误：`{content}")
     return HttpResponseNotFound("Param error")
 
 
