@@ -345,13 +345,13 @@ nav .sidenav-trigger {
 }
 @media only screen and (min-width: 340px) and (max-width: 370px) {
     .meta-author {
-        width: 7.5em;
+        width: 8em;
     }
     .meta-num {
         width: 1.8em;
     }
     .meta-time {
-        width: 5em;
+        width: 4.5em;
     }
     .meta-left{
         padding-left: 0.8rem;
@@ -382,7 +382,7 @@ nav .sidenav-trigger {
 
 @media only screen and (min-width: 370px) and (max-width: 400px) {
     .meta-author {
-        width: 7.5em;
+        width: 8em;
     }
     .meta-num {
         width: 2em;
@@ -394,7 +394,7 @@ nav .sidenav-trigger {
         padding-left: 1rem;
     }
     .meta-recommend {
-        margin-right: 1rem;
+        margin-right: 0.8rem;
     }
     span.badge {
         min-width: 2.2rem;
