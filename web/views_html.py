@@ -174,12 +174,9 @@ def get_homepage_tips(request):
 
 @verify_request
 def get_all_issues(request):
-    """
-    获取首页介绍
-    """
     user = get_login_user(request)
 
-    msgs = Message.objects.filter(status='active').order_by('-id')[:100]
+    msgs = Message.objects.filter(status='active').order_by('-id')[:20]
 
     context = dict()
     context['msgs'] = msgs
