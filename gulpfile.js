@@ -18,7 +18,7 @@ function cleanTask() {
 
 function jsLibTask() {
     return src(['src/js/vendor/jquery.min.js', 'src/js/vendor/materialize.min.js',
-        'src/js/vendor/prettydate.min.js', 'src/js/vendor/prettydate.zh-CN.min.js', 
+        'src/js/vendor/prettydate.js', 'src/js/vendor/prettydate.zh-CN.min.js',
         'src/js/vendor/uuid.js', 'src/js/vendor/md5.min.js', 'src/js/vendor/js.cookie.min.js',
         'src/js/vendor/cache.js', 'src/js/vendor/prism.js', 'src/js/vendor/highlight.min.js',
         'src/js/vendor/linkify.min.js', 'src/js/vendor/linkify-jquery.min.js'])
