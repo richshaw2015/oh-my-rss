@@ -111,12 +111,15 @@ def update_article_tag():
 
         for seg in seg_list:
             seg = seg.strip().lower()
+
             if len(seg) > 1 and seg not in stopwords:
                 words_list.append(seg)
 
         tags_list = dict(Counter(words_list).most_common(10))
 
         if tags_list:
+            logger.info(f'{article.uindex}`{tags_list}')
+
             article.tags = json.dumps(tags_list)
             article.save()
 
@@ -140,6 +143,7 @@ def cal_article_distance():
         if not get_similar_article(article.uindex):
             compare_articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).\
                 exclude(tags='').values('uindex', 'tags')
+
             for compare in compare_articles:
                 src_tags = json.loads(article.tags)
                 dest_tags = json.loads(compare['tags'])
@@ -150,6 +154,9 @@ def cal_article_distance():
 
             if similar_dict:
                 sorted_similar_dict = dict(sorted(similar_dict.items(), key=lambda v: v[1], reverse=True)[:10])
+
+                logger.info(f'{article.uindex}`sorted_similar_dict')
+
                 set_similar_article(article.uindex, sorted_similar_dict)
 
     logger.info(f'文章相似度计算结束')
