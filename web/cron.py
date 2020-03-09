@@ -155,7 +155,7 @@ def cal_article_distance():
             if similar_dict:
                 sorted_similar_dict = dict(sorted(similar_dict.items(), key=lambda v: v[1], reverse=True)[:10])
 
-                logger.info(f'{article.uindex}`sorted_similar_dict')
+                logger.info(f'{article.uindex}`{sorted_similar_dict}')
 
                 set_similar_article(article.uindex, sorted_similar_dict)
 
