@@ -290,6 +290,7 @@ def get_login_user(request):
     :return: 获取成功返回 User 对象；用户不存在则返回 None
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
+    # oauth_id = 'github/28855629'
 
     if oauth_id:
         try:
