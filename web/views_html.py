@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from .models import *
-from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article
+from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article, \
+    get_similar_article
 from .verify import verify_request
 import logging
 from .sql import *
@@ -238,3 +239,37 @@ def get_articles_list(request):
             return HttpResponseNotFound("Page number error")
 
     return HttpResponseNotFound("No Feeds subscribed")
+
+
+@verify_request
+def get_recommend_articles(request):
+    """
+    获取文章推荐的订阅源，只开放登录用户
+    :param request:
+    :return:
+    """
+    uindex = int(request.POST['id'])
+    user = get_login_user(request)
+
+    if uindex and user:
+        recommend_articles = []
+        relative_articles = list(get_similar_article(uindex).keys())
+        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
+        for relative_uindex in relative_articles:
+            article = Article.objects.get(uindex=relative_uindex)
+
+            if article.site.name not in user_sub_feeds:
+                recommend_articles.append(article)
+            if len(recommend_articles) >= 2:
+                break
+
+        if recommend_articles:
+            logger.info(f'推荐数据条数：`{len(recommend_articles)}`{user.oauth_name}')
+
+            context = dict()
+            context['recommend_articles'] = recommend_articles
+
+            return render(request, 'recommend/relative_article.html', context=context)
+
+    return HttpResponseNotFound("No Recommend Data")

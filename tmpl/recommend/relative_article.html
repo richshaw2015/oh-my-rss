@@ -1,0 +1,30 @@
+{% load helpers %}
+
+<div class="row">
+    {% for article in recommend_articles %}
+    <div class="col s6 omrss-recent-article">
+        <div class="card">
+            <div class="card-content omrss-card-content">
+                <div>
+                    <a href="{{ article.src_url }}" target="_blank">
+                        <span class="card-title omrss-recent-title">{{ article.title }}</span>
+                    </a>
+                </div>
+
+                <div class="divider nav-divider"></div>
+
+                <div>
+                    <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar rss-text">
+                    <a href="{{ article.site.link }}" target="_blank" class="tooltipped"
+                       data-tooltip="{{ article.site.brief }}">
+                        <span class="omrss-recent-site rss-text">{{ article.site.cname |to_short_site_name }}</span>
+                    </a>
+
+                    <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                          data-name="{{ article.site.name }}">订阅</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

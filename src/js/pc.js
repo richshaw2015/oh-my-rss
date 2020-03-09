@@ -52,6 +52,16 @@ function resetHeight() {
     }
 }
 
+function setRecommendArticles(articleId) {
+    if (getLoginId()) {
+        setTimeout(function () {
+            $.post("/api/html/recommend/articles", {uid: getOrSetUid(), id: articleId}, function(data){
+                $('#omrss-recommend').html(data);
+            });
+        }, 2000);
+    }
+}
+
 function loadPage(page) {
     // UI状态
     $('#omrss-loader').removeClass('hide');
@@ -181,6 +191,9 @@ $(document).ready(function () {
             setThirdLinkify();
 
             target.scrollTop(0);
+
+            // 推荐文章
+            setRecommendArticles(article_id);
         } else {
             // 没有缓存数据，走网络请求
             $('#omrss-loader').removeClass('hide');
@@ -218,6 +231,8 @@ $(document).ready(function () {
                     });
                 }, 1000);
 
+                // 推荐文章
+                setRecommendArticles(article_id);
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);
             }).always(function () {

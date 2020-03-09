@@ -217,6 +217,14 @@ i.meta-icon {
     text-align: center;
 }
 
+#omrss-recommend {
+    margin-top: 0.8rem;
+}
+
+#omrss-recommend .row {
+    margin-bottom: 0 !important;
+}
+
 @media only screen and (max-width: 992px) {
     .cnt-left {
         display: none;

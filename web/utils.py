@@ -14,6 +14,7 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 import logging
 import hashlib
 import urllib
+from collections import Counter
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -327,3 +328,51 @@ def save_avatar(avatar, userid, size=100):
         logger.error(f"同步用户头像未知异常`{userid}`{avatar}")
 
     return ''
+
+
+def cal_cosine_distance(x, y):
+    """
+    计算两个列表的余弦相似度，0 ~ 1
+    :param x:
+    :param y:
+    :return:
+    """
+    x_counter = Counter(x)
+    y_counter = Counter(y)
+
+    if x_counter == y_counter:
+        return 1
+
+    words = list(x_counter.keys() | y_counter.keys())
+
+    x_vect = [x_counter.get(word, 0) for word in words]
+    y_vect = [y_counter.get(word, 0) for word in words]
+
+    len_x = sum(av*av for av in x_vect) ** 0.5
+    len_y = sum(bv*bv for bv in y_vect) ** 0.5
+
+    dot = sum(av*bv for av, bv in zip(x_vect, y_vect))
+
+    distance = dot / (len_x * len_y)
+
+    return round(distance, 2)
+
+
+def get_similar_article(uindex):
+    key = settings.REDIS_SIMILAR_ARTICLE_KEY % uindex
+
+    try:
+        return R.hgetall(key)
+    except:
+        logger.error(f"读取 Redis 出现异常：`{key}")
+
+
+def set_similar_article(uindex, simlar_dict):
+    key = settings.REDIS_SIMILAR_ARTICLE_KEY % uindex
+
+    try:
+        ret = R.hmset(key, simlar_dict)
+        R.expire(key, 30 * 24 * 3600)
+        return ret
+    except:
+        logger.error(f"写入 Redis 出现异常：`{key}")

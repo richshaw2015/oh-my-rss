@@ -5,7 +5,12 @@ from datetime import datetime
 from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.utils import is_active_rss
+from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance
+import jieba
+from web.stopwords import stopwords
+from bs4 import BeautifulSoup
+from collections import Counter
+import json
 # import pysnooper
 
 logger = logging.getLogger(__name__)
@@ -83,11 +88,68 @@ def clean_history_data():
     logger.info('历史数据清理完毕')
 
 
-def set_is_recent_article():
+def update_article_tag():
     """
-    设置最近一周的文章标识，每隔几分钟计算一次
+    设置最近一周的文章标识、统计词频
     :return:
     """
+    logger.info('开始更新文章标识')
+
+    # 设置最近一周文章标识
     lastweek = datetime.now() - timedelta(days=7)
 
     Article.objects.filter(is_recent=True, ctime__lte=lastweek).update(is_recent=False)
+
+    # 统计词频
+    articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10, tags='').order_by('-id')
+
+    for article in articles:
+        content_soup = BeautifulSoup(article.content, 'html.parser')
+        content_text = content_soup.get_text() + 3 * article.title
+        seg_list = jieba.cut(content_text)
+        words_list = []
+
+        for seg in seg_list:
+            seg = seg.strip().lower()
+            if len(seg) > 1 and seg not in stopwords:
+                words_list.append(seg)
+
+        tags_list = dict(Counter(words_list).most_common(10))
+
+        if tags_list:
+            article.tags = json.dumps(tags_list)
+            article.save()
+
+    logger.info(f'更新文章标识结束')
+
+
+def cal_article_distance():
+    """
+    计算新增文章的相似度，用于推荐订阅
+    :return:
+    """
+    logger.info(f'开始文章相似度计算')
+
+    articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).exclude(tags='').\
+        order_by('-id')
+
+    for article in articles:
+
+        similar_dict = {}
+
+        if not get_similar_article(article.uindex):
+            compare_articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).\
+                exclude(tags='').values('uindex', 'tags')
+            for compare in compare_articles:
+                src_tags = json.loads(article.tags)
+                dest_tags = json.loads(compare['tags'])
+                distance = cal_cosine_distance(src_tags, dest_tags)
+
+                if 0.1 < distance < 1:
+                    similar_dict[compare['uindex']] = distance
+
+            if similar_dict:
+                sorted_similar_dict = dict(sorted(similar_dict.items(), key=lambda v: v[1], reverse=True)[:10])
+                set_similar_article(article.uindex, sorted_similar_dict)
+
+    logger.info(f'文章相似度计算结束')

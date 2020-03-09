@@ -130,7 +130,8 @@ CRONJOBS = [
    ('1 6-23 * * *', 'web.cron.update_all_user_feed'),
    ('30 1,12,18 * * *', 'web.cron.update_all_wemp_feed'),
    ('11 3 * * *', 'web.cron.clean_history_data'),
-   ('*/3 * * * *', 'web.cron.set_is_recent_article')
+   ('*/7 * * * *', 'web.cron.update_article_tag'),
+   ('*/3 * * * *', 'web.cron.cal_article_distance'),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -183,6 +184,8 @@ REDIS_USER_READ_KEY = 'READ/%s/%s'
 
 # active rss in 3 days
 REDIS_ACTIVE_RSS_KEY = 'ACTIVE/%s'
+
+REDIS_SIMILAR_ARTICLE_KEY = 'SIMILAR/%s'
 
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 

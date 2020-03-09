@@ -20,6 +20,7 @@ urlpatterns = [
     # private urls
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),
     path('api/html/feeds/all', views_html.get_all_feeds, name='get_all_feeds'),
+    path('api/html/recommend/articles', views_html.get_recommend_articles, name='get_recommend_articles'),
     path('api/html/homepage/intro', views_html.get_homepage_intro, name='get_homepage_intro'),
     path('api/html/faq', views_html.get_faq, name='get_faq'),
     path('api/html/explore', views_html.get_explore, name='get_explore'),

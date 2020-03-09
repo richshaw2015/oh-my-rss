@@ -79,6 +79,8 @@ class Article(models.Model):
         (False, '历史文章'),
     ), default=True, db_index=True)
 
+    tags = models.TextField('词频', default='', null=True, blank=True)
+
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)
