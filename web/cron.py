@@ -132,14 +132,14 @@ def cal_article_distance():
     articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).exclude(tags='').\
         order_by('-id')
 
-    lastyear = datetime.now() - timedelta(days=365)
+    last6month = datetime.now() - timedelta(days=180)
 
     for article in articles:
 
         similar_dict = {}
 
         if not get_similar_article(article.uindex):
-            compare_articles = Article.objects.filter(status='active', site__star__gte=10, ctime__gt=lastyear).\
+            compare_articles = Article.objects.filter(status='active', site__star__gte=10, ctime__gt=last6month).\
                 exclude(tags='').values('uindex', 'tags')
 
             for compare in compare_articles:

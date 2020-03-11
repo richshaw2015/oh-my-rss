@@ -53,7 +53,8 @@ def get_all_feeds(request):
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
         sub_sites = Site.objects.filter(status='active', name__in=user_sub_feeds).order_by('-star')
-        unsub_sites = Site.objects.filter(status='active').exclude(name__in=user_sub_feeds).order_by('-star')
+        unsub_sites = Site.objects.filter(status='active').exclude(name__in=user_sub_feeds).\
+            exclude(star__lt=8).order_by('-star')
 
     try:
         last_site = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-ctime')[0]
