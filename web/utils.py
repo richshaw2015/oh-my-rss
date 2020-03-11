@@ -15,10 +15,15 @@ import logging
 import hashlib
 import urllib
 from collections import Counter
+from urllib.parse import urlparse
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
 logger = logging.getLogger(__name__)
+
+
+def get_host_name(url):
+    return urlparse(url).netloc
 
 
 def incr_action(action, uindex):
@@ -211,7 +216,8 @@ def add_refer_host(host):
 def log_refer_request(request):
     referer = request.META.get('HTTP_REFERER', '')
     if referer:
-        host = urllib.parse.urlparse(referer).netloc
+        host = get_host_name(referer)
+
         if host and host not in settings.ALLOWED_HOSTS:
             logger.info(f"收到外域来源：`{host}`{referer}")
             try:

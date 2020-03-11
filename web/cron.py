@@ -93,8 +93,6 @@ def update_article_tag():
     设置最近一周的文章标识、统计词频
     :return:
     """
-    logger.info('开始更新文章标识')
-
     # 设置最近一周文章标识
     lastweek = datetime.now() - timedelta(days=7)
 
@@ -122,8 +120,6 @@ def update_article_tag():
 
             article.tags = json.dumps(tags_list)
             article.save()
-
-    logger.info(f'更新文章标识结束')
 
 
 def cal_article_distance():
