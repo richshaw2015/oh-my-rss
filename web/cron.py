@@ -35,10 +35,7 @@ def update_all_user_feed():
         try:
             if not is_active_rss(site.name):
                 if site.star < 9:
-                    logger.info(f'非活跃源，本次不更新：`{site.cname}')
                     continue
-                else:
-                    logger.info(f'非活跃源，请注意确认：`{site.cname}')
             atom_spider(site)
         except:
             logger.warning(f'爬取站点出现异常：`{site.cname}')
