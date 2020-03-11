@@ -60,7 +60,7 @@ def get_all_feeds(request):
         last_site = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-ctime')[0]
         submit_tip = f"「{last_site.cname[:20]}」({last_site.rss[:50]}) 最后被用户提交"
     except:
-        submit_tip = '提交RSS源，例如：https://coolshell.cn/feed'
+        submit_tip = '提交 RSS 源，例如：https://coolshell.cn/feed'
 
     context = dict()
     context['sub_sites'] = sub_sites

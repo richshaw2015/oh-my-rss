@@ -26,6 +26,10 @@
     </li>
     -->
 
+    <li><a href="#" class="waves-effect ev-mark-readall sidenav-close ev-my-feed">
+        <i class="material-icons omrss-color">rss_feed</i>我的订阅</a>
+    </li>
+
     <li>
         <a href="#" class="waves-effect ev-mark-readall sidenav-close">
             <i class="material-icons omrss-color">check</i>全部设为已读</a>
@@ -33,11 +37,6 @@
 
     <li class="ev-leave-msg sidenav-close">
         <a href="#"><i class="material-icons omrss-color">format_quote</i>留言</a>
-    </li>
-
-    <li>
-        <a href="/dash" target="_blank" class="sidenav-close">
-            <i class="material-icons omrss-color">trending_up</i>后台报表</a>
     </li>
 
     <div class="divider nav-divider"></div>
@@ -50,8 +49,9 @@
         <a href="#"><i class="material-icons omrss-color">help_outline</i>FAQ</a>
     </li>
 
-    <li class="sidenav-close">
-        <a href="https://github.com/richshaw2015/oh-my-rss" target="_blank"><i class="material-icons omrss-color">code</i>GitHub</a>
+    <li>
+        <a href="/dash" target="_blank" class="sidenav-close">
+            <i class="material-icons omrss-color">trending_up</i>后台报表</a>
     </li>
 </ul>
 
@@ -79,10 +79,6 @@
 
             <li class="tooltipped ev-explore" data-tooltip="发现" data-position="bottom">
                 <a href="#"><i class="material-icons omrss-color">highlight</i></a>
-            </li>
-
-            <li class="tooltipped ev-my-feed" data-tooltip="我的订阅" data-position="bottom">
-                <a href="#"><i class="material-icons omrss-color">rss_feed</i></a>
             </li>
 
             {% if not user %}
