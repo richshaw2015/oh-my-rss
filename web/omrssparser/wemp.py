@@ -146,7 +146,12 @@ def parse_ershicimi_page(rsp):
     response = HtmlResponse(url=rsp.url, body=rsp.text, encoding='utf8')
 
     title = response.selector.xpath('//h1[@class="article-title"]/text()').extract_first().strip()
-    content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
     author = response.selector.xpath('//div[@class="article-sub"]//a/text()').extract_first().strip()
+
+    try:
+        content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+    except:
+        content = response.selector.xpath('//div[@class="abstract"]').extract_first().strip()
+
 
     return title, author, content
