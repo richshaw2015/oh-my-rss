@@ -16,7 +16,7 @@
                 <div>
                     <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar rss-text">
                     <a href="{{ article.site.link }}" target="_blank" class="tooltipped"
-                       data-tooltip="{{ article.site.brief }}">
+                       data-tooltip="{{ article.site.brief |to_clean_brief }}" data-position="top">
                         <span class="omrss-recent-site rss-text">{{ article.site.cname |to_short_site_name }}</span>
                     </a>
 
