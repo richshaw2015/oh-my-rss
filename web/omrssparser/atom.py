@@ -1,7 +1,7 @@
 
 import django
 from web.models import *
-from web.utils import get_hash_name
+from web.utils import get_hash_name, generate_rss_avatar
 import logging
 import feedparser
 import requests
@@ -36,7 +36,9 @@ def parse_atom(feed_url):
             brief = cname
 
         author = feed_obj.feed.get('author', '')[:12]
-        favicon = f"https://cdn.v2ex.com/gravatar/{name}?d=monsterid&s=64"
+
+        # 使用默认头像
+        favicon = generate_rss_avatar(link)
 
         try:
             site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
