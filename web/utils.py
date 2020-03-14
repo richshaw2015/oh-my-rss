@@ -420,3 +420,14 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/rsshub.png'
 
     return avatar
+
+
+def vacuum_sqlite_db():
+    """
+    压缩空间
+    :return:
+    """
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute("VACUUM")
+    connection.close()

@@ -5,7 +5,7 @@ from datetime import datetime
 from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance
+from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, vacuum_sqlite_db
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -80,6 +80,9 @@ def clean_history_data():
 
     # [20, )，创建时间超过一年，内容置空
     Article.objects.filter(site__star__gte=20, ctime__lte=lastyear).update(content=' ')
+
+    # 压缩数据库
+    vacuum_sqlite_db()
 
     logger.info('历史数据清理完毕')
 
