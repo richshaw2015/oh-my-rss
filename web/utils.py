@@ -414,5 +414,9 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/bilibili.png'
     elif host == 'xueqiu.com':
         avatar = '/assets/img/xueqiu.jpg'
+    elif host == 'tophub.today':
+        avatar = '/assets/img/tophub.png'
+    elif host == 'rsshub.app':
+        avatar = '/assets/img/rsshub.png'
 
     return avatar
