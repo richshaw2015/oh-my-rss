@@ -114,6 +114,9 @@ def update_article_tag():
 
         tags_list = dict(Counter(words_list).most_common(10))
 
+        # 过滤只出现一次的
+        tags_list = {k: v for k, v in tags_list.items() if v >= 2}
+
         if tags_list:
             logger.info(f'{article.uindex}`{tags_list}')
 
