@@ -1,17 +1,15 @@
 
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 from web.models import *
-from datetime import timedelta, datetime
 from web.utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
-    add_user_sub_feeds, del_user_sub_feed, get_user_unread_articles, set_user_read_article
+    add_user_sub_feeds, del_user_sub_feed, get_user_unread_articles, set_user_read_article, get_host_name
 from web.views_html import get_all_issues
 from web.verify import verify_request
 import logging
 from django.conf import settings
 import urllib
-import json
 from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.omrssparser.atom import parse_atom
+from web.omrssparser.atom import parse_atom, parse_self_atom
 
 logger = logging.getLogger(__name__)
 
@@ -93,10 +91,12 @@ def submit_a_feed(request):
     user = get_login_user(request)
 
     if feed_url:
-        host = urllib.parse.urlparse(feed_url).netloc
+        host = get_host_name(feed_url)
 
         if 'ershicimi.com' in host:
             rsp = parse_wemp_ershicimi(feed_url)
+        elif host in settings.ALLOWED_HOSTS:
+            rsp = parse_self_atom(feed_url)
         else:
             rsp = parse_atom(feed_url)
 

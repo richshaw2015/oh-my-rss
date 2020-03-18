@@ -1,5 +1,6 @@
 
 import django
+from django.urls import resolve
 from web.models import *
 from web.utils import get_hash_name
 import logging
@@ -113,3 +114,27 @@ def atom_spider(site):
             logger.info(f'数据重复插入：`{title}`{link}')
         except:
             logger.warning(f'数据插入异常：`{title}`{link}')
+
+
+def parse_self_atom(feed_url):
+    """
+    解析本站提供的 RSS 源
+    :param feed_url:
+    :return: 解析结果，成功字典；失败 None
+    """
+
+    feed_path = urllib.parse.urlparse(feed_url).path
+
+    try:
+        name = resolve(feed_path).kwargs.get('name')
+    except:
+        name = None
+
+    if name:
+        try:
+            Site.objects.get(name=name, status='active')
+            return {"name": name}
+        except:
+            logger.warning(f'订阅源不存在：`{feed_url}')
+
+    return None
