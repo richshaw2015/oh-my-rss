@@ -5,7 +5,7 @@ from datetime import datetime
 from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance
+from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, vacuum_sqlite_db
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -69,18 +69,20 @@ def clean_history_data():
     logger.info('开始清理历史数据')
 
     lastweek = datetime.now() - timedelta(days=7)
-    last6month = datetime.now() - timedelta(days=180)
+    last3month = datetime.now() - timedelta(days=90)
     lastyear = datetime.now() - timedelta(days=365)
 
     # (, 10)，直接删除
-    Article.objects.all().prefetch_related('site').filter(site__star__lt=10, ctime__lte=lastweek).delete()
+    Article.objects.filter(site__star__lt=10, ctime__lte=lastweek).delete()
 
-    # [10, 20)，创建时间超过半年，内容置空
-    Article.objects.all().prefetch_related('site').filter(site__star__gte=10, site__star__lt=20,
-                                                          ctime__lte=last6month).update(content=' ')
+    # [10, 20)，创建时间超过 3 个月，内容置空
+    Article.objects.filter(site__star__gte=10, site__star__lt=20, ctime__lte=last3month).update(content=' ')
 
     # [20, )，创建时间超过一年，内容置空
-    Article.objects.all().prefetch_related('site').filter(site__star__gte=20, ctime__lte=lastyear).update(content=' ')
+    Article.objects.filter(site__star__gte=20, ctime__lte=lastyear).update(content=' ')
+
+    # 压缩数据库
+    vacuum_sqlite_db()
 
     logger.info('历史数据清理完毕')
 
@@ -111,6 +113,9 @@ def update_article_tag():
                 words_list.append(seg)
 
         tags_list = dict(Counter(words_list).most_common(10))
+
+        # 过滤只出现一次的
+        tags_list = {k: v for k, v in tags_list.items() if v >= 2}
 
         if tags_list:
             logger.info(f'{article.uindex}`{tags_list}')

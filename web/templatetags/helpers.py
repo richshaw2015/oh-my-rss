@@ -134,7 +134,7 @@ def to_clean_brief(brief):
     """
     去掉第三方说明性的文字
     """
-    return re.sub(r' - Made with love by RSSHub.*$', '', brief)[:100]
+    return re.sub(r' - Made with love by .*$', '', brief)[:50]
 
 
 @register.filter

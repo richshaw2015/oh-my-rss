@@ -383,3 +383,51 @@ def set_similar_article(uindex, simlar_dict):
         return ret
     except:
         logger.error(f"写入 Redis 出现异常：`{key}")
+
+
+def generate_rss_avatar(url):
+    """
+    生成用户提交 RSS 源的默认头像
+    :param url:
+    :return:
+    """
+    avatar = "/assets/img/logo.png"
+    host = get_host_name(url)
+
+    if host == 'weibo.com':
+        avatar = "/assets/img/weibo.jpg"
+    elif host in ("www.jianshu.com", "jianshu.com"):
+        avatar = "/assets/img/jianshu.png"
+    elif host == 'blog.sina.com':
+        avatar = '/assets/img/blogsina.jpg'
+    elif host == 'twitter.com':
+        avatar = '/assets/img/twitter.png'
+    elif host == 'www.youtube.com':
+        avatar = '/assets/img/youtube.png'
+    elif host == 'music.163.com':
+        avatar = '/assets/img/163music.jpg'
+    elif host == 'www.douban.com':
+        avatar = '/assets/img/douban.png'
+    elif host == 'zhuanlan.zhihu.com':
+        avatar = '/assets/img/zhihu.png'
+    elif host == 'space.bilibili.com':
+        avatar = '/assets/img/bilibili.png'
+    elif host == 'xueqiu.com':
+        avatar = '/assets/img/xueqiu.jpg'
+    elif host == 'tophub.today':
+        avatar = '/assets/img/tophub.png'
+    elif host == 'rsshub.app':
+        avatar = '/assets/img/rsshub.png'
+
+    return avatar
+
+
+def vacuum_sqlite_db():
+    """
+    压缩空间
+    :return:
+    """
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute("VACUUM")
+    connection.close()

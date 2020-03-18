@@ -575,6 +575,7 @@ $(document).ready(function () {
                 $('#omrss-explore').html(data);
             }
             $('#omrss-explore').scrollTop(0);
+            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -605,6 +606,7 @@ $(document).ready(function () {
             }
 
             $('#omrss-explore').scrollTop(0);
+            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
