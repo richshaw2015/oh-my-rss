@@ -406,7 +406,7 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/youtube.png'
     elif host == 'music.163.com':
         avatar = '/assets/img/163music.jpg'
-    elif host == 'www.douban.com':
+    elif host in ('www.douban.com', 'm.douban.com'):
         avatar = '/assets/img/douban.png'
     elif host == 'zhuanlan.zhihu.com':
         avatar = '/assets/img/zhihu.png'
@@ -416,6 +416,10 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/xueqiu.jpg'
     elif host == 'tophub.today':
         avatar = '/assets/img/tophub.png'
+    elif host == 'github.com':
+        avatar = '/assets/img/github.png'
+    elif host == 'juejin.im':
+        avatar = '/assets/img/juejin.png'
     elif host == 'rsshub.app':
         avatar = '/assets/img/rsshub.png'
 
