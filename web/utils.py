@@ -398,7 +398,7 @@ def generate_rss_avatar(url):
         avatar = "/assets/img/weibo.jpg"
     elif host in ("www.jianshu.com", "jianshu.com"):
         avatar = "/assets/img/jianshu.png"
-    elif host == 'blog.sina.com':
+    elif host in ('blog.sina.com', 'blog.sina.com.cn'):
         avatar = '/assets/img/blogsina.jpg'
     elif host == 'twitter.com':
         avatar = '/assets/img/twitter.png'
@@ -422,6 +422,10 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/juejin.png'
     elif host == 'rsshub.app':
         avatar = '/assets/img/rsshub.png'
+    elif host in ("post.smzdm.com", "www.smzdm.com"):
+        avatar = '/assets/img/smzdm.jpg'
+    elif host == "qnmlgb.tech":
+        avatar = '/assets/img/qnmlgb.png'
 
     return avatar
 
