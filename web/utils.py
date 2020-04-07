@@ -394,23 +394,23 @@ def generate_rss_avatar(url):
     avatar = "/assets/img/logo.png"
     host = get_host_name(url)
 
-    if host == 'weibo.com':
+    if 'weibo.com' in host or 'weibo.cn' in host:
         avatar = "/assets/img/weibo.jpg"
-    elif host in ("www.jianshu.com", "jianshu.com"):
+    elif "jianshu.com" in host:
         avatar = "/assets/img/jianshu.png"
     elif host in ('blog.sina.com', 'blog.sina.com.cn'):
         avatar = '/assets/img/blogsina.jpg'
-    elif host == 'twitter.com':
+    elif 'twitter.com' in host:
         avatar = '/assets/img/twitter.png'
-    elif host == 'www.youtube.com':
+    elif 'youtube.com' in host:
         avatar = '/assets/img/youtube.png'
     elif host == 'music.163.com':
         avatar = '/assets/img/163music.jpg'
-    elif host in ('www.douban.com', 'm.douban.com'):
+    elif 'douban.com' in host:
         avatar = '/assets/img/douban.png'
-    elif host == 'zhuanlan.zhihu.com':
+    elif 'zhihu.com' in host:
         avatar = '/assets/img/zhihu.png'
-    elif host == 'space.bilibili.com':
+    elif 'bilibili.com' in host:
         avatar = '/assets/img/bilibili.png'
     elif host == 'xueqiu.com':
         avatar = '/assets/img/xueqiu.jpg'
@@ -418,7 +418,7 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/tophub.png'
     elif host == 'github.com':
         avatar = '/assets/img/github.png'
-    elif host == 'juejin.im':
+    elif 'juejin.im' in host:
         avatar = '/assets/img/juejin.png'
     elif host == 'rsshub.app':
         avatar = '/assets/img/rsshub.png'
@@ -426,6 +426,10 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/smzdm.jpg'
     elif host == "qnmlgb.tech":
         avatar = '/assets/img/qnmlgb.png'
+    elif host == 'weixin.sogou.com':
+        avatar = '/assets/img/sogou.png'
+    elif host == 'pubs.acs.org':
+        avatar = '/assets/img/acs.png'
 
     return avatar
 
