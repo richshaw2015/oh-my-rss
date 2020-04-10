@@ -68,7 +68,7 @@ class Article(models.Model):
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
     content = models.TextField('内容')
-    src_url = models.CharField('原始链接', max_length=1024, unique=True)
+    src_url = models.CharField('原始链接', max_length=1024)
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
