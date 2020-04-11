@@ -73,6 +73,9 @@ def leave_a_message(request):
         try:
             msg = Message(uid=uid, content=content, nickname=nickname, contact=contact, user=user)
             msg.save()
+
+            logger.warning(f"有新的留言：`{content}")
+
             return get_all_issues(request)
         except:
             logger.error(f"留言增加失败：`{uid}`{content}`{nickname}`{contact}")

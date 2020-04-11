@@ -262,7 +262,7 @@ def get_recommend_articles(request):
 
             if article.site.name not in user_sub_feeds:
                 recommend_articles.append(article)
-            if len(recommend_articles) >= 2:
+            if len(recommend_articles) >= 3:
                 break
 
         if recommend_articles:

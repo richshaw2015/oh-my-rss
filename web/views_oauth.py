@@ -56,7 +56,7 @@ def github_callback(request):
                             )
 
                             if created:
-                                logger.info(f"新用户登录：`{user.oauth_name}")
+                                logger.warning(f"欢迎新用户登录：`{user.oauth_name}")
                                 add_user_sub_feeds(oauth_id, get_subscribe_sites('', ''))
                                 add_register_count()
 

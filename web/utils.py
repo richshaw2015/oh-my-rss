@@ -99,7 +99,7 @@ def get_page_uv(page):
 def get_profile_apis():
     return (
         reverse('get_articles_list'), reverse('get_lastweek_articles'), reverse('get_explore'),
-        reverse('get_recent_sites'), reverse('get_recent_articles'), reverse('get_recommend_articles')
+        reverse('get_recent_articles'),
     )
 
 
@@ -219,7 +219,7 @@ def log_refer_request(request):
         host = get_host_name(referer)
 
         if host and host not in settings.ALLOWED_HOSTS:
-            logger.info(f"收到外域来源：`{host}`{referer}")
+            logger.warning(f"收到外域来源：`{host}`{referer}")
             try:
                 add_refer_host(host)
                 incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
