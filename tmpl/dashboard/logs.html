@@ -2,6 +2,23 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+
+    <!-- UC浏览器强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <meta name="browsermode" content="application">
+    <!-- QQ浏览器强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-page-mode" content="app">
+    <!-- Safari 7.x 全屏模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
     <title>Dashboard 面板</title>
     <link rel="stylesheet" href="/assets/css/lib.css">
     <link rel="stylesheet" href="/assets/css/pc.css">
@@ -10,21 +27,14 @@
     <style>
         .omrss-logs {
             margin: 1rem 12px;
+            word-break: break-all;
         }
     </style>
 
 </head>
 <body>
 
-<nav style="padding-left: 12px;">
-    <div class="nav-wrapper">
-        <div class="col s12">
-            <a href="/" class="breadcrumb"> 己思 </a>
-            <a href="/dash" class="breadcrumb"> 数据报表 </a>
-            <a href="#" class="breadcrumb"> 告警日志 </a>
-        </div>
-    </div>
-</nav>
+{% include 'dashboard/nav.html' %}
 
 <div class="omrss-logs">
     {% for log in logs %}
