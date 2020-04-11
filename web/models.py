@@ -63,6 +63,10 @@ class Article(models.Model):
     """
     文章表
     """
+
+    class Meta:
+        unique_together = ('src_url', 'site')
+
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     title = models.CharField('标题', max_length=200)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
