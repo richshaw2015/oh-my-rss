@@ -219,7 +219,7 @@ def log_refer_request(request):
         host = get_host_name(referer)
 
         if host and host not in settings.ALLOWED_HOSTS:
-            logger.warning(f"收到外域来源：`{host}`{referer}")
+            logger.info(f"收到外域来源：`{host}`{referer}")
             try:
                 add_refer_host(host)
                 incr_redis_key(settings.REDIS_REFER_PV_KEY % host)

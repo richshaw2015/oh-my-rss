@@ -25,5 +25,6 @@ class StatsMiddleware:
                 add_api_profile(request.path, elapsed)
 
         if elapsed > 3000:
-            logger.warning(f'接口处理时间：`{request.path}`{elapsed} ms')
+            if request.path in get_profile_apis():
+                logger.warning(f'接口处理时间：`{request.path}`{elapsed} ms')
         return response
