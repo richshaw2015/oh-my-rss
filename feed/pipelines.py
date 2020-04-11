@@ -128,7 +128,7 @@ class InsertDBPipeline(object):
                                   remark='', src_url=item['url'], author=item.get('author'))
                 article.save()
 
-                spider.logger.info(f"Insert to DB:`{item['title']}`{item['url']}")
+                spider.logger.info(f"Insert to DB:`{item['title']}`{item['url']}`{item['req_url']}")
 
                 # mark status
                 mark_crawled_url(item['url'], item['req_url'])

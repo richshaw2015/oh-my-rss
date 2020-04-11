@@ -2,12 +2,12 @@
 
 <div class="row">
     {% for article in recommend_articles %}
-    <div class="col s6 omrss-recent-article">
+    <div class="col s4 omrss-recent-article">
         <div class="card">
             <div class="card-content omrss-card-content">
                 <div>
                     <a href="{{ article.src_url }}" target="_blank">
-                        <span class="card-title omrss-recent-title">{{ article.title }}</span>
+                        <span class="card-title omrss-recent-title">{{ article.title[:30] }}</span>
                     </a>
                 </div>
 
