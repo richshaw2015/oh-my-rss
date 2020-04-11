@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from .utils import *
 import logging
+from django.conf import settings
 import json
 from pyecharts import options
 from pyecharts.charts import Line, Page, Pie
@@ -165,3 +166,15 @@ def get_api_profile_chart_data(request):
 
 def dashboard(request):
     return render(request, 'dashboard/index.html')
+
+
+def get_warn_log(request):
+    warn_log_file = settings.LOGGING['handlers']['my_warn']['filename']
+    logs = list(reversed(open(warn_log_file).read().split('\n')))[:1000]
+
+    logs = [l for l in logs if l]
+
+    context = dict()
+    context['logs'] = logs
+
+    return render(request, 'dashboard/logs.html', context=context)

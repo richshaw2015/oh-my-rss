@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('feed/<name>', SiteFeed(), name='get_feed_entries'),
     path('dash', views_dash.dashboard, name='dashboard'),
+    path('dash/logs', views_dash.get_warn_log, name='get_warn_log'),
 
     path('robots.txt', views_index.robots, name='robots'),
     path('sitemap.txt', views_index.sitemap, name='sitemap'),

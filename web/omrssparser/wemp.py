@@ -96,7 +96,7 @@ def wemp_spider(url, site):
                     logger.warning(f'公众号域名解析异常：`{rsp.url}')
                     return
             except:
-                logger.warning(f'公众号内容解析异常：`{rsp.url}')
+                logger.info(f'公众号内容解析异常：`{rsp.url}')
                 return
 
             article = Article(title=title, author=author, site=site, uindex=current_ts(),

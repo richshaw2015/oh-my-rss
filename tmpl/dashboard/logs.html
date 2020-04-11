@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard 面板</title>
+    <link rel="stylesheet" href="/assets/css/lib.css">
+    <link rel="stylesheet" href="/assets/css/pc.css">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
+
+    <style>
+        .omrss-logs {
+            margin: 1rem 12px;
+        }
+    </style>
+
+</head>
+<body>
+
+<nav style="padding-left: 12px;">
+    <div class="nav-wrapper">
+        <div class="col s12">
+            <a href="/" class="breadcrumb"> 己思 </a>
+            <a href="/dash" class="breadcrumb"> 数据报表 </a>
+            <a href="#" class="breadcrumb"> 告警日志 </a>
+        </div>
+    </div>
+</nav>
+
+<div class="omrss-logs">
+    {% for log in logs %}
+        <span>{{ log }}</span>
+        <br/>
+    {% endfor %}
+</div>
+
+<script src="/assets/js/lib.js"></script>
+
+<script>
+$('.omrss-logs').linkify({
+    target: "_blank"
+});
+</script>
+
+</body>
+</html>

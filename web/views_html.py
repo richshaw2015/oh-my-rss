@@ -23,7 +23,7 @@ def get_article_detail(request):
     try:
         article = Article.objects.get(uindex=uindex, status='active')
     except:
-        logger.warning(f"获取文章详情请求处理异常：`{uindex}")
+        logger.info(f"获取文章详情请求处理异常：`{uindex}")
         return HttpResponseNotFound("Param error")
 
     if user:
