@@ -170,7 +170,7 @@ def dashboard(request):
 
 def get_warn_log(request):
     warn_log_file = settings.LOGGING['handlers']['my_warn']['filename']
-    logs = list(reversed(open(warn_log_file).read().split('\n')))[:500]
+    logs = list(reversed(open(warn_log_file).read().split('\n')))[:200]
 
     logs = [l for l in logs if l]
 

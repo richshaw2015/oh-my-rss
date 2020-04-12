@@ -7,7 +7,6 @@ from web.views_html import get_all_issues
 from web.verify import verify_request
 import logging
 from django.conf import settings
-import urllib
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.omrssparser.atom import parse_atom, parse_self_atom
 
@@ -104,6 +103,8 @@ def submit_a_feed(request):
             rsp = parse_atom(feed_url)
 
         if rsp:
+            logger.warning(f"有新订阅源被提交：`{feed_url}")
+
             # 已登录用户，自动订阅
             if user:
                 add_user_sub_feeds(user.oauth_id, [rsp['name'], ])
@@ -145,6 +146,9 @@ def user_unsubscribe_feed(request):
 
     if user and feed:
         del_user_sub_feed(user.oauth_id, feed)
+
+        logger.warning(f"登陆用户取消订阅操作：`{user.oauth_name}`{feed}")
+
         return JsonResponse({"name": feed})
     return HttpResponseNotFound("Param error")
 
