@@ -64,7 +64,7 @@ def atom_spider(site):
     try:
         resp = requests.get(site.rss, timeout=30, verify=False)
     except:
-        if site.star >= 9:
+        if site.star > 9:
             logger.warning(f"RSS源可能失效了`{site.rss}")
         else:
             logger.info(f"RSS源可能失效了`{site.rss}")
