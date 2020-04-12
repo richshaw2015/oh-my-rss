@@ -280,8 +280,8 @@ function setToreadList(notify=false) {
         // 发送通知
         if (notify === true && newNum > 0) {
             if (window.Notification && Notification.permission === "granted") {
-                const notify = new Notification(`您有${newNum}条未读订阅`, {
-                    tag: "OMRSS",
+                const notify = new Notification(`你有 ${newNum} 条未读订阅`, {
+                    tag: "己思",
                     icon: "https://ohmyrss.com/assets/img/logo.png",
                     body: "请刷新页面后查看"
                 });

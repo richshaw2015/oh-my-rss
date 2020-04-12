@@ -146,6 +146,8 @@ $(document).ready(function () {
     setInterval(function () {
         if (isBgWin === true) {
             setToreadList(notify=true);
+        } else {
+            setToreadList(notify=false);
         }
     }, 4 * 3600 * 1000);
     /* 首页初始化结束 */
@@ -683,14 +685,14 @@ $(document).ready(function () {
         }
     });
 
-    $(window).bind('focus', function () {
-        isBgWin = false;
-        // console.log('转到前台');
-    });
-
-    $(window).bind('blur', function () {
-        isBgWin = true;
-        // console.log('转到后台');
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState !== 'visible') {
+            isBgWin = true;
+            console.log('转到后台：' + (new Date()));
+        } else {
+            isBgWin = false;
+            console.log('转到前台：' + (new Date()));
+        }
     });
     /* 事件处理结束 */
 });
