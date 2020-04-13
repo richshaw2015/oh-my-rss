@@ -210,7 +210,7 @@ def get_articles_list(request):
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
         if not user_sub_feeds:
-            logger.warning(f'用户未订阅任何内容：`{user.oauth_id}')
+            logger.warning(f'用户未订阅任何内容：`{user.oauth_name}')
 
         # TODO 这个 sql 比较耗时
         my_articles = Article.objects.all().prefetch_related('site').filter(

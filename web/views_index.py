@@ -35,7 +35,7 @@ def index(request):
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
         if not user_sub_feeds:
-            logger.warning(f'用户未订阅任何内容：`{user.oauth_id}')
+            logger.warning(f'用户未订阅任何内容：`{user.oauth_name}')
         articles = Article.objects.filter(status='active', site__name__in=user_sub_feeds).order_by('-id')[:index_number]
 
     context = dict()

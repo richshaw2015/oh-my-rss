@@ -19,7 +19,7 @@
 
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
-    <title>Dashboard 面板</title>
+    <title>告警日志</title>
     <link rel="stylesheet" href="/assets/css/lib.css">
     <link rel="stylesheet" href="/assets/css/pc.css">
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
@@ -28,6 +28,10 @@
         .omrss-logs {
             margin: 1rem 12px;
             word-break: break-all;
+            line-height: 1.35;
+            font-size: 1.05rem;
+            font-family: 'Inconsolata', Monaco, Consolas, 'Andale Mono', monospace;
+            background: rgba(246,246,246,0.2);
         }
     </style>
 
@@ -38,7 +42,7 @@
 
 <div class="omrss-logs">
     {% for log in logs %}
-        <span>{{ log }}</span>
+        <span class="omrss-log">{{ log }}</span>
         <br/>
     {% endfor %}
 </div>
@@ -46,9 +50,27 @@
 <script src="/assets/js/lib.js"></script>
 
 <script>
-$('.omrss-logs').linkify({
-    target: "_blank"
-});
+    const logRegex = /^(\[.+?\]) (.+?) (\[.+?\]) (.+)$/;
+
+    $('.omrss-log').each(function() {
+        const logInfo = logRegex.exec($(this).html());
+        let [log, time, level, code, msgs] = logInfo
+        let [msg, ...rest] = msgs.split('`');
+        
+        let datas = ""
+        for(let x = 0; x < rest.length; x++){
+            let span = "<span style='color: #690;'>" + rest[x] + "</span> ";
+            datas += span;
+        }
+        const formatHtml = `<span style="color: #999;">${time}</span> <span style="color: black;">${level}</span>
+        <span style="color: #07a;">${code}</span> <span style="color: #905;">${msg}</span> ` + datas;
+        
+        $(this).html(formatHtml);
+    })
+
+    $('.omrss-logs').linkify({
+        target: "_blank"
+    });
 </script>
 
 </body>
