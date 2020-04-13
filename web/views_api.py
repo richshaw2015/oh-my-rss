@@ -128,6 +128,9 @@ def user_subscribe_feed(request):
         try:
             Site.objects.get(name=feed)
             add_user_sub_feeds(user.oauth_id, [feed, ])
+
+            logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{feed}")
+
             return JsonResponse({"name": feed})
         except:
             logger.warning(f'用户订阅出现异常：`{feed}`{user.oauth_id}')
@@ -147,7 +150,7 @@ def user_unsubscribe_feed(request):
     if user and feed:
         del_user_sub_feed(user.oauth_id, feed)
 
-        logger.warning(f"登陆用户取消订阅操作：`{user.oauth_name}`{feed}")
+        logger.warning(f"登陆用户取消订阅动作：`{user.oauth_name}`{feed}")
 
         return JsonResponse({"name": feed})
     return HttpResponseNotFound("Param error")
