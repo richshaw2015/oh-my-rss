@@ -118,8 +118,13 @@ def parse_weixin_page(rsp):
     """
     response = HtmlResponse(url=rsp.url, body=rsp.text, encoding='utf8')
 
-    title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
     content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+
+    try:
+        title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
+    except:
+        # 有些文章没有标题
+        title = content[:10].strip()
 
     try:
         author = response.selector.xpath('//span[@id="js_author_name"]/text()'). \
@@ -152,6 +157,5 @@ def parse_ershicimi_page(rsp):
         content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
     except:
         content = response.selector.xpath('//div[@class="abstract"]').extract_first().strip()
-
 
     return title, author, content

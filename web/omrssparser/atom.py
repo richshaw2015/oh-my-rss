@@ -2,7 +2,8 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import get_hash_name, generate_rss_avatar
+from web.utils import get_hash_name, generate_rss_avatar, get_host_name
+from web.omrssparser.wemp import parse_weixin_page
 import logging
 import feedparser
 import requests
@@ -10,6 +11,7 @@ import urllib
 from bs4 import BeautifulSoup
 from io import BytesIO
 from feed.utils import current_ts, mark_crawled_url, is_crawled_url
+from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +75,7 @@ def atom_spider(site):
     content = BytesIO(resp.content)
     feed_obj = feedparser.parse(content)
 
-    for entry in feed_obj.entries[:10]:
+    for entry in feed_obj.entries[:12]:
         try:
             title = entry.title
             link = entry.link
@@ -107,10 +109,21 @@ def atom_spider(site):
         except:
             logger.warning(f'修复图片路径异常：`{title}`{link}')
 
+        # 公众号 RSS 二次抓取
+        if get_host_name(site.rss) in ('qnmlgb.tech', ):
+            if get_host_name(link) in ('mp.weixin.qq.com', ):
+                try:
+                    rsp = requests.get(link, timeout=10)
+                    title, author, value = parse_weixin_page(rsp)
+                except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+                    logger.warning(f"公众号二次爬取出现网络异常：`{link}")
+                except:
+                    logger.warning(f"公众号二次爬取出现未知异常：`{link}")
+
         try:
-            article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(),
-                                content=value)
+            article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(), content=value)
             article.save()
+
             mark_crawled_url(link)
         except django.db.utils.IntegrityError:
             logger.info(f'数据重复插入：`{title}`{link}')
