@@ -120,17 +120,18 @@ def is_active_rss(feed):
 
 
 @lru_cache(maxsize=128, typed=True)
-def get_subscribe_sites(sub_feeds, unsub_feeds):
+def get_subscribe_sites(sub_feeds, unsub_feeds, star=20):
     """
     获取游客订阅的站点，已订阅 + 推荐 - 取消订阅
     :param sub_feeds:
     :param unsub_feeds:
+    :param star:
     :return:
     """
     # 设置订阅源缓存
     set_active_rss(sub_feeds)
 
-    recommend_feeds = list(Site.objects.filter(status='active', star__gte=20).values_list('name', flat=True))
+    recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('name', flat=True))
     return list(set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds))
 
 
@@ -422,6 +423,8 @@ def generate_rss_avatar(url):
         avatar = '/assets/img/juejin.png'
     elif 'rsshub.app' in host:
         avatar = '/assets/img/rsshub.png'
+    elif 'chuansongme.com' in host:
+        avatar = '/assets/img/chuansongme.jpg'
     elif host in ("post.smzdm.com", "www.smzdm.com"):
         avatar = '/assets/img/smzdm.jpg'
     elif host == "qnmlgb.tech":
