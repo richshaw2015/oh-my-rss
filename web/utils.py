@@ -335,7 +335,7 @@ def save_avatar(avatar, userid, size=100):
     except:
         logger.error(f"同步用户头像未知异常`{userid}`{avatar}")
 
-    return ''
+    return '/assets/img/logo.png'
 
 
 def cal_cosine_distance(x, y):

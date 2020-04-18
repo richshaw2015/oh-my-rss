@@ -57,7 +57,7 @@ def github_callback(request):
 
                             if created:
                                 logger.warning(f"欢迎新用户登录：`{user.oauth_name}")
-                                add_user_sub_feeds(oauth_id, get_subscribe_sites('', '', star=25))
+                                add_user_sub_feeds(oauth_id, get_subscribe_sites('', '', star=28))
                                 add_register_count()
 
                                 # 用户头像存储到本地一份，国内网络会丢图
