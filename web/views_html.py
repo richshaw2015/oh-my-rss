@@ -258,7 +258,10 @@ def get_recommend_articles(request):
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
         for relative_uindex in relative_articles:
-            article = Article.objects.get(uindex=relative_uindex)
+            try:
+                article = Article.objects.get(uindex=relative_uindex)
+            except:
+                continue
 
             if article.site.name not in user_sub_feeds:
                 recommend_articles.append(article)
