@@ -616,6 +616,37 @@ $(document).ready(function () {
         });
     });
 
+    // 发现界面切换到 订阅排行榜
+    $(document).on('click', '.ev-feed-ranking', function () {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/feed/ranking", {uid: getOrSetUid()}, function (data) {
+            if (!getLoginId()) {
+                // 游客用户
+                let destDom = $(data);
+
+                destDom.find('span.ev-sub-feed').each(function () {
+                    const siteName = $(this).attr('data-name');
+
+                    if (isVisitorSubFeed(siteName)) {
+                        $(this).text('已订阅');
+                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                    }
+                });
+
+                $('#omrss-explore').html(destDom);
+            } else {
+                $('#omrss-explore').html(data);
+            }
+
+            $('#omrss-explore').scrollTop(0);
+            $('.tooltipped').tooltip();
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        });
+    });
+
     // 发现界面订阅
     $(document).on('click', '.ev-sub-feed', function () {
         const feedName = $(this).attr('data-name');

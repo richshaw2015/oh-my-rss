@@ -132,6 +132,7 @@ CRONJOBS = [
    ('11 3 * * *', 'web.cron.clean_history_data'),
    ('*/7 * * * *', 'web.cron.update_article_tag'),
    ('*/3 * * * *', 'web.cron.cal_article_distance'),
+   ('1 3 * * *', 'web.cron.cal_feed_ranking'),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -186,6 +187,8 @@ REDIS_USER_READ_KEY = 'READ/%s/%s'
 REDIS_ACTIVE_RSS_KEY = 'ACTIVE/%s'
 
 REDIS_SIMILAR_ARTICLE_KEY = 'SIMILAR/%s'
+
+REDIS_FEED_RANKING_KEY = 'FEED/RANKING'
 
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 

@@ -16,6 +16,7 @@ import hashlib
 import urllib
 from collections import Counter
 from urllib.parse import urlparse
+import json
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -105,7 +106,7 @@ def get_profile_apis():
 
 def set_active_rss(feeds):
     """
-    访问过的源，设置一个标识
+    访问过的源，设置一个标识，3天缓存
     :param feeds:
     :return:
     """
@@ -245,13 +246,14 @@ def del_user_sub_feed(oauth_id, feed):
         logger.error(f"写入Redis出现异常：`{key}")
 
 
-def get_user_sub_feeds(oauth_id):
+def get_user_sub_feeds(oauth_id, from_user=True):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
     try:
         sub_feeds = R.smembers(key)
 
-        # 设置订阅源缓存
-        set_active_rss(sub_feeds)
+        # 设置订阅源缓存，来自用户的请求调用
+        if from_user:
+            set_active_rss(sub_feeds)
 
         return sub_feeds
     except:
@@ -384,6 +386,24 @@ def set_similar_article(uindex, simlar_dict):
         return ret
     except:
         logger.error(f"写入 Redis 出现异常：`{key}")
+
+
+def set_feed_ranking_dict(ranking_dict):
+    key = settings.REDIS_FEED_RANKING_KEY
+    try:
+        return R.set(key, json.dumps(ranking_dict))
+    except:
+        logger.error(f"写入 Redis 出现异常：`{key}")
+
+
+def get_feed_ranking_dict():
+    key = settings.REDIS_FEED_RANKING_KEY
+    try:
+        return json.loads(R.get(key))
+    except:
+        logger.error(f"读取 Redis 出现异常：`{key}")
+
+    return {}
 
 
 def generate_rss_avatar(url):

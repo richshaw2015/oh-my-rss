@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from .models import *
 from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article, \
-    get_similar_article
+    get_similar_article, get_feed_ranking_dict
 from .verify import verify_request
 import logging
 from .sql import *
@@ -151,6 +151,28 @@ def get_recent_sites(request):
     context['user_sub_feeds'] = user_sub_feeds
 
     return render(request, 'explore/recent_sites.html', context=context)
+
+
+@verify_request
+def get_feed_ranking(request):
+    """
+    获取订阅源排行榜
+    """
+    user = get_login_user(request)
+
+    user_sub_feeds = []
+    if user:
+        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
+    feed_ranking = get_feed_ranking_dict()
+
+    context = dict()
+
+    context['user'] = user
+    context['feed_ranking'] = feed_ranking
+    context['user_sub_feeds'] = user_sub_feeds
+
+    return render(request, 'explore/feed_ranking.html', context=context)
 
 
 @verify_request

@@ -225,6 +225,15 @@ i.meta-icon {
     margin-bottom: 0 !important;
 }
 
+.omrss-rank-star {
+    width: 80px;
+    text-align: center;
+}
+
+.omrss-rank-score {
+    font-weight: 300;
+}
+
 @media only screen and (max-width: 992px) {
     .cnt-left {
         display: none;

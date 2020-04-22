@@ -5,7 +5,8 @@ from datetime import datetime
 from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, vacuum_sqlite_db
+from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, vacuum_sqlite_db, \
+    get_user_sub_feeds, set_feed_ranking_dict
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -160,3 +161,31 @@ def cal_article_distance():
                 set_similar_article(article.uindex, sorted_similar_dict)
 
     logger.info(f'文章相似度计算结束')
+
+
+def cal_feed_ranking():
+    """
+    计算订阅排行榜单 top 100
+    :return:
+    """
+    users = User.objects.all().values_list('oauth_id', flat=True)
+    all_user_feeds = []
+    dest_feed_ranking = []
+
+    for oauth_id in users:
+        all_user_feeds += get_user_sub_feeds(oauth_id, from_user=False)
+
+    feed_ranking = dict(Counter(all_user_feeds).most_common(100))
+
+    for (feed, score) in feed_ranking.items():
+        try:
+            site_dict = Site.objects.get(name=feed).__dict__
+            del site_dict['_state'], site_dict['ctime'], site_dict['mtime']
+            site_dict['score'] = score
+        except:
+            logger.warning(f"订阅源不存在：`{feed}")
+            continue
+
+        dest_feed_ranking.append(site_dict)
+
+    set_feed_ranking_dict(dest_feed_ranking)

@@ -1,0 +1,41 @@
+{% load helpers %}
+
+<div class="row">
+    {% for site in feed_ranking %}
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content omrss-card-content">
+
+                <a href="{{ site.link }}" target="_blank">
+                    <span class="card-title omrss-recent-title">{{ site.brief |to_clean_brief }}</span>
+                </a>
+
+                <div class="divider nav-divider"></div>
+
+                <div>
+                    <img src="{{ site.favicon }}" class="circle omrss-recent-avatar rss-text">
+                    <a href="{{ site.link }}" target="_blank">
+                        <span class="omrss-recent-site rss-text">{{ site.cname |to_short_site_name }}</span>
+                    </a>
+
+                {% if user %}
+                    {% if site.name in user_sub_feeds %}
+                        <span class="waves-light right rss-text omrss-sub-btn" data-name="{{ site.name }}">已订阅</span>
+                    {% else %}
+                        <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                              data-name="{{ site.name }}">订阅</span>
+                    {% endif %}
+                {% else %}
+                    <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                          data-name="{{ site.name }}">订阅</span>
+                {% endif %}
+
+                    <span class="right rss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>
+
+                    <span class="new right rss-text omrss-rank-score">{{ site.score }} 人气</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
