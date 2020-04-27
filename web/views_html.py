@@ -118,15 +118,15 @@ def get_explore(request):
     """
     user = get_login_user(request)
 
-    articles = Article.objects.raw(get_recommend_articles_sql)
-
     user_sub_feeds = []
     if user:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
+    sites = Site.objects.filter(status='active').order_by('-id')[:50]
     context = dict()
-    context['articles'] = articles
+
     context['user'] = user
+    context['sites'] = sites
     context['user_sub_feeds'] = user_sub_feeds
 
     return render(request, 'explore/explore.html', context=context)
