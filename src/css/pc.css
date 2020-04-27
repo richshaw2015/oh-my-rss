@@ -183,7 +183,7 @@ i.meta-icon {
     right: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 20px;
+    padding: 0 18px 0 28px;
 }
 .omrss-recent-badge {
     margin-left: 0;
