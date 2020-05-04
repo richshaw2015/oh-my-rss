@@ -337,7 +337,7 @@ def save_avatar(avatar, userid, size=100):
     except:
         logger.error(f"同步用户头像未知异常`{userid}`{avatar}")
 
-    return '/assets/img/logo.png'
+    return '/assets/img/logo.svg'
 
 
 def cal_cosine_distance(x, y):
@@ -412,7 +412,7 @@ def generate_rss_avatar(url):
     :param url:
     :return:
     """
-    avatar = "/assets/img/logo.png"
+    avatar = "/assets/img/logo.svg"
     host = get_host_name(url)
 
     if 'weibo.com' in host or 'weibo.cn' in host:
