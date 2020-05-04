@@ -66,7 +66,7 @@ class Article(models.Model):
 
     class Meta:
         unique_together = [['src_url', 'site'],
-                           ['src_url', 'site', 'title']]
+                           ['title', 'site']]
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     title = models.CharField('标题', max_length=200)
