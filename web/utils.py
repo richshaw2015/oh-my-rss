@@ -454,9 +454,11 @@ def generate_rss_avatar(url):
     elif host == 'weixin.sogou.com':
         avatar = '/assets/img/sogou.png'
     elif host == 'pubs.acs.org':
-        avatar = '/assets/img/acs.png'
+        avatar = '/assets/img/acs.jpg'
     elif 'vreadtech.com' in host:
         avatar = '/assets/img/vtechread.jpg'
+    elif 'news.qq.com' in host:
+        avatar = '/assets/img/qqcom.png'
 
     return avatar
 
