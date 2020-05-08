@@ -11,11 +11,11 @@ class DocschinaSpider(Spider):
                             'http://weekly.docschina.org/javascript/',
                         ],
                         index_xpath="//ul[@class='sidebar-links']/li/a[@class='sidebar-link']/@href",
-                        article_title_xpath="//div[@class='content']/h2[1]/text()",
+                        article_title_xpath="//ul[@class='sidebar-links']/li/a[@class='sidebar-link']/text()",
                         article_content_xpath="//div[@class='content']",
                         index_limit_count=2,
                         article_trim_xpaths=[
-                            "//div[@class='content']/h2[1]",
+                            "//div[@class='content']/h1",
                             "//a[@aria-hidden='true']"
                         ]
                         )

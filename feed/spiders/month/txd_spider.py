@@ -10,7 +10,7 @@ class TxdWeeklySpider(Spider):
                         start_urls=[
                             'https://www.yuque.com/txd-team/fe-report',
                         ],
-                        index_xpath='//div[@class="main-book-cover-contents"]//span[@class="name"]//a/@href',
+                        index_xpath='//li[@class="ant-tree-treenode-switcher-close"]//span[@class="name"]//a/@href',
                         article_title_xpath="//h1/text()",
                         article_content_xpath="//div[@class='yuque-doc-content']",
                         index_limit_count=2,
