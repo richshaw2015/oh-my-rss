@@ -16,7 +16,7 @@ class SiteAdmin(admin.ModelAdmin):
     }
 
     list_display = ('cname', 'author', view_link, 'star', 'remark', 'favicon', 'ctime', 'tag', 'rss')
-    search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark')
+    search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark', 'rss')
     list_filter = ('status', 'freq', 'copyright', 'creator')
     list_editable = ['star', 'author', 'remark', 'tag', 'favicon']
     list_per_page = 6
