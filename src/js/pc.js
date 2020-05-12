@@ -10,7 +10,7 @@ function initLayout() {
     resetHeight();
 
     // 使页面主内容区域获得焦点，这样快捷键就生效了
-    $('#omrss-main').click();
+    $('#omrss-main').focus();
 }
 
 
@@ -688,6 +688,41 @@ $(document).ready(function () {
                 $('#omrss-main').scrollTop(0);
                 setLeaveMsgToday();
                 toast("留言成功^o^");
+            }).fail(function () {
+                warnToast(NET_ERROR_MSG);
+            }).always(function () {
+                $('#omrss-loader').addClass('hide');
+            })
+        }
+    });
+
+    // 提交搜索表单
+    $(document).on('submit', 'form.omrss-top-form', function() {
+        const keyword = $("#omrss-search").val().trim();
+
+        if (keyword) {
+            $('#omrss-loader').removeClass('hide');
+
+            $.post("/search", {uid: getOrSetUid(), keyword: keyword}, function (data) {
+                if (!getLoginId()) {
+                    // 游客用户
+                    let destDom = $(data);
+
+                    destDom.find('span.ev-sub-feed').each(function () {
+                        const siteName = $(this).attr('data-name');
+
+                        if (isVisitorSubFeed(siteName)) {
+                            $(this).text('已订阅');
+                            $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                        }
+                    });
+
+                    $('#omrss-main').html(destDom);
+                } else {
+                    $('#omrss-main').html(data);
+                }
+                $('#omrss-main').scrollTop(0);
+                $('#omrss-main').focus();
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);
             }).always(function () {

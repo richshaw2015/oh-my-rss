@@ -1,9 +1,7 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseNotFound, HttpResponse
+from django.shortcuts import render
 from .models import *
-from .utils import log_refer_request, get_login_user, get_user_sub_feeds, set_user_read_article
+from .utils import log_refer_request, get_login_user, get_user_sub_feeds
 import logging
-import os
 from user_agents import parse
 from django.conf import settings
 
@@ -47,64 +45,3 @@ def index(request):
         return render(request, 'index.html', context)
     else:
         return render(request, 'mobile/index.html', context)
-
-
-def article(request, id):
-    """
-    详情页，主要向移动端、搜索引擎提供，这个页面需要做风控
-    """
-    log_refer_request(request)
-    user = get_login_user(request)
-
-    try:
-        article = Article.objects.get(uindex=id, status='active')
-    except:
-        try:
-            # 仅用于短链分享
-            article = Article.objects.get(pk=id, status='active')
-        except:
-            return redirect('index')
-
-    # 历史的文章
-    if not article.content.strip():
-        return redirect(article.src_url)
-
-    if user:
-        set_user_read_article(user.oauth_id, id)
-
-    # 判断是否命中敏感词
-    is_sensitive = False
-    for word in settings.SENSITIVE_WORDS:
-        if word in article.content:
-            is_sensitive = True
-            break
-
-    if is_sensitive:
-        user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
-        if user_agent.is_mobile or user_agent.is_bot:
-            logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{id}')
-            return redirect(article.src_url)
-        else:
-            logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{id}')
-            return redirect('index')
-
-    context = dict()
-    context['article'] = article
-    context['user'] = user
-
-    return render(request, 'mobile/article.html', context=context)
-
-
-def robots(request):
-    sitemap = os.path.join(request.build_absolute_uri(), '/sitemap.txt')
-    return HttpResponse(f'''User-agent: *\nDisallow: /dash\n\nSitemap: {sitemap}''')
-
-
-def sitemap(request):
-    indexs = Article.objects.filter(status='active', site__star__gte=10).order_by('-id').\
-        values_list('uindex', flat=True)[:1000]
-
-    url = request.build_absolute_uri('/')[:-1].strip("/")
-    sites = [f'{url}/post/{i}' for i in indexs]
-
-    return HttpResponse('\n'.join(sites))

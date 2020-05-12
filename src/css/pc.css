@@ -238,6 +238,14 @@ i.meta-icon {
     .cnt-left {
         display: none;
     }
+    .omrss-top-form {
+        display: none;
+    }
+    #omrss-logo-font {
+        left: 0;
+        -webkit-transform: none;
+        transform: none;
+    }
     .cnt-right {
         left: 0;
     }
@@ -277,6 +285,9 @@ i.meta-icon {
 }
 
 @media only screen and (min-width: 992px) {
+    .omrss-top-form {
+        left: 400px;
+    }
     .cnt-left {
         width: 400px;
     }
@@ -367,6 +378,9 @@ i.meta-icon {
 }
 
 @media only screen and (min-width: 1600px) {
+    .omrss-top-form {
+        left: 500px;
+    }
     .cnt-left {
         width: 500px;
     }
@@ -658,6 +672,23 @@ li.ev-cnt-list:not(.active):hover{
 
 nav .brand-logo {
     color: #f26522;
+}
+
+.omrss-top-form {
+    width: 300px;
+    background: hsla(0,0%,100%,.125);
+    position: absolute;
+    top: 16px;
+    height: 36px !important;
+}
+
+.omrss-top-form-icon {
+    top: -14px !important;
+    width: 24px;
+}
+
+#omrss-search {
+    margin: 0;
 }
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */

@@ -1,20 +1,21 @@
 from django.urls import path
-from . import views_index, views_html, views_api, views_dash, views_oauth
+from . import views_index, views_html, views_api, views_dash, views_oauth, views_search
 from .feeds import SiteFeed
 
 urlpatterns = [
     # public urls
     path('', views_index.index, name='index'),
 
-    path('post/<int:id>', views_index.article, name='article'),
-    path('p/<int:id>', views_index.article, name='article_short_url'),
+    path('post/<int:id>', views_search.article, name='article'),
+    path('p/<int:id>', views_search.article, name='article_short_url'),
 
     path('feed/<name>', SiteFeed(), name='get_feed_entries'),
     path('dash', views_dash.dashboard, name='dashboard'),
     path('dash/logs', views_dash.get_warn_log, name='get_warn_log'),
 
-    path('robots.txt', views_index.robots, name='robots'),
-    path('sitemap.txt', views_index.sitemap, name='sitemap'),
+    path('robots.txt', views_search.robots, name='robots'),
+    path('sitemap.txt', views_search.sitemap, name='sitemap'),
+    path('search', views_search.insite_search, name='insite_search'),
 
     path('oauth/github/redirect', views_oauth.github_callback, name='github_callback'),
 
