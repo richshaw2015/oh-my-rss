@@ -421,6 +421,8 @@ def generate_rss_avatar(url):
         avatar = "/assets/img/jianshu.png"
     elif host in ('blog.sina.com', 'blog.sina.com.cn'):
         avatar = '/assets/img/blogsina.jpg'
+    elif 'sina.com.cn' in host:
+        avatar = '/assets/img/sinanews.png'
     elif 'twitter.com' in host:
         avatar = '/assets/img/twitter.png'
     elif 'youtube.com' in host:
