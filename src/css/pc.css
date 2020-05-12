@@ -680,6 +680,7 @@ nav .brand-logo {
     position: absolute;
     top: 16px;
     height: 36px !important;
+    border-radius: 4px;
 }
 
 .omrss-top-form-icon {
@@ -690,6 +691,7 @@ nav .brand-logo {
 #omrss-search {
     margin: 0;
     line-height: 100% !important;
+    border-radius: 4px;
 }
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */
