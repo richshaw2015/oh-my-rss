@@ -697,7 +697,7 @@ $(document).ready(function () {
     });
 
     // 提交搜索表单
-    $(document).on('submit', 'form.omrss-top-form', function() {
+    $(document).on('submit', 'form.omrss-top-form', function(e) {
         const keyword = $("#omrss-search").val().trim();
 
         if (keyword) {
@@ -729,6 +729,7 @@ $(document).ready(function () {
                 $('#omrss-loader').addClass('hide');
             })
         }
+        e.preventDefault();
     });
 
     // 切换全屏
