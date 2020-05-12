@@ -689,6 +689,7 @@ nav .brand-logo {
 
 #omrss-search {
     margin: 0;
+    line-height: 100% !important;
 }
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */
