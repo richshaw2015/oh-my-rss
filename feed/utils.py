@@ -16,16 +16,14 @@ def mkdir(directory):
 
 
 def is_crawled_url(url):
-    if R.get(CRAWL_PREFIX + url):
-        return True
-    return False
+    return R.get(CRAWL_PREFIX + url) == '1'
 
 
 def mark_crawled_url(*urls):
     # 跳转前后要设置；有些有中文路径的需要还原
     for url in urls:
-        R.set(CRAWL_PREFIX + url, 1)
-        R.set(CRAWL_PREFIX + urllib.parse.unquote(url), 1)
+        R.set(CRAWL_PREFIX + url, 1, ex=12 * 30 * 86400)
+        R.set(CRAWL_PREFIX + urllib.parse.unquote(url), 1, ex=12 * 30 * 86400)
 
 
 def current_ts():

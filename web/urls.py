@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/dashboard/refer/pv', views_dash.get_refer_pv_chart_data, name='get_refer_uv_chart_data'),
     path('api/dashboard/api/profile', views_dash.get_api_profile_chart_data, name='get_api_profile_chart_data'),
 
+    path('api/dashboard/update/redis/ttl', views_dash.update_redis_ttl, name='update_redis_ttl'),
+
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),

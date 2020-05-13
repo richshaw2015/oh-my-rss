@@ -178,3 +178,23 @@ def get_warn_log(request):
     context['logs'] = logs
 
     return render(request, 'dashboard/logs.html', context=context)
+
+
+def update_redis_ttl(request):
+    """
+    动态修复 redis 没有设置过期时间问题
+    :param request:
+    :return:
+    """
+    from web.utils import R as WR
+
+    for k in (WR.keys('VIEW/*') + WR.keys('THUMB/*') + WR.keys('OPEN/*')):
+        if WR.ttl(k) == -1:
+            WR.expire(k, 90 * 86400)
+
+    from feed.utils import R as FR
+    for k in FR.keys('CRAWL/*'):
+        if FR.ttl(k) == -1:
+            FR.expire(k, 12 * 30 * 86400)
+
+    return JsonResponse({})

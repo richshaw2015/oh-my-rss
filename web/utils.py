@@ -13,7 +13,6 @@ from io import BytesIO
 from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 import logging
 import hashlib
-import urllib
 from collections import Counter
 from urllib.parse import urlparse
 import json
@@ -29,12 +28,13 @@ def get_host_name(url):
 
 def incr_action(action, uindex):
     """
-    add operate
+    文章浏览数、点赞数、打开数统计，保留 90 天数据
     :param key:
     :param uindex:
     :return:
     """
     key = None
+
     if action == 'VIEW':
         key = settings.REDIS_VIEW_KEY % uindex
     elif action == 'THUMB':
@@ -43,10 +43,13 @@ def incr_action(action, uindex):
         key = settings.REDIS_OPEN_KEY % uindex
 
     if key is not None:
-        try:
-            return R.incr(key, amount=1)
-        except:
-            logger.error(f"写入Redis出现异常：`{key}")
+        ret = R.incr(key)
+
+        if ret == 1:
+            R.expire(key, 90 * 86400)
+
+        return ret
+
     return False
 
 
@@ -163,19 +166,14 @@ def is_visit_today(uid):
     :return:
     """
     key = settings.REDIS_VISIT_KEY % (current_day(), uid)
-    try:
-        return R.get(key)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
-    return False
+
+    return R.get(key) == '1'
 
 
 def set_visit_today(uid):
     key = settings.REDIS_VISIT_KEY % (current_day(), uid)
-    try:
-        return R.set(key, 1, 24*3600+100)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
+
+    return R.set(key, 1, 24*3600+100)
 
 
 def is_old_user(uid):
@@ -185,34 +183,24 @@ def is_old_user(uid):
     :return:
     """
     key = settings.REDIS_WEEK_KEY % uid
-    try:
-        return R.get(settings.REDIS_WEEK_KEY % uid)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
-    return False
+
+    return R.get(key) == '1'
 
 
 def set_old_user(uid):
     key = settings.REDIS_WEEK_KEY % uid
-    try:
-        return R.set(key, 1, 7*24*3600)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
+
+    return R.set(key, 1, 7*24*3600)
 
 
 def incr_redis_key(key):
-    try:
-        return R.incr(key, amount=1)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
+    return R.incr(key, amount=1)
 
 
 def add_refer_host(host):
     key = settings.REDIS_REFER_ALL_KEY
-    try:
-        return R.sadd(key, host)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
+
+    return R.sadd(key, host)
 
 
 def log_refer_request(request):
@@ -222,43 +210,34 @@ def log_refer_request(request):
 
         if host and host not in settings.ALLOWED_HOSTS:
             logger.info(f"收到外域来源：`{host}`{referer}")
-            try:
-                add_refer_host(host)
-                incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
-                incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
-            except:
-                logger.error("外域请求统计异常")
+
+            add_refer_host(host)
+            incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
+            incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
 
 
 def add_user_sub_feeds(oauth_id, feeds):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
-    try:
-        return R.sadd(key, *feeds)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
+
+    return R.sadd(key, *feeds)
 
 
 def del_user_sub_feed(oauth_id, feed):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
-    try:
-        return R.srem(key, feed)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
+
+    return R.srem(key, feed)
 
 
 def get_user_sub_feeds(oauth_id, from_user=True):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
-    try:
-        sub_feeds = R.smembers(key)
 
-        # 设置订阅源缓存，来自用户的请求调用
-        if from_user:
-            set_active_rss(sub_feeds)
+    sub_feeds = R.smembers(key)
 
-        return sub_feeds
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
-    return []
+    # 设置订阅源缓存，来自用户的请求调用
+    if from_user:
+        set_active_rss(sub_feeds)
+
+    return sub_feeds
 
 
 def set_user_read_article(oauth_id, uindex):
@@ -266,11 +245,8 @@ def set_user_read_article(oauth_id, uindex):
     已登录用户同步已读文章状态
     """
     key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
-    try:
-        return R.set(key, 1, 14*24*3600)
-    except:
-        logger.error(f"写入Redis出现异常：`{key}")
-    return None
+
+    return R.set(key, 1, 14*24*3600)
 
 
 def get_user_unread_articles(oauth_id, articles):
@@ -371,29 +347,21 @@ def cal_cosine_distance(x, y):
 def get_similar_article(uindex):
     key = settings.REDIS_SIMILAR_ARTICLE_KEY % uindex
 
-    try:
-        return R.hgetall(key)
-    except:
-        logger.error(f"读取 Redis 出现异常：`{key}")
+    return R.hgetall(key)
 
 
 def set_similar_article(uindex, simlar_dict):
     key = settings.REDIS_SIMILAR_ARTICLE_KEY % uindex
 
-    try:
-        ret = R.hmset(key, simlar_dict)
-        R.expire(key, 30 * 24 * 3600)
-        return ret
-    except:
-        logger.error(f"写入 Redis 出现异常：`{key}")
+    ret = R.hmset(key, simlar_dict)
+    R.expire(key, 30 * 24 * 3600)
+    return ret
 
 
 def set_feed_ranking_dict(ranking_dict):
     key = settings.REDIS_FEED_RANKING_KEY
-    try:
-        return R.set(key, json.dumps(ranking_dict))
-    except:
-        logger.error(f"写入 Redis 出现异常：`{key}")
+
+    return R.set(key, json.dumps(ranking_dict))
 
 
 def get_feed_ranking_dict():
