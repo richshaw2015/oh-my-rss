@@ -2,7 +2,7 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import get_hash_name, generate_rss_avatar, get_host_name
+from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log
 from web.omrssparser.wemp import parse_weixin_page
 import logging
 import feedparser
@@ -67,7 +67,7 @@ def atom_spider(site):
         resp = requests.get(site.rss, timeout=30, verify=False)
     except:
         if site.star > 9:
-            logger.warning(f"RSS源可能失效了`{site.rss}")
+            guard_log(f"RSS 源可能失效了`{site.rss}")
         else:
             logger.info(f"RSS源可能失效了`{site.rss}")
         return None

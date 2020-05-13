@@ -4,7 +4,7 @@ from web.models import *
 import logging
 import requests
 from scrapy.http import HtmlResponse
-from web.utils import save_avatar, get_host_name
+from web.utils import save_avatar, get_host_name, guard_log
 from feed.utils import current_ts, is_crawled_url, mark_crawled_url
 from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 import urllib
@@ -23,7 +23,7 @@ def parse_wemp_ershicimi(url, update=False):
     try:
         rsp = requests.get(url, timeout=10)
     except:
-        logger.warning(f'请求出现异常：`{url}')
+        guard_log(f'请求出现异常：`{url}')
         return None
 
     if rsp.ok:
@@ -105,9 +105,9 @@ def wemp_spider(url, site):
 
             mark_crawled_url(url)
     except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-        logger.warning(f'公众号爬取出现网络异常：`{url}')
+        guard_log(f'公众号爬取出现网络异常：`{url}')
     except:
-        logger.warning(f'公众号爬取出现未知异常：`{url}')
+        guard_log(f'公众号爬取出现未知异常：`{url}')
 
 
 def parse_weixin_page(rsp):

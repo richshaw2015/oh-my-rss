@@ -81,7 +81,7 @@ def insite_search(request):
     user = get_login_user(request)
     keyword = request.POST.get('keyword', '').strip()
 
-    logger.warning(f"搜索关键字：{keyword}")
+    logger.warning(f"搜索关键字：`{keyword}")
 
     user_sub_feeds = []
     if user:

@@ -474,3 +474,24 @@ def vacuum_sqlite_db():
     cursor = connection.cursor()
     cursor.execute("VACUUM")
     connection.close()
+
+
+def guard_log(msg, hits=3, duration=86400):
+    """
+    哨兵日志，满足 duration hits 条件才打印
+    :param msg:
+    :param hits:
+    :param duration:
+    :return:
+    """
+    logger.info(msg)
+
+    log_key = f"LOG/{msg}"
+
+    count = R.incr(log_key)
+
+    if count == 1:
+        R.expire(log_key, duration)
+
+    if count >= hits:
+        logger.warning(msg)

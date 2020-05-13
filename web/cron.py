@@ -33,13 +33,10 @@ def update_all_user_feed():
         feeds = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-star')
 
     for site in feeds:
-        try:
-            if not is_active_rss(site.name):
-                if site.star < 9:
-                    continue
-            atom_spider(site)
-        except:
-            logger.warning(f'爬取站点出现异常：`{site.cname}')
+        if not is_active_rss(site.name):
+            if site.star < 9:
+                continue
+        atom_spider(site)
 
     logger.info('定时更新 RSS 任务运行结束')
 
@@ -54,10 +51,7 @@ def update_all_wemp_feed():
     feeds = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
     for site in feeds:
-        try:
-            parse_wemp_ershicimi(site.rss, update=True)
-        except:
-            logger.warning(f'爬取公众号出现异常：`{site.cname}')
+        parse_wemp_ershicimi(site.rss, update=True)
 
     logger.info('更新公众号内容结束')
 
