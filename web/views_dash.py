@@ -180,7 +180,7 @@ def get_warn_log(request):
     return render(request, 'dashboard/logs.html', context=context)
 
 
-def update_redis_ttl(request):
+def fix_redis_ttl(request):
     """
     动态修复 redis 没有设置过期时间问题
     :param request:
