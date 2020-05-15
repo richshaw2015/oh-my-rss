@@ -692,6 +692,7 @@ nav .brand-logo {
     margin: 0;
     line-height: 100% !important;
     border-radius: 4px;
+    font-size: 0.95rem;
 }
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */
