@@ -265,21 +265,21 @@ $(document).ready(function () {
                     const siteStar = parseInt($(this).attr('data-star'));
 
                     if (isVisitorSubFeed(siteName)) {
-                        $(this).find('a.ev-toggle-feed').text('取消订阅');
-                        $(this).find('a.ev-toggle-feed').addClass('omrss-bgcolor');
+                        $(this).find('.ev-toggle-feed').text('取消订阅');
+                        $(this).find('.ev-toggle-feed').addClass('omrss-bgcolor');
                     } else if (isVisitorUnSubFeed(siteName)) {
-                        $(this).find('a.ev-toggle-feed').text('订阅');
-                        $(this).find('a.ev-toggle-feed').removeClass('omrss-bgcolor');
+                        $(this).find('.ev-toggle-feed').text('订阅');
+                        $(this).find('.ev-toggle-feed').removeClass('omrss-bgcolor');
                     } else {
                         // 根据推荐决定
                         if (siteStar >= 20) {
                             // 取消订阅
-                            $(this).find('a.ev-toggle-feed').text('取消订阅');
-                            $(this).find('a.ev-toggle-feed').addClass('omrss-bgcolor')
+                            $(this).find('.ev-toggle-feed').text('取消订阅');
+                            $(this).find('.ev-toggle-feed').addClass('omrss-bgcolor')
                         } else {
                             // 订阅
-                            $(this).find('a.ev-toggle-feed').text('订阅');
-                            $(this).find('a.ev-toggle-feed').removeClass('omrss-bgcolor');
+                            $(this).find('.ev-toggle-feed').text('订阅');
+                            $(this).find('.ev-toggle-feed').removeClass('omrss-bgcolor');
                         }
                     }
                 });

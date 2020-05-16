@@ -43,13 +43,13 @@
 <div class="row" id="omrss-my-subs">
     {% for feed in sub_sites %}
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
-            <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
-            <div class="rss-title rss-text">
-                <a href="{{ feed.link }}" target="_blank">{{ feed.cname }}</a>
-            </div>
+            <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle omrss-recent-avatar rss-text"/>
+            <a href="{{ feed.link }}" target="_blank">
+                <span class="omrss-recent-site rss-text">{{ feed.cname |to_short_site_name }}</span>
+            </a>
 
-            <a class="waves-effect waves-light btn-small right rss-text omrss-recent-badge ev-toggle-feed omrss-bgcolor"
-               data-name="{{ feed.name }}">取消订阅</a>
+            <span class="waves-effect waves-light btn-small right rss-text ev-toggle-feed omrss-sub-btn omrss-bgcolor"
+               data-name="{{ feed.name }}">取消订阅</span>
             <span class="right rss-text omrss-recent-badge yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
         </div>
     {% endfor %}
@@ -58,13 +58,15 @@
 <div class="row" id="omrss-my-unsubs">
     {% for feed in unsub_sites %}
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}">
-            <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle responsive-img favico rss-text"/>
-            <div class="rss-title rss-text">
-                <a href="{{ feed.link }}" target="_blank">{{ feed.cname }}</a>
-            </div>
+            <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle omrss-recent-avatar rss-text"/>
 
-            <a class="waves-effect waves-light btn-small right rss-text omrss-recent-badge ev-toggle-feed"
-               data-name="{{ feed.name }}">订阅</a>
+            <a href="{{ feed.link }}" target="_blank">
+                <span class="omrss-recent-site rss-text">{{ feed.cname |to_short_site_name }}</span>
+            </a>
+
+            <span class="waves-effect waves-light btn-small right rss-text ev-toggle-feed omrss-sub-btn"
+              data-name="{{ feed.name }}">订阅</span>
+
             <span class="right rss-text omrss-recent-badge yellow-text text-darken-2">{{ feed.star |to_stars }}</span>
         </div>
     {% endfor %}
