@@ -1,3 +1,12 @@
+function initReadMode() {
+    const mode = getReadMode();
+
+    if (mode === 'site') {
+        $('.ev-toggle-readmode i').text('apps')
+    } else if (mode === 'article') {
+        $('.ev-toggle-readmode i').text('low_priority')
+    }
+}
 
 function initLayout() {
     // 初始化组件
@@ -5,6 +14,9 @@ function initLayout() {
     $('.modal').modal();
     $('.tabs').tabs();
     $('.sidenav').sidenav({"edge": "right"});
+
+    // 阅读模式
+    initReadMode();
 
     // 右侧滚动条
     resetHeight();
@@ -69,56 +81,110 @@ function loadPage(page) {
     // 网络请求，区分已登录用户或者游客
     let subFeeds = '';
     let unSubFeeds = '';
+    const mode = getReadMode();
 
     if (!getLoginId()) {
         subFeeds = Object.keys(getSubFeeds()).join(',');
         unSubFeeds = Object.keys(getUnsubFeeds()).join(',');
     }
-    $.post("/api/html/articles/list", {
-        uid: getOrSetUid(), page_size: getPageSize(), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds
-    }, function (data) {
-        let destDom = $(data);
 
-        // 是否已读，是否点赞
-        destDom.find('.collection li[id]').each(function (index) {
-            // 默认已读状态；已读变未读
-            if (!hasReadArticle(this.id)) {
-                // 提示图标
-                const unread_el = $(this).find('i.read');
-                unread_el.removeClass('read').addClass('unread');
-                unread_el.text('lens');
+    if (mode === 'article') {
+        $.post("/api/html/articles/list", {
+            uid: getOrSetUid(), page_size: getPageSize(), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds
+        }, function (data) {
+            let destDom = $(data);
 
-                // 文字样式
-                $(this).find('.omrss-title').removeClass('omrss-title-read').addClass('omrss-title-unread');
-            }
-            if (hasLikeArticle(this.id)) {
-                // 点赞图标，本地判断
-                const thumb_el = $(this).find('i.thumb-icon');
-                thumb_el.addClass('omrss-color');
-            }
-            if (hasOpenSrc(this.id)) {
-                // 打开图标，本地判断
-                const open_el = $(this).find('i.open-icon');
-                open_el.addClass('omrss-color');
-            }
+            // 是否已读，是否点赞
+            destDom.find('.collection li[id]').each(function (index) {
+                // 默认已读状态；已读变未读
+                if (!hasReadArticle(this.id)) {
+                    // 提示图标
+                    const unread_el = $(this).find('i.read');
+                    unread_el.removeClass('read').addClass('unread');
+                    unread_el.text('lens');
+                    $(this).find('.omrss-title').removeClass('omrss-title-read').addClass('omrss-title-unread');
+                }
+                if (hasLikeArticle(this.id)) {
+                    // 点赞图标，本地判断
+                    const thumb_el = $(this).find('i.thumb-icon');
+                    thumb_el.addClass('omrss-color');
+                }
+                if (hasOpenSrc(this.id)) {
+                    // 打开图标，本地判断
+                    const open_el = $(this).find('i.open-icon');
+                    open_el.addClass('omrss-color');
+                }
+            });
+
+            // 时间更新
+            destDom.find(".prettydate").prettydate();
+            // 渲染
+            $('#omrss-left').html(destDom);
+
+            // 初始化
+            initLayout();
+        }).fail(function (xhr) {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            // UI状态
+            $('#omrss-loader').addClass('hide');
+
+            // 记录当前页数
+            localStorage.setItem('CURPG', page);
         });
+    } else if (mode === 'site') {
+        $.post("/api/html/sites/list", {
+            uid: getOrSetUid(), page_size: getPageSize(), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds
+        }, function (data) {
+            let destDom = $(data);
 
-        // 时间更新
-        destDom.find(".prettydate").prettydate();
-        // 渲染
-        $('#omrss-left').html(destDom);
+            // 是否已读
+            destDom.find('.collection li[id]').each(function (index) {
+                let unread_count = 0;
 
-        // 初始化
-        initLayout();
-    }).fail(function (xhr) {
-        warnToast(NET_ERROR_MSG);
-    }).always(function () {
-        // UI状态
-        $('#omrss-loader').addClass('hide');
+                if (getLoginId()) {
+                    // 登陆用户未读状态
+                    unread_count = $(this).find('.omrss-unread-count').html().trim();
+                } else {
+                    // 游客用户未读数
+                    const unread_list = JSON.parse($(this).find('.omrss-unread-count').attr('data-ids'));
 
-        // 记录当前页数
-        localStorage.setItem('CURPG', page);
-    });
+                    for (let i=0; i < unread_list.length; i++) {
+                        if (!hasReadArticle(unread_list[i])) {
+                            unread_count += 1;
+                        }
+                    }
+                }
+
+                if (unread_count > 0) {
+                    const unread_el = $(this).find('i.read');
+                    unread_el.removeClass('read').addClass('unread');
+                    unread_el.text('lens');
+                    $(this).find('.omrss-title').removeClass('omrss-title-read').addClass('omrss-title-unread');
+
+                    if (!getLoginId()) {
+                        $(this).find('.omrss-unread-count').html(unread_count)
+                    }
+                }
+            });
+
+            // 时间更新
+            destDom.find(".prettydate").prettydate();
+            // 渲染
+            $('#omrss-left').html(destDom);
+
+            // 初始化
+            initLayout();
+        }).fail(function (xhr) {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            // UI状态
+            $('#omrss-loader').addClass('hide');
+
+            // 记录当前页数
+            localStorage.setItem('CURPG', page);
+        });
+    }
 }
 
 
@@ -313,6 +379,19 @@ $(document).ready(function () {
                 warnToast(NET_ERROR_MSG);
             });
         }
+    });
+
+    $(document).on('click', '.ev-toggle-readmode', function () {
+        const mode = toggleReadMode();
+
+        if (mode === 'site') {
+            $('.ev-toggle-readmode i').text('apps')
+            toast("切换到站点视图^o^")
+        } else if (mode === 'article') {
+            $('.ev-toggle-readmode i').text('low_priority')
+            toast("切换到文章视图^o^")
+        }
+        loadPage(1);
     });
 
     // 提交订阅源

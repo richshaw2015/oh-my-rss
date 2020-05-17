@@ -29,8 +29,11 @@ def to_date_fmt(dt):
     :param dt:
     :return:
     """
-    dt = localtime(dt)
-    return dt.strftime("%Y-%m-%d %H:%M:%S")
+    if isinstance(dt, str):
+        return dt[:19]
+    else:
+        dt = localtime(dt)
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
 @register.filter
@@ -149,3 +152,8 @@ def to_rss(site):
         logger.error(f'生成 RSS 失败：`{site.name}`{site.creator}')
 
     return rss
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

@@ -113,6 +113,10 @@ i.meta-icon {
 .visibility-icon {
     font-size: 1rem;
 }
+.sync-icon {
+    font-size: 0.95rem;
+    vertical-align: sub;
+}
 
 .thumb-icon {
     font-size: 1rem;
@@ -125,6 +129,10 @@ i.meta-icon {
 }
 
 .collection .collection-item.active .omrss-meta-line {
+    color: #fff;
+}
+
+.collection .collection-item.active .omrss-meta {
     color: #fff;
 }
 
@@ -295,6 +303,9 @@ i.meta-icon {
     .cnt-right {
         left: 400px;
     }
+    .omrss-readmode {
+        left: calc(400px - 54px - 5px);
+    }
     .omrss-title {
         font-size: 1rem;
         max-width: 86%;
@@ -388,6 +399,9 @@ i.meta-icon {
     }
     .cnt-right {
         left: 500px;
+    }
+    .omrss-readmode {
+        left: calc(500px - 54px - 5px);
     }
     .omrss-title {
         font-size: 1.1rem;
@@ -698,6 +712,21 @@ nav .brand-logo {
     border-radius: 4px;
     font-size: 0.95rem;
 }
+
+.omrss-readmode {
+    position: absolute;
+    width: 54px;
+    padding: 0 15px;
+}
+
+.meta-recommend-site {
+    margin-right: 1.5rem;
+}
+
+.omrss-title-site {
+    padding-left: 10px;
+}
+
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */
 pre {

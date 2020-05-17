@@ -180,6 +180,30 @@ function isVisitorUnSubFeed(name) {
     return getUnsubFeeds()[name] === 1;
 }
 
+function toggleReadMode() {
+    // 切换阅读模式，文章模式、站点模式
+    if (localStorage.getItem('READMODE') === null) {
+        localStorage.setItem('READMODE', 'article')
+    }
+
+    const mode = localStorage.getItem('READMODE');
+
+    if (mode === 'site') {
+        localStorage.setItem('READMODE', 'article')
+        return 'article'
+    } else if (mode === 'article') {
+        localStorage.setItem('READMODE', 'site')
+        return 'site'
+    }
+}
+
+function getReadMode() {
+    if (localStorage.getItem('READMODE') === null) {
+        localStorage.setItem('READMODE', 'article')
+    }
+    return localStorage.getItem('READMODE');
+}
+
 function enterFullscreen() {
     /* 全屏 */
     const el = document.documentElement;

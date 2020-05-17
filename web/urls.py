@@ -31,7 +31,8 @@ urlpatterns = [
     path('api/html/feed/ranking', views_html.get_feed_ranking, name='get_feed_ranking'),
     path('api/html/homepage/tips', views_html.get_homepage_tips, name='get_homepage_tips'),
     path('api/html/issues/all', views_html.get_all_issues, name='get_all_issues'),
-    path('api/html/articles/list', views_html.get_articles_list, name='get_articles_list'),
+    path('api/html/articles/list', views_html.get_article_update_view, name='get_article_update_view'),
+    path('api/html/sites/list', views_html.get_site_update_view, name='get_site_update_view'),
 
     path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
     path('api/dashboard/refer/pie', views_dash.get_refer_pie_data, name='get_refer_pie_data'),

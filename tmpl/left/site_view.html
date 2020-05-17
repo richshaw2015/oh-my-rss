@@ -1,0 +1,67 @@
+{% load helpers %}
+
+<div id="omrss-cnt-list">
+
+    <ul class="collection">
+        {% for article in pg.object_list %}
+            <li class="collection-item ev-cnt-list" id="{{ article.site.name }}">
+                <div class="omrss-title-line omrss-title-site">
+                    <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
+                    <span class="omrss-title truncate omrss-title-read">{{ article.site.cname }}</span>
+                    <i class="right material-icons read">check</i>
+                </div>
+
+                <div class="omrss-meta-line">
+
+                    <span class="omrss-meta meta-author">@{{ article.author |to_short_author:article.site.author }}</span>
+                    <span class="meta-time prettydate omrss-meta">{{ article.up_time |to_date_fmt }}</span>
+
+                    {% if user %}
+                        <span class="right meta-num-l omrss-meta omrss-unread-count">
+                            {{ pg_unread_count_dict|get_item:article.site.name }}</span>
+                    {% else %}
+                        <span class="right meta-num-l omrss-meta omrss-unread-count"
+                              data-ids="{{ pg_unread_dict|get_item:article.site.name }}">0</span>
+                    {% endif %}
+
+                    <i class="right material-icons meta-icon omrss-meta">visibility_off</i>
+                    <span class="right meta-num-l omrss-meta">{{ article.up_num }}</span>
+                    <i class="right material-icons meta-icon omrss-meta sync-icon">sync</i>
+
+                    {% if article.site.star >= 30 %}
+                        <span class="right new badge meta-recommend-site" data-badge-caption="">荐</span>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="omrss-pager">
+    {# 翻页 #}
+    <ul class="pagination">
+        {% if pg.has_previous %}
+            <li class="waves-effect ev-page ev-page-previous" title="上一页" data-page="{{ pg.previous_page_number }}">
+                <a href="#"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+
+        <li class="waves-effect ev-page" title="首页" data-page="1">
+            <a href="#">1</a></li>
+
+        <li id="omrss-active-pager" class="omrss-bgcolor"><a href="#">{{ pg.number }}</a></li>
+
+        {% if pg.number <= num_pages %}
+            <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}">
+                <a href="#">{{ num_pages }}</a></li>
+        {% endif %}
+
+        {% if pg.has_next %}
+            <li class="waves-effect ev-page ev-page-next" title="下一页" data-page="{{ pg.next_page_number }}">
+                <a href="#"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

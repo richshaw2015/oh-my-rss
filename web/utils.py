@@ -102,8 +102,8 @@ def get_page_uv(page):
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (
-        reverse('get_articles_list'), reverse('get_lastweek_articles'), reverse('get_explore'),
-        reverse('get_recent_articles'),
+        reverse('get_article_update_view'), reverse('get_lastweek_articles'), reverse('get_explore'),
+        reverse('get_recent_articles'), reverse('get_site_update_view'),
     )
 
 
@@ -247,6 +247,17 @@ def set_user_read_article(oauth_id, uindex):
     key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
 
     return R.set(key, 1, 14*24*3600)
+
+
+def get_user_unread_count(oauth_id, articles):
+    """
+    计算用户对一批文章的未读数
+    :param oauth_id:
+    :param articles:
+    :return:
+    """
+    user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
+    return R.mget(*user_read_keys).count('1')
 
 
 def get_user_unread_articles(oauth_id, articles):

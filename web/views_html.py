@@ -3,9 +3,10 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from .models import *
 from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article, \
-    get_similar_article, get_feed_ranking_dict
+    get_similar_article, get_feed_ranking_dict, get_user_unread_count
 from .verify import verify_request
 import logging
+from collections import defaultdict
 from .sql import *
 
 logger = logging.getLogger(__name__)
@@ -210,9 +211,69 @@ def get_all_issues(request):
 
 
 @verify_request
-def get_articles_list(request):
+def get_site_update_view(request):
     """
-    获取我的文章列表，游客展示默认推荐内容；登录用户展示其订阅内容
+    获取更新的全局站点视图
+    """
+    sub_feeds = request.POST.get('sub_feeds', '').split(',')
+    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+    page_size = int(request.POST.get('page_size', 10))
+    page = int(request.POST.get('page', 1))
+
+    user = get_login_user(request)
+
+    if user is None:
+        sub_update_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_sites)), 100))
+    else:
+        sub_update_sites = get_user_sub_feeds(user.oauth_id)
+        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_sites)), 200))
+
+    if sites:
+        # 分页处理
+        paginator_obj = Paginator(sites, page_size)
+
+        try:
+            # 页面及数据
+            pg = paginator_obj.page(page)
+            num_pages = paginator_obj.num_pages
+
+            # 计算未读数
+            pg_sites = set()
+            for article in pg.object_list:
+                pg_sites.add(article.site.name)
+
+            pg_article_list = Article.objects.filter(status='active', is_recent=True, site__name__in=pg_sites).\
+                values_list('site__name', 'uindex')
+
+            pg_unread_dict = defaultdict(list)
+            for k, v in pg_article_list:
+                pg_unread_dict[k].append(v)
+
+            pg_unread_count_dict = {}
+            if user:
+                for (name, articles) in pg_unread_dict.items():
+                    pg_unread_count_dict[name] = get_user_unread_count(user.oauth_id, articles)
+
+            context = dict()
+            context['pg'] = pg
+            context['num_pages'] = num_pages
+            context['user'] = user
+            context['pg_unread_dict'] = pg_unread_dict
+            context['pg_unread_count_dict'] = pg_unread_count_dict
+
+            return render(request, 'left/site_view.html', context=context)
+        except:
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
+            return HttpResponseNotFound("Page number error")
+
+    return HttpResponseNotFound("No Feeds subscribed")
+
+
+@verify_request
+def get_article_update_view(request):
+    """
+    获取更新的文章列表视图，游客展示默认推荐内容；登录用户展示其订阅内容
     """
     # 请求参数获取
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
@@ -256,7 +317,7 @@ def get_articles_list(request):
             if mobile:
                 return render(request, 'mobile/list.html', context=context)
             else:
-                return render(request, 'list.html', context=context)
+                return render(request, 'left/list_view.html', context=context)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
             return HttpResponseNotFound("Page number error")
