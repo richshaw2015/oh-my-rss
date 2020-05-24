@@ -728,11 +728,11 @@ nav .brand-logo {
 #omrss-site-nav {
     height: 50px;
     padding: 8.8px 0;
+    border-bottom: 1px dashed #e0e0e0;
 }
 #omrss-site-nav .row .col {
     padding-left: 6px !important;
     padding-right: 6px !important;
-    border-bottom: 1px dashed #e0e0e0;
 }
 
 .omrss-readmode {
