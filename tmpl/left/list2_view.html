@@ -1,14 +1,38 @@
 {% load helpers %}
 
+<div id="omrss-site-nav">
+    <div class="row">
+        <div class="col s3">
+            <a class="omrss-color ev-site-back" href="#">
+                <i class="omrss-text material-icons">arrow_back</i>
+                <span class="omrss-site-back omrss-text">返回</span>
+            </a>
+        </div>
+
+        <div class="col s8 omrss-text bold">
+            <img src="{{ site.favicon }}" class="circle omrss-recent-avatar omrss-text" />
+            <span>{{ site.cname }}</span>
+            (<span id="omrss-cur-site-unread">0</span>)
+        </div>
+
+        <div class="col s1">
+            <a class="omrss-color ev-site-readall" href="#" data-site="{{ site.name }}" data-articles="{{ articles }}">
+                <i class="material-icons right omrss-text tooltipped" data-tooltip="标记该站点为已读"
+                   data-position="bottom">check</i></a>
+        </div>
+    </div>
+</div>
+
+
 <div id="omrss-cnt-list">
 
     <ul class="collection">
         {% for article in pg.object_list %}
-            <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
+            <li class="collection-item ev-cnt-list" id="{{ article.uindex }}" data-recent="{{ article.is_recent }}">
                 <div class="omrss-title-line">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     {% if user %}
-                    {% if user.oauth_id|is_user_read_article:article.uindex %}
+                    {% if user.oauth_id|is_user_read_article:article.uindex or not article.is_recent %}
                         <span class="omrss-title truncate omrss-title-read">{{ article.title |truncatechars:50 }}</span>
                         <i class="right material-icons read">check</i>
                     {% else %}
@@ -16,8 +40,8 @@
                         <i class="right material-icons unread">lens</i>
                     {% endif %}
                     {% else %}
-                    <span class="omrss-title truncate omrss-title-read">{{ article.title |truncatechars:50 }}</span>
-                    <i class="right material-icons read">check</i>
+                        <span class="omrss-title truncate omrss-title-read">{{ article.title |truncatechars:50 }}</span>
+                        <i class="right material-icons read">check</i>
                     {% endif %}
                 </div>
 
@@ -45,24 +69,26 @@
     {# 翻页 #}
     <ul class="pagination">
         {% if pg.has_previous %}
-            <li class="waves-effect ev-page ev-page-previous" title="上一页" data-page="{{ pg.previous_page_number }}">
+            <li class="waves-effect ev-page ev-page-previous" title="上一页" data-page="{{ pg.previous_page_number }}"
+                data-site="{{ site.name }}">
                 <a href="#"><i class="material-icons">chevron_left</i></a></li>
         {% else %}
             <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
         {% endif %}
 
-        <li class="waves-effect ev-page" title="首页" data-page="1">
+        <li class="waves-effect ev-page" title="首页" data-page="1" data-site="{{ site.name }}">
             <a href="#">1</a></li>
 
         <li id="omrss-active-pager" class="omrss-bgcolor"><a href="#">{{ pg.number }}</a></li>
 
         {% if pg.number <= num_pages %}
-            <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}">
+            <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}" data-site="{{ site.name }}">
                 <a href="#">{{ num_pages }}</a></li>
         {% endif %}
 
         {% if pg.has_next %}
-            <li class="waves-effect ev-page ev-page-next" title="下一页" data-page="{{ pg.next_page_number }}">
+            <li class="waves-effect ev-page ev-page-next" title="下一页" data-page="{{ pg.next_page_number }}"
+                data-site="{{ site.name }}">
                 <a href="#"><i class="material-icons">chevron_right</i></a></li>
         {% else %}
             <li class="disabled"><a href="#"><i class="material-icons">chevron_right</i></a></li>

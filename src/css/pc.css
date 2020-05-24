@@ -128,6 +128,10 @@ i.meta-icon {
     color: #444;
 }
 
+#omrss-site-nav {
+    color: #444;
+}
+
 .collection .collection-item.active .omrss-meta-line {
     color: #fff;
 }
@@ -551,6 +555,7 @@ i.meta-icon {
 #omrss-pager {
     position: fixed;
     bottom: 0;
+    border-top: 1px dashed #e0e0e0;
 }
 
 #omrss-active-pager a {
@@ -619,9 +624,10 @@ i.meta-icon {
     color: #9F9F9F;
 }
 
-.rss-text {
+.omrss-text {
     line-height: 32.4px !important;
     display: inline-block;
+    vertical-align: middle;
 }
 
 .omrss-item {
@@ -693,7 +699,7 @@ nav .brand-logo {
 }
 
 .omrss-top-form {
-    width: 300px;
+    width: 225px;
     background: hsla(0,0%,100%,.125);
     position: absolute;
     top: 16px;
@@ -713,6 +719,22 @@ nav .brand-logo {
     font-size: 0.95rem;
 }
 
+.bold {
+    font-weight: bold;
+}
+/*.omrss-site-back {*/
+/*    padding-left: 4px;*/
+/*}*/
+#omrss-site-nav {
+    height: 50px;
+    padding: 8.8px 0;
+}
+#omrss-site-nav .row .col {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
 .omrss-readmode {
     position: absolute;
     width: 54px;
@@ -722,11 +744,17 @@ nav .brand-logo {
 .meta-recommend-site {
     margin-right: 1.5rem;
 }
+.omrss-check-site {
+    margin-right: 10px;
+}
 
 .omrss-title-site {
     padding-left: 10px;
 }
 
+.omrss-not-visual {
+    visibility: hidden;
+}
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */
 pre {

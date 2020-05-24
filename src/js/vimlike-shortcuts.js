@@ -1087,6 +1087,23 @@ V.addKeypress('prevArticle', {
     }
 });
 
+V.addKeypress('siteBackNav', {
+    pattern: {
+        value: 'b'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            const target = $('.ev-site-back');
+            if (target.length === 1) {
+                target.click();
+                toast('返回');
+            }
+            return true;
+        }
+    }
+});
+
 V.addKeypress('toggleFullscreen', {
     pattern: {
         value: 'F'
@@ -1146,50 +1163,57 @@ V.addKeypress('markAndNextPage', {
         execute: function() {
             // 区分是否登录用户
             if (getLoginId()) {
-
                 let ids = [];
+                let read = 0;
+
                 $('.collection li[id]').each(function (index) {
                     ids.push(this.id);
+
+                    if ($(this).find('i.unread').length === 1) {
+                        read += 1;
+                        setReadArticle(this.id, $(this));
+                    }
                 });
 
-                $.post("/api/mark/read", {
-                    uid: getOrSetUid(),
-                    ids: ids.toString()
-                }, function (data) {
-                    // 设置已读
+                if (ids.length > 0) {
+                    $.post("/api/mark/read", {uid: getOrSetUid(), ids: ids.toString()}, function (data) {
+                        // 未读数
+                        updateUserUnreadCount(read);
+                        updateSiteUnreadCount(read);
+                    }).then(function () {
+                        // 加载下一页
+                        const target = $('.ev-page-next');
+                        if (target.length === 1) {
+                            target.click();
+                        }
+                        toast('标记本页已读并翻页');
+                    }).fail(function () {
+                        warnToast(NET_ERROR_MSG);
+                    })
+                }
+            } else {
+                // 游客用户
+                let read = 0;
+
+                if ($('.collection li[id]').length > 0) {
                     $('.collection li[id]').each(function (index) {
-                        setReadArticle(this.id);
+                        if ($(this).find('i.unread').length === 1) {
+                            read += 1;
+                            setReadArticle(this.id, $(this));
+                        }
                     });
+
                     // 未读数
                     updateUnreadCount();
+                    updateSiteUnreadCount(read);
 
-                    toast('标记本页已读');
-                }).then(function () {
                     // 加载下一页
-                    loadPage(parseInt(getCurPage()) + 1);
-                }).fail(function () {
-                    warnToast(NET_ERROR_MSG);
-                })
-            } else {
-                // 设置已读
-                $('.collection li[id]').each(function (index) {
-                    setReadArticle(this.id);
-
-                    // 图标
-                    const target = $(this).find('i.unread');
-                    target.removeClass('unread').addClass('read');
-                    target.text('check');
-
-                    // 文字样式
-                    $(this).find('.omrss-title').removeClass('omrss-title-unread').addClass('omrss-title-read');
-                });
-                // 未读数
-                updateUnreadCount();
-
-                toast('标记本页已读');
-
-                // 加载下一页
-                loadPage(parseInt(getCurPage()) + 1);
+                    const target = $('.ev-page-next');
+                    if (target.length === 1) {
+                        target.click();
+                    }
+                    toast('标记本页已读并翻页');
+                }
             }
             return true;
         }

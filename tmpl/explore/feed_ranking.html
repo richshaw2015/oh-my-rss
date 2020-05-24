@@ -13,26 +13,26 @@
                 <div class="divider nav-divider"></div>
 
                 <div>
-                    <img src="{{ site.favicon }}" class="circle omrss-recent-avatar rss-text">
+                    <img src="{{ site.favicon }}" class="circle omrss-recent-avatar omrss-text">
                     <a href="{{ site.link }}" target="_blank">
-                        <span class="omrss-recent-site rss-text">{{ site.cname |to_short_site_name }}</span>
+                        <span class="omrss-recent-site omrss-text">{{ site.cname |to_short_site_name }}</span>
                     </a>
 
                 {% if user %}
                     {% if site.name in user_sub_feeds %}
-                        <span class="waves-light right rss-text omrss-sub-btn" data-name="{{ site.name }}">已订阅</span>
+                        <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ site.name }}">已订阅</span>
                     {% else %}
-                        <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                        <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
                               data-name="{{ site.name }}">订阅</span>
                     {% endif %}
                 {% else %}
-                    <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                    <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
                           data-name="{{ site.name }}">订阅</span>
                 {% endif %}
 
-                    <span class="right rss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>
+                    <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>
 
-                    <span class="new right rss-text omrss-rank-score">{{ site.score }} 人气</span>
+                    <span class="new right omrss-text omrss-rank-score">{{ site.score }} 人气</span>
                 </div>
             </div>
         </div>

@@ -1,6 +1,9 @@
 // 提示信息
 const [NET_ERROR_MSG, LOGIN_ERROR_MSG, LOGIN_SUCC_MSG] = 
-    ['网络异常，请稍后重试！', '登录授权失败，请稍后重试！', '登录成功^o^'];
+    ['网络异常，请稍后重试！', '登录授权失败，请稍后重试！', '登录成功 ^o^'];
+
+// 登陆用户的未读数
+let userUnreadCount = 0;
 
 function getTextReadTime(str) {
     // 估算预计阅读时间
@@ -65,37 +68,23 @@ function getOrSetUid() {
     return localStorage.getItem('UID');
 }
 
-function hasReadArticle(id) {
-    // 登录用户，直接判断列表集合
-    if (getLoginId()) {
-        const toReads = JSON.parse(localStorage.getItem('TOREADS'));
-        const toReadsSet = new Set(toReads);
-        return !toReadsSet.has(parseInt(id));
-    } else {
-        // 游客已读判断
-        return localStorage.getItem('READ/' + id);
-    }
+function hasVisitorReadArticle(id) {
+    // 游客已读判断
+    return localStorage.getItem('READ/' + id) === '1';
 }
 
 function setReadArticle(id, ev_target=null) {
-    // 登录用户更新本地未读集合，需要在网络请求之后调用
-    if (getLoginId()) {
-        const toReads = JSON.parse(localStorage.getItem('TOREADS'));
-        const toReadsSet = new Set(toReads);
-        toReadsSet.delete(parseInt(id));
-        localStorage.setItem('TOREADS', JSON.stringify(Array.from(toReadsSet)))
-    }else {
+    if (!getLoginId()) {
         localStorage.setItem('READ/' + id, '1');
     }
 
-    // 更新 UI 状态
+    // 更新 UI 状态，不管是否登陆
     if (ev_target !== null) {
         // 更新 icon 状态
         const icon = ev_target.find('i.unread');
+
         icon.removeClass('unread').addClass('read');
         icon.text('check');
-
-        // 更新文字样式
         ev_target.find('.omrss-title').removeClass('omrss-title-unread').addClass('omrss-title-read');
     }
 }
@@ -189,10 +178,10 @@ function toggleReadMode() {
     const mode = localStorage.getItem('READMODE');
 
     if (mode === 'site') {
-        localStorage.setItem('READMODE', 'article')
+        localStorage.setItem('READMODE', 'article');
         return 'article'
     } else if (mode === 'article') {
-        localStorage.setItem('READMODE', 'site')
+        localStorage.setItem('READMODE', 'site');
         return 'site'
     }
 }
@@ -232,13 +221,6 @@ function exitFullscreen() {
     return true;
 }
 
-function getCurPage() {
-    const page = localStorage.getItem('CURPG');
-    if (page) {
-        return page;
-    }
-    return '1';
-}
 
 function updateReadStats() {
     // 计算预计阅读时间
@@ -255,42 +237,74 @@ function updateReadStats() {
     $('#omrss-read-stats').html(stats);
 }
 
-
-function updateUnreadCount() {
-    // 设置未读数（区分是否登录用户），同时写入缓存，用于后续通知
-    const toReads = JSON.parse(localStorage.getItem('TOREADS'));
-    let unread = 0;
-
-    if (getLoginId()) {
-        unread = toReads.length;
-    } else {
-        for (let i = 0; i < toReads.length; i++) {
-            const hasRead = localStorage.getItem('READ/' + toReads[i]);
-            if (!hasRead) {
-                unread += 1;
-            }
-        }
-    }
-
+function updateUnreadUI(unread) {
     if (unread > 0) {
         $('#omrss-unread').html(`<a href="#"><span class="new badge">${unread}</span></a>`);
-        localStorage.setItem('NEW', unread.toString());
     } else {
         $('#omrss-unread').html('');
     }
+
     return unread;
 }
 
+function getUserUnreadCount() {
+    return userUnreadCount;
+}
 
-function markReadAll(toReads) {
-    // 设置所有为已读，支持登录用户、游客
-    for (let i = 0; i < toReads.length; i++) {
-        setReadArticle(toReads[i]);
+function setUserUnreadCount(unread) {
+    userUnreadCount = unread;
+    return userUnreadCount;
+}
+
+function updateUserUnreadCount(read=0) {
+    if (getLoginId()) {
+        if (read > 0) {
+            userUnreadCount -= read;
+        }
+
+        return updateUnreadUI(userUnreadCount);
     }
 }
 
+function updateUnreadCount(read=0, cal=true) {
+    // 设置未读数（区分是否登录用户）
+    if (getLoginId()) {
+        return updateUserUnreadCount(read);
+    } else {
+        // 这个计算有性能问题
+        if (cal) {
+            let unread = 0;
+            const toReads = JSON.parse(localStorage.getItem('TOREADS'));
 
-function setToreadList(notify=false) {
+            for (let i = 0; i < toReads.length; i++) {
+                const hasRead = localStorage.getItem('READ/' + toReads[i]);
+                if (!hasRead) {
+                    unread += 1;
+                }
+            }
+            return updateUnreadUI(unread);
+        } else {
+            // 简化计算逻辑
+            let unread = $('#omrss-unread span').text();
+
+            if (unread > 0) {
+                unread -= read;
+                return updateUnreadUI(unread);
+            }
+        }
+    }
+}
+
+function markVisitorReadAll(toReads) {
+    // 设置所有为已读
+    if (!getLoginId()) {
+        for (let i = 0; i < toReads.length; i++) {
+            setReadArticle(toReads[i]);
+        }
+    }
+}
+
+function setToreadInfo(notify=false) {
     // 从网络读取列表，然后更新未读数
     $.post("/api/lastweek/articles", {
         uid: getOrSetUid(),
@@ -298,7 +312,12 @@ function setToreadList(notify=false) {
         unsub_feeds: Object.keys(getUnsubFeeds()).join(','),
         ext: window.screen.width + 'x' + window.screen.height
     }, function (data) {
-        localStorage.setItem('TOREADS', JSON.stringify(data.result));
+        if (getLoginId()) {
+            setUserUnreadCount(data.result);
+        }else {
+            localStorage.setItem('TOREADS', JSON.stringify(data.result));
+        }
+
         const newNum = updateUnreadCount();
 
         // 发送通知
@@ -306,7 +325,7 @@ function setToreadList(notify=false) {
             if (window.Notification && Notification.permission === "granted") {
                 const notify = new Notification(`你有 ${newNum} 条未读订阅`, {
                     tag: "己思",
-                    icon: "https://ohmyrss.com/assets/img/logo.png",
+                    icon: "https://ohmyrss.com/assets/img/logo.svg",
                     body: "请刷新页面后查看"
                 });
             }

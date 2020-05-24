@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/html/homepage/tips', views_html.get_homepage_tips, name='get_homepage_tips'),
     path('api/html/issues/all', views_html.get_all_issues, name='get_all_issues'),
     path('api/html/articles/list', views_html.get_article_update_view, name='get_article_update_view'),
+    path('api/html/articles/list2', views_html.get_site_article_update_view, name='get_site_article_update_view'),
     path('api/html/sites/list', views_html.get_site_update_view, name='get_site_update_view'),
 
     path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
@@ -45,6 +46,7 @@ urlpatterns = [
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
     path('api/mark/read', views_api.user_mark_read_all, name='user_mark_read_all'),
+    path('api/mark/read/site', views_api.user_mark_read_site, name='user_mark_read_site'),
 
     path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
     path('api/feed/subscribe', views_api.user_subscribe_feed, name='user_subscribe_feed'),

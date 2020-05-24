@@ -14,20 +14,20 @@
                 <div class="divider nav-divider"></div>
 
                 <div>
-                    <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar rss-text">
+                    <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar omrss-text">
                     <a href="{{ article.site.link }}" target="_blank" class="tooltipped"
                        data-tooltip="{{ article.site.brief |to_clean_brief }}" data-position="top">
-                        <span class="omrss-recent-site rss-text">{{ article.site.cname |to_short_site_name }}</span>
+                        <span class="omrss-recent-site omrss-text">{{ article.site.cname |to_short_site_name }}</span>
                     </a>
                     {% if user %}
                         {% if article.site.name in user_sub_feeds %}
-                            <span class="waves-light right rss-text omrss-sub-btn" data-name="{{ article.site.name }}">已订阅</span>
+                            <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ article.site.name }}">已订阅</span>
                         {% else %}
-                            <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                            <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
                                   data-name="{{ article.site.name }}">订阅</span>
                         {% endif %}
                     {% else %}
-                        <span class="waves-effect waves-light btn-small right rss-text ev-sub-feed omrss-sub-btn"
+                        <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
                               data-name="{{ article.site.name }}">订阅</span>
                     {% endif %}
 

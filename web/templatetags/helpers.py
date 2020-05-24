@@ -7,6 +7,7 @@ import urllib
 import logging
 from functools import lru_cache
 import re
+from web.utils import R
 
 register = template.Library()
 logger = logging.getLogger(__name__)
@@ -83,6 +84,18 @@ def to_gravatar_url(uid, size=64):
 @register.filter
 def unquote(url):
     return urllib.parse.unquote(url)
+
+
+@register.filter
+def is_user_read_article(user_id, uindex):
+    """
+
+    :param user_id:
+    :param uindex:
+    :return:
+    """
+    key = settings.REDIS_USER_READ_KEY % (user_id, uindex)
+    return R.get(key) == '1'
 
 
 def cut_to_short(text, size):

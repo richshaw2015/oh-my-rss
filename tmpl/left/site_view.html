@@ -4,11 +4,11 @@
 
     <ul class="collection">
         {% for article in pg.object_list %}
-            <li class="collection-item ev-cnt-list" id="{{ article.site.name }}">
+            <li class="collection-item ev-cnt-list" data-site="{{ article.site.name }}">
                 <div class="omrss-title-line omrss-title-site">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     <span class="omrss-title truncate omrss-title-read">{{ article.site.cname }}</span>
-                    <i class="right material-icons read">check</i>
+                    <i class="right material-icons read omrss-check-site">check</i>
                 </div>
 
                 <div class="omrss-meta-line">
@@ -24,7 +24,7 @@
                               data-ids="{{ pg_unread_dict|get_item:article.site.name }}">0</span>
                     {% endif %}
 
-                    <i class="right material-icons meta-icon omrss-meta">visibility_off</i>
+                    <i class="right material-icons meta-icon omrss-meta visibility-icon">visibility_off</i>
                     <span class="right meta-num-l omrss-meta">{{ article.up_num }}</span>
                     <i class="right material-icons meta-icon omrss-meta sync-icon">sync</i>
 

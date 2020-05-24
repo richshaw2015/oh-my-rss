@@ -25,7 +25,7 @@ def get_article_detail(request):
         article = Article.objects.get(uindex=uindex, status='active')
     except:
         logger.info(f"获取文章详情请求处理异常：`{uindex}")
-        return HttpResponseNotFound("Param error")
+        return HttpResponseNotFound("Param Error")
 
     if user:
         set_user_read_article(user.oauth_id, uindex)
@@ -265,9 +265,9 @@ def get_site_update_view(request):
             return render(request, 'left/site_view.html', context=context)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
-            return HttpResponseNotFound("Page number error")
+            return HttpResponseNotFound("Page Number Error")
 
-    return HttpResponseNotFound("No Feeds subscribed")
+    return HttpResponseNotFound("No Feeds Subscribed")
 
 
 @verify_request
@@ -320,9 +320,57 @@ def get_article_update_view(request):
                 return render(request, 'left/list_view.html', context=context)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
-            return HttpResponseNotFound("Page number error")
+            return HttpResponseNotFound("Page Number Error")
 
-    return HttpResponseNotFound("No Feeds subscribed")
+    return HttpResponseNotFound("No Feeds Subscribed")
+
+
+@verify_request
+def get_site_article_update_view(request):
+    """
+    获取某个站点的更新文章列表视图
+    """
+    # 请求参数获取
+    site_name = request.POST.get('site_name', '')
+    page_size = int(request.POST.get('page_size', 10))
+    page = int(request.POST.get('page', 1))
+
+    user = get_login_user(request)
+
+    site = Site.objects.get(name=site_name, status='active')
+
+    if user:
+        site_articles = Article.objects.all().prefetch_related('site').filter(
+            status='active', site__name=site_name).order_by('-id')[:200]
+    else:
+        site_articles = Article.objects.all().prefetch_related('site').filter(
+            status='active', site__name=site_name).order_by('-id')[:100]
+
+    if site_articles:
+        articles = [article.uindex for article in site_articles]
+
+        # 分页处理
+        paginator_obj = Paginator(site_articles, page_size)
+        try:
+            # 页面及数据
+            pg = paginator_obj.page(page)
+            num_pages = paginator_obj.num_pages
+            uv = get_page_uv(pg)
+
+            context = dict()
+            context['pg'] = pg
+            context['uv'] = uv
+            context['num_pages'] = num_pages
+            context['site'] = site
+            context['user'] = user
+            context['articles'] = articles
+
+            return render(request, 'left/list2_view.html', context=context)
+        except:
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{site_name}")
+            return HttpResponseNotFound("Page Number Error")
+
+    return HttpResponseNotFound("No Sites Data")
 
 
 @verify_request

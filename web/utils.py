@@ -249,6 +249,20 @@ def set_user_read_article(oauth_id, uindex):
     return R.set(key, 1, 14*24*3600)
 
 
+def set_user_read_articles(oauth_id, ids):
+    """
+    已登录用户同步已读文章状态
+    :param oauth_id:
+    :param ids:
+    :return:
+    """
+    with R.pipeline(transaction=False) as p:
+        for uindex in ids:
+            key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
+            p.set(key, 1, 14*24*3600)
+        p.execute()
+
+
 def get_user_unread_count(oauth_id, articles):
     """
     计算用户对一批文章的未读数
@@ -257,26 +271,7 @@ def get_user_unread_count(oauth_id, articles):
     :return:
     """
     user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
-    return R.mget(*user_read_keys).count('1')
-
-
-def get_user_unread_articles(oauth_id, articles):
-    """
-    获取用户过去一周未读的文章列表
-    """
-    user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
-    user_unread_list = []
-
-    if articles:
-        try:
-            user_read_info_dict = dict(zip(articles, R.mget(*user_read_keys)))
-            for article in articles:
-                if user_read_info_dict.get(article) is None:
-                    user_unread_list.append(article)
-        except:
-            logger.error(f"获取用户未读文章列表异常：`{oauth_id}")
-
-    return user_unread_list
+    return len(articles) - R.mget(*user_read_keys).count('1')
 
 
 def get_login_user(request):

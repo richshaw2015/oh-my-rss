@@ -7,10 +7,25 @@
             <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
                 <div class="omrss-title-line">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
+
+                    {% if user %}
+                    {% if user.oauth_id|is_user_read_article:article.uindex %}
                     <span class="omrss-title omrss-title-read">
                         <a href="/post/{{ article.uindex }}" target="_blank">{{ article.title |truncatechars:50 }}</a>
                     </span>
                     <i class="right material-icons read">check</i>
+                    {% else %}
+                    <span class="omrss-title omrss-title-unread">
+                        <a href="/post/{{ article.uindex }}" target="_blank">{{ article.title |truncatechars:50 }}</a>
+                    </span>
+                    <i class="right material-icons unread">lens</i>
+                    {% endif %}
+                    {% else %}
+                    <span class="omrss-title omrss-title-read">
+                        <a href="/post/{{ article.uindex }}" target="_blank">{{ article.title |truncatechars:50 }}</a>
+                    </span>
+                    <i class="right material-icons read">check</i>
+                    {% endif %}
                 </div>
 
                 <div class="omrss-meta-line">
@@ -46,7 +61,7 @@
 
         <li id="omrss-active-pager" class="omrss-bgcolor"><a href="#">{{ pg.number }}</a></li>
 
-        {% if pg.number < num_pages %}
+        {% if pg.number <= num_pages %}
             <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}">
                 <a href="#">{{ num_pages }}</a></li>
         {% endif %}
