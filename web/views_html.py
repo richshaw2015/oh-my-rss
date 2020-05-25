@@ -287,7 +287,7 @@ def get_article_update_view(request):
     if user is None:
         visitor_sub_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
 
-        my_articles = Article.objects.all().prefetch_related('site').filter(
+        my_articles = Article.objects.filter(
             status='active', is_recent=True, site__name__in=visitor_sub_sites).order_by('-id')[:300]
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
@@ -295,8 +295,7 @@ def get_article_update_view(request):
         if not user_sub_feeds:
             logger.warning(f'用户未订阅任何内容：`{user.oauth_name}')
 
-        # TODO 这个 sql 比较耗时
-        my_articles = Article.objects.all().prefetch_related('site').filter(
+        my_articles = Article.objects.filter(
             status='active', is_recent=True, site__name__in=user_sub_feeds).order_by('-id')[:999]
 
     if my_articles:
@@ -340,11 +339,9 @@ def get_site_article_update_view(request):
     site = Site.objects.get(name=site_name, status='active')
 
     if user:
-        site_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name=site_name).order_by('-id')[:200]
+        site_articles = Article.objects.filter(site=site).order_by('-id')[:200]
     else:
-        site_articles = Article.objects.all().prefetch_related('site').filter(
-            status='active', site__name=site_name).order_by('-id')[:100]
+        site_articles = Article.objects.filter(site=site).order_by('-id')[:100]
 
     if site_articles:
         articles = [article.uindex for article in site_articles]
