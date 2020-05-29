@@ -254,6 +254,9 @@ i.meta-icon {
     .omrss-top-form {
         display: none;
     }
+    .omrss-readmode {
+        display: none;
+    }
     #omrss-logo-font {
         left: 0;
         -webkit-transform: none;
@@ -750,6 +753,9 @@ nav .brand-logo {
 
 .omrss-title-site {
     padding-left: 10px;
+}
+.omrss-list2-title {
+    display: inline-flex;
 }
 
 .omrss-not-visual {

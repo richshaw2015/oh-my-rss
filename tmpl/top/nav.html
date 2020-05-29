@@ -80,14 +80,23 @@
            <li><a href="sass.html"><i class="material-icons">search</i></a></li>
            -->
 
+            <li class="ev-explore"><a class="omrss-color" href="#">发现</a></li>
+            <!--
             <li class="tooltipped ev-explore" data-tooltip="发现" data-position="bottom">
                 <a href="#"><i class="material-icons omrss-color">highlight</i></a>
             </li>
+            -->
 
             {% if not user %}
+                <li>
+                    <a href="#model-omrss-login" class="modal-trigger omrss-color">一键登录</a>
+                </li>
+
+                <!--
                 <li class="tooltipped" data-tooltip="一键登录" data-position="bottom">
                     <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
                 </li>
+                -->
             {% else %}
                 <li data-oauth-id="{{ user.oauth_id }}"
                     data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
