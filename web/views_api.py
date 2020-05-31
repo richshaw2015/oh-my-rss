@@ -98,6 +98,7 @@ def submit_a_feed(request):
         host = get_host_name(feed_url)
 
         if 'ershicimi.com' in host:
+            feed_url = feed_url.replace('/user/analysis?bid=', '/a/')
             rsp = parse_wemp_ershicimi(feed_url)
         elif host in settings.ALLOWED_HOSTS:
             rsp = parse_self_atom(feed_url)

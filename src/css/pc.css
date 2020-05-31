@@ -115,7 +115,7 @@ i.meta-icon {
 }
 .sync-icon {
     font-size: 0.95rem;
-    vertical-align: sub;
+    vertical-align: top;
 }
 
 .thumb-icon {
@@ -176,7 +176,7 @@ i.meta-icon {
     left: 0;
     height: 100%;
     overflow-y: hidden;
-    border-right: 1px dashed;
+    border-right: 1px dashed rgba(0,0,0,0.14);
     padding: 0 10px;
     /* min-width: 28rem; */
 }
@@ -558,7 +558,7 @@ i.meta-icon {
 #omrss-pager {
     position: fixed;
     bottom: 0;
-    border-top: 1px dashed #e0e0e0;
+    border-top: 1px dashed rgba(0,0,0,0.14);
 }
 
 #omrss-active-pager a {
@@ -705,9 +705,9 @@ nav .brand-logo {
     width: 225px;
     background: hsla(0,0%,100%,.125);
     position: absolute;
-    top: 16px;
-    height: 36px !important;
-    border-radius: 4px;
+    top: 15px;
+    height: 34px !important;
+    border-radius: 3px;
 }
 
 .omrss-top-form-icon {
@@ -718,7 +718,7 @@ nav .brand-logo {
 #omrss-search {
     margin: 0;
     line-height: 100% !important;
-    border-radius: 4px;
+    border-radius: 3px;
     font-size: 0.95rem;
 }
 
@@ -731,7 +731,7 @@ nav .brand-logo {
 #omrss-site-nav {
     height: 50px;
     padding: 8.8px 0;
-    border-bottom: 1px dashed #e0e0e0;
+    border-bottom: 1px dashed rgba(0,0,0,0.14);
 }
 #omrss-site-nav .row .col {
     padding-left: 6px !important;
