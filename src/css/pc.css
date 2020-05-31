@@ -111,10 +111,19 @@ i.meta-icon {
     font-size: 1.05rem;
 }
 .visibility-icon {
-    font-size: 1rem;
+    margin-right: 3px;
 }
 .sync-icon {
-    font-size: 0.95rem;
+    font-size: 0.95rem !important;
+    vertical-align: top;
+}
+
+.star-icon {
+    font-size: 0.95rem !important;
+}
+
+.star2-icon {
+    font-size: 1.2rem;
     vertical-align: top;
 }
 
@@ -122,6 +131,10 @@ i.meta-icon {
     font-size: 1rem;
     width: 1rem;
     height: 1rem;
+}
+
+.bottom-flex-bar {
+    flex-grow: 1;
 }
 
 .collection .collection-item .omrss-meta-line {
@@ -760,6 +773,10 @@ nav .brand-logo {
 
 .omrss-not-visual {
     visibility: hidden;
+}
+
+.omrss-nodisplay {
+    display: none;
 }
 
 /* 代码自动换行。部分站点 pre-wrap 会导致代码排版异常 */

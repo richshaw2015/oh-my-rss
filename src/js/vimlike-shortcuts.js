@@ -1104,6 +1104,19 @@ V.addKeypress('siteBackNav', {
     }
 });
 
+V.addKeypress('markReadAll', {
+    pattern: {
+        value: 'C'
+    },
+    fns: {
+        filter: filterByTarget,
+        execute: function() {
+            $('.ev-mark-readall').click();
+            return true;
+        }
+    }
+});
+
 V.addKeypress('toggleFullscreen', {
     pattern: {
         value: 'F'

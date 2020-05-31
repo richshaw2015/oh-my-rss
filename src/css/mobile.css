@@ -243,9 +243,16 @@ li#omrss-active-pager {
     width: 1rem;
     height: 1rem;
 }
+.star-icon {
+    font-size: 1.1rem;
+}
 
 .favico {
     width: 1.8rem;
+}
+
+.bottom-flex-bar {
+    flex-grow: 1;
 }
 
 .fixed-action-btn {

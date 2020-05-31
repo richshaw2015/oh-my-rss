@@ -1,9 +1,10 @@
 
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
+import django
 from web.models import *
 from web.utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, set_user_read_article, get_host_name, \
-    set_user_read_articles, set_user_visit_day
+    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file
 from web.views_html import get_all_issues
 from web.verify import verify_request
 import logging
@@ -204,4 +205,37 @@ def user_mark_read_site(request):
         # 返回未读数
         return get_lastweek_articles(request)
 
+    return HttpResponseNotFound("Param Error")
+
+
+@verify_request
+def user_star_article(request):
+    """
+    登陆用户收藏文章
+    """
+    uindex = request.POST.get('id')
+    user = get_login_user(request)
+
+    if user and uindex:
+        if not is_user_stared(user.oauth_id, uindex):
+            article = Article.objects.get(uindex=uindex, status='active')
+
+            try:
+                record = UserArticle(user=user, site=article.site, uindex=uindex, title=article.title,
+                                     author=article.author, src_url=article.src_url)
+                record.save()
+            except django.db.utils.IntegrityError:
+                logger.warning(f"已经收藏过了：`{user.oauth_id}`{uindex}")
+                return JsonResponse({})
+
+            # 写入内容文件
+            write_dat_file(uindex, article.content)
+
+            # 缓存标记
+            set_user_stared(user.oauth_id, uindex)
+            incr_action('STAR', uindex)
+
+            return JsonResponse({})
+        else:
+            return JsonResponse({})
     return HttpResponseNotFound("Param Error")

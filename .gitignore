@@ -21,3 +21,4 @@ docs
 venv
 node_modules/
 dist/
+dat/

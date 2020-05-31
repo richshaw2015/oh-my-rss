@@ -25,6 +25,31 @@ function initLayout() {
     $('#omrss-main').focus();
 }
 
+function updateStarUI(newAdd=false) {
+    // 更新收藏 UI
+    $('.ev-star-article').each(function (index){
+        evTarget = $(this);
+        id = evTarget.attr('data-id');
+
+        if (isStared(id)) {
+            // 区分是悬浮球，还是底部工具栏
+            if (evTarget.hasClass('btn-floating')) {
+                evTarget.addClass('omrss-nodisplay');
+            } else {
+                evTarget.find('span').text(' 已收藏');
+                evTarget.removeClass('ev-star-article');
+            }
+        }
+    });
+    
+    if (newAdd) {
+        const el = $('.ev-cnt-list.active').find('i.star-icon');
+        if (el.length === 1) {
+            el.addClass('omrss-color');
+        }
+    }
+}
+
 // 用于返回上级
 let lastLeftDom = null;
 
@@ -265,16 +290,6 @@ function loadPage(page, site="", reflow=false) {
                             $(this).find('.omrss-title').removeClass('omrss-title-read').addClass('omrss-title-unread');
                         }
                     }
-                    if (hasLikeArticle(this.id)) {
-                        // 点赞图标，本地判断
-                        const thumb_el = $(this).find('i.thumb-icon');
-                        thumb_el.addClass('omrss-color');
-                    }
-                    if (hasOpenSrc(this.id)) {
-                        // 打开图标，本地判断
-                        const open_el = $(this).find('i.open-icon');
-                        open_el.addClass('omrss-color');
-                    }
                 });
 
                 // 时间更新
@@ -312,16 +327,6 @@ function loadPage(page, site="", reflow=false) {
                     unread_el.removeClass('read').addClass('unread');
                     unread_el.text('lens');
                     $(this).find('.omrss-title').removeClass('omrss-title-read').addClass('omrss-title-unread');
-                }
-                if (hasLikeArticle(this.id)) {
-                    // 点赞图标，本地判断
-                    const thumb_el = $(this).find('i.thumb-icon');
-                    thumb_el.addClass('omrss-color');
-                }
-                if (hasOpenSrc(this.id)) {
-                    // 打开图标，本地判断
-                    const open_el = $(this).find('i.open-icon');
-                    open_el.addClass('omrss-color');
                 }
             });
 
@@ -407,6 +412,8 @@ $(document).ready(function () {
 
                 // linkify
                 setThirdLinkify();
+                
+                updateStarUI();
 
                 target.scrollTop(0);
 
@@ -445,6 +452,8 @@ $(document).ready(function () {
                     // linkify
                     setThirdLinkify();
 
+                    updateStarUI();
+                    
                     target.scrollTop(0);
 
                     // 当前站点未读数更新
@@ -642,28 +651,30 @@ $(document).ready(function () {
         loadPage(page, site);
     });
 
-    // 点赞处理
-    $(document).on('click', '#omrss-like', function () {
-        const id = $(this).attr('data-id');
-        if (hasLikeArticle(id)) {
-            warnToast("已经点过赞了！");
+    // 收藏处理
+    $(document).on('click', '.ev-star-article', function () {
+        if (!getLoginId()) {
+            warnToast("登陆用户才能收藏！");
         } else {
-            $.post("/api/actionlog/add", {uid: getOrSetUid(), id: id, action: "THUMB"}, function (data) {
-                setLikeArticle(id);
-                toast("点赞成功 ^o^");
-            }).fail(function () {
-                warnToast(NET_ERROR_MSG);
-            });
-        }
-    });
+            const id = $(this).attr('data-id');
+            const evTarget = $(this);
 
-    // 打开原站
-    $(document).on('click', '.ev-open-src', function () {
-        const id = $(this).attr('data-id');
-        if (!hasOpenSrc(id)) {
-            $.post("/api/actionlog/add", {uid: getOrSetUid(), id: id, action: "OPEN"}, function (data) {
-                setOpenSrc(id);
-            });
+            if (isStared(id)) {
+                updateStarUI();
+                toast("已经收藏过了 ^o^");
+            } else {
+                $('#omrss-loader').removeClass('hide');
+                $.post("/api/star/article", {uid: getOrSetUid(), id: id}, function (data) {
+                    setStared(id);
+                    updateStarUI(newAdd=true);
+                    
+                    toast("收藏成功 ^o^");
+                }).fail(function () {
+                    warnToast(NET_ERROR_MSG);
+                }).always(function () {
+                    $('#omrss-loader').addClass('hide');
+                });
+            }
         }
     });
 
@@ -807,18 +818,9 @@ $(document).ready(function () {
         })
     });
 
-    // tips
-    $('.ev-tips').click(function () {
-        $('#omrss-loader').removeClass('hide');
-        $.post("/api/html/homepage/tips", {uid: getOrSetUid()}, function (data) {
-            $('#omrss-main').html(data);
-            $('#omrss-main').scrollTop(0);
-            resetHeight();
-        }).fail(function () {
-            warnToast(NET_ERROR_MSG);
-        }).always(function () {
-            $('#omrss-loader').addClass('hide');
-        })
+    // 我的收藏
+    $('.ev-my-star').click(function () {
+        warnToast("功能开发中，敬请关注 ^o^");
     });
 
     // 留言页面
@@ -1051,19 +1053,13 @@ $(document).ready(function () {
     $('.ev-toggle-fullscreen').click(function () {
         if (isInFullscreen()) {
             exitFullscreen();
-            $(this).find('i').text('fullscreen');
+
             // 重新加载页面
             setTimeout(function () {
-                loadPage(getCurPage());
+                location.reload();
             }, 200);
-
         } else {
             enterFullscreen();
-            $(this).find('i').text('fullscreen_exit');
-            // 重新加载页面
-            setTimeout(function () {
-                loadPage(getCurPage());
-            }, 200);
         }
     });
 

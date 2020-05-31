@@ -28,7 +28,7 @@ def get_host_name(url):
 
 def incr_action(action, uindex):
     """
-    文章浏览数、点赞数、打开数统计，保留 90 天数据
+    文章浏览数、点赞数、打开数统计，保留一年数据
     :param key:
     :param uindex:
     :return:
@@ -37,16 +37,14 @@ def incr_action(action, uindex):
 
     if action == 'VIEW':
         key = settings.REDIS_VIEW_KEY % uindex
-    elif action == 'THUMB':
-        key = settings.REDIS_THUMB_KEY % uindex
-    elif action == 'OPEN':
-        key = settings.REDIS_OPEN_KEY % uindex
+    elif action == 'STAR':
+        key = settings.REDIS_STAR_KEY % uindex
 
     if key is not None:
         ret = R.incr(key)
 
         if ret == 1:
-            R.expire(key, 90 * 86400)
+            R.expire(key, 365 * 86400)
 
         return ret
 
@@ -90,12 +88,10 @@ def get_page_uv(page):
     """
     key_list, data_list = [], []
     for article in page.object_list:
-        key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_THUMB_KEY % article.uindex,
-                         settings.REDIS_OPEN_KEY % article.uindex])
-    try:
-        data_list = R.mget(*key_list)
-    except:
-        logger.error("Redis连接异常")
+        key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_STAR_KEY % article.uindex])
+
+    data_list = R.mget(*key_list)
+
     return dict(zip(key_list, data_list))
 
 
@@ -387,6 +383,53 @@ def get_feed_ranking_dict():
     return {}
 
 
+def set_user_stared(oauth_id, uindex):
+    """
+    设置用户收藏，保存一年时间
+    """
+    key = settings.REDIS_USER_STAR_KEY % (oauth_id, uindex)
+
+    return R.set(key, '1', 365 * 24 * 3600)
+
+
+def is_user_stared(oauth_id, uindex):
+    """
+    用户是否收藏
+    """
+    key = settings.REDIS_USER_STAR_KEY % (oauth_id, uindex)
+
+    return R.get(key) == '1'
+
+
+def write_dat_file(uindex, content):
+    """
+    写入到文件系统；写入成功或已经存在返回 True
+    """
+    file = os.path.join(settings.HTML_DATA_DIR, str(uindex))
+
+    if os.path.exists(file):
+        return True
+
+    try:
+        if content.strip():
+            with open(file, 'w', encoding='UTF8') as f:
+                f.write(content)
+            return True
+    except:
+        logger.warning(f"写入文件失败：`{uindex}")
+
+    return False
+
+
+def get_content_from_dat(uindex):
+    file = os.path.join(settings.HTML_DATA_DIR, str(uindex))
+
+    if os.path.exists(file):
+        return open(file, encoding='UTF8').read()
+
+    return ''
+
+
 def generate_rss_avatar(url):
     """
     生成用户提交 RSS 源的默认头像
@@ -455,6 +498,23 @@ def vacuum_sqlite_db():
     cursor = connection.cursor()
     cursor.execute("VACUUM")
     connection.close()
+
+
+def is_sensitive_content(uindex, content):
+    """
+    是否命中国内的敏感词
+    """
+    is_sensitive = False
+
+    if not content.strip():
+        content = get_content_from_dat(uindex)
+
+    for word in settings.SENSITIVE_WORDS:
+        if word in content:
+            is_sensitive = True
+            break
+
+    return is_sensitive
 
 
 def guard_log(msg, hits=3, duration=86400):

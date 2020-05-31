@@ -3,21 +3,19 @@
 
 <div class="card-panel hoverable flex-container" id="omrss-article-bottom">
 
-    <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
-        <a class="tooltipped btn-flat waves-effect" data-tooltip="查看站点源"
-               data-position="top" href="{{ article.site |to_rss }}" target="_blank">
-            <i class="material-icons omrss-article-bottom">rss_feed</i> 查看站点源</a>
+    <div class="text-darken-2 omrss-article-bottom bottom-flex-bar">
+        <a class="btn-flat waves-effect ev-star-article" data-id="{{ article.uindex }}" href="#">
+        <i class="material-icons omrss-article-bottom star2-icon">star</i> <span>收藏文章</span></a>
     </div>
 
-    <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
-        <a href="{{ article.src_url }}" target="_blank" class="tooltipped ev-open-src btn-flat waves-effect" data-tooltip="去原文留言"
-           data-position="top" data-id="{{ article.uindex }}">
+    <div class="text-darken-2 omrss-article-bottom bottom-flex-bar">
+        <a href="{{ article.src_url }}" target="_blank" class="ev-open-src btn-flat waves-effect"
+           data-id="{{ article.uindex }}">
             <i class="material-icons omrss-article-bottom" style="font-size: 1.15rem;">open_in_new</i> 去原文留言</a>
     </div>
 
-    <div class="text-darken-2 omrss-article-bottom" style="flex-grow: 1">
-        <a href="#" class="tooltipped btn-flat waves-effect" id="omrss-top" data-tooltip="回到顶部"
-               data-position="top">
+    <div class="text-darken-2 omrss-article-bottom bottom-flex-bar">
+        <a href="#" class="btn-flat waves-effect" id="omrss-top">
             <i class="material-icons omrss-article-bottom">publish</i> 回到顶部</a>
     </div>
 </div>

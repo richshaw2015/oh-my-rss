@@ -1,3 +1,4 @@
+{% load helpers %}
 {% autoescape off %}
-{{ article.content }}
+{{ article.uindex|to_article_content:article.content }}
 {% endautoescape %}

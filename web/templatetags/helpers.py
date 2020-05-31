@@ -7,7 +7,7 @@ import urllib
 import logging
 from functools import lru_cache
 import re
-from web.utils import R
+from web.utils import R, get_content_from_dat, is_user_stared
 
 register = template.Library()
 logger = logging.getLogger(__name__)
@@ -49,25 +49,14 @@ def to_view_uv(uv_dict, uindex):
 
 
 @register.filter
-def to_thumb_uv(uv_dict, uindex):
+def to_star_uv(uv_dict, uindex):
     """
-    to thumb data
+    to star data
     :param uv_dict:
     :param uindex:
     :return:
     """
-    return uv_dict.get(settings.REDIS_THUMB_KEY % uindex) or 0
-
-
-@register.filter
-def to_open_uv(uv_dict, uindex):
-    """
-    to open count data
-    :param uv_dict:
-    :param uindex:
-    :return:
-    """
-    return uv_dict.get(settings.REDIS_OPEN_KEY % uindex) or 0
+    return uv_dict.get(settings.REDIS_STAR_KEY % uindex) or 0
 
 
 @register.filter
@@ -89,13 +78,17 @@ def unquote(url):
 @register.filter
 def is_user_read_article(user_id, uindex):
     """
-
     :param user_id:
     :param uindex:
     :return:
     """
     key = settings.REDIS_USER_READ_KEY % (user_id, uindex)
     return R.get(key) == '1'
+
+
+@register.filter
+def is_user_stared_article(user_id, uindex):
+    return is_user_stared(user_id, uindex)
 
 
 def cut_to_short(text, size):
@@ -151,6 +144,15 @@ def to_clean_brief(brief):
     去掉第三方说明性的文字
     """
     return re.sub(r' - Made with love by .*$', '', brief)[:50]
+
+
+@register.filter
+@lru_cache(maxsize=1024)
+def to_article_content(uindex, content):
+    if content.strip():
+        return content
+    else:
+        return get_content_from_dat(uindex)
 
 
 @register.filter

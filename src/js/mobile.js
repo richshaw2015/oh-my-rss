@@ -30,16 +30,6 @@ function loadPage(page) {
                     $(this).find('.omrss-title').removeClass('omrss-title-read').addClass('omrss-title-unread');
                 }
             }
-            if (hasLikeArticle(this.id)) {
-                // 点赞图标
-                const thumb_el = $(this).find('i.thumb-icon');
-                thumb_el.addClass('omrss-color');
-            }
-            if (hasOpenSrc(this.id)) {
-                // 打开图标
-                const open_el = $(this).find('i.open-icon');
-                open_el.addClass('omrss-color');
-            }
         });
 
         // 时间更新
@@ -101,7 +91,7 @@ $(document).ready(function () {
             setTimeout(function () {
                 $.post("/api/actionlog/add", {uid: getOrSetUid(), id: articleId, action: "VIEW"}, function () {
                 });
-            }, 1000);
+            }, 500);
         }
     });
 
@@ -180,30 +170,25 @@ $(document).ready(function () {
         loadPage(page);
     });
 
-    // 点赞处理
-    $(document).on('click', '#omrss-like', function () {
-        const id = $(this).attr('data-id');
-
-        if (hasLikeArticle(id)) {
-            warnToast("已经点过赞了！");
+    // 收藏处理
+    $(document).on('click', '.ev-star-article', function () {
+        if (!getLoginId()) {
+            warnToast("登陆用户才能收藏！");
         } else {
-            $.post("/api/actionlog/add", {uid: getOrSetUid(), id: id, action: "THUMB"}, function (data) {
-                setLikeArticle(id);
-                toast("点赞成功 ^o^");
-            }).fail(function () {
-                warnToast(NET_ERROR_MSG);
-            });
-        }
-    });
+            const id = $(this).attr('data-id');
 
-    // 打开原站
-    $(document).on('click', '.ev-open-src', function () {
-        const id = $(this).attr('data-id');
-
-        if (!hasOpenSrc(id)) {
-            $.post("/api/actionlog/add", {uid: getOrSetUid(), id: id, action: "OPEN"}, function (data) {
-                setOpenSrc(id);
-            });
+            if (isStared(id)) {
+                toast("已经收藏过了 ^o^");
+            } else {
+                $('#omrss-loader').removeClass('hide');
+                $.post("/api/star/article", {uid: getOrSetUid(), id: id}, function (data) {
+                    toast("收藏成功 ^o^");
+                }).fail(function () {
+                    warnToast(NET_ERROR_MSG);
+                }).always(function () {
+                    $('#omrss-loader').addClass('hide');
+                });
+            }
         }
     });
 
@@ -224,10 +209,13 @@ $(document).ready(function () {
             unsubFeed(site);
             toast("取消订阅成功 ^o^");
         } else {
+            $('#omrss-loader').removeClass('hide');
             $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), feed: site}, function (data) {
                 toast('取消订阅成功 ^o^');
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);
+            }).always(function () {
+                $('#omrss-loader').addClass('hide');
             });
         }
     });

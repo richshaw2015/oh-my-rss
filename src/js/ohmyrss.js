@@ -95,10 +95,6 @@ function setThirdLinkify(){
     });
 }
 
-function hasLikeArticle(id) {
-    return localStorage.getItem('LIKE/' + id);
-}
-
 function setLeaveMsgToday() {
     localStorage.setItem('LMSG/' + (new Date()).toDateString(), '1');
 }
@@ -107,17 +103,14 @@ function hasLeaveMsgToday() {
     return localStorage.getItem('LMSG/' + (new Date()).toDateString());
 }
 
-function setLikeArticle(id) {
-    localStorage.setItem('LIKE/' + id, '1');
+function setStared(id) {
+    localStorage.setItem('STARED/' + id, '1');
 }
 
-function hasOpenSrc(id) {
-    return localStorage.getItem('OPEN/' + id);
+function isStared(id) {
+    return localStorage.getItem('STARED/' + id) === '1';
 }
 
-function setOpenSrc(id) {
-    localStorage.setItem('OPEN/' + id, '1');
-}
 
 function getSubFeeds() {
     // 针对游客
@@ -337,7 +330,7 @@ function setToreadInfo(notify=false) {
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 
 // 缓存版本号，每次上线需要更新
-const cacheVer = '24';
+const cacheVer = '25';
 
 function setLruCache(key, value) {
     if (value.length < 100 * 1024 && value.length > 512) {

@@ -6,7 +6,7 @@ from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, vacuum_sqlite_db, \
-    get_user_sub_feeds, set_feed_ranking_dict
+    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -63,18 +63,15 @@ def clean_history_data():
     """
     logger.info('开始清理历史数据')
 
-    lastweek = datetime.now() - timedelta(days=7)
-    last3month = datetime.now() - timedelta(days=90)
-    lastyear = datetime.now() - timedelta(days=365)
-
     # (, 10)，直接删除
-    Article.objects.filter(site__star__lt=10, ctime__lte=lastweek).delete()
+    Article.objects.filter(site__star__lt=10, is_recent=False).delete()
 
-    # [10, 20)，创建时间超过 3 个月，内容置空
-    Article.objects.filter(site__star__gte=10, site__star__lt=20, ctime__lte=last3month).update(content=' ')
-
-    # [20, )，创建时间超过一年，内容置空
-    Article.objects.filter(site__star__gte=20, ctime__lte=lastyear).update(content=' ')
+    # [10, 20)，存储到磁盘
+    articles = Article.objects.filter(site__star__gte=10, is_recent=False)
+    for article in articles:
+        if write_dat_file(article.uindex, article.content):
+            article.content = ' '
+            article.save()
 
     # 压缩数据库
     vacuum_sqlite_db()

@@ -143,6 +143,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
+HTML_DATA_DIR = os.path.join(BASE_DIR, "dat")
+
 # redis service
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
@@ -154,8 +156,7 @@ REDIS_WEB_DB = 1
 
 # page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'
-REDIS_THUMB_KEY = 'THUMB/%s'
-REDIS_OPEN_KEY = 'OPEN/%s'
+REDIS_STAR_KEY = 'STAR/%s'
 
 # register user count
 REDIS_REG_KEY = 'REG/%s'
@@ -192,6 +193,8 @@ REDIS_FEED_RANKING_KEY = 'FEED/RANKING'
 
 # user visit every day record
 REDIS_USER_VISIT_DAY_KEY = 'UVD/%s/%s'
+
+REDIS_USER_STAR_KEY = 'STAR2/%s/%s'
 
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 

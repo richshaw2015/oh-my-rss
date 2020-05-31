@@ -44,6 +44,7 @@ urlpatterns = [
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_log_action, name='add_log_action'),
+    path('api/star/article', views_api.user_star_article, name='user_star_article'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
     path('api/mark/read', views_api.user_mark_read_all, name='user_mark_read_all'),
     path('api/mark/read/site', views_api.user_mark_read_site, name='user_mark_read_site'),

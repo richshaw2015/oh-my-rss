@@ -114,6 +114,21 @@ class User(models.Model):
     remark = models.TextField('备注', default='', null=True, blank=True)
 
 
+class UserArticle(models.Model):
+    """
+    用户收藏文章表
+    """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    uindex = models.IntegerField('唯一地址', unique=True)
+    title = models.CharField('标题', max_length=200)
+    author = models.CharField('作者', max_length=100, null=True, blank=True)
+    src_url = models.CharField('原始链接', max_length=1024)
+
+    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+
+
 class Message(models.Model):
     """
     留言表，是否登录用户都可以留言

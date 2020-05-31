@@ -186,11 +186,12 @@ def fix_redis_ttl(request):
     :param request:
     :return:
     """
+    # TODO 移除 OPEN/* THUMB/*，增大 VIEW/*
     from web.utils import R as WR
 
-    for k in (WR.keys('VIEW/*') + WR.keys('THUMB/*') + WR.keys('OPEN/*')):
+    for k in WR.keys('VIEW/*'):
         if WR.ttl(k) == -1:
-            WR.expire(k, 90 * 86400)
+            WR.expire(k, 365 * 86400)
 
     from feed.utils import R as FR
     for k in FR.keys('CRAWL/*'):

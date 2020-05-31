@@ -57,25 +57,25 @@
     <!-- 第三方爬虫内容 -->
     <div class="flow-text" id="omrss-third">
         {% autoescape off %}
-        {{ article.content }}
+        {{ article.uindex|to_article_content:article.content }}
         {% endautoescape %}
     </div>
 
     <!-- 文章底部 -->
 
     <div class="card-panel hoverable flex-container" id="omrss-m-panel">
-        <div class="text-darken-2" style="flex-grow: 1">
+        <div class="text-darken-2 bottom-flex-bar">
             <a href="#" class="btn-flat waves-effect ev-window-close">
-                <i class="material-icons left" style="font-size: 1.6rem;">navigate_before</i>返回</a>
+                <i class="material-icons left" style="font-size: 1.6rem;">navigate_before</i> 返回</a>
         </div>
-        <div class="text-darken-2" style="flex-grow: 1">
+        <div class="text-darken-2 bottom-flex-bar">
             <a href="{{ article.src_url |unquote }}" class="btn-flat waves-effect ev-open-src" target="_blank"
                 data-id="{{ article.uindex }}">
-                <i class="material-icons left" style="font-size: 1.13rem;">open_in_new</i>查看原文</a>
+                <i class="material-icons left" style="font-size: 1.13rem;">open_in_new</i> 查看原文</a>
         </div>
-        <div class="text-darken-2" style="flex-grow: 1">
+        <div class="text-darken-2 bottom-flex-bar">
             <a href="#" class="btn-flat waves-effect" id="omrss-top">
-                <i class="material-icons left" style="font-size: 1.15rem;">publish</i>回到顶部</a>
+                <i class="material-icons left" style="font-size: 1.15rem;">publish</i> 回到顶部</a>
         </div>
     </div>
 
@@ -98,9 +98,10 @@
             <i class="material-icons">delete</i></a>
         </li>
 
-        <li><a id="omrss-like" class="btn-floating red tooltipped" data-position="left"
-               data-tooltip="喜欢" data-id="{{ article.uindex }}">
-            <i class="material-icons">thumb_up</i></a></li>
+        <li><a class="btn-floating red tooltipped ev-star-article" data-position="left"
+                   data-tooltip="收藏" data-id="{{ article.uindex }}" href="#">
+                <i class="material-icons">star</i></a>
+        </li>
     </ul>
 </div>
 

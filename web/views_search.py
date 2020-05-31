@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
-from .utils import log_refer_request, get_login_user, get_user_sub_feeds, set_user_read_article
+from .utils import log_refer_request, get_login_user, get_user_sub_feeds, set_user_read_article, is_sensitive_content
 import logging
 import os
 from user_agents import parse
-from django.conf import settings
 from .verify import verify_request
 from django.db.models import Q
 
@@ -22,28 +21,15 @@ def article(request, id):
     try:
         article = Article.objects.get(uindex=id, status='active')
     except:
-        try:
-            # 仅用于短链分享
-            article = Article.objects.get(pk=id, status='active')
-        except:
-            return redirect('index')
-
-    # 历史的文章
-    if not article.content.strip():
-        return redirect(article.src_url)
+        return redirect('index')
 
     if user:
         set_user_read_article(user.oauth_id, id)
 
     # 判断是否命中敏感词
-    is_sensitive = False
-    for word in settings.SENSITIVE_WORDS:
-        if word in article.content:
-            is_sensitive = True
-            break
-
-    if is_sensitive:
+    if is_sensitive_content(id, article.content):
         user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
+
         if user_agent.is_mobile or user_agent.is_bot:
             logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{id}')
             return redirect(article.src_url)
