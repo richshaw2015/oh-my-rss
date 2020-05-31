@@ -382,6 +382,7 @@ function fixThirdStyleTag() {
     $("#omrss-third img, #omrss-third video").each(function () {
         $(this).removeAttr('width');
         $(this).removeAttr('height');
+        $(this).removeAttr('style');
     });
 }
 
