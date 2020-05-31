@@ -3,7 +3,7 @@ from django.http import HttpResponseNotFound, HttpResponseServerError, JsonRespo
 from web.models import *
 from web.utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, set_user_read_article, get_host_name, \
-    set_user_read_articles
+    set_user_read_articles, set_user_visit_day
 from web.views_html import get_all_issues
 from web.verify import verify_request
 import logging
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @verify_request
 def get_lastweek_articles(request):
     """
-    游客用户返回过去一周的文章 id 列表；登录用户返回过去一周的未读文章 id 列表
+    游客用户返回过去一周的文章 id 列表；登录用户返回过去一周的未读数
     """
     uid = request.POST.get('uid', '')
     user = get_login_user(request)
@@ -37,6 +37,7 @@ def get_lastweek_articles(request):
 
     if user:
         my_lastweek_unread_count = get_user_unread_count(user.oauth_id, my_lastweek_articles)
+        set_user_visit_day(user.oauth_id)
         return JsonResponse({"result": my_lastweek_unread_count})
     else:
         return JsonResponse({"result": my_lastweek_articles})

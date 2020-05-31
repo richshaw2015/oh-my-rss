@@ -365,6 +365,12 @@ def set_similar_article(uindex, simlar_dict):
     return ret
 
 
+def set_user_visit_day(oauth_id):
+    key = settings.REDIS_USER_VISIT_DAY_KEY % (oauth_id, current_day())
+
+    return R.set(key, '1', 30 * 24 * 3600)
+
+
 def set_feed_ranking_dict(ranking_dict):
     key = settings.REDIS_FEED_RANKING_KEY
 

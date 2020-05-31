@@ -190,6 +190,9 @@ REDIS_SIMILAR_ARTICLE_KEY = 'SIMILAR/%s'
 
 REDIS_FEED_RANKING_KEY = 'FEED/RANKING'
 
+# user visit every day record
+REDIS_USER_VISIT_DAY_KEY = 'UVD/%s/%s'
+
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 
 # github OAuth
