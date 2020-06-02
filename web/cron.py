@@ -77,7 +77,7 @@ def clean_history_data():
             article.save()
 
     # 压缩数据库
-    vacuum_sqlite_db()
+    # vacuum_sqlite_db()
 
     logger.info('历史数据清理完毕')
 
