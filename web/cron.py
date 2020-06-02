@@ -67,7 +67,7 @@ def clean_history_data():
     Article.objects.filter(site__star__lt=10, is_recent=False).delete()
 
     # [10, 20)，存储到磁盘
-    articles = Article.objects.filter(site__star__gte=10, is_recent=False)
+    articles = Article.objects.filter(site__star__gte=10, is_recent=False).iterator()
     for article in articles:
         if write_dat_file(article.uindex, article.content):
             article.content = ' '
