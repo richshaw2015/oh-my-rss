@@ -654,7 +654,7 @@ $(document).ready(function () {
     // 收藏处理
     $(document).on('click', '.ev-star-article', function () {
         if (!getLoginId()) {
-            warnToast("登陆用户才能收藏！");
+            warnToast("登陆后才能收藏！");
         } else {
             const id = $(this).attr('data-id');
             const evTarget = $(this);

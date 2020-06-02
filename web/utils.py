@@ -243,7 +243,7 @@ def set_user_read_article(oauth_id, uindex):
     """
     key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
 
-    return R.set(key, 1, 14*24*3600)
+    return R.set(key, 1, 30*24*3600)
 
 
 def set_user_read_articles(oauth_id, ids):

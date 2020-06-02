@@ -56,21 +56,19 @@ $(document).ready(function () {
     // 初始化组件
     $('.modal').modal();
 
-    // 加载列表内容，只有首页才加载
-    if (window.location.pathname === '/') {
+    if (window.location.pathname === '/') {     
+        // 动态加载首页
         loadPage(1);
-    }
 
-    if (window.location.pathname !== '/') {
-        // 首页文章统计数据，只有非首页才加载
+        // 更新未读数
+        setToreadInfo(notify=false);
+    } else {
+        // 非首页
         updateReadStats();
 
         // FIX 第三方标签样式
         fixThirdStyleTag();
     }
-
-    // 更新未读数
-    setToreadInfo(notify=false);
 
     /* 首页初始化结束 */
 

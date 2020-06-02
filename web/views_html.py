@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @verify_request
 def get_article_detail(request):
     """
-    获取文章详情；已登录用户记录已读
+    获取文章详情；已登录用户记录已读 TODO 服务器记录阅读数
     """
     uindex = request.POST.get('id')
     user = get_login_user(request)
@@ -48,14 +48,16 @@ def get_all_feeds(request):
     user = get_login_user(request)
     
     if user is None:
-        # 游客按照推荐和普通
+        # 游客 TODO 适配游客的已订阅数据
         sub_sites = Site.objects.filter(status='active', star__gte=20).order_by('-star')
         unsub_sites = Site.objects.filter(status='active', star__lt=20).order_by('-star')
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
         sub_sites = Site.objects.filter(status='active', name__in=user_sub_feeds).order_by('-star')
+
+        # 只展示 >= 10 的
         unsub_sites = Site.objects.filter(status='active').exclude(name__in=user_sub_feeds).\
-            exclude(star__lt=8).order_by('-star')
+            exclude(star__lt=10).order_by('-star')
 
     try:
         last_site = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-ctime')[0]
@@ -123,7 +125,7 @@ def get_explore(request):
     if user:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-    sites = Site.objects.filter(status='active').order_by('-id')[:100]
+    sites = Site.objects.filter(status='active').order_by('-id')[:50]
     context = dict()
 
     context['user'] = user
