@@ -128,8 +128,8 @@ USE_TZ = True
 
 CRONJOBS = [
    ('1 6-23 * * *', 'web.cron.update_all_user_feed'),
-   ('30 1,12,18 * * *', 'web.cron.update_all_wemp_feed'),
-   ('11 3 * * *', 'web.cron.clean_history_data'),
+   ('30 1,12 * * *', 'web.cron.update_all_wemp_feed'),
+   ('11 4 * * *', 'web.cron.clean_history_data'),
    ('*/7 * * * *', 'web.cron.update_article_tag'),
    ('*/3 * * * *', 'web.cron.cal_article_distance'),
    ('1 3 * * *', 'web.cron.cal_feed_ranking'),
