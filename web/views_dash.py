@@ -170,7 +170,7 @@ def dashboard(request):
 
 def get_warn_log(request):
     warn_log_file = settings.LOGGING['handlers']['my_warn']['filename']
-    logs = list(reversed(open(warn_log_file).read().split('\n')))[:500]
+    logs = list(reversed(open(warn_log_file).read().split('\n')))[:200]
 
     logs = [l for l in logs if l]
 
@@ -182,20 +182,17 @@ def get_warn_log(request):
 
 def fix_redis_ttl(request):
     """
-    动态修复 redis 没有设置过期时间问题
+    动态修复 redis 时间
     :param request:
     :return:
     """
-    # TODO 移除 OPEN/* THUMB/*，增大 VIEW/*
     from web.utils import R as WR
 
     for k in WR.keys('VIEW/*'):
-        if WR.ttl(k) == -1:
+        if WR.ttl(k) < 30 * 86400:
             WR.expire(k, 365 * 86400)
 
-    from feed.utils import R as FR
-    for k in FR.keys('CRAWL/*'):
-        if FR.ttl(k) == -1:
-            FR.expire(k, 12 * 30 * 86400)
+    for k in WR.keys('OPEN/*') + WR.keys('THUMB/*'):
+        WR.expire(k, 3)
 
     return JsonResponse({})

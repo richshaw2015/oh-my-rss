@@ -76,6 +76,10 @@ def atom_spider(site):
     feed_obj = feedparser.parse(content)
 
     for entry in feed_obj.entries[:12]:
+        # 有些是空的
+        if not entry:
+            continue
+
         try:
             title = entry.title
             link = entry.link
