@@ -78,6 +78,11 @@ function setCurSiteUnreadCount() {
             unread_el.text('check');
         }
         $('.ev-cnt-list.active').find('.omrss-title').removeClass('omrss-title-unread').addClass('omrss-title-read');
+        
+        if (getReadMode() === 'site') {
+            $('.ev-cnt-list.active').find('.omrss-unread-count').addClass('omrss-not-visual');
+            $('.ev-cnt-list.active').find('i.visibility-icon').addClass('omrss-not-visual');
+        }
     }
 
     return curSiteUnreadCount;
@@ -497,40 +502,20 @@ $(document).ready(function () {
     // 我的订阅点击
     $(document).on('click', '.ev-my-feed', function () {
         $('#omrss-loader').removeClass('hide');
-        user = getLoginId();
 
-        $.post("/api/html/feeds/all", {uid: getOrSetUid()}, function (data) {
-            // 游客需要本地判断订阅状态
-            if (!user) {
-                let destDom = $(data);
+        const user = getLoginId();
+        let subFeeds = ''
+        let unSubFeeds = ''
 
-                destDom.find('.omrss-item').each(function (index) {
-                    const siteName = $(this).attr('data-name');
-                    const siteStar = parseInt($(this).attr('data-star'));
+        if (!user) {
+            subFeeds = Object.keys(getSubFeeds()).join(',');
+            unSubFeeds = Object.keys(getUnsubFeeds()).join(',');
+        }
 
-                    if (isVisitorSubFeed(siteName)) {
-                        $(this).find('.ev-toggle-feed').text('取消订阅');
-                        $(this).find('.ev-toggle-feed').addClass('omrss-bgcolor');
-                    } else if (isVisitorUnSubFeed(siteName)) {
-                        $(this).find('.ev-toggle-feed').text('订阅');
-                        $(this).find('.ev-toggle-feed').removeClass('omrss-bgcolor');
-                    } else {
-                        // 根据推荐决定
-                        if (siteStar >= 20) {
-                            // 取消订阅
-                            $(this).find('.ev-toggle-feed').text('取消订阅');
-                            $(this).find('.ev-toggle-feed').addClass('omrss-bgcolor')
-                        } else {
-                            // 订阅
-                            $(this).find('.ev-toggle-feed').text('订阅');
-                            $(this).find('.ev-toggle-feed').removeClass('omrss-bgcolor');
-                        }
-                    }
-                });
-                $('#omrss-main').html(destDom).scrollTop(0);
-            } else {
-                $('#omrss-main').html(data).scrollTop(0);
-            }
+        $.post("/api/html/feeds/all", {uid: getOrSetUid(), sub_feeds: subFeeds, unsub_feeds: unSubFeeds}, 
+        function (data) {
+            $('#omrss-main').html(data).scrollTop(0);
+
             // 初始化组件
             $('.tooltipped').tooltip();
             $('.tabs').tabs();
@@ -684,6 +669,7 @@ $(document).ready(function () {
             $('#omrss-loader').removeClass('hide');
 
             $('#omrss-left').html(lastLeftDom);
+
             setCurSiteUnreadCount();
 
             $('#omrss-loader').addClass('hide');

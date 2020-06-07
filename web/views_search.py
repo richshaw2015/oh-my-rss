@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
-from .utils import log_refer_request, get_login_user, get_user_sub_feeds, set_user_read_article, is_sensitive_content
+from .utils import add_referer_stats, get_login_user, get_user_sub_feeds, set_user_read_article, is_sensitive_content
 import logging
 import os
 from user_agents import parse
 from .verify import verify_request
 from django.db.models import Q
+from web.tasks import add_referer_stats_async
 
 logger = logging.getLogger(__name__)
 
@@ -15,14 +16,15 @@ def article(request, id):
     """
     详情页，主要向移动端、搜索引擎提供，这个页面需要做风控
     """
-    log_refer_request(request)
-    user = get_login_user(request)
+    # 外链统计
+    add_referer_stats_async.delay(request.META.get('HTTP_REFERER', ''))
 
     try:
         article = Article.objects.get(uindex=id, status='active')
     except:
         return redirect('index')
 
+    user = get_login_user(request)
     if user:
         set_user_read_article(user.oauth_id, id)
 
@@ -62,7 +64,7 @@ def sitemap(request):
 @verify_request
 def insite_search(request):
     """
-    站内搜索
+    站内搜索 TODO 支持多个关键字
     """
     user = get_login_user(request)
     keyword = request.POST.get('keyword', '').strip()

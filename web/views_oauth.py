@@ -6,7 +6,7 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 import logging
 from django.conf import settings
 import json
-from .utils import add_user_sub_feeds, get_subscribe_sites, add_register_count, save_avatar
+from .utils import add_user_sub_feeds, get_subscribe_feeds, add_register_count, save_avatar
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ def github_callback(request):
                     rsp = requests.get('https://api.github.com/user', headers={
                         "Accept": "application/json",
                         "Authorization": f"token {access_token}",
-                    }, timeout=8)
+                    }, timeout=10)
 
                     if rsp.ok:
                         if rsp.json().get('id'):
@@ -57,7 +57,7 @@ def github_callback(request):
 
                             if created:
                                 logger.warning(f"欢迎新用户登录：`{user.oauth_name}")
-                                add_user_sub_feeds(oauth_id, get_subscribe_sites('', '', star=28))
+                                add_user_sub_feeds(oauth_id, get_subscribe_feeds('', '', star=28))
                                 add_register_count()
 
                                 # 用户头像存储到本地一份，国内网络会丢图
@@ -68,6 +68,7 @@ def github_callback(request):
                             response = redirect('index')
                             response.set_signed_cookie('oauth_id', oauth_id, max_age=10 * 365 * 86400)
                             response.set_signed_cookie('toast', 'LOGIN_SUCC_MSG', max_age=20)
+
                             return response
     except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
         logger.warning("OAuth 认证网络出现异常！")
@@ -76,4 +77,5 @@ def github_callback(request):
 
     response = redirect('index')
     response.set_signed_cookie('toast', 'LOGIN_ERROR_MSG', max_age=20)
+
     return response

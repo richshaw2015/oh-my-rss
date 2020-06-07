@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from .models import *
-from .utils import get_page_uv, get_subscribe_sites, get_login_user, get_user_sub_feeds, set_user_read_article, \
+from .utils import get_page_uv, get_subscribe_feeds, get_login_user, get_user_sub_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count
 from .verify import verify_request
 import logging
 from collections import defaultdict
 from .sql import *
+from web.tasks import cal_site_ranking_cron
 
 logger = logging.getLogger(__name__)
 
@@ -43,32 +44,29 @@ def get_article_detail(request):
 @verify_request
 def get_all_feeds(request):
     """
-    获取订阅列表，已登录用户默认展示已订阅内容；区分已订阅、未订阅
+    获取订阅列表，已订阅、推荐订阅
     """
+    sub_feeds = request.POST.get('sub_feeds', '').split(',')
+    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+
     user = get_login_user(request)
     
     if user is None:
-        # 游客 TODO 适配游客的已订阅数据
-        sub_sites = Site.objects.filter(status='active', star__gte=20).order_by('-star')
-        unsub_sites = Site.objects.filter(status='active', star__lt=20).order_by('-star')
+        visitor_sub_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+
+        sub_sites = Site.objects.filter(status='active', name__in=visitor_sub_feeds).order_by('-star')
+        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(name__in=visitor_sub_feeds).\
+            order_by('-star')
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+
         sub_sites = Site.objects.filter(status='active', name__in=user_sub_feeds).order_by('-star')
-
-        # 只展示 >= 10 的
-        unsub_sites = Site.objects.filter(status='active').exclude(name__in=user_sub_feeds).\
-            exclude(star__lt=10).order_by('-star')
-
-    try:
-        last_site = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-ctime')[0]
-        submit_tip = f"「{last_site.cname[:20]}」({last_site.rss[:50]}) 最后被用户提交"
-    except:
-        submit_tip = '提交 RSS 源，例如：https://coolshell.cn/feed'
+        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(name__in=user_sub_feeds)\
+            .order_by('-star')
 
     context = dict()
     context['sub_sites'] = sub_sites
-    context['unsub_sites'] = unsub_sites
-    context['submit_tip'] = submit_tip
+    context['recom_sites'] = recom_sites
     context['user'] = user
 
     return render(request, 'feeds.html', context=context)
@@ -90,7 +88,7 @@ def get_homepage_intro(request):
 @verify_request
 def get_recent_articles(request):
     """
-    获取最近更新内容
+    获取最近更新内容 TODO 优化查询性能，5 分钟更新一次？
     """
     user = get_login_user(request)
     recommend = request.POST.get('recommend', 'recommend')
@@ -126,8 +124,8 @@ def get_explore(request):
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
     sites = Site.objects.filter(status='active').order_by('-id')[:50]
-    context = dict()
 
+    context = dict()
     context['user'] = user
     context['sites'] = sites
     context['user_sub_feeds'] = user_sub_feeds
@@ -146,9 +144,9 @@ def get_recent_sites(request):
     if user:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-    sites = Site.objects.filter(status='active').order_by('-id')[:100]
-    context = dict()
+    sites = Site.objects.filter(status='active').order_by('-id')[:50]
 
+    context = dict()
     context['user'] = user
     context['sites'] = sites
     context['user_sub_feeds'] = user_sub_feeds
@@ -167,10 +165,12 @@ def get_feed_ranking(request):
     if user:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
+        # 异步更新榜单数据
+        cal_site_ranking_cron.delay()
+
     feed_ranking = get_feed_ranking_dict()
 
     context = dict()
-
     context['user'] = user
     context['feed_ranking'] = feed_ranking
     context['user_sub_feeds'] = user_sub_feeds
@@ -215,7 +215,7 @@ def get_all_issues(request):
 @verify_request
 def get_site_update_view(request):
     """
-    获取更新的全局站点视图
+    获取更新的全局站点视图，游客 100 个，登陆用户 200 个站点
     """
     sub_feeds = request.POST.get('sub_feeds', '').split(',')
     unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
@@ -225,11 +225,11 @@ def get_site_update_view(request):
     user = get_login_user(request)
 
     if user is None:
-        sub_update_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
-        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_sites)), 100))
+        sub_update_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_feeds)), 100))
     else:
-        sub_update_sites = get_user_sub_feeds(user.oauth_id)
-        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_sites)), 200))
+        sub_update_feeds = get_user_sub_feeds(user.oauth_id)
+        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_feeds)), 200))
 
     if sites:
         # 分页处理
@@ -287,18 +287,15 @@ def get_article_update_view(request):
     user = get_login_user(request)
 
     if user is None:
-        visitor_sub_sites = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+        visitor_sub_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
 
-        my_articles = Article.objects.filter(
-            status='active', is_recent=True, site__name__in=visitor_sub_sites).order_by('-id')[:300]
+        my_articles = Article.objects.filter(status='active', is_recent=True,
+                                             site__name__in=visitor_sub_feeds).order_by('-id')[:300]
     else:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-        if not user_sub_feeds:
-            logger.warning(f'用户未订阅任何内容：`{user.oauth_name}')
-
         my_articles = Article.objects.filter(
-            status='active', is_recent=True, site__name__in=user_sub_feeds).order_by('-id')[:999]
+            status='active', is_recent=True, site__name__in=user_sub_feeds).order_by('-id')[:2000]
 
     if my_articles:
         # 分页处理
@@ -332,13 +329,13 @@ def get_site_article_update_view(request):
     获取某个站点的更新文章列表视图
     """
     # 请求参数获取
-    site_name = request.POST.get('site_name', '')
+    feed = request.POST.get('site_name', '')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
 
     user = get_login_user(request)
 
-    site = Site.objects.get(name=site_name, status='active')
+    site = Site.objects.get(name=feed, status='active')
 
     if user:
         site_articles = Article.objects.filter(site=site).order_by('-id')[:200]
@@ -366,7 +363,7 @@ def get_site_article_update_view(request):
 
             return render(request, 'left/list2_view.html', context=context)
         except:
-            logger.warning(f"分页参数错误：`{page}`{page_size}`{site_name}")
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{feed}")
             return HttpResponseNotFound("Page Number Error")
 
     return HttpResponseNotFound("No Sites Data")

@@ -2,7 +2,7 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log
+from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log, set_updated_site
 from web.omrssparser.wemp import parse_weixin_page
 import logging
 import feedparser
@@ -133,6 +133,9 @@ def atom_spider(site):
             logger.info(f'数据重复插入：`{title}`{link}')
         except:
             logger.warning(f'数据插入异常：`{title}`{link}')
+
+    set_updated_site(site.name)
+    return True
 
 
 def parse_self_atom(feed_url):

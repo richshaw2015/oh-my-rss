@@ -4,7 +4,7 @@ from web.models import *
 import logging
 import requests
 from scrapy.http import HtmlResponse
-from web.utils import save_avatar, get_host_name, guard_log
+from web.utils import save_avatar, get_host_name, guard_log, set_updated_site
 from feed.utils import current_ts, is_crawled_url, mark_crawled_url
 from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 import urllib
@@ -21,7 +21,7 @@ def parse_wemp_ershicimi(url, update=False):
     :return: 解析结果，成功返回字典；失败 None
     """
     try:
-        rsp = requests.get(url, timeout=10)
+        rsp = requests.get(url, timeout=15)
     except:
         guard_log(f'请求出现异常：`{url}')
         return None
@@ -53,17 +53,21 @@ def parse_wemp_ershicimi(url, update=False):
                             site.save()
                         except:
                             logger.warning(f'新增公众号失败：`{name}')
-                else:
-                    # 更新内容
-                    if update:
-                        try:
-                            site = Site.objects.get(name=name)
-                            links = response.selector.xpath("//*[@class='weui_media_title']/a/@href").extract()[:3]
-                            for link in links:
-                                link = urllib.parse.urljoin(url, link)
-                                wemp_spider(link, site)
-                        except:
-                            logger.warning(f'更新公众号内容出现异常：`{name}')
+
+                # 是否需要更新内容
+                if update:
+                    try:
+                        site = Site.objects.get(name=name)
+                        links = response.selector.xpath("//*[@class='weui_media_title']/a/@href").extract()[:5]
+
+                        for link in links:
+                            link = urllib.parse.urljoin(url, link)
+                            wemp_spider(link, site)
+
+                        set_updated_site(name)
+                    except:
+                        logger.warning(f'更新公众号内容出现异常：`{name}')
+
                 return {"name": name}
             else:
                 logger.warning(f'微信公众号 id 解析失败：`{qrcode}')
@@ -75,7 +79,7 @@ def parse_wemp_ershicimi(url, update=False):
 
 def wemp_spider(url, site):
     """
-    抓取微信内容
+    抓取微信内容，支持直接微信域名或者 ershicimi 域名
     :param url:
     :param site:
     :return:
@@ -84,7 +88,7 @@ def wemp_spider(url, site):
         return
 
     try:
-        rsp = requests.get(url, timeout=10)
+        rsp = requests.get(url, timeout=15)
 
         if rsp.ok:
             try:

@@ -2,11 +2,10 @@ scrapy
 bs4
 lxml
 requests
-django ~= 2.2
+django >= 2.2
 redis
 selenium
 feedparser
-django-crontab
 pyecharts
 gunicorn
 gevent
@@ -15,3 +14,6 @@ ua-parser
 user-agents
 pillow
 jieba
+celery
+django-celery-results
+django-celery-beat

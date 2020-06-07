@@ -186,13 +186,16 @@ def fix_redis_ttl(request):
     :param request:
     :return:
     """
-    from web.utils import R as WR
+    from web.tasks import cal_article_distance_cron
+    cal_article_distance_cron.delay()
 
-    for k in WR.keys('VIEW/*'):
-        if WR.ttl(k) < 30 * 86400:
-            WR.expire(k, 365 * 86400)
-
-    for k in WR.keys('OPEN/*') + WR.keys('THUMB/*'):
-        WR.expire(k, 3)
+    # from web.utils import R as WR
+    #
+    # for k in WR.keys('VIEW/*'):
+    #     if WR.ttl(k) < 30 * 86400:
+    #         WR.expire(k, 365 * 86400)
+    #
+    # for k in WR.keys('OPEN/*') + WR.keys('THUMB/*'):
+    #     WR.expire(k, 3)
 
     return JsonResponse({})

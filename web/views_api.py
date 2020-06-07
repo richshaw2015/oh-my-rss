@@ -2,7 +2,7 @@
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse
 import django
 from web.models import *
-from web.utils import incr_action, get_subscribe_sites, get_user_sub_feeds, get_login_user, \
+from web.utils import incr_view_star, get_subscribe_feeds, get_user_sub_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, set_user_read_article, get_host_name, \
     set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file
 from web.views_html import get_all_issues
@@ -11,6 +11,7 @@ import logging
 from django.conf import settings
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.omrssparser.atom import parse_atom, parse_self_atom
+from web.tasks import update_sites_async
 
 logger = logging.getLogger(__name__)
 
@@ -29,15 +30,20 @@ def get_lastweek_articles(request):
     logger.info(f"过去一周文章查询：`{uid}`{unsub_feeds}`{ext}")
 
     if user is None:
-        my_sub_feeds = get_subscribe_sites(tuple(sub_feeds), tuple(unsub_feeds))
+        my_sub_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
         my_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-    my_lastweek_articles = list(Article.objects.all().prefetch_related('site').filter(
-        status='active', site__name__in=my_sub_feeds, is_recent=True).values_list('uindex', flat=True))
+    my_lastweek_articles = list(Article.objects.filter(status='active', site__name__in=my_sub_feeds,
+                                                       is_recent=True).values_list('uindex', flat=True))
+
+    # 异步更新任务
+    update_sites_async.delay(list(my_sub_feeds))
 
     if user:
         my_lastweek_unread_count = get_user_unread_count(user.oauth_id, my_lastweek_articles)
+
+        # 标记用户登陆
         set_user_visit_day(user.oauth_id)
         return JsonResponse({"result": my_lastweek_unread_count})
     else:
@@ -45,18 +51,16 @@ def get_lastweek_articles(request):
 
 
 @verify_request
-def add_log_action(request):
+def add_view_stats(request):
     """
     增加文章浏览数据打点
     """
     uindex = request.POST.get('id')
-    action = request.POST.get('action')
 
-    if incr_action(action, uindex):
+    if incr_view_star('VIEW', uindex):
         return JsonResponse({})
-    else:
-        logger.warning(f"打点增加失败：`{uindex}`{action}")
-        return HttpResponseNotFound("Param Error")
+
+    return HttpResponseNotFound("Param Error")
 
 
 @verify_request
@@ -82,7 +86,8 @@ def leave_a_message(request):
             return get_all_issues(request)
         except:
             logger.error(f"留言增加失败：`{uid}`{content}`{nickname}`{contact}")
-            return HttpResponseServerError('Inter error')
+
+            return HttpResponseServerError('Internal Error')
 
     logger.warning(f"参数错误：`{content}")
     return HttpResponseNotFound("Param Error")
@@ -113,6 +118,10 @@ def submit_a_feed(request):
             # 已登录用户，自动订阅
             if user:
                 add_user_sub_feeds(user.oauth_id, [rsp['name'], ])
+
+            # 异步更新任务
+            update_sites_async.delay([rsp['name']])
+
             return JsonResponse(rsp)
         else:
             logger.warning(f"RSS 解析失败：`{feed_url}")
@@ -125,20 +134,20 @@ def user_subscribe_feed(request):
     """
     已登录用户订阅源
     """
-    feed = request.POST.get('feed', '').strip()[:32]
+    site_name = request.POST.get('feed', '').strip()[:32]
 
     user = get_login_user(request)
+    site = Site.objects.get(name=site_name, status='active')
 
-    if user and feed:
-        try:
-            Site.objects.get(name=feed)
-            add_user_sub_feeds(user.oauth_id, [feed, ])
+    if user and site:
+        add_user_sub_feeds(user.oauth_id, [site_name, ])
 
-            logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{feed}")
+        # 异步更新
+        update_sites_async.delay([site_name, ])
 
-            return JsonResponse({"name": feed})
-        except:
-            logger.warning(f'用户订阅出现异常：`{feed}`{user.oauth_id}')
+        logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_name}")
+
+        return JsonResponse({"name": site_name})
 
     return HttpResponseNotFound("Param Error")
 
@@ -148,37 +157,57 @@ def user_unsubscribe_feed(request):
     """
     已登录用户取消订阅源
     """
-    feed = request.POST.get('feed', '').strip()[:32]
+    site_name = request.POST.get('feed', '').strip()[:32]
 
     user = get_login_user(request)
 
-    if user and feed:
-        del_user_sub_feed(user.oauth_id, feed)
+    if user and site_name:
+        del_user_sub_feed(user.oauth_id, site_name)
 
-        logger.warning(f"登陆用户取消订阅动作：`{user.oauth_name}`{feed}")
+        logger.warning(f"登陆用户取消订阅动作：`{user.oauth_name}`{site_name}")
 
-        return JsonResponse({"name": feed})
+        return JsonResponse({"name": site_name})
+
     return HttpResponseNotFound("Param Error")
 
 
 @verify_request
 def user_mark_read_all(request):
     """
-    设置全部已读；也可设置批量已读
+    设置批量已读，如不传 ids 则设置全部已读
     """
-    ids = request.POST.get('ids', '')
+    uindexs = request.POST.get('ids', '')
     user = get_login_user(request)
 
     if user:
-        if ids:
-            ids = ids.split(',')
+        if uindexs:
+            uindexs = uindexs.split(',')
         else:
             my_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-            ids = list(Article.objects.all().prefetch_related('site').filter(
-                status='active', site__name__in=my_sub_feeds, is_recent=True).values_list('uindex', flat=True))
+            uindexs = list(Article.objects.filter(status='active', site__name__in=my_sub_feeds, is_recent=True).
+                       values_list('uindex', flat=True))
 
-        set_user_read_articles(user.oauth_id, ids)
+        set_user_read_articles(user.oauth_id, uindexs)
+
+        return JsonResponse({})
+
+    return HttpResponseNotFound("Param Error")
+
+
+@verify_request
+def user_force_update_site(request):
+    """
+    强制刷新源，用户手动触发
+    """
+    site_name = request.POST.get('site_name', '')
+    user = get_login_user(request)
+
+    site = Site.objects.get(name=site_name, status='active')
+
+    if site and user:
+        # 异步刷新
+        update_sites_async.delay([site_name, ], True)
 
         return JsonResponse({})
 
@@ -199,6 +228,7 @@ def user_mark_read_site(request):
         ids = Article.objects.filter(status='active', site__name=site_name, is_recent=True).\
             values_list('uindex', flat=True)
 
+        # TODO 优化性能，批量设置已读
         for uindex in ids:
             set_user_read_article(user.oauth_id, uindex)
 
@@ -228,12 +258,14 @@ def user_star_article(request):
                 logger.warning(f"已经收藏过了：`{user.oauth_id}`{uindex}")
                 return JsonResponse({})
 
-            # 写入内容文件
+            # 收藏后的文章写入文件，防止丢失
             write_dat_file(uindex, article.content)
 
             # 缓存标记
             set_user_stared(user.oauth_id, uindex)
-            incr_action('STAR', uindex)
+
+            # 统计次数
+            incr_view_star('STAR', uindex)
 
             return JsonResponse({})
         else:

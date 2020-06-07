@@ -36,7 +36,8 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'django_crontab',
+    'django_celery_results',
+    'django_celery_beat',
     'web.apps.WebConfig',
 
     'django.contrib.admin',
@@ -126,14 +127,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-CRONJOBS = [
-   ('1 6-23 * * *', 'web.cron.update_all_user_feed'),
-   ('30 1,12 * * *', 'web.cron.update_all_wemp_feed'),
-   ('11 4 * * *', 'web.cron.clean_history_data'),
-   ('*/7 * * * *', 'web.cron.update_article_tag'),
-   ('*/3 * * * *', 'web.cron.cal_article_distance'),
-   ('1 3 * * *', 'web.cron.cal_feed_ranking'),
-]
+CRONJOBS = []
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -153,6 +147,18 @@ REDIS_PORT = '6379'
 REDIS_FEED_DB = 0
 # for web use db
 REDIS_WEB_DB = 1
+# for celery job db
+REDIS_CELERY_DB = 2
+
+# celery configs
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 10000
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'
@@ -195,6 +201,8 @@ REDIS_FEED_RANKING_KEY = 'FEED/RANKING'
 REDIS_USER_VISIT_DAY_KEY = 'UVD/%s/%s'
 
 REDIS_USER_STAR_KEY = 'STAR2/%s/%s'
+
+REDIS_UPDATED_SITE_KEY = 'UPDATED/%s'
 
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 

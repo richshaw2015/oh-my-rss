@@ -26,10 +26,10 @@ def get_host_name(url):
     return urlparse(url).netloc
 
 
-def incr_action(action, uindex):
+def incr_view_star(action, uindex):
     """
-    文章浏览数、点赞数、打开数统计，保留一年数据
-    :param key:
+    文章浏览数、收藏数统计，保留一年数据
+    :param action:
     :param uindex:
     :return:
     """
@@ -121,7 +121,7 @@ def is_active_rss(feed):
 
 
 @lru_cache(maxsize=128, typed=True)
-def get_subscribe_sites(sub_feeds, unsub_feeds, star=20):
+def get_subscribe_feeds(sub_feeds, unsub_feeds, star=20):
     """
     获取游客订阅的站点，已订阅 + 推荐 - 取消订阅
     :param sub_feeds:
@@ -133,6 +133,7 @@ def get_subscribe_sites(sub_feeds, unsub_feeds, star=20):
     set_active_rss(sub_feeds)
 
     recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('name', flat=True))
+
     return list(set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds))
 
 
@@ -194,21 +195,20 @@ def incr_redis_key(key):
     return R.incr(key, amount=1)
 
 
-def add_refer_host(host):
+def add_referer_host(host):
     key = settings.REDIS_REFER_ALL_KEY
 
     return R.sadd(key, host)
 
 
-def log_refer_request(request):
-    referer = request.META.get('HTTP_REFERER', '')
+def add_referer_stats(referer):
     if referer:
         host = get_host_name(referer)
 
         if host and host not in settings.ALLOWED_HOSTS:
             logger.info(f"收到外域来源：`{host}`{referer}")
 
-            add_refer_host(host)
+            add_referer_host(host)
             incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
             incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
 
@@ -233,6 +233,9 @@ def get_user_sub_feeds(oauth_id, from_user=True):
     # 设置订阅源缓存，来自用户的请求调用
     if from_user:
         set_active_rss(sub_feeds)
+
+    if not sub_feeds:
+        logger.warning(f'用户未订阅任何内容：`{oauth_id}')
 
     return sub_feeds
 
@@ -383,6 +386,19 @@ def get_feed_ranking_dict():
     return {}
 
 
+def set_updated_site(site_name):
+    """
+    设置站点更新标记，2 小时
+    """
+    key = settings.REDIS_UPDATED_SITE_KEY % site_name
+    return R.set(key, '1', 2 * 3600)
+
+
+def is_updated_site(site_name):
+    key = settings.REDIS_UPDATED_SITE_KEY % site_name
+    return R.get(key) == '1'
+
+
 def set_user_stared(oauth_id, uindex):
     """
     设置用户收藏，保存一年时间
@@ -502,7 +518,7 @@ def vacuum_sqlite_db():
 
 def is_sensitive_content(uindex, content):
     """
-    是否命中国内的敏感词
+    文章是否命中国内的敏感词
     """
     is_sensitive = False
 
