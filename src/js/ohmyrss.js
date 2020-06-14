@@ -232,7 +232,7 @@ function updateReadStats() {
 
 function updateUnreadUI(unread) {
     if (unread > 0) {
-        $('#omrss-unread').html(`<a href="#"><span class="new badge">${unread}</span></a>`);
+        $('#omrss-unread').html(`<a href="#" style="cursor: default;"><span class="new badge">${unread}</span></a>`);
     } else {
         $('#omrss-unread').html('');
     }

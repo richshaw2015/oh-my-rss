@@ -755,6 +755,21 @@ $(document).ready(function () {
         }
     });
 
+    // 立刻更新
+    $(document).on('click', '.ev-site-sync', function () {
+        $('#omrss-loader').removeClass('hide');
+
+        const siteName = $(this).attr('data-site');
+
+        $.post("/api/update/site", {uid: getOrSetUid(), site_name: siteName}, function (data) {
+            toast("刷新成功，请稍后访问 ^o^");
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+        
     // 关于
     $(document).on('click', '.ev-intro', function () {
         $('#omrss-loader').removeClass('hide');
@@ -919,9 +934,10 @@ $(document).ready(function () {
         });
     });
 
-    // 发现界面切换到 订阅排行榜
+    // 排行榜
     $(document).on('click', '.ev-feed-ranking', function () {
         $('#omrss-loader').removeClass('hide');
+
         $.post("/api/html/feed/ranking", {uid: getOrSetUid()}, function (data) {
             if (!getLoginId()) {
                 // 游客用户
@@ -936,12 +952,12 @@ $(document).ready(function () {
                     }
                 });
 
-                $('#omrss-explore').html(destDom);
+                $('#omrss-main').html(destDom);
             } else {
-                $('#omrss-explore').html(data);
+                $('#omrss-main').html(data);
             }
 
-            $('#omrss-explore').scrollTop(0);
+            $('#omrss-main').scrollTop(0);
             $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);

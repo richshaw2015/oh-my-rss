@@ -98,9 +98,8 @@ def get_page_uv(page):
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (
-        reverse('get_article_update_view'), reverse('get_lastweek_articles'), reverse('get_explore'),
-        reverse('get_recent_articles'), reverse('get_site_update_view'), reverse('get_site_article_update_view'),
-        reverse('user_mark_read_site'),
+        reverse('get_article_update_view'), reverse('get_lastweek_articles'), reverse('get_recent_articles'),
+        reverse('get_site_update_view'), reverse('get_site_article_update_view'),
     )
 
 
@@ -281,7 +280,8 @@ def get_login_user(request):
     :return: 获取成功返回 User 对象；用户不存在则返回 None
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
-    # oauth_id = 'github/28855629'
+    # if settings.DEBUG:
+    #     oauth_id = 'github/28855629'
 
     if oauth_id:
         try:

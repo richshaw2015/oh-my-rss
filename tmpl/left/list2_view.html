@@ -9,7 +9,7 @@
             </a>
         </div>
 
-        <div class="col s8 omrss-text bold omrss-list2-title">
+        <div class="col s7 omrss-text bold omrss-list2-title">
             <img src="{{ site.favicon }}" class="circle omrss-recent-avatar omrss-text" />
 
             <div class="truncate">{{ site.cname }}(<span id="omrss-cur-site-unread">0</span>)</div>
@@ -17,8 +17,14 @@
         </div>
 
         <div class="col s1">
+            <a class="omrss-color ev-site-sync" href="#" data-site="{{ site.name }}">
+                <i class="material-icons right omrss-text tooltipped sync-bar-icon" data-tooltip="立刻更新"
+                   data-position="bottom">sync</i></a>
+        </div>
+
+        <div class="col s1">
             <a class="omrss-color ev-site-readall" href="#" data-site="{{ site.name }}" data-articles="{{ articles }}">
-                <i class="material-icons right omrss-text tooltipped" data-tooltip="标记该站点为已读"
+                <i class="material-icons right omrss-text tooltipped" data-tooltip="标记已读"
                    data-position="bottom">check</i></a>
         </div>
     </div>

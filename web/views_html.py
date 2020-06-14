@@ -175,7 +175,7 @@ def get_feed_ranking(request):
     context['feed_ranking'] = feed_ranking
     context['user_sub_feeds'] = user_sub_feeds
 
-    return render(request, 'explore/feed_ranking.html', context=context)
+    return render(request, 'ranking/feed_ranking.html', context=context)
 
 
 @verify_request
