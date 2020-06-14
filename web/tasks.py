@@ -103,7 +103,7 @@ def archive_article_cron():
 @shared_task
 def cal_all_article_tag_cron():
     """
-    设置最近一周的文章标识、统计词频；每隔 5 分钟
+    设置最近一周的文章标识、统计词频；每隔 ？ 分钟
     """
     # 设置最近一周文章标识
     lastweek = datetime.now() - timedelta(days=7)
@@ -142,7 +142,7 @@ def cal_all_article_tag_cron():
 @shared_task
 def cal_article_distance_cron():
     """
-    计算新增文章的相似度，用于推荐订阅；每隔 7 分钟计算一次
+    计算新增文章的相似度，用于推荐订阅；每隔 ？ 分钟计算一次
     """
     articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).exclude(tags='').\
         order_by('-id')
@@ -178,7 +178,7 @@ def cal_article_distance_cron():
 @shared_task
 def cal_site_ranking_cron():
     """
-    计算订阅排行榜单 top 100，每天 1～2 次
+    计算订阅排行榜单 top 100，每天 1 次
     """
     users = User.objects.all().values_list('oauth_id', flat=True)
 
