@@ -233,8 +233,8 @@ def get_user_sub_feeds(oauth_id, from_user=True):
     if from_user:
         set_active_rss(sub_feeds)
 
-    if not sub_feeds:
-        logger.warning(f'用户未订阅任何内容：`{oauth_id}')
+        if not sub_feeds:
+            logger.warning(f'用户未订阅任何内容：`{oauth_id}')
 
     return sub_feeds
 
