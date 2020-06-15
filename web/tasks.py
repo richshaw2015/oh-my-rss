@@ -60,7 +60,10 @@ def update_all_atom_cron():
         # 无人订阅的源且不推荐的源不更新
         if not is_active_rss(site.name) and site.star < 9:
             continue
-        atom_spider(site)
+
+        # 是否已经更新过
+        if not is_updated_site(site.name):
+            atom_spider(site)
 
     return True
 
