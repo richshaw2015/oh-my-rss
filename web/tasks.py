@@ -36,7 +36,8 @@ def update_sites_async(site_list, force_update=False):
         if site.creator == 'user':
             atom_spider(site)
         elif site.creator == 'wemp':
-            parse_wemp_ershicimi(site.rss, update=True)
+            # 公众号不更新，因为是同一个站点，控制请求频率
+            pass
         else:
             continue
 
