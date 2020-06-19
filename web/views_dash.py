@@ -180,22 +180,15 @@ def get_warn_log(request):
     return render(request, 'dashboard/logs.html', context=context)
 
 
-def fix_redis_ttl(request):
+def fixbug(request):
     """
-    动态修复 redis 时间
+    动态修复
     :param request:
     :return:
     """
-    from web.tasks import cal_article_distance_cron
-    cal_article_distance_cron.delay()
-
-    # from web.utils import R as WR
-    #
-    # for k in WR.keys('VIEW/*'):
-    #     if WR.ttl(k) < 30 * 86400:
-    #         WR.expire(k, 365 * 86400)
-    #
-    # for k in WR.keys('OPEN/*') + WR.keys('THUMB/*'):
-    #     WR.expire(k, 3)
+    sites = Site.objects.filter(creator='wemp', rss__contains='ershicimi.com')
+    for site in sites:
+        site.star = 8
+        site.save()
 
     return JsonResponse({})

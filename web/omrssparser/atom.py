@@ -16,6 +16,33 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 logger = logging.getLogger(__name__)
 
 
+def parse_qnmlgb_atom(feed_url):
+    """
+    解析 qnmlgb.tech RSS 源
+    :param feed_url:
+    :return:
+    """
+    feed_obj = feedparser.parse(feed_url)
+
+    title = feed_obj.feed.get('title')
+    name = get_hash_name('qnmlgb.tech' + title)
+    cname = title[:20]
+    link = feed_obj.feed.link[:1024]
+    brief = feed_obj.feed.subtitle[:200]
+    favicon = feed_obj.feed.image.link.replace('/64.ico', '/132')
+
+    try:
+        site = Site(name=name, cname=cname, link=link, brief=brief, star=19, freq='小时', copyright=30, tag='RSS',
+                    creator='wemp', rss=feed_url, favicon=favicon, author='')
+        site.save()
+    except django.db.utils.IntegrityError:
+        logger.info(f"源已经存在：`{feed_url}")
+    except:
+        logger.error(f'处理源出现未知异常：`{feed_url}')
+
+    return {"name": name}
+
+
 def parse_atom(feed_url):
     """
     解析普通的 RSS 源
@@ -34,7 +61,7 @@ def parse_atom(feed_url):
             link = feed_url
 
         if feed_obj.feed.get('subtitle'):
-            brief = feed_obj.feed.subtitle[:100]
+            brief = feed_obj.feed.subtitle[:200]
         else:
             brief = cname
 
@@ -117,7 +144,7 @@ def atom_spider(site):
         if get_host_name(site.rss) in ('qnmlgb.tech', ):
             if get_host_name(link) in ('mp.weixin.qq.com', ):
                 try:
-                    rsp = requests.get(link, timeout=10)
+                    rsp = requests.get(link, timeout=15)
                     title, author, value = parse_weixin_page(rsp)
                 except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
                     logger.warning(f"公众号二次爬取出现网络异常：`{link}")

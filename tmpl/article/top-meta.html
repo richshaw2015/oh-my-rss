@@ -15,7 +15,11 @@
     「{{ article.site.cname }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
                                                   data-id="{{ article.uindex }}">
 
-    {{ article.src_url |unquote }}
+    {% if article.site.creator == 'wemp' %}
+        mp.weixin.qq.com
+    {% else %}
+        {{ article.src_url |unquote }}
+    {% endif %}
 
     </a> ) By {{ article.author |default:article.site.author }}
 

@@ -8,7 +8,7 @@ from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
-    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, add_referer_stats
+    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, add_referer_stats, get_host_name
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -36,7 +36,7 @@ def update_sites_async(site_list, force_update=False):
         if site.creator == 'user':
             atom_spider(site)
         elif site.creator == 'wemp':
-            # 公众号不更新，因为是同一个站点，控制请求频率
+            # 公众号不异步更新，因为是同一个站点，控制请求频率，只有定时任务触发
             pass
         else:
             continue
@@ -77,7 +77,14 @@ def update_all_wemp_cron():
     sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
     for site in sites:
-        parse_wemp_ershicimi(site.rss, update=True)
+        host = get_host_name(site.rss)
+
+        if 'ershicimi.com' in host:
+            parse_wemp_ershicimi(site.rss, update=True)
+        elif 'qnmlgb.tech' in host:
+            atom_spider(site)
+        else:
+            pass
 
     return True
 

@@ -10,7 +10,7 @@ from web.verify import verify_request
 import logging
 from django.conf import settings
 from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.omrssparser.atom import parse_atom, parse_self_atom
+from web.omrssparser.atom import parse_atom, parse_self_atom, parse_qnmlgb_atom
 from web.tasks import update_sites_async
 
 logger = logging.getLogger(__name__)
@@ -109,6 +109,8 @@ def submit_a_feed(request):
             rsp = parse_wemp_ershicimi(feed_url)
         elif host in settings.ALLOWED_HOSTS:
             rsp = parse_self_atom(feed_url)
+        elif 'qnmlgb.tech' in host:
+            rsp = parse_qnmlgb_atom(feed_url)
         else:
             rsp = parse_atom(feed_url)
 
