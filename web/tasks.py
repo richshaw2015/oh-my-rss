@@ -37,9 +37,8 @@ def update_sites_async(site_list, force_update=False):
             atom_spider(site)
         elif site.creator == 'wemp':
             # 公众号不异步更新，因为是同一个站点，控制请求频率，只有定时任务触发
+            # atom_spider(site)
             pass
-        else:
-            continue
 
     return True
 

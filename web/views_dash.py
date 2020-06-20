@@ -6,6 +6,7 @@ from django.conf import settings
 import json
 from pyecharts import options
 from pyecharts.charts import Line, Page, Pie
+from .models import *
 
 logger = logging.getLogger(__name__)
 
@@ -186,9 +187,7 @@ def fixbug(request):
     :param request:
     :return:
     """
-    sites = Site.objects.filter(creator='wemp', rss__contains='ershicimi.com')
-    for site in sites:
-        site.star = 8
-        site.save()
+    sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
+    Article.objects.filter(site__in=sites).delete()
 
     return JsonResponse({})
