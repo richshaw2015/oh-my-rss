@@ -568,8 +568,8 @@ def get_with_proxy(url):
 
         if proxy_pool <= 1:
             logger.warning("代理 IP 池不够 2 个了，开始异步更新")
-            from .tasks import get_proxy_ip_cron
-            get_proxy_ip_cron.delay()
+            from web.tasks import update_proxy_pool_cron
+            update_proxy_pool_cron.delay()
 
         if proxy_ip_port is not None:
             proxy = {"http": proxy_ip_port, "https": proxy_ip_port}

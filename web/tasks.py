@@ -232,7 +232,7 @@ def add_referer_stats_async(referer):
 
 
 @shared_task
-def get_proxy_ip_cron():
+def update_proxy_pool_cron():
     """
     获取免费的代理 ip，最多 10 个
     :return:
@@ -258,7 +258,10 @@ def get_proxy_ip_cron():
                         break
                 except:
                     continue
+
         if valid_proxies:
             set_proxy_ips(valid_proxies)
     else:
         logger.warning(f"获取 IP 代理服务出现网络异常！")
+
+    return True
