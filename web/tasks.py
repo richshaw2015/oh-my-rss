@@ -18,7 +18,6 @@ import requests
 from scrapy.http import HtmlResponse
 import json
 import telnetlib
-from fake_useragent import UserAgent
 
 logger = logging.getLogger(__name__)
 

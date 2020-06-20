@@ -115,7 +115,10 @@ def parse_weixin_page(rsp):
     """
     response = HtmlResponse(url=rsp.url, body=rsp.text, encoding='utf8')
 
-    content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+    try:
+        content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+    except:
+        content = ''
 
     try:
         title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
