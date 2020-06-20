@@ -187,7 +187,10 @@ def fixbug(request):
     :param request:
     :return:
     """
-    sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
-    Article.objects.filter(site__in=sites).delete()
+    from .tasks import get_proxy_ip_cron
+    get_proxy_ip_cron.delay()
+
+    # sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
+    # Article.objects.filter(site__in=sites).delete()
 
     return JsonResponse({})

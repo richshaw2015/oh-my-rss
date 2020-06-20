@@ -2,16 +2,15 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log, set_updated_site
+from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log, set_updated_site, get_with_proxy, \
+    get_with_retry
 from web.omrssparser.wemp import parse_weixin_page
 import logging
 import feedparser
-import requests
 import urllib
 from bs4 import BeautifulSoup
 from io import BytesIO
 from feed.utils import current_ts, mark_crawled_url, is_crawled_url
-from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 
 logger = logging.getLogger(__name__)
 
@@ -90,9 +89,9 @@ def atom_spider(site):
     """
     更新源内容
     """
-    try:
-        resp = requests.get(site.rss, timeout=30, verify=False)
-    except:
+    resp = get_with_retry(site.rss)
+
+    if resp is None:
         if site.star > 9:
             guard_log(f"RSS 源可能失效了`{site.rss}")
         else:
@@ -143,13 +142,9 @@ def atom_spider(site):
         # 公众号 RSS 二次抓取
         if get_host_name(site.rss) in ('qnmlgb.tech', ):
             if get_host_name(link) in ('mp.weixin.qq.com', ):
-                try:
-                    rsp = requests.get(link, timeout=15)
+                rsp = get_with_proxy(link)
+                if rsp is not None and rsp.ok:
                     title, author, value = parse_weixin_page(rsp)
-                except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-                    logger.warning(f"公众号二次爬取出现网络异常：`{link}")
-                except:
-                    logger.warning(f"公众号二次爬取出现未知异常：`{link}")
 
         try:
             article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(), content=value)

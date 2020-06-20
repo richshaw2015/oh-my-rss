@@ -1,12 +1,9 @@
 
-import django
 from web.models import *
 import logging
-import requests
 from scrapy.http import HtmlResponse
-from web.utils import save_avatar, get_host_name, guard_log, set_updated_site
+from web.utils import save_avatar, get_host_name, set_updated_site, get_with_proxy
 from feed.utils import current_ts, is_crawled_url, mark_crawled_url
-from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 import urllib
 from bs4 import BeautifulSoup
 
@@ -20,10 +17,9 @@ def parse_wemp_ershicimi(url, update=False):
     :param update: 如果已经存在，是否更新
     :return: 解析结果，成功返回字典；失败 None
     """
-    try:
-        rsp = requests.get(url, timeout=15)
-    except:
-        guard_log(f'请求出现异常：`{url}')
+    rsp = get_with_proxy(url)
+
+    if rsp is None:
         return None
 
     if rsp.ok:
@@ -87,31 +83,28 @@ def wemp_spider(url, site):
     if is_crawled_url(url):
         return
 
-    try:
-        rsp = requests.get(url, timeout=15)
+    rsp = get_with_proxy(url)
+    if rsp is None:
+        return
 
-        if rsp.ok:
-            try:
-                if get_host_name(rsp.url) == 'mp.weixin.qq.com':
-                    title, author, content = parse_weixin_page(rsp)
-                elif 'ershicimi.com' in get_host_name(rsp.url):
-                    title, author, content = parse_ershicimi_page(rsp)
-                else:
-                    logger.warning(f'公众号域名解析异常：`{rsp.url}')
-                    return
-            except:
-                logger.info(f'公众号内容解析异常：`{rsp.url}')
+    if rsp.ok:
+        try:
+            if get_host_name(rsp.url) == 'mp.weixin.qq.com':
+                title, author, content = parse_weixin_page(rsp)
+            elif 'ershicimi.com' in get_host_name(rsp.url):
+                title, author, content = parse_ershicimi_page(rsp)
+            else:
+                logger.warning(f'公众号域名解析异常：`{rsp.url}')
                 return
+        except:
+            logger.info(f'公众号内容解析异常：`{rsp.url}')
+            return
 
-            article = Article(title=title, author=author, site=site, uindex=current_ts(),
-                              content=content, src_url=url)
-            article.save()
+        article = Article(title=title, author=author, site=site, uindex=current_ts(),
+                          content=content, src_url=url)
+        article.save()
 
-            mark_crawled_url(url)
-    except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-        guard_log(f'公众号爬取出现网络异常：`{url}')
-    except:
-        guard_log(f'公众号爬取出现未知异常：`{url}')
+        mark_crawled_url(url)
 
 
 def parse_weixin_page(rsp):

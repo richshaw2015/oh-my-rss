@@ -17,3 +17,4 @@ jieba
 celery
 django-celery-results
 django-celery-beat
+fake-useragent

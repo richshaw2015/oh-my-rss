@@ -204,6 +204,8 @@ REDIS_USER_STAR_KEY = 'STAR2/%s/%s'
 
 REDIS_UPDATED_SITE_KEY = 'UPDATED/%s'
 
+REDIS_PROXY_KEY = 'PROXY'
+
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 
 # github OAuth

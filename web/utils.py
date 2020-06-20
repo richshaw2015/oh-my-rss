@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+import random
+
 import redis
 from functools import lru_cache
 from django.conf import settings
@@ -16,6 +18,7 @@ import hashlib
 from collections import Counter
 from urllib.parse import urlparse
 import json
+from fake_useragent import UserAgent
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -237,6 +240,27 @@ def get_user_sub_feeds(oauth_id, from_user=True):
             logger.warning(f'用户未订阅任何内容：`{oauth_id}')
 
     return sub_feeds
+
+
+def set_proxy_ips(proxies):
+    R.delete(settings.REDIS_PROXY_KEY)
+    return R.sadd(settings.REDIS_PROXY_KEY, *proxies)
+
+
+def del_proxy_ip(proxy):
+    return R.srem(settings.REDIS_PROXY_KEY, proxy)
+
+
+def get_one_proxy_ip():
+    """
+    返回一个 IP，同时返回 IP 池数量
+    """
+    proxies = tuple(R.smembers(settings.REDIS_PROXY_KEY))
+
+    if len(proxies) == 0:
+        return None, 0
+    else:
+        return random.choice(proxies), len(proxies)
 
 
 def set_user_read_article(oauth_id, uindex):
@@ -531,6 +555,59 @@ def is_sensitive_content(uindex, content):
             break
 
     return is_sensitive
+
+
+def get_with_proxy(url):
+    """
+    通过 代理 请求，特别微信相关的容易被 BAN。重试 3 次
+    :param url:
+    :return:
+    """
+    for i in range(0, 3):
+        proxy_ip_port, proxy_pool = get_one_proxy_ip()
+
+        if proxy_pool <= 1:
+            logger.warning("代理 IP 池不够 2 个了，开始异步更新")
+            from .tasks import get_proxy_ip_cron
+            get_proxy_ip_cron.delay()
+
+        if proxy_ip_port is not None:
+            proxy = {"http": proxy_ip_port, "https": proxy_ip_port}
+            header = {'User-Agent': UserAgent().random}
+
+            try:
+                return requests.get(url, verify=False, timeout=15, headers=header, proxies=proxy)
+            except requests.exceptions.ProxyError:
+                del_proxy_ip(proxy_ip_port)
+            except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+                logger.warning(f"代理请求出现网络异常：`{url}`{proxy}")
+            except:
+                logger.warning(f"代理请求出现未知异常：`{url}`{proxy}")
+        else:
+            # 等待代理 IP 池更新
+            time.sleep(10)
+    return None
+
+
+def get_with_retry(url):
+    """
+    普通爬取。重试 2 次
+    :param url:
+    :return:
+    """
+    for i in range(0, 2):
+        header = {'User-Agent': UserAgent().random}
+
+        try:
+            return requests.get(url, verify=False, timeout=30, headers=header)
+        except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+            logger.warning(f"请求出现网络异常：`{url}")
+        except:
+            logger.warning(f"请求出现未知异常：`{url}")
+
+        time.sleep(20)
+
+    return None
 
 
 def guard_log(msg, hits=3, duration=86400):

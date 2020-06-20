@@ -8,12 +8,17 @@ from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
-    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, add_referer_stats, get_host_name
+    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, add_referer_stats, get_host_name, \
+    set_proxy_ips
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
 from collections import Counter
+import requests
+from scrapy.http import HtmlResponse
 import json
+import telnetlib
+from fake_useragent import UserAgent
 
 logger = logging.getLogger(__name__)
 
@@ -224,3 +229,35 @@ def add_referer_stats_async(referer):
     """
     add_referer_stats(referer)
     return True
+
+
+@shared_task
+def get_proxy_ip_cron():
+    """
+    获取免费的代理 ip，最多 10 个
+    :return:
+    """
+    header = {'User-Agent': UserAgent().random}
+    rsp = requests.get('https://www.xicidaili.com/nn', verify=False, timeout=15, headers=header)
+
+    if rsp.ok:
+        valid_proxies = set()
+        response = HtmlResponse(url=rsp.url, body=rsp.text, encoding='utf8')
+
+        ips = response.selector.xpath('//table[@id="ip_list"]//tr/td[2]/text()').extract()
+        ports = response.selector.xpath('//table[@id="ip_list"]//tr/td[3]/text()').extract()
+
+        if len(ips) == len(ports):
+            for i in range(len(ips)):
+                try:
+                    telnetlib.Telnet(ips[i], port=int(ports[i]), timeout=2)
+                    valid_proxies.add(f"{ips[i]}:{ports[i]}")
+
+                    if len(valid_proxies) >= 10:
+                        break
+                except:
+                    continue
+        if valid_proxies:
+            set_proxy_ips(valid_proxies)
+    else:
+        logger.warning(f"获取 IP 代理服务出现网络异常！")
