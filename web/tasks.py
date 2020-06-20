@@ -237,7 +237,8 @@ def get_proxy_ip_cron():
     获取免费的代理 ip，最多 10 个
     :return:
     """
-    header = {'User-Agent': UserAgent().random}
+    header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) '
+                            'Chrome/83.0.4103.106 Safari/537.36'}
     rsp = requests.get('https://www.xicidaili.com/nn', verify=False, timeout=15, headers=header)
 
     if rsp.ok:
