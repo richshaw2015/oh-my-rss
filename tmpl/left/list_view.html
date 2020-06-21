@@ -4,7 +4,7 @@
 
     <ul class="collection">
         {% for article in pg.object_list %}
-            <li class="collection-item ev-cnt-list" id="{{ article.uindex }}">
+            <li class="collection-item ev-cnt-list" id="{{ article.uindex }}" data-type="{{ article.site.creator }}">
                 <div class="omrss-title-line">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     {% if user %}

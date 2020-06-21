@@ -395,6 +395,7 @@ $(document).ready(function () {
         const articleId = this.id;
         const siteName = $(this).attr('data-site');
         const evTarget = $(this);
+        const siteType = $(this).attr('data-type');
 
         // 文章模式、站点模式
         if (articleId !== undefined && articleId !== "") {
@@ -405,19 +406,21 @@ $(document).ready(function () {
                 // 直接渲染
                 const target = $('#omrss-main');
                 target.html(cachedData);
+                
+                if (siteType !== 'wemp') {
+                    // trim third content style tag
+                    fixThirdStyleTag();
 
-                // trim third content style tag
-                fixThirdStyleTag();
+                    // 代码样式
+                    codeHighlight();
 
-                // 代码样式
-                codeHighlight();
+                    // linkify
+                    setThirdLinkify();
+                }
 
                 // 数据统计
                 updateReadStats();
 
-                // linkify
-                setThirdLinkify();
-                
                 updateStarUI();
 
                 target.scrollTop(0);
@@ -445,17 +448,19 @@ $(document).ready(function () {
                     const target = $('#omrss-main');
                     target.html(data);
 
-                    // trim third content style tag
-                    fixThirdStyleTag();
-
-                    // 代码样式
-                    codeHighlight();
+                    if (siteType !== 'wemp') {
+                        // trim third content style tag
+                        fixThirdStyleTag();
+    
+                        // 代码样式
+                        codeHighlight();
+    
+                        // linkify
+                        setThirdLinkify();
+                    }
 
                     // 更新统计
                     updateReadStats();
-
-                    // linkify
-                    setThirdLinkify();
 
                     updateStarUI();
                     

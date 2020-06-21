@@ -471,61 +471,67 @@ def get_content_from_dat(uindex):
     return ''
 
 
-def generate_rss_avatar(url):
+def generate_rss_avatar(link, feed=''):
     """
     生成用户提交 RSS 源的默认头像
-    :param url:
+    :param link:
+    :param feed:
     :return:
     """
     avatar = "/assets/img/logo.svg"
-    host = get_host_name(url)
+    link_host = get_host_name(link)
+    feed_host = get_host_name(feed)
 
-    if 'weibo.com' in host or 'weibo.cn' in host:
+    # 首先根据 link 地址匹配
+    if 'weibo.com' in link_host or 'weibo.cn' in link_host:
         avatar = "/assets/img/weibo.jpg"
-    elif "jianshu.com" in host:
+    elif "jianshu.com" in link_host:
         avatar = "/assets/img/jianshu.png"
-    elif host in ('blog.sina.com', 'blog.sina.com.cn'):
+    elif link_host in ('blog.sina.com', 'blog.sina.com.cn'):
         avatar = '/assets/img/blogsina.jpg'
-    elif 'sina.com.cn' in host:
+    elif 'sina.com.cn' in link_host:
         avatar = '/assets/img/sinanews.png'
-    elif 'twitter.com' in host:
+    elif 'twitter.com' in link_host:
         avatar = '/assets/img/twitter.png'
-    elif 'youtube.com' in host:
+    elif 'youtube.com' in link_host:
         avatar = '/assets/img/youtube.png'
-    elif host == 'music.163.com':
+    elif link_host == 'music.163.com':
         avatar = '/assets/img/163music.jpg'
-    elif 'douban.com' in host:
+    elif 'douban.com' in link_host:
         avatar = '/assets/img/douban.png'
-    elif 'zhihu.com' in host:
+    elif 'zhihu.com' in link_host:
         avatar = '/assets/img/zhihu.png'
-    elif 'bilibili.com' in host:
+    elif 'bilibili.com' in link_host:
         avatar = '/assets/img/bilibili.png'
-    elif host == 'xueqiu.com':
+    elif link_host == 'xueqiu.com':
         avatar = '/assets/img/xueqiu.jpg'
-    elif 'tophub.today' in host:
+    elif 'tophub.today' in link_host:
         avatar = '/assets/img/tophub.png'
-    elif 'github.com' in host:
+    elif 'github.com' in link_host:
         avatar = '/assets/img/github.png'
-    elif 'juejin.im' in host:
+    elif 'juejin.im' in link_host:
         avatar = '/assets/img/juejin.png'
-    elif 'rsshub.app' in host:
+    elif 'rsshub.app' in link_host:
         avatar = '/assets/img/rsshub.png'
-    elif 'chuansongme.com' in host:
+    elif 'chuansongme.com' in link_host:
         avatar = '/assets/img/chuansongme.jpg'
-    elif 'ximalaya.com' in host:
+    elif 'ximalaya.com' in link_host:
         avatar = '/assets/img/ximalaya.png'
-    elif 'smzdm.com' in host:
+    elif 'smzdm.com' in link_host:
         avatar = '/assets/img/smzdm.jpg'
-    elif host == "qnmlgb.tech":
+    elif link_host == "qnmlgb.tech":
         avatar = '/assets/img/qnmlgb.png'
-    elif host == 'weixin.sogou.com':
+    elif link_host == 'weixin.sogou.com':
         avatar = '/assets/img/sogou.png'
-    elif host == 'pubs.acs.org':
+    elif link_host == 'pubs.acs.org':
         avatar = '/assets/img/acs.jpg'
-    elif 'vreadtech.com' in host:
+    elif 'vreadtech.com' in link_host:
         avatar = '/assets/img/vtechread.jpg'
-    elif 'news.qq.com' in host:
+    elif 'news.qq.com' in link_host:
         avatar = '/assets/img/qqcom.png'
+    # 其次根据 feed 地址匹配
+    elif 'feed43.com' in feed_host:
+        avatar = '/assets/img/feed43.png'
 
     return avatar
 

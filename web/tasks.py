@@ -32,7 +32,6 @@ def update_sites_async(site_list, force_update=False):
 
         # 最近已经更新过了，跳过
         if not force_update and is_updated_site(site_name):
-            logger.info(f"已经更新过了，跳过：`{site_name}")
             continue
 
         logger.info(f"开始异步更新：{site_name}")

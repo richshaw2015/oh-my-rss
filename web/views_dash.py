@@ -188,8 +188,11 @@ def fixbug(request):
     :param request:
     :return:
     """
-
+    dest_list = []
     # sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
-    # Article.objects.filter(site__in=sites).delete()
+    articles = Article.objects.filter(site__star__gte=10, status='active', content=' ')
+    for article in articles:
+        if not os.path.exists(os.path.join(settings.HTML_DATA_DIR, str(article.uindex))):
+            dest_list.append(article.uindex)
 
-    return JsonResponse({})
+    return JsonResponse({"result": dest_list})
