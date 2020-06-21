@@ -4,7 +4,6 @@ from .utils import add_referer_stats, get_login_user, get_user_sub_feeds
 import logging
 from user_agents import parse
 from django.conf import settings
-from web.tasks import add_referer_stats_async
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +34,7 @@ def index(request):
     context['github_oauth_key'] = settings.GITHUB_OAUTH_KEY
 
     # 记录访问来源
-    add_referer_stats_async.delay(request.META.get('HTTP_REFERER', ''))
+    add_referer_stats(request.META.get('HTTP_REFERER', ''))
 
     if user_agent.is_pc:
         return render(request, 'index.html', context)

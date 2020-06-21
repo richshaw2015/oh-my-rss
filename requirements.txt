@@ -14,7 +14,6 @@ ua-parser
 user-agents
 pillow
 jieba
-celery
-django-celery-results
-django-celery-beat
 fake-useragent
+django-rq
+django-crontab

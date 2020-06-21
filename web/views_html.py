@@ -165,9 +165,6 @@ def get_feed_ranking(request):
     if user:
         user_sub_feeds = get_user_sub_feeds(user.oauth_id)
 
-        # 异步更新榜单数据
-        cal_site_ranking_cron.delay()
-
     feed_ranking = get_feed_ranking_dict()
 
     context = dict()

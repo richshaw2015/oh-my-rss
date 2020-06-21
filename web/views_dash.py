@@ -6,6 +6,7 @@ from django.conf import settings
 import json
 from pyecharts import options
 from pyecharts.charts import Line, Page, Pie
+import django_rq
 from .models import *
 
 logger = logging.getLogger(__name__)
@@ -187,8 +188,6 @@ def fixbug(request):
     :param request:
     :return:
     """
-    from web.tasks import update_proxy_pool_cron
-    update_proxy_pool_cron.delay()
 
     # sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
     # Article.objects.filter(site__in=sites).delete()

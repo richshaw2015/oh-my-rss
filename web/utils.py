@@ -19,6 +19,7 @@ from collections import Counter
 from urllib.parse import urlparse
 import json
 from fake_useragent import UserAgent
+import django_rq
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -556,38 +557,56 @@ def is_sensitive_content(uindex, content):
 
     return is_sensitive
 
+#
+# def get_with_proxy(url):
+#     """
+#     通过 代理 请求，重试 3 次
+#     :param url:
+#     :return:
+#     """
+#     for i in range(0, 3):
+#         proxy_ip_port, proxy_pool = get_one_proxy_ip()
+#
+#         if proxy_pool <= 10:
+#             logger.warning("代理 IP 池不够 10 个了，开始异步更新")
+#             from web.tasks import update_proxy_pool_cron
+#             django_rq.enqueue(update_proxy_pool_cron)
+#
+#         if proxy_ip_port is not None:
+#             proxy = {"http": proxy_ip_port, "https": proxy_ip_port}
+#             header = {'User-Agent': UserAgent().random}
+#
+#             try:
+#                 rsp = requests.get(url, verify=False, timeout=15, headers=header, proxies=proxy)
+#                 logger.info(f"代理请求成功：`{url}`{proxy_ip_port}")
+#                 return rsp
+#             except requests.exceptions.ProxyError:
+#                 del_proxy_ip(proxy_ip_port)
+#             except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+#                 logger.warning(f"代理请求出现网络异常：`{url}`{proxy}")
+#             except:
+#                 logger.warning(f"代理请求出现未知异常：`{url}`{proxy}")
+#         else:
+#             # 等待代理 IP 池更新
+#             time.sleep(10)
+#     return None
+
 
 def get_with_proxy(url):
     """
-    通过 代理 请求，特别微信相关的容易被 BAN。重试 3 次
+    先不使用代理，免费的不靠谱；待后续改造
     :param url:
     :return:
     """
-    for i in range(0, 3):
-        proxy_ip_port, proxy_pool = get_one_proxy_ip()
+    header = {'User-Agent': UserAgent().random}
 
-        if proxy_pool <= 1:
-            logger.warning("代理 IP 池不够 2 个了，开始异步更新")
-            from web.tasks import update_proxy_pool_cron
-            update_proxy_pool_cron.delay()
+    try:
+        return requests.get(url, verify=False, timeout=15, headers=header)
+    except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+        logger.warning(f"GET 请求出现网络异常：`{url}")
+    except:
+        logger.warning(f"GET 请求出现未知异常：`{url}")
 
-        if proxy_ip_port is not None:
-            proxy = {"http": proxy_ip_port, "https": proxy_ip_port}
-            header = {'User-Agent': UserAgent().random}
-
-            try:
-                rsp = requests.get(url, verify=False, timeout=15, headers=header, proxies=proxy)
-                logger.info(f"代理请求成功：`{url}`{proxy_ip_port}")
-                return rsp
-            except requests.exceptions.ProxyError:
-                del_proxy_ip(proxy_ip_port)
-            except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-                logger.warning(f"代理请求出现网络异常：`{url}`{proxy}")
-            except:
-                logger.warning(f"代理请求出现未知异常：`{url}`{proxy}")
-        else:
-            # 等待代理 IP 池更新
-            time.sleep(10)
     return None
 
 

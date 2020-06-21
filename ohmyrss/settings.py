@@ -36,8 +36,8 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'django_celery_results',
-    'django_celery_beat',
+    'django_crontab',
+    'django_rq',
     'web.apps.WebConfig',
 
     'django.contrib.admin',
@@ -127,7 +127,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-CRONJOBS = []
+CRONJOBS = [
+   ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
+   ('30 1 * * *', 'web.tasks.update_all_wemp_cron'),
+   ('11 4 * * *', 'web.tasks.archive_article_cron'),
+   ('*/43 * * * *', 'web.tasks.cal_all_article_tag_cron'),
+   ('17 3 * * *', 'web.tasks.cal_article_distance_cron'),
+   ('1 3 * * *', 'web.tasks.cal_site_ranking_cron'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -147,18 +154,16 @@ REDIS_PORT = '6379'
 REDIS_FEED_DB = 0
 # for web use db
 REDIS_WEB_DB = 1
-# for celery job db
-REDIS_CELERY_DB = 2
+# for async job db
+REDIS_RQ_DB = 2
 
-# celery configs
-CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 10000
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+RQ_QUEUES = {
+    'default': {
+        'HOST': REDIS_HOST,
+        'PORT': REDIS_PORT,
+        'DB': REDIS_RQ_DB,
+    },
+}
 
 # page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'
@@ -272,6 +277,11 @@ LOGGING = {
         },
         'web': {
             'handlers': ['console', 'my_info', 'my_warn', 'my_error'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'rq.worker': {
+            'handlers': ['my_info', 'my_warn', 'my_error'],
             'level': 'INFO',
             'propagate': True,
         },

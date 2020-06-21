@@ -1,6 +1,4 @@
-from __future__ import absolute_import, unicode_literals
 
-from celery import shared_task
 from web.models import *
 import logging
 from datetime import datetime
@@ -8,7 +6,7 @@ from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
-    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, add_referer_stats, get_host_name, \
+    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
     set_proxy_ips
 import jieba
 from web.stopwords import stopwords
@@ -22,7 +20,6 @@ import telnetlib
 logger = logging.getLogger(__name__)
 
 
-@shared_task
 def update_sites_async(site_list, force_update=False):
     """
     异步更新某一批订阅源
@@ -35,19 +32,19 @@ def update_sites_async(site_list, force_update=False):
 
         # 最近已经更新过了，跳过
         if not force_update and is_updated_site(site_name):
+            logger.info(f"已经更新过了，跳过：`{site_name}")
             continue
+
+        logger.info(f"开始异步更新：{site_name}")
 
         if site.creator == 'user':
             atom_spider(site)
         elif site.creator == 'wemp':
-            # 公众号不异步更新，因为是同一个站点，控制请求频率，只有定时任务触发
-            # atom_spider(site)
-            pass
+            atom_spider(site)
 
     return True
 
 
-@shared_task
 def update_all_atom_cron():
     """
     定时更新所有源，1～2 小时的周期
@@ -72,7 +69,6 @@ def update_all_atom_cron():
     return True
 
 
-@shared_task
 def update_all_wemp_cron():
     """
     更新微信公众号，每天 1～2 次
@@ -92,7 +88,6 @@ def update_all_wemp_cron():
     return True
 
 
-@shared_task
 def archive_article_cron():
     """
     归档并清理文章，每天一次
@@ -114,7 +109,6 @@ def archive_article_cron():
     return True
 
 
-@shared_task
 def cal_all_article_tag_cron():
     """
     设置最近一周的文章标识、统计词频；每隔 ？ 分钟
@@ -153,7 +147,6 @@ def cal_all_article_tag_cron():
     return True
 
 
-@shared_task
 def cal_article_distance_cron():
     """
     计算新增文章的相似度，用于推荐订阅；每隔 ？ 分钟计算一次
@@ -189,7 +182,6 @@ def cal_article_distance_cron():
     return True
 
 
-@shared_task
 def cal_site_ranking_cron():
     """
     计算订阅排行榜单 top 100，每天 1 次
@@ -221,31 +213,22 @@ def cal_site_ranking_cron():
     return True
 
 
-@shared_task
-def add_referer_stats_async(referer):
-    """
-    站点引流的统计数据
-    """
-    add_referer_stats(referer)
-    return True
-
-
-@shared_task
 def update_proxy_pool_cron():
     """
-    获取免费的代理 ip，最多 10 个
+    获取免费的代理 ip，最多 10 个 TODO 这个不靠谱，待下线
     :return:
     """
     header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) '
                             'Chrome/83.0.4103.106 Safari/537.36'}
-    rsp = requests.get('https://www.xicidaili.com/nn', verify=False, timeout=15, headers=header)
+    rsp = requests.get('http://free-proxy.cz/zh/proxylist/country/CN/http/ping/all', verify=False, timeout=15,
+                       headers=header)
 
     if rsp.ok:
         valid_proxies = set()
         response = HtmlResponse(url=rsp.url, body=rsp.text, encoding='utf8')
 
-        ips = response.selector.xpath('//table[@id="ip_list"]//tr/td[2]/text()').extract()
-        ports = response.selector.xpath('//table[@id="ip_list"]//tr/td[3]/text()').extract()
+        ips = response.selector.xpath('//table[@id="proxy_list"]//tr/td[1]/text()').extract()
+        ports = response.selector.xpath('//table[@id="proxy_list"]//tr/td[2]/text()').extract()
 
         if len(ips) == len(ports):
             for i in range(len(ips)):
@@ -253,7 +236,7 @@ def update_proxy_pool_cron():
                     telnetlib.Telnet(ips[i], port=int(ports[i]), timeout=2)
                     valid_proxies.add(f"{ips[i]}:{ports[i]}")
 
-                    if len(valid_proxies) >= 10:
+                    if len(valid_proxies) >= 50:
                         break
                 except:
                     continue

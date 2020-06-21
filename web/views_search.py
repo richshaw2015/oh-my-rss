@@ -1,13 +1,13 @@
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import *
-from .utils import add_referer_stats, get_login_user, get_user_sub_feeds, set_user_read_article, is_sensitive_content
+from web.models import *
+from web.utils import add_referer_stats, get_login_user, get_user_sub_feeds, set_user_read_article, is_sensitive_content
 import logging
 import os
 from user_agents import parse
 from .verify import verify_request
 from django.db.models import Q
-from web.tasks import add_referer_stats_async
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ def article(request, id):
     详情页，主要向移动端、搜索引擎提供，这个页面需要做风控
     """
     # 外链统计
-    add_referer_stats_async.delay(request.META.get('HTTP_REFERER', ''))
+    add_referer_stats(request.META.get('HTTP_REFERER', ''))
 
     try:
         article = Article.objects.get(uindex=id, status='active')

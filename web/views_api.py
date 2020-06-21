@@ -12,6 +12,7 @@ from django.conf import settings
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.omrssparser.atom import parse_atom, parse_self_atom, parse_qnmlgb_atom
 from web.tasks import update_sites_async
+import django_rq
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ def get_lastweek_articles(request):
                                                        is_recent=True).values_list('uindex', flat=True))
 
     # 异步更新任务
-    update_sites_async.delay(list(my_sub_feeds))
+    django_rq.enqueue(update_sites_async, list(my_sub_feeds))
 
     if user:
         my_lastweek_unread_count = get_user_unread_count(user.oauth_id, my_lastweek_articles)
@@ -122,7 +123,7 @@ def submit_a_feed(request):
                 add_user_sub_feeds(user.oauth_id, [rsp['name'], ])
 
             # 异步更新任务
-            update_sites_async.delay([rsp['name']])
+            django_rq.enqueue(update_sites_async, [rsp['name'], ])
 
             return JsonResponse(rsp)
         else:
@@ -145,7 +146,7 @@ def user_subscribe_feed(request):
         add_user_sub_feeds(user.oauth_id, [site_name, ])
 
         # 异步更新
-        update_sites_async.delay([site_name, ])
+        django_rq.enqueue(update_sites_async, [site_name, ])
 
         logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_name}")
 
@@ -203,14 +204,13 @@ def user_force_update_site(request):
     强制刷新源，用户手动触发
     """
     site_name = request.POST.get('site_name', '')
-    user = get_login_user(request)
 
     site = Site.objects.get(name=site_name, status='active')
 
-    if site and user:
+    if site:
         # 异步刷新
         logger.info(f"强制刷新源：`{site_name}")
-        update_sites_async.delay([site_name, ], True)
+        django_rq.enqueue(update_sites_async, [site_name, ], True)
 
         return JsonResponse({})
 
