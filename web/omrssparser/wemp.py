@@ -117,20 +117,22 @@ def parse_weixin_page(rsp):
 
     try:
         content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
-    except:
+    except AttributeError:
         content = ''
 
     try:
         title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
-    except:
+    except AttributeError:
         # 有些文章没有标题
         title = content[:10].strip()
 
     try:
-        author = response.selector.xpath('//span[@id="js_author_name"]/text()'). \
-            extract_first().strip()
-    except:
-        author = response.selector.xpath('//a[@id="js_name"]/text()').extract_first().strip()
+        author = response.selector.xpath('//span[@id="js_author_name"]/text()').extract_first().strip()
+    except AttributeError:
+        try:
+            author = response.selector.xpath('//a[@id="js_name"]/text()').extract_first().strip()
+        except AttributeError:
+            author = ''
 
     if title and content:
         content_soup = BeautifulSoup(content, "html.parser")
