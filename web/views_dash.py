@@ -188,7 +188,7 @@ def fixbug(request):
     :return:
     """
     from web.tasks import update_proxy_pool_cron
-    update_proxy_pool_cron()
+    update_proxy_pool_cron.delay()
 
     # sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
     # Article.objects.filter(site__in=sites).delete()

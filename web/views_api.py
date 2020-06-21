@@ -209,6 +209,7 @@ def user_force_update_site(request):
 
     if site and user:
         # 异步刷新
+        logger.info(f"强制刷新源：`{site_name}")
         update_sites_async.delay([site_name, ], True)
 
         return JsonResponse({})

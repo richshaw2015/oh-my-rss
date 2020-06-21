@@ -576,7 +576,9 @@ def get_with_proxy(url):
             header = {'User-Agent': UserAgent().random}
 
             try:
-                return requests.get(url, verify=False, timeout=15, headers=header, proxies=proxy)
+                rsp = requests.get(url, verify=False, timeout=15, headers=header, proxies=proxy)
+                logger.info(f"代理请求成功：`{url}`{proxy_ip_port}")
+                return rsp
             except requests.exceptions.ProxyError:
                 del_proxy_ip(proxy_ip_port)
             except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
