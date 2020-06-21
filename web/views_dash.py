@@ -194,5 +194,6 @@ def fixbug(request):
     for article in articles:
         if not os.path.exists(os.path.join(settings.HTML_DATA_DIR, str(article.uindex))):
             dest_list.append(article.uindex)
+            article.delete()
 
     return JsonResponse({"result": dest_list})

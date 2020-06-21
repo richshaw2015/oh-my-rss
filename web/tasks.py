@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def update_sites_async(site_list, force_update=False):
     """
-    异步更新某一批订阅源
+    异步更新某一批订阅源，只支持普通源和公众号的更新
     """
     for site_name in site_list:
         try:
@@ -37,7 +37,12 @@ def update_sites_async(site_list, force_update=False):
         logger.info(f"开始异步更新：{site_name}")
 
         if site.creator != 'system':
-            atom_spider(site)
+            host = get_host_name(site.rss)
+
+            if 'ershicimi.com' in host:
+                parse_wemp_ershicimi(site.rss, update=True)
+            else:
+                atom_spider(site)
 
     return True
 
