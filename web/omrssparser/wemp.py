@@ -54,7 +54,7 @@ def parse_wemp_ershicimi(url, update=False):
                 if update:
                     try:
                         site = Site.objects.get(name=name)
-                        links = response.selector.xpath("//*[@class='weui_media_title']/a/@href").extract()[:5]
+                        links = response.selector.xpath("//*[@class='weui_media_title']/a/@href").extract()[:10]
 
                         for link in links:
                             link = urllib.parse.urljoin(url, link)
