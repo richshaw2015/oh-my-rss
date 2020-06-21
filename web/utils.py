@@ -411,12 +411,12 @@ def get_feed_ranking_dict():
     return {}
 
 
-def set_updated_site(site_name):
+def set_updated_site(site_name, ttl=2*3600):
     """
     设置站点更新标记，2 小时
     """
     key = settings.REDIS_UPDATED_SITE_KEY % site_name
-    return R.set(key, '1', 2 * 3600)
+    return R.set(key, '1', ttl)
 
 
 def is_updated_site(site_name):

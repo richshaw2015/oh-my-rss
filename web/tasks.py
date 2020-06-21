@@ -37,9 +37,7 @@ def update_sites_async(site_list, force_update=False):
 
         logger.info(f"开始异步更新：{site_name}")
 
-        if site.creator == 'user':
-            atom_spider(site)
-        elif site.creator == 'wemp':
+        if site.creator != 'system':
             atom_spider(site)
 
     return True
@@ -215,7 +213,7 @@ def cal_site_ranking_cron():
 
 def update_proxy_pool_cron():
     """
-    获取免费的代理 ip，最多 10 个 TODO 这个不靠谱，待下线
+    TODO 这个不靠谱，待下线
     :return:
     """
     header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) '
