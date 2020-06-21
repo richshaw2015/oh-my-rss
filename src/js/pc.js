@@ -416,6 +416,8 @@ $(document).ready(function () {
 
                     // linkify
                     setThirdLinkify();
+                } else {
+                    fixWempStyleTag();
                 }
 
                 // 数据统计
@@ -457,6 +459,8 @@ $(document).ready(function () {
     
                         // linkify
                         setThirdLinkify();
+                    } else {
+                        fixWempStyleTag();
                     }
 
                     // 更新统计

@@ -379,6 +379,16 @@ function fixThirdStyleTag() {
     });
 }
 
+function fixWempStyleTag() {
+    $("#js_content").each(function() {
+        const style = $(this).attr('style');
+
+        if ( style !== undefined ){
+            $(this).removeAttr('style');
+        }
+    });
+}
+
 function codeHighlight() {
     // 代码样式
     if ($('#omrss-third pre[class*="language-"]').length > 0 || $('#omrss-third code[class*="language-"]').length > 0) {
