@@ -808,3 +808,18 @@ figure.highlight td.code {
     line-height: 1rem;
     vertical-align: middle;
 }
+
+kbd {
+    border: .1em solid #aaa;
+    border-radius: 15%;
+    display: inline-block;
+    padding: .1em .5em;
+    background: linear-gradient(180deg, #fff, #fff, #fff, #ddd);
+    user-select: none;
+    cursor: pointer;
+    color: #000;
+    font-weight: bold;
+}
+kbd:hover {
+    background: linear-gradient(0deg, #fff, #fff, #fff, #ddd);
+}
