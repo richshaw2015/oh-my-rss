@@ -34,9 +34,9 @@ def update_sites_async(site_list, force_update=False):
         if not force_update and is_updated_site(site_name):
             continue
 
-        logger.info(f"开始异步更新：{site_name}")
-
         if site.creator != 'system':
+            logger.info(f"开始异步更新：{site_name}")
+
             host = get_host_name(site.rss)
 
             if 'ershicimi.com' in host:
