@@ -78,14 +78,15 @@ def update_all_wemp_cron():
     sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
     for site in sites:
-        host = get_host_name(site.rss)
+        if not is_updated_site(site.name):
+            host = get_host_name(site.rss)
 
-        if 'ershicimi.com' in host:
-            parse_wemp_ershicimi(site.rss, update=True)
-        elif 'qnmlgb.tech' in host:
-            atom_spider(site)
-        else:
-            pass
+            if 'ershicimi.com' in host:
+                parse_wemp_ershicimi(site.rss, update=True)
+            elif 'qnmlgb.tech' in host:
+                atom_spider(site)
+            else:
+                pass
 
     return True
 

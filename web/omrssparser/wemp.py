@@ -60,7 +60,7 @@ def parse_wemp_ershicimi(url, update=False):
                             link = urllib.parse.urljoin(url, link)
                             wemp_spider(link, site)
 
-                        set_updated_site(name, ttl=24*3600)
+                        set_updated_site(name, ttl=12*3600)
                     except:
                         logger.warning(f'更新公众号内容出现异常：`{name}')
 
@@ -142,6 +142,8 @@ def parse_weixin_page(rsp):
                 img.attrs['src'] = img.attrs['data-src']
 
         return title, author, str(content_soup)
+
+    return '', '', ''
 
 
 def parse_ershicimi_page(rsp):
