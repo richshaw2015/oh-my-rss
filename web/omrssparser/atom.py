@@ -64,7 +64,7 @@ def parse_atom(feed_url):
         else:
             brief = cname
 
-        author = feed_obj.feed.get('author', '')[:12]
+        author = feed_obj.feed.get('author', 'None')[:12]
 
         # 使用默认头像
         favicon = generate_rss_avatar(link)
@@ -119,7 +119,7 @@ def atom_spider(site):
         try:
             author = entry['author'][:20]
         except:
-            author = None
+            author = ''
 
         try:
             value = entry.content[0].value
@@ -143,9 +143,12 @@ def atom_spider(site):
         if get_host_name(site.rss) in ('qnmlgb.tech', ):
             if get_host_name(link) in ('mp.weixin.qq.com', ):
                 rsp = get_with_proxy(link)
+                
                 if rsp is not None and rsp.ok:
-                    title, author, value = parse_weixin_page(rsp)
-
+                    try:
+                        title, author, value = parse_weixin_page(rsp)
+                    except:
+                        pass
         try:
             article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(), content=value)
             article.save()

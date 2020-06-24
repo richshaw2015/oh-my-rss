@@ -294,8 +294,11 @@ def get_user_unread_count(oauth_id, articles):
     :param articles:
     :return:
     """
-    user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
-    return len(articles) - R.mget(*user_read_keys).count('1')
+    if articles:
+        user_read_keys = [settings.REDIS_USER_READ_KEY % (oauth_id, uindex) for uindex in articles]
+        return len(articles) - R.mget(*user_read_keys).count('1')
+    else:
+        return 0
 
 
 def get_login_user(request):

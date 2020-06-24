@@ -143,7 +143,7 @@ def parse_weixin_page(rsp):
 
         return title, author, str(content_soup)
 
-    return '', '', ''
+    return None
 
 
 def parse_ershicimi_page(rsp):
