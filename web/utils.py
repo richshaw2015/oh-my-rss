@@ -124,7 +124,7 @@ def is_active_rss(feed):
 
 
 @lru_cache(maxsize=128, typed=True)
-def get_subscribe_feeds(sub_feeds, unsub_feeds, star=20):
+def get_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
     """
     获取游客订阅的站点，已订阅 + 推荐 - 取消订阅
     :param sub_feeds:

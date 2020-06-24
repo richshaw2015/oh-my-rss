@@ -78,6 +78,10 @@ def update_all_wemp_cron():
     sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
     for site in sites:
+        # 无人订阅的源且不推荐的源不更新
+        if not is_active_rss(site.name) and site.star < 9:
+            continue
+
         if not is_updated_site(site.name):
             host = get_host_name(site.rss)
 
