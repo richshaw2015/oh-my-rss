@@ -46,8 +46,8 @@ def get_my_feeds(request):
     """
     获取我的订阅列表；游客已订阅、推荐订阅；登陆用户已订阅、推荐订阅
     """
-    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
+    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
 
     user = get_login_user(request)
     
@@ -215,8 +215,8 @@ def get_site_update_view(request):
     """
     获取更新的全局站点视图，游客 100 个，登陆用户 200 个站点
     """
-    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
+    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
 
@@ -276,8 +276,8 @@ def get_article_update_view(request):
     获取更新的文章列表视图，游客展示默认推荐内容；登录用户展示其订阅内容
     """
     # 请求参数获取
-    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
+    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
     mobile = request.POST.get('mobile', False)

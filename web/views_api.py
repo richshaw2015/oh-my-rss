@@ -25,8 +25,8 @@ def get_lastweek_articles(request):
     """
     uid = request.POST.get('uid', '')
     user = get_login_user(request)
-    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
+    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     ext = request.POST.get('ext', '')
 
     logger.info(f"过去一周文章查询：`{uid}`{unsub_feeds}`{ext}")
@@ -180,7 +180,7 @@ def user_mark_read_all(request):
     """
     设置批量已读，如不传 ids 则设置全部已读
     """
-    uindexs = json.loads(request.POST.get('ids', '[]'))
+    uindexs = json.loads(request.POST.get('ids') or '[]')
     user = get_login_user(request)
 
     if user:
