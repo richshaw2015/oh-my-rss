@@ -183,6 +183,19 @@ KeyStroke.prototype = new Proto(KeyStroke, {
         return this.getKeyCode() == 27;
     },
 
+    isLeftArrow: function() { // 左
+        return this.getKeyCode() == 37;
+    },
+    isUpArrow: function() { // 上
+        return this.getKeyCode() == 38;
+    },
+    isRightArrow: function() { // 右
+        return this.getKeyCode() == 39;
+    },
+    isDownArrow: function() { // 下
+        return this.getKeyCode() == 40;
+    },
+
     isValidKeyStroke: function() {
         var INVALID_TARGETS = ['input', 'textarea'];
 
@@ -1043,49 +1056,69 @@ V.addKeypress('goBottom', {
     }
 });
 
-V.addKeypress('nextArticle', {
+function nextArticle() {
+    const curItem = $('.ev-cnt-list.active');
+    if (curItem.length === 0) {
+        $('.ev-cnt-list')[0].click();
+        toast('下一篇');
+    }else {
+        const target = $('.ev-cnt-list.active').next();
+        if (target.length === 1) {
+            target.click();
+            toast('下一篇');
+        } else {
+            toast('本页已经浏览完了');
+        }
+    }
+    return true;
+}
+V.addKeypress('nextArticle1', {
     pattern: {
         value: 'n'
     },
     fns: {
         filter: filterByTarget,
-        execute: function() {
-            const curItem = $('.ev-cnt-list.active');
-            if (curItem.length === 0) {
-                $('.ev-cnt-list')[0].click();
-                toast('下一篇');
-            }else {
-                const target = $('.ev-cnt-list.active').next();
-                if (target.length === 1) {
-                    target.click();
-                    toast('下一篇');
-                } else {
-                    toast('本页已经浏览完了');
-                }
-            }
-            return true;
-        }
+        execute: nextArticle
+    }
+});
+V.addKeyup('nextArticle2', {
+    fns: {
+        filter: function (c, s, keyStroke) {
+            return keyStroke.isDownArrow();
+        },
+        execute: nextArticle
     }
 });
 
-V.addKeypress('prevArticle', {
+
+function prevArticle() {
+    const target = $('.ev-cnt-list.active').prev();
+    if (target.length === 1) {
+        target.click();
+        toast('上一篇');
+    } else {
+        toast('已经是第一篇了');
+    }
+    return true;  
+}
+V.addKeypress('prevArticle1', {
     pattern: {
         value: 'N'
     },
     fns: {
         filter: filterByTarget,
-        execute: function() {
-            const target = $('.ev-cnt-list.active').prev();
-            if (target.length === 1) {
-                target.click();
-                toast('上一篇');
-            } else {
-                toast('已经是第一篇了');
-            }
-            return true;
-        }
+        execute: prevArticle
     }
 });
+V.addKeyup('prevArticle2', {
+    fns: {
+        filter: function (c, s, keyStroke) {
+            return keyStroke.isUpArrow();
+        },
+        execute: prevArticle
+    }
+});
+
 
 V.addKeypress('siteBackNav', {
     pattern: {
@@ -1147,23 +1180,33 @@ V.addKeypress('refreshSite', {
     }
 });
 
-V.addKeypress('nextPage', {
+
+function nextPage() {
+    const target = $('.ev-page-next');
+    if (target.length === 1) {
+        target.click();
+        toast('下一页');
+    } else {
+        warnToast('已经是最后一页了');
+    }
+
+    return true;
+}
+V.addKeypress('nextPage1', {
     pattern: {
         value: 'p'
     },
     fns: {
         filter: filterByTarget,
-        execute: function() {
-            const target = $('.ev-page-next');
-            if (target.length === 1) {
-                target.click();
-                toast('下一页');
-            } else {
-                warnToast('已经是最后一页了');
-            }
-
-            return true;
-        }
+        execute: nextPage
+    }
+});
+V.addKeyup('nextPage2', {
+    fns: {
+        filter: function (c, s, keyStroke) {
+            return keyStroke.isRightArrow();
+        },
+        execute: nextPage
     }
 });
 
@@ -1233,22 +1276,32 @@ V.addKeypress('markAndNextPage', {
     }
 });
 
-V.addKeypress('previousPage', {
+
+function prevPage() {
+    const target = $('.ev-page-previous');
+    if (target.length === 1) {
+        target.click();
+        toast('上一页');
+    } else {
+        warnToast('已经是第一页了');
+    }
+    return true;
+}
+V.addKeypress('prevPage1', {
     pattern: {
         value: 'P'
     },
     fns: {
         filter: filterByTarget,
-        execute: function() {
-            const target = $('.ev-page-previous');
-            if (target.length === 1) {
-                target.click();
-                toast('上一页');
-            } else {
-                warnToast('已经是第一页了');
-            }
-            return true;
-        }
+        execute: prevPage
+    }
+});
+V.addKeyup('prevPage2', {
+    fns: {
+        filter: function (c, s, keyStroke) {
+            return keyStroke.isLeftArrow();
+        },
+        execute: prevPage
     }
 });
 
