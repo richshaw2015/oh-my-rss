@@ -188,12 +188,15 @@ def fixbug(request):
     :param request:
     :return:
     """
-    dest_list = []
-    # sites = Site.objects.filter(creator='wemp', star=19, rss__contains='qnmlgb.tech')
-    articles = Article.objects.filter(site__star__gte=10, status='active', content=' ')
-    for article in articles:
-        if not os.path.exists(os.path.join(settings.HTML_DATA_DIR, str(article.uindex))):
-            dest_list.append(article.uindex)
-            article.delete()
+    for user in User.objects.all():
+        subs_old = get_user_subscribe_feeds(user.oauth_id, from_user=False)
+        subs_new = list(Site.objects.filter(name__in=subs_old).values_list('id', flat=True))
 
-    return JsonResponse({"result": dest_list})
+        if subs_new:
+            R.delete(settings.REDIS_USER_SUB_KEY % user.oauth_id)
+            add_user_sub_feeds(user.oauth_id, subs_new)
+
+    from web.tasks import cal_site_ranking_cron
+    cal_site_ranking_cron()
+
+    return JsonResponse({})

@@ -112,54 +112,55 @@ function isStared(id) {
 }
 
 
-function getSubFeeds() {
-    // 针对游客
-    const subFeeds = localStorage.getItem('SUBS');
-    if (subFeeds) {
-        return JSON.parse(subFeeds);
-    }
-    return {};
+function getVisitorSubFeeds() {
+    // 针对游客，返回字符串
+    return localStorage.getItem('SUBS2') || "[]";
 }
 
-function getUnsubFeeds() {
-    // 针对游客
-    const unsubFeeds = localStorage.getItem('UNSUBS');
-    if (unsubFeeds) {
-        return JSON.parse(unsubFeeds);
-    }
-    return {};
+function getVisitorUnsubFeeds() {
+    // 针对游客，返回字符串
+    return localStorage.getItem('UNSUBS2') || "[]";
 }
 
-function subFeed(name) {
-    // 游客订阅
-    const subFeeds = getSubFeeds();
-    const unsubFeeds = getUnsubFeeds();
+function visitorSubFeed(siteId) {
+    siteId = parseInt(siteId)
 
-    delete unsubFeeds[name];
-    subFeeds[name] = 1;
+    // 游客订阅，数据存储在本地
+    let subFeeds = new Set(JSON.parse(getVisitorSubFeeds()));
+    let unsubFeeds = new Set(JSON.parse(getVisitorUnsubFeeds()));
 
-    localStorage.setItem('SUBS', JSON.stringify(subFeeds));
-    localStorage.setItem('UNSUBS', JSON.stringify(unsubFeeds));
+    unsubFeeds.delete(siteId);
+    subFeeds.add(siteId);
+
+    localStorage.setItem('SUBS2', JSON.stringify([...subFeeds]));
+    localStorage.setItem('UNSUBS2', JSON.stringify([...unsubFeeds]));
 }
 
-function unsubFeed(name) {
-    // 游客取消订阅
-    const subFeeds = getSubFeeds();
-    const unsubFeeds = getUnsubFeeds();
+function visitorUnsubFeed(siteId) {
+    siteId = parseInt(siteId)
 
-    delete subFeeds[name];
-    unsubFeeds[name] = 1;
+    // 游客取消订阅，数据存储在本地
+    let subFeeds = new Set(JSON.parse(getVisitorSubFeeds()));
+    let unsubFeeds = new Set(JSON.parse(getVisitorUnsubFeeds()));
 
-    localStorage.setItem('SUBS', JSON.stringify(subFeeds));
-    localStorage.setItem('UNSUBS', JSON.stringify(unsubFeeds));
+    subFeeds.delete(siteId);
+    unsubFeeds.add(siteId);
+
+    localStorage.setItem('SUBS2', JSON.stringify([...subFeeds]));
+    localStorage.setItem('UNSUBS2', JSON.stringify([...unsubFeeds]));
 }
 
-function isVisitorSubFeed(name) {
-    return getSubFeeds()[name] === 1;
+function isVisitorSubFeed(siteId) {
+    siteId = parseInt(siteId);
+    let subFeeds = new Set(JSON.parse(getVisitorSubFeeds()));
+    return subFeeds.has(siteId);
 }
 
-function isVisitorUnSubFeed(name) {
-    return getUnsubFeeds()[name] === 1;
+function isVisitorUnSubFeed(siteId) {
+    siteId = parseInt(siteId);
+    let unsubFeeds = new Set(JSON.parse(getVisitorUnsubFeeds()));
+
+    return unsubFeeds.has(siteId);
 }
 
 function toggleReadMode() {
@@ -301,8 +302,8 @@ function setToreadInfo(notify=false) {
     // 从网络读取列表，然后更新未读数
     $.post("/api/lastweek/articles", {
         uid: getOrSetUid(),
-        sub_feeds: Object.keys(getSubFeeds()).join(','),
-        unsub_feeds: Object.keys(getUnsubFeeds()).join(','),
+        sub_feeds: getVisitorSubFeeds(),
+        unsub_feeds: getVisitorUnsubFeeds(),
         ext: window.screen.width + 'x' + window.screen.height
     }, function (data) {
         if (getLoginId()) {
@@ -380,6 +381,7 @@ function fixThirdStyleTag() {
 }
 
 function fixWempStyleTag() {
+    // 微信公众号处理
     $("#js_content").each(function() {
         const style = $(this).attr('style');
 

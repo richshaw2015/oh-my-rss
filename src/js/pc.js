@@ -197,18 +197,31 @@ function markPageReadAll() {
     });
 }
 
+function updateVisitorSubStatus(data) {
+    // 更新游客已订阅状态
+    let destDom = $(data);
+
+    destDom.find('span.ev-sub-feed').each(function () {
+        const siteId = $(this).attr('data-site');
+
+        if (isVisitorSubFeed(siteId)) {
+            $(this).text('已订阅');
+            $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+        }
+    });
+    return destDom;
+}
+
 function loadPage(page, site="", reflow=false) {
     // UI状态
     $('#omrss-loader').removeClass('hide');
 
     // 网络请求，区分已登录用户或者游客
-    let subFeeds = '';
-    let unSubFeeds = '';
-    const mode = getReadMode();
+    let user, subFeeds, unSubFeeds, mode;
+    [user, subFeeds, unSubFeeds, mode] = [getLoginId(), '[]', '[]', getReadMode()]
 
-    if (!getLoginId()) {
-        subFeeds = Object.keys(getSubFeeds()).join(',');
-        unSubFeeds = Object.keys(getUnsubFeeds()).join(',');
+    if (!user) {
+        [subFeeds, unSubFeeds] = [getVisitorSubFeeds(), getVisitorUnsubFeeds()];
     }
     if (mode === "site") {
         if (site === "") {
@@ -269,7 +282,7 @@ function loadPage(page, site="", reflow=false) {
         } else {
             // 站点浏览模式下的文章翻页，这时候 pageSize 需要单独计算
             $.post("/api/html/articles/list2", {
-                uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, site_name: site}, function (data) {
+                uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, site_id: site}, function (data) {
 
                 if (reflow) {
                     // 进入站点专栏，备份 DOM 数据，用于返回
@@ -393,7 +406,7 @@ $(document).ready(function () {
         $(this).addClass('active');
 
         const articleId = this.id;
-        const siteName = $(this).attr('data-site');
+        const siteId = $(this).attr('data-site');
         const evTarget = $(this);
         const siteType = $(this).attr('data-type');
 
@@ -501,9 +514,9 @@ $(document).ready(function () {
                     Notification.requestPermission();
                 }
             }, 3600*1000);
-        } else if (siteName !== "") {
+        } else if (siteId !== "") {
             // 加载特定站点的文章更新列表
-            loadPage(1, siteName, true);
+            loadPage(1, siteId, true);
         }
 
     });
@@ -512,13 +525,11 @@ $(document).ready(function () {
     $(document).on('click', '.ev-my-feed', function () {
         $('#omrss-loader').removeClass('hide');
 
-        const user = getLoginId();
-        let subFeeds = ''
-        let unSubFeeds = ''
+        let user, subFeeds, unSubFeeds;
+        [user, subFeeds, unSubFeeds]  = [getLoginId(), '[]', '[]' ]
 
         if (!user) {
-            subFeeds = Object.keys(getSubFeeds()).join(',');
-            unSubFeeds = Object.keys(getUnsubFeeds()).join(',');
+            [subFeeds, unSubFeeds] = [getVisitorSubFeeds(), getVisitorUnsubFeeds()]
         }
 
         $.post("/api/html/feeds/all", {uid: getOrSetUid(), sub_feeds: subFeeds, unsub_feeds: unSubFeeds}, 
@@ -538,14 +549,14 @@ $(document).ready(function () {
 
     // 确定取消订阅
     $(document).on('click', '#omrss-unlike', function () {
-        const site = $(this).attr('data-site');
+        const siteId = $(this).attr('data-site');
         const user = getLoginId();
 
         if (!user) {
-            unsubFeed(site);
+            visitorUnsubFeed(siteId);
             toast("取消订阅成功 ^o^");
         } else {
-            $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), feed: site}, function (data) {
+            $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
                 toast('取消订阅成功 ^o^');
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);
@@ -579,7 +590,7 @@ $(document).ready(function () {
         if (url) {
             $('#omrss-loader').removeClass('hide');
             $.post("/api/feed/add", {uid: getOrSetUid(), url: url}, function (data) {
-                subFeed(data.name);
+                visitorSubFeed(data.site);
                 toast("添加成功，预计一小时内收到更新 ^o^", 3000);
             }).fail(function () {
                 warnToast('RSS 地址解析失败，管理员稍后会跟进处理！');
@@ -594,19 +605,19 @@ $(document).ready(function () {
     // 切换订阅状态
     $(document).on('click', '.ev-toggle-feed', function () {
         const curStat = $(this).text();
-        const feedName = $(this).attr('data-name');
+        const siteId = $(this).attr('data-site');
         const user = getLoginId();
         const feedEl = $(this);
 
         if (curStat === '订阅') {
             if (!user) {
-                subFeed(feedName);
+                visitorSubFeed(siteId);
                 toast('订阅成功 ^o^');
                 $(this).text('取消订阅');
                 $(this).addClass('omrss-bgcolor');
             } else {
                 $('#omrss-loader').removeClass('hide');
-                $.post("/api/feed/subscribe", {uid: getOrSetUid(), feed: feedName}, function (data) {
+                $.post("/api/feed/subscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
                     toast('订阅成功 ^o^');
                     feedEl.text('取消订阅');
                     feedEl.addClass('omrss-bgcolor');
@@ -618,13 +629,13 @@ $(document).ready(function () {
             }
        } else if (curStat === '取消订阅') {
            if (!user) {
-                unsubFeed(feedName);
+                visitorUnsubFeed(siteId);
                 toast('取消订阅成功 ^o^');
                 $(this).removeClass('omrss-bgcolor');
                 $(this).text('订阅');
             } else {
                 $('#omrss-loader').removeClass('hide');
-                $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), feed: feedName}, function (data) {
+                $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
                     toast('取消订阅成功 ^o^');
                     feedEl.text('订阅');
                     feedEl.removeClass('omrss-bgcolor');
@@ -729,10 +740,10 @@ $(document).ready(function () {
     $(document).on('click', '.ev-site-readall', function () {
         $('#omrss-loader').removeClass('hide');
 
-        const siteName = $(this).attr('data-site');
+        const siteId = $(this).attr('data-site');
 
         if (getLoginId()) {
-            $.post("/api/mark/read/site", {uid: getOrSetUid(), site_name: siteName}, function (data) {
+            $.post("/api/mark/read/site", {uid: getOrSetUid(), site_id: siteId}, function (data) {
                 // 全局未读数
                 setUserUnreadCount(data.result);
                 updateUserUnreadCount();
@@ -768,9 +779,9 @@ $(document).ready(function () {
     $(document).on('click', '.ev-site-sync', function () {
         $('#omrss-loader').removeClass('hide');
 
-        const siteName = $(this).attr('data-site');
+        const siteId = $(this).attr('data-site');
 
-        $.post("/api/update/site", {uid: getOrSetUid(), site_name: siteName}, function (data) {
+        $.post("/api/update/site", {uid: getOrSetUid(), site_id: siteId}, function (data) {
             toast("刷新成功，请稍后访问 ^o^");
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
@@ -850,24 +861,14 @@ $(document).ready(function () {
     // 发现页面
     $(document).on('click', '.ev-explore', function() {
         $('#omrss-loader').removeClass('hide');
+
         $.post("/api/html/explore", {uid: getOrSetUid()}, function (data) {
             if (!getLoginId()) {
-                // 游客用户
-                let destDom = $(data);
-
-                destDom.find('span.ev-sub-feed').each(function () {
-                    const siteName = $(this).attr('data-name');
-
-                    if (isVisitorSubFeed(siteName)) {
-                        $(this).text('已订阅');
-                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
-                    }
-                });
-
-                $('#omrss-main').html(destDom);
+                $('#omrss-main').html(updateVisitorSubStatus(data));
             } else {
                 $('#omrss-main').html(data);
             }
+
             resetHeight();
             $('#omrss-main').scrollTop(0);
             $('.tabs').tabs();
@@ -886,19 +887,7 @@ $(document).ready(function () {
 
         $.post("/api/html/recent/articles", {uid: getOrSetUid(), recommend: recommend}, function (data) {
             if (!getLoginId()) {
-                // 游客用户
-                let destDom = $(data);
-
-                destDom.find('span.ev-sub-feed').each(function () {
-                    const siteName = $(this).attr('data-name');
-
-                    if (isVisitorSubFeed(siteName)) {
-                        $(this).text('已订阅');
-                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
-                    }
-                });
-
-                $('#omrss-explore').html(destDom);
+                $('#omrss-explore').html(updateVisitorSubStatus(data));
             } else {
                 $('#omrss-explore').html(data);
             }
@@ -917,19 +906,7 @@ $(document).ready(function () {
 
         $.post("/api/html/recent/sites", {uid: getOrSetUid()}, function (data) {
             if (!getLoginId()) {
-                // 游客用户
-                let destDom = $(data);
-
-                destDom.find('span.ev-sub-feed').each(function () {
-                    const siteName = $(this).attr('data-name');
-
-                    if (isVisitorSubFeed(siteName)) {
-                        $(this).text('已订阅');
-                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
-                    }
-                });
-
-                $('#omrss-explore').html(destDom);
+                $('#omrss-explore').html(updateVisitorSubStatus(data));
             } else {
                 $('#omrss-explore').html(data);
             }
@@ -949,19 +926,7 @@ $(document).ready(function () {
 
         $.post("/api/html/feed/ranking", {uid: getOrSetUid()}, function (data) {
             if (!getLoginId()) {
-                // 游客用户
-                let destDom = $(data);
-
-                destDom.find('span.ev-sub-feed').each(function () {
-                    const siteName = $(this).attr('data-name');
-
-                    if (isVisitorSubFeed(siteName)) {
-                        $(this).text('已订阅');
-                        $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
-                    }
-                });
-
-                $('#omrss-main').html(destDom);
+                $('#omrss-main').html(updateVisitorSubStatus(data));
             } else {
                 $('#omrss-main').html(data);
             }
@@ -977,18 +942,19 @@ $(document).ready(function () {
 
     // 发现界面订阅
     $(document).on('click', '.ev-sub-feed', function () {
-        const feedName = $(this).attr('data-name');
+        const siteId = $(this).attr('data-site');
         const user = getLoginId();
         const evTarget = $(this);
 
         if (!user) {
-            subFeed(feedName);
+            visitorSubFeed(siteId);
             toast('订阅成功 ^o^');
             evTarget.text('已订阅');
             evTarget.removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
         } else {
             $('#omrss-loader').removeClass('hide');
-            $.post("/api/feed/subscribe", {uid: getOrSetUid(), feed: feedName}, function (data) {
+
+            $.post("/api/feed/subscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
                 toast('订阅成功 ^o^');
                 evTarget.text('已订阅');
                 evTarget.removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
@@ -1033,19 +999,7 @@ $(document).ready(function () {
 
             $.post("/search", {uid: getOrSetUid(), keyword: keyword}, function (data) {
                 if (!getLoginId()) {
-                    // 游客用户
-                    let destDom = $(data);
-
-                    destDom.find('span.ev-sub-feed').each(function () {
-                        const siteName = $(this).attr('data-name');
-
-                        if (isVisitorSubFeed(siteName)) {
-                            $(this).text('已订阅');
-                            $(this).removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
-                        }
-                    });
-
-                    $('#omrss-main').html(destDom);
+                    $('#omrss-main').html(updateVisitorSubStatus(data));
                 } else {
                     $('#omrss-main').html(data);
                 }

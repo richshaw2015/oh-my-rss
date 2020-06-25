@@ -31,7 +31,13 @@ def parse_wemp_ershicimi(url, update=False):
             name = urllib.parse.parse_qs(urllib.parse.urlparse(qrcode).query)['username'][0]
 
             if name:
-                if not Site.objects.filter(name=name).exists():
+                site = Site.objects.filter(name=name)
+
+                if site:
+                    logger.info(f"源已经存在：`{url}")
+
+                    return {"site": site[0].pk}
+                else:
                     # 新增站点
                     cname = response.selector.xpath("//li[@class='title']//span[@class='name']/text()").\
                         extract_first().strip()
@@ -44,7 +50,7 @@ def parse_wemp_ershicimi(url, update=False):
 
                     if cname and avatar and brief:
                         try:
-                            site = Site(name=name, cname=cname, link=qrcode, brief=brief, star=19, freq='日更',
+                            site = Site(name=name, cname=cname, link=qrcode, brief=brief, star=9, freq='日更',
                                         creator='wemp', copyright=20, tag='公众号', rss=url, favicon=favicon)
                             site.save()
                         except:
@@ -60,11 +66,11 @@ def parse_wemp_ershicimi(url, update=False):
                             link = urllib.parse.urljoin(url, link)
                             wemp_spider(link, site)
 
-                        set_updated_site(name, ttl=12*3600)
+                        set_updated_site(site.pk, ttl=12*3600)
                     except:
                         logger.warning(f'更新公众号内容出现异常：`{name}')
 
-                return {"name": name}
+                return {"site": site.pk}
             else:
                 logger.warning(f'微信公众号 id 解析失败：`{qrcode}')
         else:

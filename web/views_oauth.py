@@ -6,7 +6,7 @@ from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, Connection
 import logging
 from django.conf import settings
 import json
-from .utils import add_user_sub_feeds, get_subscribe_feeds, add_register_count, save_avatar
+from .utils import add_user_sub_feeds, get_visitor_subscribe_feeds, add_register_count, save_avatar
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def github_callback(request):
                 "client_id": settings.GITHUB_OAUTH_KEY,
                 "client_secret": settings.GITHUB_OAUTH_SECRET,
                 "code": code,
-            }, headers={"Accept": "application/json"}, timeout=8)
+            }, headers={"Accept": "application/json"}, timeout=10)
 
             if rsp.ok:
                 access_token = rsp.json().get('access_token')
@@ -57,7 +57,7 @@ def github_callback(request):
 
                             if created:
                                 logger.warning(f"欢迎新用户登录：`{user.oauth_name}")
-                                add_user_sub_feeds(oauth_id, get_subscribe_feeds('', '', star=28))
+                                add_user_sub_feeds(oauth_id, get_visitor_subscribe_feeds('', '', star=28))
                                 add_register_count()
 
                                 # 用户头像存储到本地一份，国内网络会丢图

@@ -1189,7 +1189,7 @@ V.addKeypress('markAndNextPage', {
                 });
 
                 if (ids.length > 0) {
-                    $.post("/api/mark/read", {uid: getOrSetUid(), ids: ids.toString()}, function (data) {
+                    $.post("/api/mark/read", {uid: getOrSetUid(), ids: JSON.stringify(ids)}, function (data) {
                         // 未读数
                         updateUserUnreadCount(read);
                         updateSiteUnreadCount(read);

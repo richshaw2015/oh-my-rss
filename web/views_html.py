@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 from .models import *
-from .utils import get_page_uv, get_subscribe_feeds, get_login_user, get_user_sub_feeds, set_user_read_article, \
+from .utils import get_page_uv, get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count
 from .verify import verify_request
 import logging
 from collections import defaultdict
+import json
 from .sql import *
-from web.tasks import cal_site_ranking_cron
 
 logger = logging.getLogger(__name__)
 
@@ -42,26 +42,26 @@ def get_article_detail(request):
 
 
 @verify_request
-def get_all_feeds(request):
+def get_my_feeds(request):
     """
-    获取订阅列表，已订阅、推荐订阅
+    获取我的订阅列表；游客已订阅、推荐订阅；登陆用户已订阅、推荐订阅
     """
-    sub_feeds = request.POST.get('sub_feeds', '').split(',')
-    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
 
     user = get_login_user(request)
     
     if user is None:
-        visitor_sub_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        visitor_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
 
-        sub_sites = Site.objects.filter(status='active', name__in=visitor_sub_feeds).order_by('-star')
-        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(name__in=visitor_sub_feeds).\
+        sub_sites = Site.objects.filter(status='active', pk__in=visitor_sub_feeds).order_by('-star')
+        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(pk__in=visitor_sub_feeds).\
             order_by('-star')
     else:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-        sub_sites = Site.objects.filter(status='active', name__in=user_sub_feeds).order_by('-star')
-        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(name__in=user_sub_feeds)\
+        sub_sites = Site.objects.filter(status='active', pk__in=user_sub_feeds).order_by('-star')
+        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(pk__in=user_sub_feeds)\
             .order_by('-star')
 
     context = dict()
@@ -99,10 +99,11 @@ def get_recent_articles(request):
         articles = Article.objects.raw(get_recommend_articles_sql)
     else:
         logger.warning(f'未知的类型：{recommend}')
+        return HttpResponseForbidden("Param Error")
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
     context = dict()
     context['articles'] = articles
@@ -121,7 +122,7 @@ def get_explore(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
     sites = Site.objects.filter(status='active').order_by('-id')[:50]
 
@@ -142,7 +143,7 @@ def get_recent_sites(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
     sites = Site.objects.filter(status='active').order_by('-id')[:50]
 
@@ -163,7 +164,7 @@ def get_feed_ranking(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
     feed_ranking = get_feed_ranking_dict()
 
@@ -214,18 +215,18 @@ def get_site_update_view(request):
     """
     获取更新的全局站点视图，游客 100 个，登陆用户 200 个站点
     """
-    sub_feeds = request.POST.get('sub_feeds', '').split(',')
-    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
 
     user = get_login_user(request)
 
     if user is None:
-        sub_update_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        sub_update_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
         sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_feeds)), 100))
     else:
-        sub_update_feeds = get_user_sub_feeds(user.oauth_id)
+        sub_update_feeds = get_user_subscribe_feeds(user.oauth_id)
         sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_feeds)), 200))
 
     if sites:
@@ -240,10 +241,10 @@ def get_site_update_view(request):
             # 计算未读数
             pg_sites = set()
             for article in pg.object_list:
-                pg_sites.add(article.site.name)
+                pg_sites.add(article.site.pk)
 
-            pg_article_list = Article.objects.filter(status='active', is_recent=True, site__name__in=pg_sites).\
-                values_list('site__name', 'uindex')
+            pg_article_list = Article.objects.filter(status='active', is_recent=True, site_id__in=pg_sites).\
+                values_list('site_id', 'uindex')
 
             pg_unread_dict = defaultdict(list)
             for k, v in pg_article_list:
@@ -251,8 +252,8 @@ def get_site_update_view(request):
 
             pg_unread_count_dict = {}
             if user:
-                for (name, articles) in pg_unread_dict.items():
-                    pg_unread_count_dict[name] = get_user_unread_count(user.oauth_id, articles)
+                for (site_id, articles) in pg_unread_dict.items():
+                    pg_unread_count_dict[site_id] = get_user_unread_count(user.oauth_id, articles)
 
             context = dict()
             context['pg'] = pg
@@ -275,8 +276,8 @@ def get_article_update_view(request):
     获取更新的文章列表视图，游客展示默认推荐内容；登录用户展示其订阅内容
     """
     # 请求参数获取
-    sub_feeds = request.POST.get('sub_feeds', '').split(',')
-    unsub_feeds = request.POST.get('unsub_feeds', '').split(',')
+    sub_feeds = json.loads(request.POST.get('sub_feeds', '[]'))
+    unsub_feeds = json.loads(request.POST.get('unsub_feeds', '[]'))
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
     mobile = request.POST.get('mobile', False)
@@ -284,15 +285,15 @@ def get_article_update_view(request):
     user = get_login_user(request)
 
     if user is None:
-        visitor_sub_feeds = get_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        visitor_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
 
         my_articles = Article.objects.filter(status='active', is_recent=True,
-                                             site__name__in=visitor_sub_feeds).order_by('-id')[:300]
+                                             site_id__in=visitor_sub_feeds).order_by('-id')[:300]
     else:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
         my_articles = Article.objects.filter(
-            status='active', is_recent=True, site__name__in=user_sub_feeds).order_by('-id')[:2000]
+            status='active', is_recent=True, site_id__in=user_sub_feeds).order_by('-id')[:2000]
 
     if my_articles:
         # 分页处理
@@ -315,9 +316,9 @@ def get_article_update_view(request):
                 return render(request, 'left/list_view.html', context=context)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
-            return HttpResponseNotFound("Page Number Error")
+            return HttpResponseForbidden("Page Number Error")
 
-    return HttpResponseNotFound("No Feeds Subscribed")
+    return HttpResponseForbidden("No Feeds Subscribed")
 
 
 @verify_request
@@ -326,18 +327,18 @@ def get_site_article_update_view(request):
     获取某个站点的更新文章列表视图
     """
     # 请求参数获取
-    feed = request.POST.get('site_name', '')
+    site_id = request.POST.get('site_id', 0)
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
 
     user = get_login_user(request)
 
-    site = Site.objects.get(name=feed, status='active')
+    site = Site.objects.get(pk=site_id, status='active')
 
     if user:
-        site_articles = Article.objects.filter(site=site).order_by('-id')[:200]
+        site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:1000]
     else:
-        site_articles = Article.objects.filter(site=site).order_by('-id')[:100]
+        site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:200]
 
     if site_articles:
         articles = [article.uindex for article in site_articles]
@@ -360,10 +361,10 @@ def get_site_article_update_view(request):
 
             return render(request, 'left/list2_view.html', context=context)
         except:
-            logger.warning(f"分页参数错误：`{page}`{page_size}`{feed}")
-            return HttpResponseNotFound("Page Number Error")
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{site_id}")
+            return HttpResponseForbidden("Page Number Error")
 
-    return HttpResponseNotFound("No Sites Data")
+    return HttpResponseForbidden("No Sites Data")
 
 
 @verify_request
@@ -379,15 +380,15 @@ def get_recommend_articles(request):
     if uindex and user:
         recommend_articles = []
         relative_articles = list(get_similar_article(uindex).keys())
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
         for relative_uindex in relative_articles:
             try:
-                article = Article.objects.get(uindex=relative_uindex)
+                article = Article.objects.get(uindex=relative_uindex, status='active')
             except:
                 continue
 
-            if article.site.name not in user_sub_feeds:
+            if article.site.pk not in user_sub_feeds:
                 recommend_articles.append(article)
             if len(recommend_articles) >= 3:
                 break
@@ -399,5 +400,7 @@ def get_recommend_articles(request):
             context['recommend_articles'] = recommend_articles
 
             return render(request, 'recommend/relative_article.html', context=context)
+        else:
+            return JsonResponse({})
 
-    return HttpResponseNotFound("No Recommend Data")
+    return HttpResponseForbidden("No Recommend Data")

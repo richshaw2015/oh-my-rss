@@ -28,15 +28,16 @@
                     </a>
 
                 {% if user %}
-                    {% if site.name in user_sub_feeds %}
-                        <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ site.name }}">已订阅</span>
+                    {% if site.pk|slugify in user_sub_feeds %}
+                        <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ site.name }}"
+                        data-site="{{ site.pk }}">已订阅</span>
                     {% else %}
                         <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
-                              data-name="{{ site.name }}">订阅</span>
+                              data-name="{{ site.name }}" data-site="{{ site.pk }}">订阅</span>
                     {% endif %}
                 {% else %}
                     <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
-                          data-name="{{ site.name }}">订阅</span>
+                          data-name="{{ site.name }}" data-site="{{ site.pk }}">订阅</span>
                 {% endif %}
 
                     <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>
@@ -76,15 +77,16 @@
                         <span class="omrss-recent-site omrss-text">{{ article.site.cname |to_short_site_name }}</span>
                     </a>
                     {% if user %}
-                        {% if article.site.name in user_sub_feeds %}
-                            <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ article.site.name }}">已订阅</span>
+                        {% if article.site.pk|slugify in user_sub_feeds %}
+                            <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ article.site.name }}"
+                            data-site="{{ article.site.pk }}">已订阅</span>
                         {% else %}
                             <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
-                                  data-name="{{ article.site.name }}">订阅</span>
+                                  data-name="{{ article.site.name }}" data-site="{{ article.site.pk }}">订阅</span>
                         {% endif %}
                     {% else %}
                         <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
-                              data-name="{{ article.site.name }}">订阅</span>
+                              data-name="{{ article.site.name }}" data-site="{{ article.site.pk }}">订阅</span>
                     {% endif %}
 
                     <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ article.site.star |to_stars }}</span>

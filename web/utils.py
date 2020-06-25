@@ -124,7 +124,7 @@ def is_active_rss(feed):
 
 
 @lru_cache(maxsize=128, typed=True)
-def get_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
+def get_visitor_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
     """
     获取游客订阅的站点，已订阅 + 推荐 - 取消订阅
     :param sub_feeds:
@@ -135,7 +135,7 @@ def get_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
     # 设置订阅源缓存
     set_active_rss(sub_feeds)
 
-    recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('name', flat=True))
+    recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('id', flat=True))
 
     return list(set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds))
 
@@ -228,7 +228,7 @@ def del_user_sub_feed(oauth_id, feed):
     return R.srem(key, feed)
 
 
-def get_user_sub_feeds(oauth_id, from_user=True):
+def get_user_subscribe_feeds(oauth_id, from_user=True):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 
     sub_feeds = R.smembers(key)
@@ -308,8 +308,8 @@ def get_login_user(request):
     :return: 获取成功返回 User 对象；用户不存在则返回 None
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
-    # if settings.DEBUG:
-    #     oauth_id = 'github/28855629'
+    if settings.DEBUG:
+        oauth_id = 'github/28855629'
 
     if oauth_id:
         try:
@@ -414,16 +414,16 @@ def get_feed_ranking_dict():
     return {}
 
 
-def set_updated_site(site_name, ttl=2*3600):
+def set_updated_site(site_id, ttl=2*3600):
     """
     设置站点更新标记，2 小时
     """
-    key = settings.REDIS_UPDATED_SITE_KEY % site_name
+    key = settings.REDIS_UPDATED_SITE_KEY % site_id
     return R.set(key, '1', ttl)
 
 
-def is_updated_site(site_name):
-    key = settings.REDIS_UPDATED_SITE_KEY % site_name
+def is_updated_site(site_id):
+    key = settings.REDIS_UPDATED_SITE_KEY % site_id
     return R.get(key) == '1'
 
 
@@ -610,7 +610,7 @@ def get_with_proxy(url):
     header = {'User-Agent': UserAgent().random}
 
     try:
-        return requests.get(url, verify=False, timeout=15, headers=header)
+        return requests.get(url, verify=False, timeout=25, headers=header)
     except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
         logger.warning(f"GET 请求出现网络异常：`{url}")
     except:

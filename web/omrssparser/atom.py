@@ -25,6 +25,13 @@ def parse_qnmlgb_atom(feed_url):
 
     title = feed_obj.feed.get('title')
     name = get_hash_name('qnmlgb.tech' + title)
+
+    site = Site.objects.filter(name=name)
+    if site:
+        logger.info(f"源已经存在：`{feed_url}")
+
+        return {"site": site[0].pk}
+
     cname = title[:20]
     link = feed_obj.feed.link[:1024]
     brief = feed_obj.feed.subtitle[:200]
@@ -34,12 +41,12 @@ def parse_qnmlgb_atom(feed_url):
         site = Site(name=name, cname=cname, link=link, brief=brief, star=19, freq='小时', copyright=30, tag='RSS',
                     creator='wemp', rss=feed_url, favicon=favicon, author='')
         site.save()
-    except django.db.utils.IntegrityError:
-        logger.info(f"源已经存在：`{feed_url}")
-    except:
-        logger.error(f'处理源出现未知异常：`{feed_url}')
 
-    return {"name": name}
+        return {"site": site.pk}
+    except:
+        logger.error(f'处理源出现异常：`{feed_url}')
+
+    return None
 
 
 def parse_atom(feed_url):
@@ -52,6 +59,13 @@ def parse_atom(feed_url):
 
     if feed_obj.feed.get('title'):
         name = get_hash_name(feed_url)
+
+        site = Site.objects.filter(name=name)
+        if site:
+            logger.info(f"源已经存在：`{feed_url}")
+
+            return {"site": site[0].pk}
+
         cname = feed_obj.feed.title[:20]
 
         if feed_obj.feed.get('link'):
@@ -73,14 +87,13 @@ def parse_atom(feed_url):
             site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
                         creator='user', rss=feed_url, favicon=favicon, author=author)
             site.save()
-        except django.db.utils.IntegrityError:
-            logger.info(f"源已经存在：`{feed_url}")
-        except:
-            logger.error(f'处理源出现未知异常：`{feed_url}')
 
-        return {"name": name}
+            return {"site": site.pk}
+        except:
+            logger.error(f'处理源出现异常：`{feed_url}')
+
     else:
-        logger.warning(f"RSS解析失败：`{feed_url}")
+        logger.warning(f"RSS 解析失败：`{feed_url}")
 
     return None
 
@@ -159,7 +172,7 @@ def atom_spider(site):
         except:
             logger.warning(f'数据插入异常：`{title}`{link}')
 
-    set_updated_site(site.name)
+    set_updated_site(site.pk)
     return True
 
 
@@ -173,15 +186,14 @@ def parse_self_atom(feed_url):
     feed_path = urllib.parse.urlparse(feed_url).path
 
     try:
-        name = resolve(feed_path).kwargs.get('name')
-    except:
-        name = None
+        site_id = resolve(feed_path).kwargs.get('site_id')
 
-    if name:
         try:
-            Site.objects.get(name=name, status='active')
-            return {"name": name}
+            site = Site.objects.get(pk=site_id, status='active')
+            return {"site": site.pk}
         except:
             logger.warning(f'订阅源不存在：`{feed_url}')
+    except:
+        pass
 
     return None

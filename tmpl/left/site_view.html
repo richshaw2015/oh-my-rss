@@ -4,7 +4,7 @@
 
     <ul class="collection">
         {% for article in pg.object_list %}
-            <li class="collection-item ev-cnt-list" data-site="{{ article.site.name }}">
+            <li class="collection-item ev-cnt-list" data-site="{{ article.site.pk }}">
                 <div class="omrss-title-line omrss-title-site">
                     <img src="{{ article.site.favicon }}" class="circle responsive-img favico"/>
                     <span class="omrss-title truncate omrss-title-read">{{ article.site.cname }}</span>
@@ -18,10 +18,10 @@
 
                     {% if user %}
                         <span class="right meta-num-l omrss-meta omrss-unread-count">
-                            {{ pg_unread_count_dict|get_item:article.site.name }}</span>
+                            {{ pg_unread_count_dict|get_item:article.site.pk }}</span>
                     {% else %}
                         <span class="right meta-num-l omrss-meta omrss-unread-count"
-                              data-ids="{{ pg_unread_dict|get_item:article.site.name }}">0</span>
+                              data-ids="{{ pg_unread_dict|get_item:article.site.pk }}">0</span>
                     {% endif %}
 
                     <i class="right material-icons meta-icon omrss-meta visibility-icon">visibility_off</i>

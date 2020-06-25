@@ -6,10 +6,10 @@ urlpatterns = [
     # public urls
     path('', views_index.index, name='index'),
 
-    path('post/<int:id>', views_search.article, name='article'),
-    path('p/<int:id>', views_search.article, name='article_short_url'),
+    path('post/<int:pid>', views_search.article, name='article'),
+    path('p/<int:pid>', views_search.article, name='article_alias'),
 
-    path('feed/<name>', SiteFeed(), name='get_feed_entries'),
+    path('feed/<site_id>', SiteFeed(), name='get_feed_entries'),
     path('dash', views_dash.dashboard, name='dashboard'),
     path('dash/logs', views_dash.get_warn_log, name='get_warn_log'),
 
@@ -21,7 +21,7 @@ urlpatterns = [
 
     # private urls
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),
-    path('api/html/feeds/all', views_html.get_all_feeds, name='get_all_feeds'),
+    path('api/html/feeds/all', views_html.get_my_feeds, name='get_my_feeds'),
     path('api/html/recommend/articles', views_html.get_recommend_articles, name='get_recommend_articles'),
     path('api/html/homepage/intro', views_html.get_homepage_intro, name='get_homepage_intro'),
     path('api/html/faq', views_html.get_faq, name='get_faq'),

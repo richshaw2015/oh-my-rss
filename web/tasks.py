@@ -6,7 +6,7 @@ from django.utils.timezone import timedelta
 from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
-    get_user_sub_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
+    get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
     set_proxy_ips
 import jieba
 from web.stopwords import stopwords
@@ -20,22 +20,22 @@ import telnetlib
 logger = logging.getLogger(__name__)
 
 
-def update_sites_async(site_list, force_update=False):
+def update_sites_async(sites, force_update=False):
     """
     异步更新某一批订阅源，只支持普通源和公众号的更新
     """
-    for site_name in site_list:
+    for site_id in sites:
         try:
-            site = Site.objects.get(status='active', name=site_name)
+            site = Site.objects.get(status='active', pk=site_id)
         except:
             continue
 
         # 最近已经更新过了，跳过
-        if not force_update and is_updated_site(site_name):
+        if not force_update and is_updated_site(site_id):
             continue
 
         if site.creator != 'system':
-            logger.info(f"开始异步更新：{site_name}")
+            logger.info(f"开始异步更新：{site_id}")
 
             host = get_host_name(site.rss)
 
@@ -61,11 +61,11 @@ def update_all_atom_cron():
 
     for site in sites:
         # 无人订阅的源且不推荐的源不更新
-        if not is_active_rss(site.name) and site.star < 9:
+        if not is_active_rss(site.pk) and site.star < 9:
             continue
 
         # 是否已经更新过
-        if not is_updated_site(site.name):
+        if not is_updated_site(site.pk):
             atom_spider(site)
 
     return True
@@ -79,10 +79,10 @@ def update_all_wemp_cron():
 
     for site in sites:
         # 无人订阅的源且不推荐的源不更新
-        if not is_active_rss(site.name) and site.star < 9:
+        if not is_active_rss(site.pk) and site.star < 9:
             continue
 
-        if not is_updated_site(site.name):
+        if not is_updated_site(site.pk):
             host = get_host_name(site.rss)
 
             if 'ershicimi.com' in host:
@@ -199,18 +199,17 @@ def cal_site_ranking_cron():
     dest_feed_ranking = []
 
     for oauth_id in users:
-        all_user_feeds += get_user_sub_feeds(oauth_id, from_user=False)
+        all_user_feeds += get_user_subscribe_feeds(oauth_id, from_user=False)
 
     feed_ranking = dict(Counter(all_user_feeds).most_common(100))
 
-    for (feed, score) in feed_ranking.items():
+    for (site_id, score) in feed_ranking.items():
         try:
-            site_dict = Site.objects.get(name=feed).__dict__
-            del site_dict['_state'], site_dict['ctime'], site_dict['mtime'], site_dict['creator'], site_dict['rss'], \
-                site_dict['status'], site_dict['copyright'], site_dict['tag'], site_dict['remark'], site_dict['freq']
+            site_dict = Site.objects.get(pk=site_id).__dict__
+            del site_dict['_state'], site_dict['ctime'], site_dict['mtime']
             site_dict['score'] = score
         except:
-            logger.warning(f"订阅源不存在：`{feed}")
+            logger.warning(f"订阅源不存在：`{site_id}")
             continue
 
         dest_feed_ranking.append(site_dict)

@@ -17,13 +17,13 @@
         </div>
 
         <div class="col s1">
-            <a class="omrss-color ev-site-sync" href="#" data-site="{{ site.name }}">
+            <a class="omrss-color ev-site-sync" href="#" data-site="{{ site.pk }}">
                 <i class="material-icons right omrss-text tooltipped sync-bar-icon" data-tooltip="立刻更新"
                    data-position="bottom">sync</i></a>
         </div>
 
         <div class="col s1">
-            <a class="omrss-color ev-site-readall" href="#" data-site="{{ site.name }}" data-articles="{{ articles }}">
+            <a class="omrss-color ev-site-readall" href="#" data-site="{{ site.pk }}" data-articles="{{ articles }}">
                 <i class="material-icons right omrss-text tooltipped" data-tooltip="标记已读"
                    data-position="bottom">check</i></a>
         </div>
@@ -82,25 +82,25 @@
     <ul class="pagination">
         {% if pg.has_previous %}
             <li class="waves-effect ev-page ev-page-previous" title="上一页" data-page="{{ pg.previous_page_number }}"
-                data-site="{{ site.name }}">
+                data-site="{{ site.pk }}">
                 <a href="#"><i class="material-icons">chevron_left</i></a></li>
         {% else %}
             <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
         {% endif %}
 
-        <li class="waves-effect ev-page" title="首页" data-page="1" data-site="{{ site.name }}">
+        <li class="waves-effect ev-page" title="首页" data-page="1" data-site="{{ site.pk }}">
             <a href="#">1</a></li>
 
         <li id="omrss-active-pager" class="omrss-bgcolor"><a href="#">{{ pg.number }}</a></li>
 
         {% if pg.number <= num_pages %}
-            <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}" data-site="{{ site.name }}">
+            <li class="waves-effect ev-page" title="尾页" data-page="{{ num_pages }}" data-site="{{ site.pk }}">
                 <a href="#">{{ num_pages }}</a></li>
         {% endif %}
 
         {% if pg.has_next %}
             <li class="waves-effect ev-page ev-page-next" title="下一页" data-page="{{ pg.next_page_number }}"
-                data-site="{{ site.name }}">
+                data-site="{{ site.pk }}">
                 <a href="#"><i class="material-icons">chevron_right</i></a></li>
         {% else %}
             <li class="disabled"><a href="#"><i class="material-icons">chevron_right</i></a></li>

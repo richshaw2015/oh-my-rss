@@ -161,10 +161,10 @@ def to_rss(site):
     if site.creator == 'user':
         rss = site.rss
     else:
-        rss = reverse('get_feed_entries', kwargs={"name": site.name})
+        rss = reverse('get_feed_entries', kwargs={"site_id": site.pk})
 
     if not rss:
-        logger.error(f'生成 RSS 失败：`{site.name}`{site.creator}')
+        logger.error(f'生成 RSS 失败：`{site.pk}`{site.creator}')
 
     return rss
 

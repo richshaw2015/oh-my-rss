@@ -5,10 +5,10 @@ from .models import Site, Article
 
 
 class SiteFeed(Feed):
-    ttl = 7200
+    ttl = 4 * 3600
 
-    def get_object(self, request, name):
-        return Site.objects.get(name=name, status='active', creator__in=('system', 'wemp'))
+    def get_object(self, request, site_id):
+        return Site.objects.get(pk=site_id, status='active', creator__in=('system', 'wemp'))
 
     def title(self, site):
         return site.cname
@@ -20,7 +20,7 @@ class SiteFeed(Feed):
         return site.brief
 
     def feed_url(self, site):
-        return reverse('get_feed_entries', kwargs={"name": site.name})
+        return reverse('get_feed_entries', kwargs={"site_id": site.pk})
 
     def author_name(self, site):
         return site.author

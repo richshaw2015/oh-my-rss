@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from web.models import *
-from web.utils import add_referer_stats, get_login_user, get_user_sub_feeds, set_user_read_article, is_sensitive_content
+from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, is_sensitive_content
 import logging
 import os
 from user_agents import parse
@@ -12,7 +12,7 @@ from django.db.models import Q
 logger = logging.getLogger(__name__)
 
 
-def article(request, id):
+def article(request, pid):
     """
     详情页，主要向移动端、搜索引擎提供，这个页面需要做风控
     """
@@ -20,23 +20,23 @@ def article(request, id):
     add_referer_stats(request.META.get('HTTP_REFERER', ''))
 
     try:
-        article = Article.objects.get(uindex=id, status='active')
+        article = Article.objects.get(uindex=pid, status='active')
     except:
         return redirect('index')
 
     user = get_login_user(request)
     if user:
-        set_user_read_article(user.oauth_id, id)
+        set_user_read_article(user.oauth_id, pid)
 
     # 判断是否命中敏感词
-    if is_sensitive_content(id, article.content):
+    if is_sensitive_content(pid, article.content):
         user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
 
         if user_agent.is_mobile or user_agent.is_bot:
-            logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{id}')
+            logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{pid}')
             return redirect(article.src_url)
         else:
-            logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{id}')
+            logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{pid}')
             return redirect('index')
 
     context = dict()
@@ -56,7 +56,7 @@ def sitemap(request):
         values_list('uindex', flat=True)[:1000]
 
     url = request.build_absolute_uri('/')[:-1].strip("/")
-    sites = [f'{url}/post/{i}' for i in indexs]
+    sites = [f'{url}/p/{index}' for index in indexs]
 
     return HttpResponse('\n'.join(sites))
 
@@ -73,7 +73,7 @@ def insite_search(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_sub_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
     rel_sites = Site.objects.filter(status='active').filter(
         Q(cname__icontains=keyword) | Q(link__icontains=keyword) | Q(brief__icontains=keyword) |

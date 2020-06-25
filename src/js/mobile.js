@@ -11,16 +11,23 @@ function loadPage(page) {
     // UI状态
     $('#omrss-loader').removeClass('hide');
 
+    let user, subFeeds, unSubFeeds;
+    [user, subFeeds, unSubFeeds] = [getLoginId(), '[]', '[]']
+
+    if (!user) {
+        [subFeeds, unSubFeeds] = [getVisitorSubFeeds(), getVisitorUnsubFeeds()];
+    }
+
     // 网络请求
     $.post("/api/html/articles/list", {
         uid: getOrSetUid(), page_size: getPageSize(), page: page, mobile: true,
-        sub_feeds: Object.keys(getSubFeeds()).join(','), unsub_feeds: Object.keys(getUnsubFeeds()).join(',')
+        sub_feeds: subFeeds, unsub_feeds: unSubFeeds
     }, function (data) {
         let destDom = $(data);
 
         // 是否已读，是否点赞
         destDom.find('.collection li[id]').each(function (index) {
-            if (!getLoginId()) {
+            if (!user) {
                 // 游客身份的提示图标；变为未读状态
                 if (!hasVisitorReadArticle(this.id)) {
                     const unread_el = $(this).find('i.read');
@@ -200,15 +207,15 @@ $(document).ready(function () {
 
     // 确定取消订阅
     $(document).on('click', '#omrss-unlike', function () {
-        const site = $(this).attr('data-site');
+        const siteId = $(this).attr('data-site');
         const user = getLoginId();
 
         if (!user) {
-            unsubFeed(site);
+            unsubFeed(siteId);
             toast("取消订阅成功 ^o^");
         } else {
             $('#omrss-loader').removeClass('hide');
-            $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), feed: site}, function (data) {
+            $.post("/api/feed/unsubscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
                 toast('取消订阅成功 ^o^');
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);

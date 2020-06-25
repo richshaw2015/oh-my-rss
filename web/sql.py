@@ -30,7 +30,7 @@ SELECT "web_article"."id", MAX("web_article"."ctime") AS "up_time", COUNT(1) AS 
 FROM "web_article" 
 INNER JOIN "web_site"
 ON "web_article"."site_id" = "web_site"."id"
-WHERE ("web_article"."is_recent" = 1 AND "web_article"."status" = "active" AND "web_site"."name" in %s)
+WHERE ("web_article"."is_recent" = 1 AND "web_article"."status" = "active" AND "web_site"."id" in %s)
 GROUP BY "web_article"."site_id" 
 ORDER BY "up_time" DESC
 LIMIT %d;
