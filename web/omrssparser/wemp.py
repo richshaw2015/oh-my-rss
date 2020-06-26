@@ -50,8 +50,8 @@ def parse_wemp_ershicimi(url, update=False):
 
                     if cname and avatar and brief:
                         try:
-                            site = Site(name=name, cname=cname, link=qrcode, brief=brief, star=9, freq='日更',
-                                        creator='wemp', copyright=20, tag='公众号', rss=url, favicon=favicon)
+                            site = Site(name=name, cname=cname, link=qrcode, brief=brief, star=9,
+                                        creator='wemp', copyright=20, rss=url, favicon=favicon)
                             site.save()
                         except:
                             logger.warning(f'新增公众号失败：`{name}')

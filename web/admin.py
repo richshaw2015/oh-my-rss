@@ -15,11 +15,11 @@ class SiteAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 20})},
     }
 
-    list_display = ('cname', 'author', view_link, 'star', 'remark', 'favicon', 'ctime', 'tag', 'rss')
+    list_display = ('cname', 'author', view_link, 'star', 'remark', 'favicon', 'ctime', 'rss')
     search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark', 'rss')
-    list_filter = ('status', 'freq', 'copyright', 'creator')
-    list_editable = ['star', 'author', 'remark', 'tag', 'favicon']
-    list_per_page = 6
+    list_filter = ('status', 'copyright', 'creator')
+    list_editable = ['star', 'author', 'remark', 'favicon']
+    list_per_page = 50
 
 
 @admin.register(Article)
@@ -54,4 +54,16 @@ class UserAdmin(admin.ModelAdmin):
                     'remark']
     list_editable = ['remark', ]
     list_filter = ('status', )
+    list_per_page = 50
+
+
+@admin.register(SiteUpdate)
+class SiteUpdateAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
+    }
+
+    list_display = ['site_id', 'site_cname', 'update_count', 'update_time', 'mtime', 'update_ids', 'remark']
+    list_editable = ['remark', ]
     list_per_page = 50

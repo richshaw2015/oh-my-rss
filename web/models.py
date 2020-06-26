@@ -5,19 +5,14 @@ class Site(models.Model):
     """
     站点表
     """
-    name = models.CharField('scrapy代号', max_length=100, unique=True, db_index=True)
+    name = models.CharField('scrapy代号', max_length=100, unique=True)
     author = models.CharField('作者', max_length=100, null=True, blank=True, default='None')
     cname = models.CharField('名称', max_length=100)
     link = models.CharField('主页', max_length=1024)
     favicon = models.CharField('favicon', max_length=100, default='', null=True, blank=True)
     brief = models.CharField('简介', max_length=200)
     star = models.IntegerField('评级', default=20, db_index=True)
-    freq = models.CharField('更新频率', choices=(
-        ('小时', '每小时更新'),
-        ('日更', '每天更新'),
-        ('周更', '每周更新'),
-        ('月更', '每月更新'),
-    ), max_length=20)
+
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
         ('close', '关闭，下线'),
@@ -29,30 +24,31 @@ class Site(models.Model):
         (30, '可以全文转载'),
     ), default=0, null=True, blank=True)
 
-    tag = models.CharField('一个词形容', choices=(
-        ('前端', '前端'),
-        ('客户端', '客户端'),
-        ('后端', '后端'),
-        ('全栈', '全栈'),
-        ('产品', '产品'),
-        ('营销', '营销'),
-        ('安全', '安全'),
-        ('设计', '设计'),
-        ('测试', '测试'),
-        ('运维', '运维'),
-        ('刊物', '刊物'),
-        ('算法', '算法'),
-        ('大数据', '大数据'),
-        ('公众号', '公众号'),
-        ('RSS', 'RSS'),
-    ), max_length=20, null=True, blank=True)
-
     rss = models.CharField('RSS地址', max_length=1024, null=True, blank=True)
     creator = models.CharField('创建人', choices=(
         ('system', '系统录入'),
         ('user', '用户提交'),
         ('wemp', '微信公众号'),
     ), max_length=20, null=True, blank=True, default='system', db_index=True)
+
+    ctime = models.DateTimeField('创建时间', auto_now_add=True)
+    mtime = models.DateTimeField('更新时间', auto_now=True)
+    remark = models.TextField('备注', default='', null=True, blank=True)
+
+
+class SiteUpdate(models.Model):
+    """
+    站点更新概览表，频繁更新
+    """
+    site_id = models.IntegerField('站点', db_index=True)
+    site_cname = models.CharField('名称', max_length=100)
+    site_author = models.CharField('作者', max_length=100, default='None', null=True, blank=True)
+    site_favicon = models.CharField('favicon', max_length=100, default='', null=True, blank=True)
+    site_star = models.IntegerField('评级', default=20)
+
+    update_count = models.IntegerField('更新数', default=0)
+    update_ids = models.TextField('更新索引', default='[]')
+    update_time = models.DateTimeField('最后更新时间')
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)

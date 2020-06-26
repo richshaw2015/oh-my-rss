@@ -224,10 +224,10 @@ def get_site_update_view(request):
 
     if user is None:
         sub_update_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
-        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_feeds)), 100))
     else:
         sub_update_feeds = get_user_subscribe_feeds(user.oauth_id)
-        sites = Article.objects.raw(site_update_view_sql % (str(tuple(sub_update_feeds)), 200))
+
+    sites = SiteUpdate.objects.filter(site_id__in=sub_update_feeds)
 
     if sites:
         # 分页处理
@@ -239,28 +239,14 @@ def get_site_update_view(request):
             num_pages = paginator_obj.num_pages
 
             # 计算未读数
-            pg_sites = set()
-            for article in pg.object_list:
-                pg_sites.add(article.site_id)
-
-            pg_article_list = Article.objects.filter(status='active', is_recent=True, site_id__in=pg_sites).\
-                values_list('site_id', 'uindex')
-
-            pg_unread_dict = defaultdict(list)
-            for k, v in pg_article_list:
-                pg_unread_dict[k].append(v)
-
-            pg_unread_count_dict = {}
             if user:
-                for (site_id, articles) in pg_unread_dict.items():
-                    pg_unread_count_dict[site_id] = get_user_unread_count(user.oauth_id, articles)
+                for obj in pg.object_list:
+                    obj.unread_count = get_user_unread_count(user.oauth_id, json.loads(obj.update_ids))
 
             context = dict()
             context['pg'] = pg
             context['num_pages'] = num_pages
             context['user'] = user
-            context['pg_unread_dict'] = pg_unread_dict
-            context['pg_unread_count_dict'] = pg_unread_count_dict
 
             return render(request, 'left/site_view.html', context=context)
         except:

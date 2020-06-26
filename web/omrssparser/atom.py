@@ -38,7 +38,7 @@ def parse_qnmlgb_atom(feed_url):
     favicon = feed_obj.feed.image.link.replace('/64.ico', '/132')
 
     try:
-        site = Site(name=name, cname=cname, link=link, brief=brief, star=19, freq='小时', copyright=30, tag='RSS',
+        site = Site(name=name, cname=cname, link=link, brief=brief, star=19, copyright=30,
                     creator='wemp', rss=feed_url, favicon=favicon, author='')
         site.save()
 
@@ -84,7 +84,7 @@ def parse_atom(feed_url):
         favicon = generate_rss_avatar(link)
 
         try:
-            site = Site(name=name, cname=cname, link=link, brief=brief, star=9, freq='小时', copyright=30, tag='RSS',
+            site = Site(name=name, cname=cname, link=link, brief=brief, star=9, copyright=30,
                         creator='user', rss=feed_url, favicon=favicon, author=author)
             site.save()
 

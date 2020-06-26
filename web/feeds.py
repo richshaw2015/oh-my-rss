@@ -29,7 +29,7 @@ class SiteFeed(Feed):
         return site.author
 
     def categories(self, site):
-        return site.tag.split('|')
+        return ''
 
     def items(self, site):
         return Article.objects.filter(site=site, status='active').order_by('-ctime')[:10]

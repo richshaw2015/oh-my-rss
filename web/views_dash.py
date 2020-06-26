@@ -188,15 +188,7 @@ def fixbug(request):
     :param request:
     :return:
     """
-    for user in User.objects.all():
-        subs_old = get_user_subscribe_feeds(user.oauth_id, from_user=False)
-        subs_new = list(Site.objects.filter(name__in=subs_old).values_list('id', flat=True))
-
-        if subs_new:
-            R.delete(settings.REDIS_USER_SUB_KEY % user.oauth_id)
-            add_user_sub_feeds(user.oauth_id, subs_new)
-
-    from web.tasks import cal_site_ranking_cron
-    cal_site_ranking_cron()
+    from web.tasks import cal_sites_update_data_cron
+    cal_sites_update_data_cron(True)
 
     return JsonResponse({})

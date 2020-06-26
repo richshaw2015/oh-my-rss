@@ -219,6 +219,53 @@ def cal_site_ranking_cron():
     return True
 
 
+def cal_sites_update_data_cron(first_boot=False):
+    """
+    站点更新表计算，扫描一遍数据库
+    """
+    article_info = {}
+
+    for article in Article.objects.filter(status='active', is_recent=True).order_by('-id'):
+        if not article_info.get(article.site_id):
+            article_info[article.site_id] = {
+                "update_time": article.ctime,
+                "update_ids": [article.uindex, ],
+                "site_cname": article.site.cname,
+                "site_author": article.site.author,
+                "site_favicon": article.site.favicon,
+                "site_star": article.site.star,
+            }
+        else:
+            article_info[article.site_id]["update_ids"].append(article.uindex)
+
+    full_update = datetime.now().minute % 5 == 0 or first_boot
+
+    # 区分是否增量更新
+    for (site_id, update_info) in article_info.items():
+        if full_update:
+            SiteUpdate.objects.update_or_create(site_id=site_id, defaults={
+                "site_cname": update_info['site_cname'], "site_author": update_info['site_author'],
+                "site_favicon": update_info['site_favicon'], "site_star": update_info['site_star'],
+                "update_count": len(update_info['update_ids']), "update_time": update_info['update_time'],
+                'update_ids': json.dumps(update_info['update_ids'])
+            })
+        else:
+            record, created = SiteUpdate.objects.update_or_create(site_id=site_id, defaults={
+                "update_count": len(update_info['update_ids']), "update_time": update_info['update_time'],
+                'update_ids': json.dumps(update_info['update_ids'])
+            })
+
+            if created:
+                record.site_cname = update_info['site_cname']
+                record.site_author = update_info['site_author']
+                record.site_favicon = update_info['site_favicon']
+                record.site_star = update_info['site_star']
+
+                record.save()
+
+    return True
+
+
 def update_proxy_pool_cron():
     """
     TODO 这个不靠谱，待下线

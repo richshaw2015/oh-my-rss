@@ -125,6 +125,9 @@ def to_short_author(author1, author2=''):
     """
     author = author1 if author1 else author2
 
+    if not author:
+        author = 'None'
+
     return cut_to_short(author, 12)
 
 
@@ -167,8 +170,3 @@ def to_rss(site):
         logger.error(f'生成 RSS 失败：`{site.pk}`{site.creator}')
 
     return rss
-
-
-@register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
