@@ -241,7 +241,7 @@ def get_site_update_view(request):
             # 计算未读数
             pg_sites = set()
             for article in pg.object_list:
-                pg_sites.add(article.site.id)
+                pg_sites.add(article.site_id)
 
             pg_article_list = Article.objects.filter(status='active', is_recent=True, site_id__in=pg_sites).\
                 values_list('site_id', 'uindex')
@@ -388,7 +388,7 @@ def get_recommend_articles(request):
             except:
                 continue
 
-            if article.site.pk not in user_sub_feeds:
+            if article.site_id not in user_sub_feeds:
                 recommend_articles.append(article)
             if len(recommend_articles) >= 3:
                 break

@@ -211,7 +211,7 @@ $(document).ready(function () {
         const user = getLoginId();
 
         if (!user) {
-            unsubFeed(siteId);
+            visitorUnsubFeed(siteId);
             toast("取消订阅成功 ^o^");
         } else {
             $('#omrss-loader').removeClass('hide');
