@@ -28,7 +28,7 @@
                     </a>
 
                 {% if user %}
-                    {% if site.pk|slugify in user_sub_feeds %}
+                    {% if site.pk in user_sub_feeds %}
                         <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ site.name }}"
                         data-site="{{ site.pk }}">已订阅</span>
                     {% else %}
@@ -77,7 +77,7 @@
                         <span class="omrss-recent-site omrss-text">{{ article.site.cname |to_short_site_name }}</span>
                     </a>
                     {% if user %}
-                        {% if article.site.pk|slugify in user_sub_feeds %}
+                        {% if article.site.pk in user_sub_feeds %}
                             <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ article.site.name }}"
                             data-site="{{ article.site.pk }}">已订阅</span>
                         {% else %}

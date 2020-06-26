@@ -22,7 +22,7 @@
                     </a>
 
                 {% if user %}
-                    {% if site.id|slugify in user_sub_feeds %}
+                    {% if site.id in user_sub_feeds %}
                         <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ site.name }}"
                               data-site="{{ site.id }}">已订阅</span>
                     {% else %}
