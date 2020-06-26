@@ -19,7 +19,7 @@ class SiteAdmin(admin.ModelAdmin):
     search_fields = ('name', 'cname', 'author', 'brief', 'link', 'remark', 'rss')
     list_filter = ('status', 'copyright', 'creator')
     list_editable = ['star', 'author', 'remark', 'favicon']
-    list_per_page = 50
+    list_per_page = 10
 
 
 @admin.register(Article)

@@ -225,7 +225,7 @@ def cal_sites_update_data_cron(first_boot=False):
     """
     article_info = {}
 
-    for article in Article.objects.filter(status='active', is_recent=True).order_by('-id'):
+    for article in Article.objects.filter(status='active', is_recent=True).order_by('-id').iterator():
         if not article_info.get(article.site_id):
             article_info[article.site_id] = {
                 "update_time": article.ctime,
