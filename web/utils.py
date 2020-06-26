@@ -240,7 +240,7 @@ def get_user_subscribe_feeds(oauth_id, from_user=True):
         if not sub_feeds:
             logger.warning(f'用户未订阅任何内容：`{oauth_id}')
 
-    return sub_feeds
+    return [int(i) for i in sub_feeds]
 
 
 def set_proxy_ips(proxies):

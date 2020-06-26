@@ -241,7 +241,7 @@ def get_site_update_view(request):
             # 计算未读数
             pg_sites = set()
             for article in pg.object_list:
-                pg_sites.add(article.site.pk)
+                pg_sites.add(article.site.id)
 
             pg_article_list = Article.objects.filter(status='active', is_recent=True, site_id__in=pg_sites).\
                 values_list('site_id', 'uindex')

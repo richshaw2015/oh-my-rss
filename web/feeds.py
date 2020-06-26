@@ -8,7 +8,10 @@ class SiteFeed(Feed):
     ttl = 4 * 3600
 
     def get_object(self, request, site_id):
-        return Site.objects.get(pk=site_id, status='active', creator__in=('system', 'wemp'))
+        try:
+            return Site.objects.get(pk=site_id, status='active', creator__in=('system', 'wemp'))
+        except ValueError:
+            return Site.objects.get(name=site_id, status='active', creator__in=('system', 'wemp'))
 
     def title(self, site):
         return site.cname
