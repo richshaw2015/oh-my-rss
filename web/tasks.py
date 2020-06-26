@@ -240,8 +240,12 @@ def cal_sites_update_data_cron(first_boot=False):
 
     full_update = datetime.now().minute % 5 == 0 or first_boot
 
-    # 区分是否增量更新
     for (site_id, update_info) in article_info.items():
+        # 先判断是否需要更新
+        if int(datetime.now().timestamp() - update_info['update_time'].timestamp()) > 10*60:
+            continue
+
+        # 区分是否增量更新
         if full_update:
             SiteUpdate.objects.update_or_create(site_id=site_id, defaults={
                 "site_cname": update_info['site_cname'], "site_author": update_info['site_author'],
