@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 from .models import *
-from .utils import get_page_uv, get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
+from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count
 from .verify import verify_request
 import logging
@@ -259,7 +259,7 @@ def get_site_update_view(request):
 @verify_request
 def get_article_update_view(request):
     """
-    获取更新的文章列表视图，游客展示默认推荐内容；登录用户展示其订阅内容
+    获取更新的文章列表视图；登录用户展示其订阅内容
     """
     # 请求参数获取
     sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
@@ -288,11 +288,9 @@ def get_article_update_view(request):
             # 页面及数据
             pg = paginator_obj.page(page)
             num_pages = paginator_obj.num_pages
-            uv = get_page_uv(pg)
 
             context = dict()
             context['pg'] = pg
-            context['uv'] = uv
             context['num_pages'] = num_pages
             context['user'] = user
 
@@ -335,11 +333,9 @@ def get_site_article_update_view(request):
             # 页面及数据
             pg = paginator_obj.page(page)
             num_pages = paginator_obj.num_pages
-            uv = get_page_uv(pg)
 
             context = dict()
             context['pg'] = pg
-            context['uv'] = uv
             context['num_pages'] = num_pages
             context['site'] = site
             context['user'] = user

@@ -38,25 +38,13 @@ def to_date_fmt(dt):
 
 
 @register.filter
-def to_view_uv(uv_dict, uindex):
-    """
-    to user visit data
-    :param uv_dict:
-    :param uindex:
-    :return:
-    """
-    return uv_dict.get(settings.REDIS_VIEW_KEY % uindex) or 0
+def to_view_uv(uindex):
+    return R.get(settings.REDIS_VIEW_KEY % uindex) or 0
 
 
 @register.filter
-def to_star_uv(uv_dict, uindex):
-    """
-    to star data
-    :param uv_dict:
-    :param uindex:
-    :return:
-    """
-    return uv_dict.get(settings.REDIS_STAR_KEY % uindex) or 0
+def to_star_uv(uindex):
+    return R.get(settings.REDIS_STAR_KEY % uindex) or 0
 
 
 @register.filter

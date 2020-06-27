@@ -823,3 +823,7 @@ kbd {
 kbd:hover {
     background: linear-gradient(0deg, #fff, #fff, #fff, #ddd);
 }
+
+.card {
+    border-radius: 4px !important;
+}

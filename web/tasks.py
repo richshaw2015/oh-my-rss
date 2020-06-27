@@ -238,11 +238,11 @@ def cal_sites_update_data_cron(first_boot=False):
         else:
             article_info[article.site_id]["update_ids"].append(article.uindex)
 
-    full_update = datetime.now().minute % 5 == 0 or first_boot
+    full_update = datetime.now().minute % 7 == 0 or first_boot
 
     for (site_id, update_info) in article_info.items():
         # 先判断是否需要更新
-        if int(datetime.now().timestamp() - update_info['update_time'].timestamp()) > 10*60:
+        if int(datetime.now().timestamp() - update_info['update_time'].timestamp()) > 5*60:
             continue
 
         # 区分是否增量更新

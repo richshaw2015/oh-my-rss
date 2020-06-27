@@ -51,7 +51,12 @@ function updateStarUI(newAdd=false) {
 }
 
 // 用于返回上级
-let lastLeftDom = null;
+function setLastLeftDom(dom){
+    sessionStorage.setItem('LLD', dom);
+}
+function getLastLeftDom(){
+    return sessionStorage.getItem('LLD');
+}
 
 // 全局保存当前激活站点的未读数
 let curSiteUnreadCount = 0;
@@ -286,7 +291,7 @@ function loadPage(page, site="", reflow=false) {
 
                 if (reflow) {
                     // 进入站点专栏，备份 DOM 数据，用于返回
-                    lastLeftDom = $('#omrss-left').html();
+                    setLastLeftDom($('#omrss-left').html());
 
                     getCurSiteUnreadCount();
                 }
@@ -685,17 +690,13 @@ $(document).ready(function () {
 
     // 左上角返回按钮
     $(document).on('click', '.ev-site-back', function () {
-        if (lastLeftDom !== null) {
-            $('#omrss-loader').removeClass('hide');
+        $('#omrss-loader').removeClass('hide');
 
-            $('#omrss-left').html(lastLeftDom);
+        $('#omrss-left').html(getLastLeftDom());
 
-            setCurSiteUnreadCount();
+        setCurSiteUnreadCount();
 
-            $('#omrss-loader').addClass('hide');
-        } else {
-            console.warn("没有上级页面信息");
-        }
+        $('#omrss-loader').addClass('hide');
     });
 
     // 设置所有已读，区分是否已登录状态

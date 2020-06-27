@@ -84,21 +84,6 @@ def add_api_profile(api, elapsed):
         logger.error(f"api 平均耗时计算异常！`{count}`{total}")
 
 
-def get_page_uv(page):
-    """
-    get all visit data of current page
-    :param page:
-    :return:
-    """
-    key_list, data_list = [], []
-    for article in page.object_list:
-        key_list.extend([settings.REDIS_VIEW_KEY % article.uindex, settings.REDIS_STAR_KEY % article.uindex])
-
-    data_list = R.mget(*key_list)
-
-    return dict(zip(key_list, data_list))
-
-
 @lru_cache(maxsize=4)
 def get_profile_apis():
     return (

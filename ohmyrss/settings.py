@@ -134,7 +134,7 @@ CRONJOBS = [
    ('*/43 * * * *', 'web.tasks.cal_all_article_tag_cron'),
    ('17 3 * * *', 'web.tasks.cal_article_distance_cron'),
    ('1 3 * * *', 'web.tasks.cal_site_ranking_cron'),
-   ('* * * * *', 'web.tasks.cal_sites_update_data_cron'),
+   ('*/2 * * * *', 'web.tasks.cal_sites_update_data_cron'),
 ]
 
 # Static files (CSS, JavaScript, Images)
