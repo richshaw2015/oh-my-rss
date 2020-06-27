@@ -10,8 +10,8 @@ class MoeloveSpider(Spider):
                         start_urls=[
                             'https://moelove.info/',
                         ],
-                        index_xpath="//h2[@class='post-title']/a/@href",
+                        index_xpath="//h1[@class='post-title']/a/@href",
                         article_title_xpath="//h1[@class='post-title']/text()",
                         article_content_xpath="//div[@class='post-content']",
-                        index_limit_count=3,
+                        index_limit_count=10,
                         )

@@ -10,8 +10,8 @@ class AdleredSpider(Spider):
                         start_urls=[
                             'https://www.stackoverflow.wiki/blog',
                         ],
-                        index_xpath="//h2[@class='item__title']/a/@href",
-                        article_title_xpath="//h2[@class='item__title']/text()",
-                        article_content_xpath="//div[@class='wrapper']",
-                        index_limit_count=3,
+                        index_xpath="//h1/a/@href",
+                        article_title_xpath="//h1[contains(@class, 'title')]/text()",
+                        article_content_xpath="//div[@id='post-article']",
+                        index_limit_count=8,
                         )
