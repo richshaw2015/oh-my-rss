@@ -180,19 +180,22 @@ def user_mark_read_all(request):
     """
     设置批量已读，如不传 ids 则设置全部已读
     """
-    uindexs = json.loads(request.POST.get('ids') or '[]')
+    ids = json.loads(request.POST.get('ids') or '[]')
     user = get_login_user(request)
 
     if user:
-        if not uindexs:
+        if not ids:
             my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-            uindexs = list(Article.objects.filter(status='active', site_id__in=my_sub_feeds, is_recent=True).
+            ids = list(Article.objects.filter(status='active', site_id__in=my_sub_feeds, is_recent=True).
                        values_list('uindex', flat=True))
 
-        set_user_read_articles(user.oauth_id, uindexs)
+        set_user_read_articles(user.oauth_id, ids)
 
-        return JsonResponse({})
+        if ids:
+            return get_lastweek_articles(request)
+        else:
+            return JsonResponse({})
 
     return HttpResponseNotFound("Param Error")
 

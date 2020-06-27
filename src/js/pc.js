@@ -748,6 +748,7 @@ $(document).ready(function () {
                 // 全局未读数
                 setUserUnreadCount(data.result);
                 updateUserUnreadCount();
+                
                 // 站点未读数 0
                 updateSiteUnreadCount(0, 0);
                 // 页面 UI 未读状态
@@ -762,7 +763,7 @@ $(document).ready(function () {
         } else {
             // 全局未读数
             toReads = JSON.parse(toReads);
-            
+
             markVisitorReadAll(toReads);
             updateUnreadCount();
             // 站点未读数 0
