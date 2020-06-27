@@ -201,11 +201,11 @@ def cal_site_ranking_cron():
     for oauth_id in users:
         all_user_feeds += get_user_subscribe_feeds(oauth_id, from_user=False)
 
-    feed_ranking = dict(Counter(all_user_feeds).most_common(100))
+    feed_ranking = dict(Counter(all_user_feeds).most_common(110))
 
     for (site_id, score) in feed_ranking.items():
         try:
-            site_dict = Site.objects.get(pk=site_id).__dict__
+            site_dict = Site.objects.get(pk=site_id, status='active').__dict__
             del site_dict['_state'], site_dict['ctime'], site_dict['mtime']
             site_dict['score'] = score
         except:
