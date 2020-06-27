@@ -188,6 +188,10 @@ def fixbug(request):
     :param request:
     :return:
     """
+    for site in Site.objects.filter(favicon='/assets/img/logo.svg'):
+        site.favicon = get_random_emoji()
+        site.save()
+
     from web.tasks import cal_sites_update_data_cron
     cal_sites_update_data_cron(True)
 

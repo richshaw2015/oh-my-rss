@@ -460,6 +460,13 @@ def get_content_from_dat(uindex):
     return ''
 
 
+def get_random_emoji():
+    pics = os.listdir(os.path.join(settings.BASE_DIR, 'assets', 'emoji'))
+    pics = [pic for pic in pics if pic.endswith('.png')]
+
+    return '/assets/emoji/' + random.choice(pics)
+
+
 def generate_rss_avatar(link, feed=''):
     """
     生成用户提交 RSS 源的默认头像
@@ -467,9 +474,7 @@ def generate_rss_avatar(link, feed=''):
     :param feed:
     :return:
     """
-    avatar = "/assets/img/logo.svg"
-    link_host = get_host_name(link)
-    feed_host = get_host_name(feed)
+    avatar, link_host, feed_host = "", get_host_name(link), get_host_name(feed)
 
     # 首先根据 link 地址匹配
     if 'weibo.com' in link_host or 'weibo.cn' in link_host:
@@ -521,6 +526,10 @@ def generate_rss_avatar(link, feed=''):
     # 其次根据 feed 地址匹配
     elif 'feed43.com' in feed_host:
         avatar = '/assets/img/feed43.png'
+
+    # 随机匹配一个 emoji
+    if not avatar:
+        avatar = get_random_emoji()
 
     return avatar
 
