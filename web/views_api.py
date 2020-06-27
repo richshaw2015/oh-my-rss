@@ -217,30 +217,6 @@ def user_force_update_site(request):
 
 
 @verify_request
-def user_mark_read_site(request):
-    """
-    设置站点全部已读
-    """
-    site_id = request.POST.get('site_id', '')
-    user = get_login_user(request)
-
-    site = Site.objects.get(pk=site_id, status='active')
-
-    if site and user:
-        ids = Article.objects.filter(status='active', site_id=site_id, is_recent=True).\
-            values_list('uindex', flat=True)
-
-        # TODO 优化性能，批量设置已读
-        for uindex in ids:
-            set_user_read_article(user.oauth_id, uindex)
-
-        # 返回未读数
-        return get_lastweek_articles(request)
-
-    return HttpResponseNotFound("Param Error")
-
-
-@verify_request
 def user_star_article(request):
     """
     登陆用户收藏文章

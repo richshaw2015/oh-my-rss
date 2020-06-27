@@ -47,7 +47,6 @@ urlpatterns = [
     path('api/star/article', views_api.user_star_article, name='user_star_article'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
     path('api/mark/read', views_api.user_mark_read_all, name='user_mark_read_all'),
-    path('api/mark/read/site', views_api.user_mark_read_site, name='user_mark_read_site'),
     path('api/update/site', views_api.user_force_update_site, name='user_force_update_site'),
 
     path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),

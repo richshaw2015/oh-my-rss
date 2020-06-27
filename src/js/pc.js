@@ -741,10 +741,10 @@ $(document).ready(function () {
     $(document).on('click', '.ev-site-readall', function () {
         $('#omrss-loader').removeClass('hide');
 
-        const siteId = $(this).attr('data-site');
+        let toReads = $(this).attr("data-articles");
 
         if (getLoginId()) {
-            $.post("/api/mark/read/site", {uid: getOrSetUid(), site_id: siteId}, function (data) {
+            $.post("/api/mark/read", {uid: getOrSetUid(), ids: toReads}, function (data) {
                 // 全局未读数
                 setUserUnreadCount(data.result);
                 updateUserUnreadCount();
@@ -760,9 +760,9 @@ $(document).ready(function () {
                 $('#omrss-loader').addClass('hide');
             })
         } else {
-            const toReads = JSON.parse($(this).attr("data-articles"));
-
             // 全局未读数
+            toReads = JSON.parse(toReads);
+            
             markVisitorReadAll(toReads);
             updateUnreadCount();
             // 站点未读数 0

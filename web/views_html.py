@@ -6,7 +6,6 @@ from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscri
     get_similar_article, get_feed_ranking_dict, get_user_unread_count
 from .verify import verify_request
 import logging
-from collections import defaultdict
 import json
 from .sql import *
 
@@ -321,11 +320,12 @@ def get_site_article_update_view(request):
 
     if user:
         site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:1000]
+
     else:
         site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:200]
 
     if site_articles:
-        articles = [article.uindex for article in site_articles]
+        recent_articles = [article.uindex for article in site_articles if article.is_recent]
 
         # 分页处理
         paginator_obj = Paginator(site_articles, page_size)
@@ -339,7 +339,7 @@ def get_site_article_update_view(request):
             context['num_pages'] = num_pages
             context['site'] = site
             context['user'] = user
-            context['articles'] = articles
+            context['articles'] = json.dumps(recent_articles)
 
             return render(request, 'left/list2_view.html', context=context)
         except:
