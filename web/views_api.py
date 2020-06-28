@@ -40,7 +40,7 @@ def get_lastweek_articles(request):
                                                        is_recent=True).values_list('uindex', flat=True))
 
     # 异步更新任务
-    django_rq.enqueue(update_sites_async, list(my_sub_feeds), timeout=1200)
+    django_rq.enqueue(update_sites_async, list(my_sub_feeds))
 
     if user:
         my_lastweek_unread_count = get_user_unread_count(user.oauth_id, my_lastweek_articles)

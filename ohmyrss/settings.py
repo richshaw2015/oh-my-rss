@@ -163,6 +163,7 @@ RQ_QUEUES = {
         'HOST': REDIS_HOST,
         'PORT': REDIS_PORT,
         'DB': REDIS_RQ_DB,
+        'DEFAULT_TIMEOUT': 1200,
     },
 }
 
