@@ -3,8 +3,8 @@ from django.http import HttpResponseNotFound, HttpResponseServerError, JsonRespo
 import django
 from web.models import *
 from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
-    add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, set_user_read_article, get_host_name, \
-    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file
+    add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
+    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file, get_recent_site_articles
 from web.views_html import get_all_issues
 from web.verify import verify_request
 import logging
@@ -29,27 +29,32 @@ def get_lastweek_articles(request):
     unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     ext = request.POST.get('ext', '')
 
-    logger.info(f"过去一周文章查询：`{uid}`{unsub_feeds}`{ext}")
+    logger.info(f"查询未读数：`{uid}`{ext}")
 
     if user is None:
         my_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
         my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-    my_lastweek_articles = list(Article.objects.filter(status='active', site_id__in=my_sub_feeds,
-                                                       is_recent=True).values_list('uindex', flat=True))
-
     # 异步更新任务
     django_rq.enqueue(update_sites_async, list(my_sub_feeds))
 
+    # 获取文章索引列表
+    my_toread_articles = set()
+    for site_id in my_sub_feeds:
+        my_toread_articles.update(get_recent_site_articles(site_id))
+
+    my_toread_articles = list(my_toread_articles)
+
     if user:
-        my_lastweek_unread_count = get_user_unread_count(user.oauth_id, my_lastweek_articles)
+        my_unread_count = get_user_unread_count(user.oauth_id, my_toread_articles)
 
         # 标记用户登陆
         set_user_visit_day(user.oauth_id)
-        return JsonResponse({"result": my_lastweek_unread_count})
+
+        return JsonResponse({"result": my_unread_count})
     else:
-        return JsonResponse({"result": my_lastweek_articles})
+        return JsonResponse({"result": my_toread_articles})
 
 
 @verify_request
@@ -151,7 +156,7 @@ def user_subscribe_feed(request):
 
         logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_id}")
 
-        return JsonResponse({"name": site_id})
+        return JsonResponse({"site": site_id})
 
     return HttpResponseForbidden("Param Error")
 
@@ -187,8 +192,9 @@ def user_mark_read_all(request):
         if not ids:
             my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-            ids = list(Article.objects.filter(status='active', site_id__in=my_sub_feeds, is_recent=True).
-                       values_list('uindex', flat=True))
+            ids = set()
+            for site_id in my_sub_feeds:
+                ids.update(get_recent_site_articles(site_id))
 
         set_user_read_articles(user.oauth_id, ids)
 

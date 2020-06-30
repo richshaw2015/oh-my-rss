@@ -7,6 +7,7 @@ import urllib
 import logging
 from functools import lru_cache
 import re
+import time
 from web.utils import R, get_content_from_dat, is_user_stared
 
 register = template.Library()
@@ -31,7 +32,12 @@ def to_date_fmt(dt):
     :return:
     """
     if isinstance(dt, str):
-        return dt[:19]
+        if len(dt) == 13:
+            return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(dt[:10])))
+        elif dt == '0':
+            return ''
+        else:
+            return dt[:19]
     else:
         dt = localtime(dt)
         return dt.strftime("%Y-%m-%d %H:%M:%S")

@@ -7,7 +7,7 @@ from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
-    set_proxy_ips
+    set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -219,53 +219,29 @@ def cal_site_ranking_cron():
     return True
 
 
-def cal_sites_update_data_cron(first_boot=False):
+def load_articles_to_redis_cron():
     """
-    站点更新表计算，扫描一遍数据库
+    扫描一遍数据库，每隔 5 分钟同步一次
     """
-    article_info = {}
+    site_articles, articles = {}, []
 
     for article in Article.objects.filter(status='active', is_recent=True).order_by('-id').iterator():
-        if not article_info.get(article.site_id):
-            article_info[article.site_id] = {
-                "update_time": article.ctime,
-                "update_ids": [article.uindex, ],
-                "site_cname": article.site.cname,
-                "site_author": article.site.author,
-                "site_favicon": article.site.favicon,
-                "site_star": article.site.star,
-            }
+        # 所有文章的索引
+        articles.append(article.uindex)
+
+        # 所有文章站点的索引
+        if not site_articles.get(article.site_id):
+            site_articles[article.site_id] = [article.uindex, ]
         else:
-            article_info[article.site_id]["update_ids"].append(article.uindex)
+            site_articles[article.site_id].append(article.uindex)
 
-    full_update = datetime.now().minute % 7 == 0 or first_boot
+    # 更新缓存
+    reset_recent_articles(articles)
 
-    for (site_id, update_info) in article_info.items():
-        # 先判断是否需要更新
-        if int(datetime.now().timestamp() - update_info['update_time'].timestamp()) > 5*60:
-            continue
-
-        # 区分是否增量更新
-        if full_update:
-            SiteUpdate.objects.update_or_create(site_id=site_id, defaults={
-                "site_cname": update_info['site_cname'], "site_author": update_info['site_author'],
-                "site_favicon": update_info['site_favicon'], "site_star": update_info['site_star'],
-                "update_count": len(update_info['update_ids']), "update_time": update_info['update_time'],
-                'update_ids': json.dumps(update_info['update_ids'])
-            })
-        else:
-            record, created = SiteUpdate.objects.update_or_create(site_id=site_id, defaults={
-                "update_count": len(update_info['update_ids']), "update_time": update_info['update_time'],
-                'update_ids': json.dumps(update_info['update_ids'])
-            })
-
-            if created:
-                record.site_cname = update_info['site_cname']
-                record.site_author = update_info['site_author']
-                record.site_favicon = update_info['site_favicon']
-                record.site_star = update_info['site_star']
-
-                record.save()
+    for (site_id, update_list) in site_articles.items():
+        # 更新缓存
+        reset_recent_site_articles(site_id, update_list)
+        set_site_lastid(site_id, update_list[0])
 
     return True
 

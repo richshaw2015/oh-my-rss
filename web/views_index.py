@@ -26,7 +26,7 @@ def index(request):
     else:
         sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-    articles = Article.objects.filter(status='active', site_id__in=sub_feeds).order_by('-id')[:6]
+    articles = Article.objects.filter(status='active', site_id__in=sub_feeds).order_by('-id')[:2]
 
     context = dict()
     context['articles'] = articles

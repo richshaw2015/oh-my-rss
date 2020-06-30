@@ -134,7 +134,7 @@ CRONJOBS = [
    ('*/43 * * * *', 'web.tasks.cal_all_article_tag_cron'),
    ('17 3 * * *', 'web.tasks.cal_article_distance_cron'),
    ('1 3 * * *', 'web.tasks.cal_site_ranking_cron'),
-   ('*/2 * * * *', 'web.tasks.cal_sites_update_data_cron'),
+   ('*/5 * * * *', 'web.tasks.load_articles_to_redis_cron'),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -212,6 +212,11 @@ REDIS_USER_STAR_KEY = 'STAR2/%s/%s'
 REDIS_UPDATED_SITE_KEY = 'UPDATED/%s'
 
 REDIS_PROXY_KEY = 'PROXY'
+
+# db index cache
+REDIS_ARTICLES_KEY = 'ARTICLES'
+REDIS_SITE_ARTICLES_KEY = 'ARTICLES/%s'
+REDIS_SITE_LASTID_KEY = 'LASTID/%s'
 
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 

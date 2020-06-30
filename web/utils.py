@@ -201,6 +201,50 @@ def add_referer_stats(referer):
             incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
 
 
+def reset_recent_articles(articles):
+    key = settings.REDIS_ARTICLES_KEY
+
+    R.delete(key)
+
+    R.sadd(key, *articles)
+
+    R.expire(key, 600)
+
+    return True
+
+
+def get_recent_articles():
+    key = settings.REDIS_ARTICLES_KEY
+    return R.smembers(key)
+
+
+def reset_recent_site_articles(site_id, articles):
+    key = settings.REDIS_SITE_ARTICLES_KEY % site_id
+
+    R.delete(key)
+
+    R.sadd(key, *articles)
+
+    R.expire(key, 600)
+
+    return True
+
+
+def get_recent_site_articles(site_id):
+    key = settings.REDIS_SITE_ARTICLES_KEY % site_id
+    return R.smembers(key)
+
+
+def set_site_lastid(site_id, uindex):
+    key = settings.REDIS_SITE_LASTID_KEY % site_id
+    return R.set(key, uindex, 600)
+
+
+def get_site_last_id(site_id):
+    key = settings.REDIS_SITE_LASTID_KEY % site_id
+    return R.get(key) or '0'
+
+
 def add_user_sub_feeds(oauth_id, feeds):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 
@@ -294,8 +338,8 @@ def get_login_user(request):
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
 
-    # if settings.DEBUG:
-    #     oauth_id = 'github/28855629'
+    if settings.DEBUG:
+        oauth_id = 'github/28855629'
 
     if oauth_id:
         try:
@@ -532,17 +576,6 @@ def generate_rss_avatar(link, feed=''):
         avatar = get_random_emoji()
 
     return avatar
-
-
-def vacuum_sqlite_db():
-    """
-    压缩空间
-    :return:
-    """
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute("VACUUM")
-    connection.close()
 
 
 def is_sensitive_content(uindex, content):

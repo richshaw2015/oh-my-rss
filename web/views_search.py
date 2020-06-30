@@ -76,11 +76,10 @@ def insite_search(request):
         user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
     rel_sites = Site.objects.filter(status='active').filter(
-        Q(cname__icontains=keyword) | Q(link__icontains=keyword) | Q(brief__icontains=keyword) |
-        Q(rss__icontains=keyword)).order_by('-star')[:50]
+        Q(cname__icontains=keyword) | Q(brief__icontains=keyword)).order_by('-star')[:50]
 
     rel_articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).filter(
-        Q(title__icontains=keyword) | Q(src_url__icontains=keyword) | Q(content__icontains=keyword)
+        Q(title__icontains=keyword) | Q(content__icontains=keyword)
     ).order_by('-id')[:50]
 
     context = dict()

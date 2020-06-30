@@ -3,7 +3,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 from .models import *
 from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
-    get_similar_article, get_feed_ranking_dict, get_user_unread_count
+    get_similar_article, get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
+    get_site_last_id
 from .verify import verify_request
 import logging
 import json
@@ -87,7 +88,7 @@ def get_homepage_intro(request):
 @verify_request
 def get_recent_articles(request):
     """
-    获取最近更新内容 TODO 优化查询性能，5 分钟更新一次？
+    获取最近更新内容 TODO 优化查询性能
     """
     user = get_login_user(request)
     recommend = request.POST.get('recommend', 'recommend')
@@ -222,35 +223,41 @@ def get_site_update_view(request):
     user = get_login_user(request)
 
     if user is None:
-        sub_update_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        my_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
-        sub_update_feeds = get_user_subscribe_feeds(user.oauth_id)
+        my_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-    sites = SiteUpdate.objects.filter(site_id__in=sub_update_feeds)
+    my_feeds = sorted(my_feeds, key=lambda t: get_site_last_id(t), reverse=True)
 
-    if sites:
+    if my_feeds:
         # 分页处理
-        paginator_obj = Paginator(sites, page_size)
-
         try:
-            # 页面及数据
-            pg = paginator_obj.page(page)
-            num_pages = paginator_obj.num_pages
-
-            # 计算未读数
-            if user:
-                for obj in pg.object_list:
-                    obj.unread_count = get_user_unread_count(user.oauth_id, json.loads(obj.update_ids))
-
-            context = dict()
-            context['pg'] = pg
-            context['num_pages'] = num_pages
-            context['user'] = user
-
-            return render(request, 'left/site_view.html', context=context)
+            paginator_obj = Paginator(my_feeds, page_size)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
             return HttpResponseNotFound("Page Number Error")
+
+        pg = paginator_obj.page(page)
+        num_pages = paginator_obj.num_pages
+        sites = Site.objects.filter(pk__in=pg.object_list).order_by('-star')[:50]
+
+        for site in sites:
+            recent_articles = get_recent_site_articles(site.pk)
+
+            site.update_count = len(recent_articles)
+            site.update_ids = json.dumps(list(recent_articles))
+            site.update_time = get_site_last_id(site.pk)
+
+            if user:
+                site.unread_count = get_user_unread_count(user.oauth_id, recent_articles)
+
+        context = dict()
+        context['pg'] = pg
+        context['sites'] = sites
+        context['num_pages'] = num_pages
+        context['user'] = user
+
+        return render(request, 'left/site_view.html', context=context)
 
     return HttpResponseNotFound("No Feeds Subscribed")
 
@@ -269,37 +276,42 @@ def get_article_update_view(request):
 
     user = get_login_user(request)
 
+    # 我的订阅源
     if user is None:
-        visitor_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
-
-        my_articles = Article.objects.filter(status='active', is_recent=True,
-                                             site_id__in=visitor_sub_feeds).order_by('-id')[:300]
+        my_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
 
-        my_articles = Article.objects.filter(
-            status='active', is_recent=True, site_id__in=user_sub_feeds).order_by('-id')[:2000]
+    # 获取文章索引列表
+    my_articles = set()
+    for site_id in my_sub_feeds:
+        my_articles.update(get_recent_site_articles(site_id))
+
+    my_articles = sorted(my_articles, reverse=True)
 
     if my_articles:
         # 分页处理
-        paginator_obj = Paginator(my_articles, page_size)
         try:
-            # 页面及数据
-            pg = paginator_obj.page(page)
-            num_pages = paginator_obj.num_pages
-
-            context = dict()
-            context['pg'] = pg
-            context['num_pages'] = num_pages
-            context['user'] = user
-
-            if mobile:
-                return render(request, 'mobile/list.html', context=context)
-            else:
-                return render(request, 'left/list_view.html', context=context)
+            paginator_obj = Paginator(my_articles, page_size)
         except:
             logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
             return HttpResponseForbidden("Page Number Error")
+
+        pg = paginator_obj.page(page)
+        num_pages = paginator_obj.num_pages
+
+        articles = Article.objects.filter(uindex__in=pg.object_list).order_by('-id')[:50]
+
+        context = dict()
+        context['articles'] = articles
+        context['num_pages'] = num_pages
+        context['user'] = user
+        context['pg'] = pg
+
+        if mobile:
+            return render(request, 'mobile/list.html', context=context)
+        else:
+            return render(request, 'left/list_view.html', context=context)
 
     return HttpResponseForbidden("No Feeds Subscribed")
 
@@ -317,6 +329,7 @@ def get_site_article_update_view(request):
     user = get_login_user(request)
 
     site = Site.objects.get(pk=site_id, status='active')
+    recent_articles = list(get_recent_site_articles(site.pk))
 
     if user:
         site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:1000]
@@ -325,8 +338,6 @@ def get_site_article_update_view(request):
         site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:200]
 
     if site_articles:
-        recent_articles = [article.uindex for article in site_articles if article.is_recent]
-
         # 分页处理
         paginator_obj = Paginator(site_articles, page_size)
         try:
@@ -352,7 +363,7 @@ def get_site_article_update_view(request):
 @verify_request
 def get_recommend_articles(request):
     """
-    获取文章推荐的订阅源，只开放登录用户
+    获取文章推荐的订阅源，只开放登录用户 TODO 优化性能
     :param request:
     :return:
     """

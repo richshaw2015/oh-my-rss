@@ -3,32 +3,32 @@
 <div id="omrss-cnt-list">
 
     <ul class="collection">
-        {% for article in pg.object_list %}
-            <li class="collection-item ev-cnt-list" data-site="{{ article.site_id }}">
+        {% for site in sites %}
+            <li class="collection-item ev-cnt-list" data-site="{{ site.pk }}">
                 <div class="omrss-title-line omrss-title-site">
-                    <img src="{{ article.site_favicon }}" class="circle responsive-img favico"/>
-                    <span class="omrss-title truncate omrss-title-read">{{ article.site_cname }}</span>
+                    <img src="{{ site.favicon }}" class="circle responsive-img favico"/>
+                    <span class="omrss-title truncate omrss-title-read">{{ site.cname }}</span>
                     <i class="right material-icons read omrss-check-site">check</i>
                 </div>
 
                 <div class="omrss-meta-line">
 
-                    <span class="omrss-meta meta-author">@{{ article.site_author |to_short_author }}</span>
-                    <span class="meta-time prettydate omrss-meta">{{ article.update_time |to_date_fmt }}</span>
+                    <span class="omrss-meta meta-author">@{{ site.author |to_short_author }}</span>
+                    <span class="meta-time prettydate omrss-meta">{{ site.update_time |to_date_fmt }}</span>
 
                     {% if user %}
                         <span class="right meta-num-l omrss-meta omrss-unread-count">
-                            {{ article.unread_count }}</span>
+                            {{ site.unread_count }}</span>
                     {% else %}
                         <span class="right meta-num-l omrss-meta omrss-unread-count"
-                              data-ids="{{ article.update_ids }}">0</span>
+                              data-ids="{{ site.update_ids }}">0</span>
                     {% endif %}
 
                     <i class="right material-icons meta-icon omrss-meta visibility-icon">visibility_off</i>
-                    <span class="right meta-num-l omrss-meta">{{ article.update_count }}</span>
+                    <span class="right meta-num-l omrss-meta">{{ site.update_count }}</span>
                     <i class="right material-icons meta-icon omrss-meta sync-icon">sync</i>
 
-                    {% if article.site_star >= 30 %}
+                    {% if site.star >= 30 %}
                         <span class="right new badge meta-recommend-site" data-badge-caption="">荐</span>
                     {% endif %}
                 </div>
