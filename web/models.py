@@ -36,25 +36,6 @@ class Site(models.Model):
     remark = models.TextField('备注', default='', null=True, blank=True)
 
 
-class SiteUpdate(models.Model):
-    """
-    站点更新概览表，频繁更新
-    """
-    site_id = models.IntegerField('站点', db_index=True)
-    site_cname = models.CharField('名称', max_length=100)
-    site_author = models.CharField('作者', max_length=100, default='None', null=True, blank=True)
-    site_favicon = models.CharField('favicon', max_length=100, default='', null=True, blank=True)
-    site_star = models.IntegerField('评级', default=20)
-
-    update_count = models.IntegerField('更新数', default=0)
-    update_ids = models.TextField('更新索引', default='[]')
-    update_time = models.DateTimeField('最后更新时间')
-
-    ctime = models.DateTimeField('创建时间', auto_now_add=True)
-    mtime = models.DateTimeField('更新时间', auto_now=True)
-    remark = models.TextField('备注', default='', null=True, blank=True)
-
-
 class Article(models.Model):
     """
     文章表

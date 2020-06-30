@@ -55,15 +55,3 @@ class UserAdmin(admin.ModelAdmin):
     list_editable = ['remark', ]
     list_filter = ('status', )
     list_per_page = 10
-
-
-@admin.register(SiteUpdate)
-class SiteUpdateAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
-    }
-
-    list_display = ['site_id', 'site_cname', 'update_count', 'update_time', 'mtime', 'update_ids', 'remark']
-    list_editable = ['remark', ]
-    list_per_page = 50
