@@ -239,7 +239,7 @@ def get_site_update_view(request):
 
         pg = paginator_obj.page(page)
         num_pages = paginator_obj.num_pages
-        sites = Site.objects.filter(pk__in=pg.object_list).order_by('-star')[:50]
+        sites = Site.objects.filter(pk__in=pg.object_list, status='active').order_by('-star')[:50]
 
         for site in sites:
             recent_articles = get_recent_site_articles(site.pk)
