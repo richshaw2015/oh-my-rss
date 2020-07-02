@@ -258,6 +258,7 @@ def del_user_sub_feed(oauth_id, feed):
 
 
 def get_user_subscribe_feeds(oauth_id, from_user=True):
+    # TODO 减去已下线的集合
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 
     sub_feeds = R.smembers(key)
