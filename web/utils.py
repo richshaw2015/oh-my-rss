@@ -257,11 +257,22 @@ def del_user_sub_feed(oauth_id, feed):
     return R.srem(key, feed)
 
 
+def set_active_sites(sites):
+    key = settings.REDIS_ACTIVE_SITES_KEY
+    R.delete(key)
+    return R.sadd(key, *sites)
+
+
+def get_active_sites():
+    key = settings.REDIS_ACTIVE_SITES_KEY
+    return R.smembers(key)
+
+
 def get_user_subscribe_feeds(oauth_id, from_user=True):
     # TODO 减去已下线的集合
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 
-    sub_feeds = R.smembers(key)
+    sub_feeds = R.smembers(key) & get_active_sites()
 
     # 设置订阅源缓存，来自用户的请求调用
     if from_user:

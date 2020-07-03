@@ -7,7 +7,7 @@ from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
-    set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid
+    set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -243,6 +243,15 @@ def load_articles_to_redis_cron():
         reset_recent_site_articles(site_id, update_list)
         set_site_lastid(site_id, update_list[0])
 
+    return True
+
+
+def load_active_sites_cron():
+    """
+    已经下线的站点
+    """
+    sites = Site.objects.filter(status='active').values_list('pk', flat=True)
+    set_active_sites(sites)
     return True
 
 
