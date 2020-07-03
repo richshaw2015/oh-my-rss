@@ -121,8 +121,8 @@ def get_visitor_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
     set_active_rss(sub_feeds)
 
     recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('id', flat=True))
-
-    return list(set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds))
+    active_feeds = {int(s) for s in get_active_sites()}
+    return list((set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds)) & active_feeds)
 
 
 def get_client_ip(request):
@@ -269,7 +269,6 @@ def get_active_sites():
 
 
 def get_user_subscribe_feeds(oauth_id, from_user=True):
-    # TODO 减去已下线的集合
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 
     sub_feeds = R.smembers(key) & get_active_sites()
@@ -350,8 +349,8 @@ def get_login_user(request):
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
 
-    if settings.DEBUG:
-        oauth_id = 'github/28855629'
+    # if settings.DEBUG:
+    #     oauth_id = 'github/28855629'
 
     if oauth_id:
         try:
