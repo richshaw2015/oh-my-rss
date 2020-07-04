@@ -956,17 +956,47 @@ $(document).ready(function () {
     });
 
     // 排行榜
-    $(document).on('click', '.ev-feed-ranking', function () {
+    $(document).on('click', '.ev-ranking', function () {
         $('#omrss-loader').removeClass('hide');
 
-        $.post("/api/html/feed/ranking", {uid: getOrSetUid()}, function (data) {
+        $.post("/api/html/ranking", {uid: getOrSetUid()}, function (data) {
             if (!getLoginId()) {
                 $('#omrss-main').html(updateVisitorSubStatus(data));
             } else {
                 $('#omrss-main').html(data);
             }
+            $('.tabs').tabs();
+            $('.tooltipped').tooltip();
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        });
+    });
 
-            $('#omrss-main').scrollTop(0);
+    $(document).on('click', '.ev-feed-ranking', function () {
+        $('#omrss-loader').removeClass('hide');
+
+        $.post("/api/html/feed/ranking", {uid: getOrSetUid()}, function (data) {
+            if (!getLoginId()) {
+                $('#omrss-ranking').html(updateVisitorSubStatus(data));
+            } else {
+                $('#omrss-ranking').html(data);
+            }
+            
+            $('.tooltipped').tooltip();
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        });
+    });
+
+    $(document).on('click', '.ev-user-ranking', function () {
+        $('#omrss-loader').removeClass('hide');
+
+        $.post("/api/html/user/ranking", {uid: getOrSetUid()}, function (data) {
+            $('#omrss-ranking').html(data);
             $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);

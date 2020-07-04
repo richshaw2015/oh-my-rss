@@ -7,7 +7,8 @@ from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
-    set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites
+    set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, \
+    get_user_visit_days, set_user_ranking_list
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -187,6 +188,32 @@ def cal_article_distance_cron():
                 set_similar_article(article.uindex, sorted_similar_dict)
 
     return True
+
+
+def cal_user_ranking_cron():
+    """
+    计算用户活跃排行榜
+    """
+    visit_ranking_list, dest_ranking_list = [], []
+
+    for user in User.objects.all().iterator():
+        visit_ranking_list.append((user.pk, get_user_visit_days(user.oauth_id)))
+
+    visit_ranking_list = sorted(visit_ranking_list, key=lambda v: v[1], reverse=True)[:30]
+
+    for board in visit_ranking_list:
+        user = User.objects.get(pk=board[0])
+        ext = json.loads(user.oauth_ext)
+
+        dest_ranking_list.append({
+            "score": board[1],
+            "name": user.oauth_name,
+            "avatar": user.avatar,
+            "url": ext.get('html_url'),
+            "intro": ext.get('bio') or ext.get('company') or ext.get('location')
+        })
+
+    return set_user_ranking_list(dest_ranking_list)
 
 
 def cal_site_ranking_cron():

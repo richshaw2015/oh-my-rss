@@ -1,0 +1,30 @@
+{% load helpers %}
+
+<div class="row">
+{% for user in user_ranking %}
+<div class="col s6">
+    <div class="card">
+        <div class="card-content omrss-card-content">
+            {% if user.intro %}
+            <a href="{{ user.url }}" target="_blank">
+                <span class="card-title omrss-recent-title">{{ user.intro }}</span>
+            </a>
+
+            <div class="divider nav-divider"></div>
+            {% endif %}
+            <div>
+                <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text">
+                <a href="{{ user.url }}" target="_blank">
+                    <span class="omrss-recent-site omrss-text">{{ user.name }}</span>
+                </a>
+                {% if user.score >= 20 %}
+                <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">★</span>
+                {% endif %}
+
+                <span class="new right omrss-text omrss-rank-score">{{ user.score }} 天活跃</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>

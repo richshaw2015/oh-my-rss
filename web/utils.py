@@ -145,6 +145,19 @@ def current_day():
     return time.strftime("%Y%m%d", time.localtime(time.time()))
 
 
+def get_xaxis_days(days=60):
+    """
+    获取 X 坐标，按天。取两个月数据
+    """
+    xaxis_days = []
+
+    for i in range(0, days):
+        xaxis_days.append(time.strftime("%Y%m%d", time.localtime(time.time() - i * 86400)))
+
+    xaxis_days.sort()
+    return xaxis_days
+
+
 def is_visit_today(uid):
     """
     当天是否访问过
@@ -376,8 +389,8 @@ def get_login_user(request):
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
 
-    # if settings.DEBUG:
-    #     oauth_id = 'github/28855629'
+    if settings.DEBUG:
+        oauth_id = 'github/28855629'
 
     if oauth_id:
         try:
@@ -385,6 +398,22 @@ def get_login_user(request):
         except:
             logger.warning(f'用户不存在：`{oauth_id}')
     return None
+
+
+def get_user_visit_days(oauth_id):
+    """
+    计算一个用户登陆的天数（过去一个月）
+    """
+    user_visit_keys = [settings.REDIS_USER_VISIT_DAY_KEY % (oauth_id, day) for day in get_xaxis_days(30)]
+    return R.mget(*user_visit_keys).count('1')
+
+
+def set_user_ranking_list(ranking):
+    return R.set(settings.REDIS_USER_RANKING_KEY, json.dumps(ranking))
+
+
+def get_user_ranking_list():
+    return json.loads(R.get(settings.REDIS_USER_RANKING_KEY))
 
 
 def save_avatar(avatar, userid, size=100):

@@ -4,7 +4,7 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonRespons
 from .models import *
 from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
-    get_site_last_id, get_user_unread_articles, get_user_unread_sites
+    get_site_last_id, get_user_unread_articles, get_user_unread_sites, get_user_ranking_list
 from .verify import verify_request
 import logging
 import json
@@ -156,6 +156,27 @@ def get_recent_sites(request):
 
 
 @verify_request
+def get_ranking(request):
+    """
+    获取订阅源排行榜
+    """
+    user = get_login_user(request)
+
+    user_sub_feeds = []
+    if user:
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+
+    feed_ranking = get_feed_ranking_dict()
+
+    context = dict()
+    context['user'] = user
+    context['feed_ranking'] = feed_ranking
+    context['user_sub_feeds'] = user_sub_feeds
+
+    return render(request, 'ranking/ranking.html', context=context)
+
+
+@verify_request
 def get_feed_ranking(request):
     """
     获取订阅源排行榜
@@ -174,6 +195,16 @@ def get_feed_ranking(request):
     context['user_sub_feeds'] = user_sub_feeds
 
     return render(request, 'ranking/feed_ranking.html', context=context)
+
+
+@verify_request
+def get_user_ranking(request):
+    user_ranking = get_user_ranking_list()
+
+    context = dict()
+    context['user_ranking'] = user_ranking
+
+    return render(request, 'ranking/user_ranking.html', context=context)
 
 
 @verify_request

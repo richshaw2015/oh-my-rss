@@ -12,17 +12,6 @@ from .models import *
 logger = logging.getLogger(__name__)
 
 
-def get_xaxis_days(days=60):
-    """
-    获取 X 坐标，按天。取两个月数据
-    """
-    xaxis_days = []
-    for i in range(0, days):
-        xaxis_days.append(time.strftime("%Y%m%d", time.localtime(time.time() - i * 86400)))
-    xaxis_days.sort()
-    return xaxis_days
-
-
 def api_profile_line_chart() -> Line:
     """
     接口平均耗时
@@ -189,9 +178,10 @@ def fixbug(request):
     :return:
     """
 
-    from web.tasks import load_active_sites_cron, load_articles_to_redis_cron
+    from web.tasks import load_active_sites_cron, load_articles_to_redis_cron, cal_user_ranking_cron
 
+    cal_user_ranking_cron()
     load_articles_to_redis_cron()
-    load_active_sites_cron()
+
 
     return JsonResponse({})
