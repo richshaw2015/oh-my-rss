@@ -178,10 +178,9 @@ def fixbug(request):
     :return:
     """
 
-    from web.tasks import load_active_sites_cron, load_articles_to_redis_cron, cal_user_ranking_cron
+    from web.tasks import load_articles_to_redis_cron, cal_user_ranking_cron
 
     cal_user_ranking_cron()
     load_articles_to_redis_cron()
-
 
     return JsonResponse({})

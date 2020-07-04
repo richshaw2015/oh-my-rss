@@ -389,8 +389,8 @@ def get_login_user(request):
     """
     oauth_id = request.get_signed_cookie('oauth_id', False)
 
-    if settings.DEBUG:
-        oauth_id = 'github/28855629'
+    # if settings.DEBUG:
+    #     oauth_id = 'github/28855629'
 
     if oauth_id:
         try:
