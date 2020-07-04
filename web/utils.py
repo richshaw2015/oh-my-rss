@@ -330,8 +330,6 @@ def set_user_read_articles(oauth_id, ids):
 def get_user_unread_count(oauth_id, articles):
     """
     计算用户对一批文章的未读数
-    :param oauth_id:
-    :param articles:
     :return:
     """
     if articles:
@@ -339,6 +337,35 @@ def get_user_unread_count(oauth_id, articles):
         return len(articles) - R.mget(*user_read_keys).count('1')
     else:
         return 0
+
+
+def get_user_unread_articles(oauth_id, articles):
+    """
+    计算用户未读的文章
+    """
+    unread_articles = set()
+
+    for uindex in articles:
+        key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
+
+        if R.get(key) != '1':
+            unread_articles.add(uindex)
+
+    return unread_articles
+
+
+def get_user_unread_sites(oauth_id, sites):
+    """
+    计算未读的站点
+    """
+    unread_sites = set()
+
+    for site_id in sites:
+        site_articles = get_recent_site_articles(site_id)
+        if get_user_unread_count(oauth_id, site_articles) > 0:
+            unread_sites.add(site_id)
+
+    return unread_sites
 
 
 def get_login_user(request):

@@ -269,7 +269,7 @@ i.meta-icon {
     .omrss-top-form {
         display: none;
     }
-    .omrss-readmode {
+    .omrss-readmode, .omrss-onlyunread {
         display: none;
     }
     #omrss-logo-font {
@@ -317,7 +317,7 @@ i.meta-icon {
 
 @media only screen and (min-width: 992px) {
     .omrss-top-form {
-        left: 400px;
+        left: 410px;
     }
     .cnt-left {
         width: 400px;
@@ -327,6 +327,9 @@ i.meta-icon {
     }
     .omrss-readmode {
         left: calc(400px - 54px - 5px);
+    }
+    .omrss-onlyunread {
+        left: calc(400px - 54px - 5px - 54px);
     }
     .omrss-title {
         font-size: 1rem;
@@ -414,7 +417,7 @@ i.meta-icon {
 
 @media only screen and (min-width: 1600px) {
     .omrss-top-form {
-        left: 500px;
+        left: 510px;
     }
     .cnt-left {
         width: 500px;
@@ -424,6 +427,9 @@ i.meta-icon {
     }
     .omrss-readmode {
         left: calc(500px - 54px - 5px);
+    }
+    .omrss-onlyunread {
+        left: calc(500px - 54px - 5px - 54px);
     }
     .omrss-title {
         font-size: 1.1rem;
@@ -753,7 +759,7 @@ nav .brand-logo {
     padding-right: 6px !important;
 }
 
-.omrss-readmode {
+.omrss-readmode, .omrss-onlyunread {
     position: absolute;
     width: 54px;
     padding: 0 15px;

@@ -8,6 +8,16 @@ function initReadMode() {
     }
 }
 
+function initOnlyUnreadSwitch() {
+    const onlyUnread = getOnlyUnreadSwitch();
+
+    if (onlyUnread === 'yes') {
+        $('.ev-toggle-onlyunread i').text('visibility_off');
+    } else {
+        $('.ev-toggle-onlyunread i').text('visibility');
+    }
+}
+
 function initLayout() {
     // 初始化组件
     $('.tooltipped').tooltip();
@@ -17,6 +27,8 @@ function initLayout() {
 
     // 阅读模式
     initReadMode();
+    // 只看未读开关
+    initOnlyUnreadSwitch();
 
     // 右侧滚动条
     resetHeight();
@@ -222,8 +234,8 @@ function loadPage(page, site="", reflow=false) {
     $('#omrss-loader').removeClass('hide');
 
     // 网络请求，区分已登录用户或者游客
-    let user, subFeeds, unSubFeeds, mode;
-    [user, subFeeds, unSubFeeds, mode] = [getLoginId(), '[]', '[]', getReadMode()]
+    let user, subFeeds, unSubFeeds, mode, onlyUnread;
+    [user, subFeeds, unSubFeeds, mode, onlyUnread] = [getLoginId(), '[]', '[]', getReadMode(), getOnlyUnreadSwitch()]
 
     if (!user) {
         [subFeeds, unSubFeeds] = [getVisitorSubFeeds(), getVisitorUnsubFeeds()];
@@ -232,7 +244,8 @@ function loadPage(page, site="", reflow=false) {
         if (site === "") {
             // 站点浏览模式下的站点翻页
             $.post("/api/html/sites/list", {
-                uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds
+                uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds,
+                onlyunread: onlyUnread
             }, function (data) {
                 let destDom = $(data);
 
@@ -287,7 +300,8 @@ function loadPage(page, site="", reflow=false) {
         } else {
             // 站点浏览模式下的文章翻页，这时候 pageSize 需要单独计算
             $.post("/api/html/articles/list2", {
-                uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, site_id: site}, function (data) {
+                uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, site_id: site, onlyunread: onlyUnread
+            }, function (data) {
 
                 if (reflow) {
                     // 进入站点专栏，备份 DOM 数据，用于返回
@@ -337,7 +351,8 @@ function loadPage(page, site="", reflow=false) {
 
     } else if (mode === 'article') {
         $.post("/api/html/articles/list", {
-            uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds
+            uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds,
+            onlyunread: onlyUnread
         }, function (data) {
             let destDom = $(data);
 
@@ -587,6 +602,24 @@ $(document).ready(function () {
             toast("切换到文章视图 ^o^");
         }
         loadPage(1, "", reflow);
+    });
+
+    $(document).on('click', '.ev-toggle-onlyunread', function () {
+        if (!getLoginId()) {
+            warnToast("登陆后才能只看未读！");
+            return false;
+        }
+
+        const onlyUnread = toggleOnlyUnread();
+
+        if (onlyUnread === 'yes') {
+            $('.ev-toggle-onlyunread i').text('visibility_off');
+            toast("只看未读 ^o^");
+        } else if (onlyUnread === 'no') {
+            $('.ev-toggle-onlyunread i').text('visibility');
+            toast("查看全部 ^o^");
+        }
+        loadPage(1, "");
     });
 
     // 提交订阅源

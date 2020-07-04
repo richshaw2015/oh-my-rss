@@ -24,7 +24,7 @@
 
     <title>己思 - {{ article.title }}</title>
     <link rel="stylesheet" href="/assets/css/lib.css?v=3">
-    <link rel="stylesheet" href="/assets/css/mobile.css?v=17">
+    <link rel="stylesheet" href="/assets/css/mobile.css?v=18">
     <link rel="shortcut icon" href="/assets/img/logo.svg">
 </head>
 <body>
@@ -106,8 +106,6 @@
 </div>
 
 
-
-
 <!-- 取消订阅确认框 -->
 <div id="omrss-unsub-feed" class="modal">
     <div class="modal-content">
@@ -118,7 +116,7 @@
         <div class="modal-footer">
             <a href="#" class="modal-close waves-effect waves-red btn-flat">取消</a>
             <a href="#" class="modal-close waves-effect waves-green btn-flat" id="omrss-unlike"
-               data-site="{{ article.site.pk }}">确定</a>
+               data-site="{{ article.site_id }}">确定</a>
         </div>
     </div>
 </div>
@@ -127,7 +125,7 @@
 {% include 'mobile/footer.html' %}
 
 <script src="/assets/js/lib.js?v=3"></script>
-<script src="/assets/js/mobile.js?v=16"></script>
+<script src="/assets/js/mobile.js?v=17"></script>
 
 <script>
     $('.fixed-action-btn').floatingActionButton({"hoverEnabled": false});

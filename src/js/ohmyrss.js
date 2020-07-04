@@ -163,6 +163,22 @@ function isVisitorUnSubFeed(siteId) {
     return unsubFeeds.has(siteId);
 }
 
+function toggleOnlyUnread() {
+    // 切换只看未读
+    if (localStorage.getItem('ONLYUNREAD') === null) {
+        localStorage.setItem('ONLYUNREAD', 'no')
+    }
+
+    const onlyUnread = localStorage.getItem('ONLYUNREAD');
+
+    if (onlyUnread === 'yes') {
+        localStorage.setItem('ONLYUNREAD', 'no');
+        return 'no'
+    } else if (onlyUnread === 'no') {
+        localStorage.setItem('ONLYUNREAD', 'yes');
+        return 'yes'
+    }
+}
 function toggleReadMode() {
     // 切换阅读模式，文章模式、站点模式
     if (localStorage.getItem('READMODE') === null) {
@@ -182,9 +198,16 @@ function toggleReadMode() {
 
 function getReadMode() {
     if (localStorage.getItem('READMODE') === null) {
-        localStorage.setItem('READMODE', 'article')
+        localStorage.setItem('READMODE', 'article');
     }
     return localStorage.getItem('READMODE');
+}
+
+function getOnlyUnreadSwitch() {
+    if (localStorage.getItem('ONLYUNREAD') === null) {
+        localStorage.setItem('ONLYUNREAD', 'no');
+    }
+    return localStorage.getItem('ONLYUNREAD');
 }
 
 function enterFullscreen() {

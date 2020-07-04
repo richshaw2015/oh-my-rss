@@ -4,7 +4,7 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonRespons
 from .models import *
 from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
-    get_site_last_id
+    get_site_last_id, get_user_unread_articles, get_user_unread_sites
 from .verify import verify_request
 import logging
 import json
@@ -219,6 +219,7 @@ def get_site_update_view(request):
     unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
+    onlyunread = request.POST.get('onlyunread', 'no') == 'yes'
 
     user = get_login_user(request)
 
@@ -226,6 +227,10 @@ def get_site_update_view(request):
         my_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
         my_feeds = get_user_subscribe_feeds(user.oauth_id)
+
+    # 过滤有内容更新的
+    if user and onlyunread:
+        my_feeds = get_user_unread_sites(user.oauth_id, my_feeds)
 
     my_feeds = sorted(my_feeds, key=lambda t: get_site_last_id(t), reverse=True)
 
@@ -273,6 +278,7 @@ def get_article_update_view(request):
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
     mobile = request.POST.get('mobile', False)
+    onlyunread = request.POST.get('onlyunread', 'no') == 'yes'
 
     user = get_login_user(request)
 
@@ -286,6 +292,10 @@ def get_article_update_view(request):
     my_articles = set()
     for site_id in my_sub_feeds:
         my_articles.update(get_recent_site_articles(site_id))
+
+    # 过滤
+    if user and onlyunread:
+        my_articles = get_user_unread_articles(user.oauth_id, my_articles)
 
     my_articles = sorted(my_articles, reverse=True)
 
