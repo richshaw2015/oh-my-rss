@@ -129,8 +129,7 @@ def parse_weixin_page(rsp):
     try:
         title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
     except AttributeError:
-        # 有些文章没有标题
-        title = content[:10].strip()
+        title = ''
 
     try:
         author = response.selector.xpath('//span[@id="js_author_name"]/text()').extract_first().strip()

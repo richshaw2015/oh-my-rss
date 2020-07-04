@@ -201,7 +201,7 @@ def cal_site_ranking_cron():
     for oauth_id in users:
         all_user_feeds += get_user_subscribe_feeds(oauth_id, from_user=False)
 
-    feed_ranking = dict(Counter(all_user_feeds).most_common(110))
+    feed_ranking = dict(Counter(all_user_feeds).most_common(100))
 
     for (site_id, score) in feed_ranking.items():
         try:

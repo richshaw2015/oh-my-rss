@@ -169,8 +169,6 @@ def user_unsubscribe_feed(request):
     site_id = request.POST.get('site_id', '').strip()[:32]
     user = get_login_user(request)
 
-    logger.info(f"{site_id}`{user}")
-
     if user and site_id:
         del_user_sub_feed(user.oauth_id, site_id)
 
