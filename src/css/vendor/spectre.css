@@ -1,0 +1,97 @@
+.figure {
+  margin: 0;
+  display: block;
+}
+
+.figure .figure-caption {
+  color: #66758c;
+  margin-top: 0;
+}
+
+.avatar {
+  border-radius: 50%;
+  color: rgba(255, 255, 255, .85);
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 300;
+  height: 32px;
+  line-height: 1.25;
+  margin: 0;
+  position: relative;
+  vertical-align: middle; 
+  width: 32px;
+}
+
+.avatar img {
+  border-radius: 50%;
+  height: 100%;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.avatar .avatar-icon,
+.avatar .avatar-presence {
+  background: #fff;
+  bottom: 14.64%;
+  height: 50%;
+  padding: 2px;
+  position: absolute;
+  right: 14.64%;
+  transform: translate(50%, 50%);
+  width: 50%;
+  z-index: 2;
+}
+
+.avatar .avatar-presence {
+  background: #bcc3ce;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #fff;
+  height: .5em;
+  width: .5em;
+}
+
+.spectre-badge {
+  position: relative;
+  white-space: nowrap;
+}
+
+.spectre-badge[data-badge]::after {
+  background: #ff9d28;
+  background-clip: padding-box;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px #fff;
+  color: #fff;
+  content: attr(data-badge);
+  display: inline-block;
+  transform: translate(-10px, -10px);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+.omrss-avatar-xl.spectre-badge[data-badge]::after {
+  font-size: 14px;
+  height: 18px;
+  min-width: 18px;
+  padding: 2px 4px;
+}
+.omrss-avatar-lg.spectre-badge[data-badge]::after {
+  font-size: 12px;
+  height: 14px;
+  min-width: 14px;
+  padding: 1px 2px;
+}
+.omrss-avatar-sm.spectre-badge[data-badge]::after {
+  font-size: 10px;
+  height: 14px;
+  min-width: 14px;
+  padding: 1px 2px;
+}
+
+.spectre-badge.avatar::after {
+  position: absolute;
+  right: 14.64%;
+  top: 75%;
+  transform: translate(50%, -50%);
+  z-index: 100;
+}
