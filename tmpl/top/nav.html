@@ -10,9 +10,10 @@
             <a href="{{ user.oauth_blog }}" target="_blank">
 
                 {% if user.level >= 10 %}
-                <span class="omrss-badge omrss-badge-my" data-badge="V">
-                    <img src="{{ user.avatar }}" class="circle" alt="头像" />
-                </span>
+                <figure class="avatar spectre-badge omrss-avatar-xl" data-badge="V">
+                    <img src="{{ user.avatar }}" alt="头像">
+                </figure>
+
                 {% else %}
                     <img src="{{ user.avatar }}" class="circle" alt="头像" />
                 {% endif %}
@@ -115,9 +116,9 @@
                     data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
 
                     {% if user.level >= 10 %}
-                    <span class="omrss-badge omrss-badge-36" data-badge="V">
-                        <img src="{{ user.avatar }}" class="omrss-avatar circle" alt="头像" />
-                    </span>
+                    <figure class="avatar spectre-badge omrss-avatar-lg" data-badge="V">
+                        <img src="{{ user.avatar }}" alt="头像">
+                    </figure>
                     {% else %}
                     <img src="{{ user.avatar }}" class="omrss-avatar circle" alt="头像" />
                     {% endif %}

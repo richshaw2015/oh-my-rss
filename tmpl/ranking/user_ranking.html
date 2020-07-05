@@ -14,11 +14,11 @@
             {% endif %}
             <div>
                 {% if user.level >= 10 %}
-                <span class="omrss-badge omrss-badge-32" data-badge="V">
-                    <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text" alt="头像" />
-                </span>
+                <figure class="avatar spectre-badge omrss-avatar-sm omrss-right-space" data-badge="V">
+                    <img src="{{ user.avatar }}" alt="头像">
+                </figure>
                 {% else %}
-                <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text" alt="头像" />
+                <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text omrss-right-space" alt="头像" />
                 {% endif %}
 
                 <a href="{{ user.url }}" target="_blank">
@@ -27,7 +27,7 @@
 
                 <span class="new right omrss-text omrss-rank-score">{{ user.score }} 天活跃</span>
 
-                <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">
+                <span class="right omrss-text yellow-text text-darken-2 omrss-user-rank-star">
                 {% if user.score >= 20 %}
                     ★
                 {% endif %}
