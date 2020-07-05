@@ -8,7 +8,7 @@
   margin-top: 0;
 }
 
-.avatar {
+.spectre-avatar {
   border-radius: 50%;
   color: rgba(255, 255, 255, .85);
   display: inline-block;
@@ -22,7 +22,7 @@
   width: 32px;
 }
 
-.avatar img {
+.spectre-avatar img {
   border-radius: 50%;
   height: 100%;
   position: relative;
@@ -30,8 +30,8 @@
   z-index: 1;
 }
 
-.avatar .avatar-icon,
-.avatar .avatar-presence {
+.spectre-avatar .spectre-avatar-icon,
+.spectre-avatar .spectre-avatar-presence {
   background: #fff;
   bottom: 14.64%;
   height: 50%;
@@ -43,7 +43,7 @@
   z-index: 2;
 }
 
-.avatar .avatar-presence {
+.spectre-avatar .spectre-avatar-presence {
   background: #bcc3ce;
   border-radius: 50%;
   box-shadow: 0 0 0 1px #fff;
@@ -88,7 +88,7 @@
   padding: 1px 2px;
 }
 
-.spectre-badge.avatar::after {
+.spectre-badge.spectre-avatar::after {
   position: absolute;
   right: 14.64%;
   top: 75%;
