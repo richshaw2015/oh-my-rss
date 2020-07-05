@@ -1,6 +1,6 @@
 // 提示信息
-const [NET_ERROR_MSG, LOGIN_ERROR_MSG, LOGIN_SUCC_MSG] = 
-    ['网络异常，请稍后重试！', '登录授权失败，请稍后重试！', '登录成功 ^o^'];
+const [NET_ERROR_MSG, LOGIN_ERROR_MSG, LOGIN_SUCC_MSG, SUBS_LIMIT_ERROR_MSG] = 
+    ['网络异常，请稍后重试！', '登录授权失败，请稍后重试！', '登录成功 ^o^', '已达订阅数上限，请取消一部分！'];
 
 // 登陆用户的未读数
 let userUnreadCount = 0;
@@ -27,12 +27,12 @@ function genUidV0() {
     return uuidStr + atob(secVer) + sign
 }
 
-function toast(msg, keep=1000) {
+function toast(msg, keep=1300) {
     // 普通提示
     M.toast({html: msg, displayLength: keep});
 }
 
-function warnToast(msg, keep=3000) {
+function warnToast(msg, keep=4500) {
     // 带样式的警告提示
     const html = '<span style="color: #eeff41;">' + msg + '</span>';
     M.toast({html: html, displayLength: keep});
@@ -50,6 +50,8 @@ function showServerMsg() {
         toast(LOGIN_SUCC_MSG);
     } else if (msg == 'LOGIN_ERROR_MSG') {
         warnToast(LOGIN_ERROR_MSG);
+    } else if (msg == 'SUBS_LIMIT_ERROR_MSG'){
+        warnToast(SUBS_LIMIT_ERROR_MSG);
     } else {
         console.warn(`未知的消息：${msg}`);
     }
@@ -334,6 +336,9 @@ function setToreadInfo(notify=false) {
         }else {
             localStorage.setItem('TOREADS', JSON.stringify(data.result));
         }
+        
+        // 展示服务器消息
+        showServerMsg();
 
         const newNum = updateUnreadCount();
 

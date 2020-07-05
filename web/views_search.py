@@ -73,7 +73,7 @@ def insite_search(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     rel_sites = Site.objects.filter(status='active').filter(
         Q(cname__icontains=keyword) | Q(brief__icontains=keyword)).order_by('-star')[:50]

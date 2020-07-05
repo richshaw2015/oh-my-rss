@@ -29,12 +29,18 @@ def get_lastweek_articles(request):
     unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     ext = request.POST.get('ext', '')
 
+    reach_sub_limit = False
+
     logger.info(f"查询未读数：`{uid}`{ext}")
 
     if user is None:
         my_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        reach_sub_limit = len(my_sub_feeds) == settings.VISITOR_SUBS_LIMIT
     else:
-        my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        my_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
+
+        if user.level < 10:
+            reach_sub_limit = len(my_sub_feeds) == settings.USER_SUBS_LIMIT
 
     # 异步更新任务
     django_rq.enqueue(update_sites_async, list(my_sub_feeds))
@@ -52,9 +58,17 @@ def get_lastweek_articles(request):
         # 标记用户登陆
         set_user_visit_day(user.oauth_id)
 
-        return JsonResponse({"result": my_unread_count})
+        response = JsonResponse({"result": my_unread_count})
+        if reach_sub_limit:
+            response.set_signed_cookie('toast', 'SUBS_LIMIT_ERROR_MSG', max_age=20)
+
+        return response
     else:
-        return JsonResponse({"result": my_toread_articles})
+        response = JsonResponse({"result": my_toread_articles})
+        if reach_sub_limit:
+            response.set_signed_cookie('toast', 'SUBS_LIMIT_ERROR_MSG', max_age=20)
+
+        return response
 
 
 @verify_request
@@ -149,6 +163,14 @@ def user_subscribe_feed(request):
     site = Site.objects.get(pk=site_id, status='active')
 
     if user and site:
+        # 先判断是否达到限制
+        if user.level < 10:
+            if len(get_user_subscribe_feeds(user.oauth_id, from_user=False, user_level=user.level)) \
+                    == settings.USER_SUBS_LIMIT:
+
+                logger.warning(f"已达到订阅上限：`{user.oauth_name}")
+                return JsonResponse({"code": 1, "msg": f"已达到 {settings.USER_SUBS_LIMIT} 个订阅数，请先取消一部分！"})
+
         add_user_sub_feeds(user.oauth_id, [site_id, ])
 
         # 异步更新
@@ -156,7 +178,7 @@ def user_subscribe_feed(request):
 
         logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_id}")
 
-        return JsonResponse({"site": site_id})
+        return JsonResponse({"code": 0, "msg": '订阅成功 ^o^'})
 
     return HttpResponseForbidden("Param Error")
 
@@ -189,7 +211,7 @@ def user_mark_read_all(request):
 
     if user:
         if not ids:
-            my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+            my_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
             ids = set()
             for site_id in my_sub_feeds:

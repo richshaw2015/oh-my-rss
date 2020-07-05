@@ -209,6 +209,7 @@ def cal_user_ranking_cron():
             "score": board[1],
             "name": user.oauth_name,
             "avatar": user.avatar,
+            "level": user.level,
             "url": ext.get('html_url'),
             "intro": ext.get('bio') or ext.get('company') or ext.get('location')
         })
@@ -226,7 +227,7 @@ def cal_site_ranking_cron():
     dest_feed_ranking = []
 
     for oauth_id in users:
-        all_user_feeds += get_user_subscribe_feeds(oauth_id, from_user=False)
+        all_user_feeds += get_user_subscribe_feeds(oauth_id, from_user=False, user_level=99)
 
     feed_ranking = dict(Counter(all_user_feeds).most_common(100))
 

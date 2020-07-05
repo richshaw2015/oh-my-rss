@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
+from django.conf import settings
 from .models import *
 from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
@@ -49,7 +50,7 @@ def get_my_feeds(request):
     sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
     unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
 
-    user = get_login_user(request)
+    user, reach_sub_limit = get_login_user(request), [False, 0]
     
     if user is None:
         visitor_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
@@ -57,17 +58,25 @@ def get_my_feeds(request):
         sub_sites = Site.objects.filter(status='active', pk__in=visitor_sub_feeds).order_by('-star')
         recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(pk__in=visitor_sub_feeds).\
             order_by('-star')
+
+        if len(visitor_sub_feeds) == settings.VISITOR_SUBS_LIMIT:
+            reach_sub_limit = [True, settings.VISITOR_SUBS_LIMIT]
     else:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
         sub_sites = Site.objects.filter(status='active', pk__in=user_sub_feeds).order_by('-star')
         recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(pk__in=user_sub_feeds)\
             .order_by('-star')
 
+        if user.level < 10:
+            if len(user_sub_feeds) == settings.USER_SUBS_LIMIT:
+                reach_sub_limit = [True, settings.USER_SUBS_LIMIT]
+
     context = dict()
     context['sub_sites'] = sub_sites
     context['recom_sites'] = recom_sites
     context['user'] = user
+    context['reach_sub_limit'] = reach_sub_limit
 
     return render(request, 'feeds.html', context=context)
 
@@ -103,7 +112,7 @@ def get_recent_articles(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     context = dict()
     context['articles'] = articles
@@ -122,7 +131,7 @@ def get_explore(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     sites = Site.objects.filter(status='active').order_by('-id')[:50]
 
@@ -143,7 +152,7 @@ def get_recent_sites(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     sites = Site.objects.filter(status='active').order_by('-id')[:50]
 
@@ -164,7 +173,7 @@ def get_ranking(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     feed_ranking = get_feed_ranking_dict()
 
@@ -185,7 +194,7 @@ def get_feed_ranking(request):
 
     user_sub_feeds = []
     if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     feed_ranking = get_feed_ranking_dict()
 
@@ -257,7 +266,7 @@ def get_site_update_view(request):
     if user is None:
         my_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
-        my_feeds = get_user_subscribe_feeds(user.oauth_id)
+        my_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     # 过滤有内容更新的
     if user and onlyunread:
@@ -317,7 +326,7 @@ def get_article_update_view(request):
     if user is None:
         my_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
     else:
-        my_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        my_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     # 获取文章索引列表
     my_articles = set()
@@ -414,7 +423,7 @@ def get_recommend_articles(request):
     if uindex and user:
         recommend_articles = []
         relative_articles = list(get_similar_article(uindex).keys())
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
         for relative_uindex in relative_articles:
             try:

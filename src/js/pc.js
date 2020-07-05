@@ -656,9 +656,13 @@ $(document).ready(function () {
             } else {
                 $('#omrss-loader').removeClass('hide');
                 $.post("/api/feed/subscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
-                    toast('订阅成功 ^o^');
-                    feedEl.text('取消订阅');
-                    feedEl.addClass('omrss-bgcolor');
+                    if (data.code === 0) {
+                        toast(data.msg);
+                        feedEl.text('取消订阅');
+                        feedEl.addClass('omrss-bgcolor');
+                    } else if (data.code === 1) {
+                        warnToast(data.msg);
+                    }
                 }).fail(function () {
                     warnToast(NET_ERROR_MSG);
                 }).always(function () {
@@ -1020,9 +1024,13 @@ $(document).ready(function () {
             $('#omrss-loader').removeClass('hide');
 
             $.post("/api/feed/subscribe", {uid: getOrSetUid(), site_id: siteId}, function (data) {
-                toast('订阅成功 ^o^');
-                evTarget.text('已订阅');
-                evTarget.removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                if (data.code === 0) {
+                    toast(data.msg);
+                    evTarget.text('已订阅');
+                    evTarget.removeClass('waves-effect').removeClass('btn-small').removeClass('ev-sub-feed');
+                } else if (data.code === 1) {
+                    warnToast(data.msg);
+                }
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);
             }).always(function () {

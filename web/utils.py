@@ -19,7 +19,6 @@ from collections import Counter
 from urllib.parse import urlparse
 import json
 from fake_useragent import UserAgent
-import django_rq
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -111,18 +110,20 @@ def is_active_rss(feed):
 @lru_cache(maxsize=128, typed=True)
 def get_visitor_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
     """
-    获取游客订阅的站点，已订阅 + 推荐 - 取消订阅
-    :param sub_feeds:
-    :param unsub_feeds:
-    :param star:
-    :return:
+    获取游客订阅的站点；已订阅 + 推荐 - 取消订阅；最多返回 50 个
     """
     # 设置订阅源缓存
     set_active_rss(sub_feeds)
 
+    # TODO 优化这里的性能
     recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('id', flat=True))
     active_feeds = {int(s) for s in get_active_sites()}
-    return list((set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds)) & active_feeds)
+
+    try:
+        return list((set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds)) & active_feeds
+                    )[:settings.VISITOR_SUBS_LIMIT]
+    except:
+        return []
 
 
 def get_client_ip(request):
@@ -281,10 +282,17 @@ def get_active_sites():
     return R.smembers(key)
 
 
-def get_user_subscribe_feeds(oauth_id, from_user=True):
+def get_user_subscribe_feeds(oauth_id, from_user=True, user_level=1):
+    """
+    获取登陆用户订阅源
+    """
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 
     sub_feeds = R.smembers(key) & get_active_sites()
+
+    # 普通用户，限制其订阅数量
+    if user_level < 10:
+        sub_feeds = list(sub_feeds)[:settings.USER_SUBS_LIMIT]
 
     # 设置订阅源缓存，来自用户的请求调用
     if from_user:

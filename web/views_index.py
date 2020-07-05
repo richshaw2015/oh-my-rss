@@ -24,7 +24,7 @@ def index(request):
     if user is None:
         sub_feeds = get_visitor_subscribe_feeds('', '')
     else:
-        sub_feeds = get_user_subscribe_feeds(user.oauth_id)
+        sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
     articles = Article.objects.filter(status='active', site_id__in=sub_feeds).order_by('-id')[:2]
 

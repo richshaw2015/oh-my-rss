@@ -13,7 +13,14 @@
             <div class="divider nav-divider"></div>
             {% endif %}
             <div>
-                <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text">
+                {% if user.level >= 10 %}
+                <span class="omrss-badge omrss-badge-32" data-badge="V">
+                    <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text" alt="头像" />
+                </span>
+                {% else %}
+                <img src="{{ user.avatar }}" class="circle omrss-recent-avatar omrss-text" alt="头像" />
+                {% endif %}
+
                 <a href="{{ user.url }}" target="_blank">
                     <span class="omrss-recent-site omrss-text">{{ user.name }}</span>
                 </a>

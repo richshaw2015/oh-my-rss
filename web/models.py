@@ -86,6 +86,12 @@ class User(models.Model):
         ('close', '关闭，下线'),
     ), default='active')
 
+    level = models.IntegerField("等级", choices=(
+        (1, '默认'),
+        (10, '初级捐赠'),
+        (20, '高级捐赠'),
+    ), default=1, null=True, blank=True)
+
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)

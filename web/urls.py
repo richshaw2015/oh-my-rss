@@ -44,6 +44,7 @@ urlpatterns = [
     path('api/dashboard/api/profile', dashboard.get_api_profile_chart_data, name='get_api_profile_chart_data'),
 
     path('api/install', install.install, name='install'),
+    path('api/init', install.init, name='init'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_view_stats, name='add_view_stats'),

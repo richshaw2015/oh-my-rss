@@ -62,6 +62,7 @@ def github_callback(request):
 
                                 # 用户头像存储到本地一份，国内网络会丢图
                                 avatar = save_avatar(oauth_avatar, oauth_id)
+
                                 user.avatar = avatar
                                 user.save()
 

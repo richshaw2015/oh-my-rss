@@ -833,3 +833,47 @@ kbd:hover {
 .card {
     border-radius: 4px !important;
 }
+
+.omrss-badge {
+    position: relative;
+    white-space: nowrap;
+}
+
+.omrss-badge[data-badge]::after {
+    position: absolute;
+    z-index: 100;
+
+    background: rgb(255, 157, 40);
+    border-radius: 50%;
+    color: #fff;
+    content: attr(data-badge);
+    display: inline-block;
+    text-align: center;
+    line-height: 1;
+}
+
+.omrss-badge-my[data-badge]::after {
+    top: 58px;
+    right: -63px;
+    box-shadow: 0 0 0 2px #fff;
+    font-size: 12px;
+    min-width: 14px;
+    padding: 1px;
+    z-index: 100;
+}
+.omrss-badge-36[data-badge]::after {
+    top: 90%;
+    right: 23%;
+    box-shadow: 0 0 0 1px #fff;
+    font-size: 7px;
+    min-width: 9px;
+    padding: 1px;
+}
+.omrss-badge-32[data-badge]::after {
+    top: 90%;
+    right: 19%;
+    box-shadow: 0 0 0 1px #fff;
+    font-size: 6px;
+    min-width: 8px;
+    padding: 1px;
+}

@@ -1,6 +1,11 @@
 {% load helpers %}
 
-<h1><i class="material-icons">rss_feed</i> 我的订阅</h1>
+<h1><i class="material-icons">rss_feed</i> 我的订阅
+{% if reach_sub_limit.0 %}
+    <i class="omrss-color" style="font-size: 1.2rem;">已达 {{ reach_sub_limit.1 }} 个订阅数限制</i>
+{% endif %}
+</h1>
+
 
 <div class="divider"></div>
 
