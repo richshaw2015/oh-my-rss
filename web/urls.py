@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views_index, views_html, views_api, views_dash, views_oauth, views_search
-from .feeds import SiteFeed
+from . import views_index, views_html, views_api, views_oauth, views_search
+from web.views import dashboard, install
+from web.feeds import SiteFeed
 
 urlpatterns = [
     # public urls
@@ -10,8 +11,8 @@ urlpatterns = [
     path('p/<int:pid>', views_search.article, name='article_alias'),
 
     path('feed/<site_id>', SiteFeed(), name='get_feed_entries'),
-    path('dash', views_dash.dashboard, name='dashboard'),
-    path('dash/logs', views_dash.get_warn_log, name='get_warn_log'),
+    path('dash', dashboard.dashboard, name='dashboard'),
+    path('dash/logs', dashboard.get_warn_log, name='get_warn_log'),
 
     path('robots.txt', views_search.robots, name='robots'),
     path('sitemap.txt', views_search.sitemap, name='sitemap'),
@@ -37,12 +38,12 @@ urlpatterns = [
     path('api/html/articles/list2', views_html.get_site_article_update_view, name='get_site_article_update_view'),
     path('api/html/sites/list', views_html.get_site_update_view, name='get_site_update_view'),
 
-    path('api/dashboard/uv', views_dash.get_uv_chart_data, name='get_uv_chart_data'),
-    path('api/dashboard/refer/pie', views_dash.get_refer_pie_data, name='get_refer_pie_data'),
-    path('api/dashboard/refer/pv', views_dash.get_refer_pv_chart_data, name='get_refer_uv_chart_data'),
-    path('api/dashboard/api/profile', views_dash.get_api_profile_chart_data, name='get_api_profile_chart_data'),
+    path('api/dashboard/uv', dashboard.get_uv_chart_data, name='get_uv_chart_data'),
+    path('api/dashboard/refer/pie', dashboard.get_refer_pie_data, name='get_refer_pie_data'),
+    path('api/dashboard/refer/pv', dashboard.get_refer_pv_chart_data, name='get_refer_uv_chart_data'),
+    path('api/dashboard/api/profile', dashboard.get_api_profile_chart_data, name='get_api_profile_chart_data'),
 
-    path('api/dashboard/fixbug', views_dash.fixbug, name='fixbug'),
+    path('api/install', install.install, name='install'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_view_stats, name='add_view_stats'),

@@ -39,7 +39,7 @@ def parse_qnmlgb_atom(feed_url):
 
     try:
         site = Site(name=name, cname=cname, link=link, brief=brief, star=19, copyright=30,
-                    creator='wemp', rss=feed_url, favicon=favicon, author='')
+                    creator='wemp', rss=feed_url, favicon=favicon)
         site.save()
 
         return {"site": site.pk}
@@ -78,7 +78,7 @@ def parse_atom(feed_url):
         else:
             brief = cname
 
-        author = feed_obj.feed.get('author', 'None')[:12]
+        author = feed_obj.feed.get('author') or get_host_name(link)
 
         # 使用默认头像
         favicon = generate_rss_avatar(link)

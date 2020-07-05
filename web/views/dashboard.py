@@ -1,13 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from .utils import *
+from web.utils import *
 import logging
 from django.conf import settings
 import json
 from pyecharts import options
-from pyecharts.charts import Line, Page, Pie
-import django_rq
-from .models import *
+from pyecharts.charts import Line, Pie
 
 logger = logging.getLogger(__name__)
 
@@ -170,17 +168,3 @@ def get_warn_log(request):
 
     return render(request, 'dashboard/logs.html', context=context)
 
-
-def fixbug(request):
-    """
-    动态修复
-    :param request:
-    :return:
-    """
-
-    from web.tasks import load_articles_to_redis_cron, cal_user_ranking_cron
-
-    cal_user_ranking_cron()
-    load_articles_to_redis_cron()
-
-    return JsonResponse({})
