@@ -18,6 +18,7 @@ import hashlib
 from collections import Counter
 from urllib.parse import urlparse
 import json
+import re
 from fake_useragent import UserAgent
 
 # init Redis connection
@@ -27,6 +28,11 @@ logger = logging.getLogger(__name__)
 
 def get_host_name(url):
     return urlparse(url).netloc
+
+
+def get_short_host_name(url):
+    host = urlparse(url).netloc
+    return re.sub(r'^www\.|^blog.', '', host)
 
 
 def incr_view_star(action, uindex):

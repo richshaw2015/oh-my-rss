@@ -3,7 +3,7 @@ import django
 from django.urls import resolve
 from web.models import *
 from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log, set_updated_site, get_with_proxy, \
-    get_with_retry
+    get_with_retry, get_short_host_name
 from web.omrssparser.wemp import parse_weixin_page
 import logging
 import feedparser
@@ -78,7 +78,7 @@ def parse_atom(feed_url):
         else:
             brief = cname
 
-        author = feed_obj.feed.get('author') or get_host_name(link)
+        author = feed_obj.feed.get('author') or get_short_host_name(link)
 
         # 使用默认头像
         favicon = generate_rss_avatar(link)

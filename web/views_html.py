@@ -381,11 +381,15 @@ def get_site_article_update_view(request):
     site = Site.objects.get(pk=site_id, status='active')
     recent_articles = list(get_recent_site_articles(site.pk))
 
+    # 查看文章数限制
+    site_articles_limit = 9999
     if user:
-        site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:1000]
-
+        if user.level < 10:
+            site_articles_limit = settings.USER_SITE_ARTICLES_LIMIT
     else:
-        site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:200]
+        site_articles_limit = settings.VISITOR_SITE_ARTICLES_LIMIT
+
+    site_articles = Article.objects.filter(site=site, status='active').order_by('-id')[:site_articles_limit]
 
     if site_articles:
         # 分页处理
