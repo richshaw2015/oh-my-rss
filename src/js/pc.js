@@ -897,6 +897,20 @@ $(document).ready(function () {
         })
     });
 
+    // 捐赠页面
+    $(document).on('click', '.ev-donate', function() {
+        $('#omrss-loader').removeClass('hide');
+        $.post("/api/html/donate", {uid: getOrSetUid()}, function (data) {
+            $('#omrss-main').html(data);
+            $('#omrss-main').scrollTop(0);
+            resetHeight();
+        }).fail(function () {
+            warnToast(NET_ERROR_MSG);
+        }).always(function () {
+            $('#omrss-loader').addClass('hide');
+        })
+    });
+
     // 发现页面
     $(document).on('click', '.ev-explore', function() {
         $('#omrss-loader').removeClass('hide');

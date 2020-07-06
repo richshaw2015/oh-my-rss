@@ -318,6 +318,14 @@ i.meta-icon {
         padding-top: 0.8rem;
         padding-bottom: 1rem;
     }
+    .omrss-donate-block {
+        margin-right: 4px;
+        margin-bottom: 4px;
+    }
+    .omrss-donate-img {
+        width: 75px;
+        height: 75px;
+    }
 }
 
 @media only screen and (min-width: 992px) {
@@ -418,6 +426,14 @@ i.meta-icon {
         margin-left: 0;
         margin-right: 1rem;
     }
+    .omrss-donate-block {
+        margin-right: 6px;
+        margin-bottom: 6px;
+    }
+    .omrss-donate-img {
+        width: 90px;
+        height: 90px;
+    }
 }
 
 @media only screen and (min-width: 1600px) {
@@ -517,6 +533,14 @@ i.meta-icon {
     span.meta-recommend {
         margin-left: 0;
         margin-right: 2.5em;
+    }
+    .omrss-donate-block {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    .omrss-donate-img {
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -850,4 +874,17 @@ kbd:hover {
 
 .card {
     border-radius: 4px !important;
+}
+
+.omrss-donate-block {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    display: inline-block;
+}
+.omrss-donate-text {
+    color: #aea79f;
+    font-size: 1.1rem;
+}
+
+.omrss-donate-payimg {
+    width: 250px;
 }

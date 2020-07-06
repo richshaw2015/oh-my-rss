@@ -230,11 +230,8 @@ def get_faq(request):
 
 
 @verify_request
-def get_homepage_tips(request):
-    """
-    获取 tips
-    """
-    return render(request, 'tips.html')
+def get_donate_guide(request):
+    return render(request, 'donate.html')
 
 
 @verify_request
