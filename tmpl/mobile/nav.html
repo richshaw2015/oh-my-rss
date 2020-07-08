@@ -15,7 +15,15 @@
             {% else %}
                 <li data-oauth-id="{{ user.oauth_id }}"
                     data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
-                    <img src="{{ user.avatar }}" class="omrss-avatar circle" alt="头像" />
+
+                    {% if user.level >= 10 %}
+                    <figure class="spectre-avatar spectre-badge omrss-avatar-sm2" data-badge="V">
+                        <img src="{{ user.avatar }}" alt="头像">
+                    </figure>
+
+                    {% else %}
+                    <img src="{{ user.avatar }}" class="omrss-avatar-sm2 circle" alt="头像" />
+                    {% endif %}
                 </li>
             {% endif %}
 
@@ -37,8 +45,17 @@
                 <img src="/assets/img/avatar-bg.jpg">
             </div>
             {% if user %}
+
             <a href="{{ user.oauth_blog }}" target="_blank">
-                <img class="circle" alt="头像" src="{{ user.avatar }}"></a>
+            {% if user.level >= 10 %}
+            <figure class="spectre-avatar spectre-badge omrss-avatar-xl" data-badge="V">
+                <img src="{{ user.avatar }}" class="circle" alt="头像">
+            </figure>
+            {% else %}
+            <img src="{{ user.avatar }}" class="circle" alt="头像" />
+            {% endif %}
+            </a>
+
             <a href="{{ user.oauth_blog }}" target="_blank">
                 <span class="white-text name nav-name">{{ user.oauth_name }}</span></a>
             {% else %}

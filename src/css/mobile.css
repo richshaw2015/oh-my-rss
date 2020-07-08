@@ -160,6 +160,12 @@ nav .brand-logo {
     font-size: 1.35rem;
 }
 
+#omrss-my {
+    vertical-align: middle;
+    padding-left: 11px;
+    padding-right: 11px;
+}
+
 /* 这个属性要适配不同屏幕尺寸 */
 .omrss-title {
     font-size: 1.2rem;
@@ -288,14 +294,6 @@ li#omrss-active-pager {
 }
 #omrss-main {
     padding: 0 12px;
-}
-
-.omrss-avatar {
-    width: 54px;
-    max-height: 54px;
-    vertical-align: middle;
-    padding-left: 11px;
-    padding-right: 11px;
 }
 
 .omrss-visitor-avatar {

@@ -645,24 +645,6 @@ i.meta-icon {
 #omrss-my {
     padding: 0 9px;
 }
-.omrss-avatar-xl {
-    width: 64px;
-    height: 64px;
-    font-size: 32px;
-    vertical-align: middle;
-}
-.omrss-avatar-lg {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
-    vertical-align: middle;
-}
-.omrss-avatar-sm {
-    width: 32.4px;
-    height: 32.4px;
-    font-size: 16.2px;
-    vertical-align: middle;
-}
 
 .omrss-article-bottom {
     vertical-align: middle;
