@@ -317,6 +317,22 @@ nav .sidenav-trigger {
     margin: 0 4px !important;
 }
 
+.omrss-donate-block {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    display: inline-block;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+.omrss-donate-img {
+    width: 80px;
+    height: 80px;
+}
+
+.omrss-donate-payimg {
+    width: 250px;
+}
+
+
 /* 适配不同的屏幕尺寸 */
 @media only screen and (min-width: 300px) and (max-width: 340px) {
     .meta-author {

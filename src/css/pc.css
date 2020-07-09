@@ -862,10 +862,6 @@ kbd:hover {
     border: 1px solid rgba(0, 0, 0, 0.10);
     display: inline-block;
 }
-.omrss-donate-text {
-    color: #aea79f;
-    font-size: 1.1rem;
-}
 
 .omrss-donate-payimg {
     width: 250px;
