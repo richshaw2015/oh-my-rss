@@ -106,9 +106,9 @@
 .omrss-avatar-sm.spectre-badge[data-badge]::after, .omrss-avatar-sm2.spectre-badge[data-badge]::after, 
 .omrss-avatar-lg.spectre-badge[data-badge]::after {
   font-size: 10px;
-  height: 12px;
-  min-width: 12px;
-  padding: 1px;
+  height: 10px;
+  min-width: 10px;
+  padding: 0;
 }
 
 .spectre-badge.spectre-avatar::after {
