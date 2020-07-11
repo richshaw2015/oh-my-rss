@@ -164,3 +164,9 @@ def to_rss(site):
         logger.error(f'生成 RSS 失败：`{site.pk}`{site.creator}')
 
     return rss
+
+
+@register.filter
+def to_site_update_count(site_id):
+    key = settings.REDIS_SITE_ARTICLES_KEY % site_id
+    return R.scard(key)

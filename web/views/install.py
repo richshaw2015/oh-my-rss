@@ -7,12 +7,14 @@ logger = logging.getLogger(__name__)
 
 
 def init(request):
-    from web.tasks import load_articles_to_redis_cron, cal_user_ranking_cron
+    user = get_login_user(request)
 
-    cal_user_ranking_cron()
-    load_articles_to_redis_cron()
+    if user or settings.DEBUG:
+        from web.tasks import load_articles_to_redis_cron
 
-    return JsonResponse({})
+        load_articles_to_redis_cron()
+
+        return JsonResponse({})
 
 
 def install(request):

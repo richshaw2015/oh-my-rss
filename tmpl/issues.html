@@ -36,54 +36,5 @@
     </ul>
 </div>
 
-<!-- 悬浮球 -->
-<div class="fixed-action-btn">
-    <a class="btn-floating btn-large red modal-trigger tooltipped" href="#modal-add-issue" data-position="left"
-        data-tooltip="添加留言">
-        <i class="large material-icons">edit</i>
-    </a>
-</div>
-
-<!-- 添加留言窗口 -->
-<div id="modal-add-issue" class="modal">
-    <div class="modal-content">
-        <h3>添加留言</h3>
-
-        <div class="row">
-            <div class="input-field col s12">
-                <i class="material-icons prefix">mode_edit</i>
-                <textarea id="issue-input-detail" class="materialize-textarea"
-                          data-length="500" maxlength="500"></textarea>
-                <label for="issue-input-detail">问题说明（必填，公开显示）</label>
-            </div>
-
-            {% if not user %}
-            <div class="input-field col s6">
-                <i class="material-icons prefix">person</i>
-                <input id="issue-input-name" class="validate" type="text" data-length="20" maxlength="20">
-                <label for="issue-input-name">您的昵称（选填，公开显示）</label>
-            </div>
-            {% endif %}
-
-            <div class="input-field col s6">
-                <i class="material-icons prefix">contact_mail</i>
-                <input id="issue-input-contact" class="validate" type="text" data-length="50"
-                       maxlength="50">
-                <label for="issue-input-contact">联系方式（选填，仅站长可见）</label>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button class="modal-close btn waves-effect waves-light" id="cancel">取消</button>
-            <button class="btn waves-effect waves-light ev-submit-msg">提交</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    $('.fixed-action-btn').floatingActionButton();
-    $('.tooltipped').tooltip();
-    $('#modal-add-issue').modal({"dismissible": false});
-    $(".prettydate").prettydate();
-    $('textarea#issue-input-detail, input#issue-input-name, input#issue-input-contact').characterCounter();
-</script>
+<!-- 添加留言 悬浮球 -->
+{% include 'add_issue.html' %}

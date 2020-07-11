@@ -8,7 +8,7 @@ from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
     set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, \
-    get_user_visit_days, set_user_ranking_list
+    get_user_visit_days, set_user_ranking_list, reset_sites_lastids
 import jieba
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
@@ -251,7 +251,7 @@ def load_articles_to_redis_cron():
     """
     扫描一遍数据库，每隔 5 分钟同步一次
     """
-    site_articles, articles = {}, []
+    site_articles, articles, sites_lastids = {}, [], []
 
     for article in Article.objects.filter(status='active', is_recent=True).order_by('-id').iterator():
         # 所有文章的索引
@@ -267,9 +267,14 @@ def load_articles_to_redis_cron():
     reset_recent_articles(articles)
 
     for (site_id, update_list) in site_articles.items():
+        sites_lastids.append(update_list[0])
+
         # 更新缓存
         reset_recent_site_articles(site_id, update_list)
         set_site_lastid(site_id, update_list[0])
+
+    # 所有站点的最后一条更新记录
+    reset_sites_lastids(sites_lastids[:100])
 
     return True
 

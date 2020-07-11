@@ -1,24 +1,23 @@
 from django.urls import path
-from . import views_html, views_api, views_oauth, views_search
-from web.views import dashboard, install, index
+from web.views import dashboard, install, index, search, views_api, views_html, oauth
 from web.feeds import SiteFeed
 
 urlpatterns = [
     # public urls
     path('', index.index, name='index'),
 
-    path('post/<int:pid>', views_search.article, name='article'),
-    path('p/<int:pid>', views_search.article, name='article_alias'),
+    path('post/<int:pid>', search.article, name='article'),
+    path('p/<int:pid>', search.article, name='article_alias'),
 
     path('feed/<site_id>', SiteFeed(), name='get_feed_entries'),
     path('dash', dashboard.dashboard, name='dashboard'),
     path('dash/logs', dashboard.get_warn_log, name='get_warn_log'),
 
-    path('robots.txt', views_search.robots, name='robots'),
-    path('sitemap.txt', views_search.sitemap, name='sitemap'),
-    path('search', views_search.insite_search, name='insite_search'),
+    path('robots.txt', search.robots, name='robots'),
+    path('sitemap.txt', search.sitemap, name='sitemap'),
+    path('search', search.insite_search, name='insite_search'),
 
-    path('oauth/github/redirect', views_oauth.github_callback, name='github_callback'),
+    path('oauth/github/redirect', oauth.github_callback, name='github_callback'),
 
     # private urls
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),

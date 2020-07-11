@@ -265,6 +265,17 @@ def get_site_last_id(site_id):
     return R.get(key) or '0'
 
 
+def reset_sites_lastids(ids):
+    key = settings.REDIS_SITES_LASTIDS_KEY
+    R.delete(key)
+    return R.sadd(key, *ids)
+
+
+def get_sites_lastids():
+    key = settings.REDIS_SITES_LASTIDS_KEY
+    return sorted(R.smembers(key), reverse=True)
+
+
 def add_user_sub_feeds(oauth_id, feeds):
     key = settings.REDIS_USER_SUB_KEY % oauth_id
 

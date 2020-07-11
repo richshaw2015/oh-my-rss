@@ -5,7 +5,7 @@ from web.models import *
 from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
     set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file, get_recent_site_articles
-from web.views_html import get_all_issues
+from web.views.views_html import get_all_issues
 from web.verify import verify_request
 import logging
 from django.conf import settings

@@ -10,18 +10,6 @@
 <div class="divider"></div>
 
 <div class="row">
-    <div class="input-field col s9">
-        <input id="omrss-feed-input" type="text" class="validate">
-        <label for="omrss-feed-input" id="omrss-rss-tips">提交 RSS 源，例如：https://coolshell.cn/feed</label>
-    </div>
-    <div class="input-field col s3">
-        <button class="btn waves-effect waves-light ev-submit-feed" type="submit">提交 RSS 源
-            <i class="material-icons right">send</i>
-        </button>
-    </div>
-</div>
-
-<div class="row">
     <div class="col s12">
         <ul class="tabs">
             <li class="tab col s6 ev-my-subs">
@@ -63,3 +51,6 @@
         </div>
     {% endfor %}
 </div>
+
+<!-- 提交 RSS 悬浮球 -->
+{% include 'submit_rss.html' %}

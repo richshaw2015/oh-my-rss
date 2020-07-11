@@ -2,14 +2,13 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 from django.conf import settings
-from .models import *
-from .utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
+from web.models import *
+from web.utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_similar_article, get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
-    get_site_last_id, get_user_unread_articles, get_user_unread_sites, get_user_ranking_list
-from .verify import verify_request
+    get_site_last_id, get_user_unread_articles, get_user_unread_sites, get_user_ranking_list, get_sites_lastids
+from web.verify import verify_request
 import logging
 import json
-from .sql import *
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +77,7 @@ def get_my_feeds(request):
     context['user'] = user
     context['reach_sub_limit'] = reach_sub_limit
 
-    return render(request, 'feeds.html', context=context)
+    return render(request, 'myfeeds.html', context=context)
 
 
 @verify_request
@@ -100,15 +99,9 @@ def get_recent_articles(request):
     获取最近更新内容 TODO 优化查询性能
     """
     user = get_login_user(request)
-    recommend = request.POST.get('recommend', 'recommend')
+    ids = get_sites_lastids()
 
-    if recommend == 'unrecommend':
-        articles = Article.objects.raw(get_other_articles_sql)
-    elif recommend == 'recommend':
-        articles = Article.objects.raw(get_recommend_articles_sql)
-    else:
-        logger.warning(f'未知的类型：{recommend}')
-        return HttpResponseForbidden("Param Error")
+    articles = Article.objects.filter(uindex__in=ids)
 
     user_sub_feeds = []
     if user:
@@ -222,9 +215,11 @@ def get_faq(request):
     获取FAQ
     """
     mobile = request.POST.get('mobile', False)
+    user = get_login_user(request)
 
     context = dict()
     context['mobile'] = mobile
+    context['user'] = user
 
     return render(request, 'faq.html', context=context)
 

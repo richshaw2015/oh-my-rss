@@ -24,6 +24,7 @@ function initLayout() {
     $('.modal').modal();
     $('.tabs').tabs();
     $('.sidenav').sidenav({"edge": "right"});
+    $('#modal-submit-rss').modal({"dismissible": false});
 
     // 阅读模式
     initReadMode();
@@ -625,8 +626,10 @@ $(document).ready(function () {
     // 提交订阅源
     $(document).on('click', '.ev-submit-feed', function () {
         const url = $('#omrss-feed-input').val().trim();
+
         if (url) {
             $('#omrss-loader').removeClass('hide');
+            
             $.post("/api/feed/add", {uid: getOrSetUid(), url: url}, function (data) {
                 visitorSubFeed(data.site);
                 toast("添加成功，预计一小时内收到更新 ^o^", 3000);
@@ -936,14 +939,13 @@ $(document).ready(function () {
     $(document).on('click', '.ev-recent-article', function () {
         $('#omrss-loader').removeClass('hide');
         
-        const recommend = $(this).attr('data-type');
-
-        $.post("/api/html/recent/articles", {uid: getOrSetUid(), recommend: recommend}, function (data) {
+        $.post("/api/html/recent/articles", {uid: getOrSetUid()}, function (data) {
             if (!getLoginId()) {
                 $('#omrss-explore').html(updateVisitorSubStatus(data));
             } else {
                 $('#omrss-explore').html(data);
             }
+
             $('#omrss-explore').scrollTop(0);
             $('.tooltipped').tooltip();
         }).fail(function () {

@@ -1,12 +1,12 @@
 
-from .models import User
+from web.models import User
 from django.shortcuts import redirect
 import requests
 from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
 import logging
 from django.conf import settings
 import json
-from .utils import add_user_sub_feeds, get_visitor_subscribe_feeds, add_register_count, save_avatar
+from web.utils import add_user_sub_feeds, get_visitor_subscribe_feeds, add_register_count, save_avatar
 
 logger = logging.getLogger(__name__)
 

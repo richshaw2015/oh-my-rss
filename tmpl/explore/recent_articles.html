@@ -34,10 +34,14 @@
 
 
                     <span class="new right omrss-recent-badge">
-                        <i class="material-icons meta-icon sync-icon">sync</i>{{ article.new }}</span>
+                        <i class="material-icons meta-icon sync-icon">sync</i>
+                        {{ article.site_id |to_site_update_count }}</span>
                 </div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+<!-- 提交 RSS 悬浮球 -->
+{% include 'submit_rss.html' %}

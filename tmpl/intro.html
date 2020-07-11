@@ -38,8 +38,8 @@
 
     订阅源主要支持三种类型以满足您的个性化订阅需求：
     <ol>
-        <li>通过其他途径生成的 RSS 源（<a href="#" class="ev-my-feed">在线提交</a>）</li>
-        <li>微信公众号（<a href="#" class="ev-my-feed">在线提交</a>）</li>
+        <li>通过其他途径生成的 RSS 源（<a class="modal-trigger" href="#modal-submit-rss">在线提交</a>）</li>
+        <li>微信公众号（<a class="modal-trigger" href="#modal-submit-rss">在线提交</a>）</li>
         <li>自定义 Scrapy 规则（<a href="https://github.com/richshaw2015/oh-my-rss">贡献源码</a>）</li>
     </ol>
 
@@ -150,3 +150,5 @@
 
 </div>
 
+<!-- 提交 RSS 悬浮球 -->
+{% include 'submit_rss.html' %}

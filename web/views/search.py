@@ -2,11 +2,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from web.models import *
-from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, is_sensitive_content
+from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
+    is_sensitive_content
 import logging
 import os
 from user_agents import parse
-from .verify import verify_request
+from web.verify import verify_request
 from django.db.models import Q
 
 logger = logging.getLogger(__name__)
