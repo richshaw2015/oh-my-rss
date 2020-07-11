@@ -226,7 +226,7 @@ def get_faq(request):
 
 @verify_request
 def get_donate_guide(request):
-    return render(request, 'donate.html')
+    return render(request, 'donate/donate.html')
 
 
 @verify_request
