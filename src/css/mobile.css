@@ -168,14 +168,17 @@ nav .brand-logo {
 
 /* 这个属性要适配不同屏幕尺寸 */
 .omrss-title {
+    flex-grow: 1;
     font-size: 1.2rem;
-    vertical-align: top;
     line-height: 1.8rem;
     word-break: break-word;
     cursor: pointer;
 }
 .omrss-title a {
     color: inherit;
+}
+#omrss-pager .pagination li {
+    border-radius: 6px !important;
 }
 .pagination li {
     width: 15%;
@@ -219,13 +222,16 @@ li#omrss-active-pager {
 .unread {
     font-size: 12px;
     color: #f26522;
-    width: 1rem;
 }
 
 .read {
     font-size: 14px;
     color: #26a69a;
-    width: 1rem;
+}
+
+.read, .unread {
+    width: 18px;
+    margin-left: 10px;
 }
 
 .meta-icon {
@@ -255,6 +261,8 @@ li#omrss-active-pager {
 
 .favico {
     width: 1.8rem;
+    height: 1.8rem !important;
+    margin-right: 6px;
 }
 
 .bottom-flex-bar {
@@ -270,6 +278,9 @@ li#omrss-active-pager {
     margin-right: 2px;
 }
 
+#omrss-third {
+    word-break: break-all;
+}
 #omrss-third img, #omrss-third iframe, #omrss-third video {
     max-width: 100% !important;
 }
@@ -301,16 +312,17 @@ li#omrss-active-pager {
 }
 
 .omrss-title-line {
-    display: inline-block;
-    width: 100%;
+    line-height: 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.omrss-title-line i.read, .omrss-title-line i.unread {
-    line-height: 1.8rem;
-    margin-right: 0.5rem;
+.omrss-meta-line, #omrss-article-stats, #omrss-read-stats{
+    color: #616161 !important;
 }
-.omrss-meta-line{
-    line-height: 1.5rem;
+.omrss-meta-line {
+    padding-top: 2px;
 }
 
 nav .sidenav-trigger {
@@ -359,10 +371,6 @@ nav .sidenav-trigger {
     i.right {
         margin-left: 4px;
     }
-    .omrss-title {
-        max-width: 80%;
-        padding-left: 0.2rem;
-    }
 }
 @media only screen and (min-width: 340px) and (max-width: 370px) {
     .meta-author {
@@ -388,10 +396,6 @@ nav .sidenav-trigger {
     }
     i.right {
         margin-left: 4px;
-    }
-    .omrss-title {
-        max-width: 80%;
-        padding-left: 0.2rem;
     }
     .meta-num-s {
         width: 1.5em;
@@ -426,10 +430,6 @@ nav .sidenav-trigger {
     i.right {
         margin-left: 4px;
     }
-    .omrss-title {
-        max-width: 75%;
-        padding-left: 0.2rem;
-    }
     .meta-num-s {
         width: 1.5em;
     }
@@ -463,10 +463,6 @@ nav .sidenav-trigger {
     i.right {
         margin-left: 6px;
     }
-    .omrss-title {
-        max-width: 78%;
-        padding-left: 0.3rem;
-    }
     .meta-num-s {
         width: 2em;
     }
@@ -499,10 +495,6 @@ nav .sidenav-trigger {
     }
     i.right {
         margin-left: 1rem;
-    }
-    .omrss-title {
-        max-width: 85%;
-        padding-left: 0.5rem;
     }
     .meta-num-s {
         width: 2.5em;

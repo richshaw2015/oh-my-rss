@@ -1,11 +1,11 @@
 from django.urls import path
-from . import views_index, views_html, views_api, views_oauth, views_search
-from web.views import dashboard, install
+from . import views_html, views_api, views_oauth, views_search
+from web.views import dashboard, install, index
 from web.feeds import SiteFeed
 
 urlpatterns = [
     # public urls
-    path('', views_index.index, name='index'),
+    path('', index.index, name='index'),
 
     path('post/<int:pid>', views_search.article, name='article'),
     path('p/<int:pid>', views_search.article, name='article_alias'),

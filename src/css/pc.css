@@ -77,6 +77,9 @@ pre[class*="language-"]:before {
 
 
 /* 自定义的样式 */
+#omrss-third {
+    word-break: break-all;
+}
 
 .page-footer {
     position: fixed;
@@ -89,13 +92,14 @@ pre[class*="language-"]:before {
 
 .unread {
     color: #f26522;
-    margin-left: 0 !important;
-    margin-right: 1px;
 }
 
 .read {
     color: #26a69a;
-    margin-left: 0 !important;
+}
+.read, .unread {
+    width: 18px;
+    margin-left: 10px;
 }
 
 .meta-icon {
@@ -139,8 +143,8 @@ i.meta-icon {
     flex-grow: 1;
 }
 
-.collection .collection-item .omrss-meta-line {
-    color: #444;
+.collection .collection-item .omrss-meta-line, #omrss-article-stats, #omrss-read-stats {
+    color: #616161 !important;
 }
 
 #omrss-site-nav {
@@ -193,7 +197,6 @@ i.meta-icon {
     overflow-y: hidden;
     border-right: 1px dashed rgba(0,0,0,0.14);
     padding: 0 10px;
-    /* min-width: 28rem; */
 }
 
 .nav-divider {
@@ -240,6 +243,9 @@ i.meta-icon {
     padding: 12px !important;
 }
 
+.btn, .btn-small {
+    border-radius: 5px;
+}
 .omrss-sub-btn {
     min-width: 4rem !important;
     text-align: center;
@@ -247,6 +253,7 @@ i.meta-icon {
 
 #omrss-recommend {
     margin-top: 0.8rem;
+    clear: both;
 }
 
 #omrss-recommend .row {
@@ -317,6 +324,7 @@ i.meta-icon {
     #omrss-article-bottom {
         padding-top: 0.8rem;
         padding-bottom: 1rem;
+        clear: both;
     }
     .omrss-donate-block {
         margin-right: 4px;
@@ -326,6 +334,16 @@ i.meta-icon {
         width: 75px;
         height: 75px;
     }
+}
+
+.omrss-title-line {
+    line-height: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.omrss-title {
+    flex-grow: 1;
 }
 
 @media only screen and (min-width: 992px) {
@@ -344,26 +362,8 @@ i.meta-icon {
     .omrss-onlyunread {
         left: calc(400px - 54px - 5px - 54px);
     }
-    .omrss-title {
-        font-size: 1rem;
-        max-width: 86%;
-    }
     .omrss-meta {
         font-size: 0.9rem;
-    }
-    /*
-    .omrss-meta-line {
-        line-height: 1.4rem;
-    }*/
-    .omrss-title-line {
-        line-height: 1.5rem;
-    }
-    .read, .unread {
-        line-height: 1.5rem;
-    }
-    .favico {
-        width: 1.5rem;
-        height: 1.5rem;
     }
     .collection .collection-item.ev-cnt-list {
         padding: 4px 8px;
@@ -452,25 +452,11 @@ i.meta-icon {
     .omrss-onlyunread {
         left: calc(500px - 54px - 5px - 54px);
     }
-    .omrss-title {
-        font-size: 1.1rem;
-        max-width: 88%;
-    }
     .omrss-meta {
         font-size: 1rem;
     }
     .omrss-meta-line {
         line-height: 1.7rem;
-    }
-    .omrss-title-line {
-        line-height: 1.8rem;
-    }
-    .read, .unread {
-        line-height: 1.8rem;
-    }
-    .favico {
-        width: 1.6rem;
-        height: 1.6rem;
     }
     .collection .collection-item.ev-cnt-list {
         padding: 8px 16px;
@@ -594,8 +580,9 @@ i.meta-icon {
 }
 
 .favico {
-    margin-right: 3px;
-    vertical-align: baseline;
+    width: 24px;
+    height: 24px !important;
+    margin-right: 4px;
 }
 
 .qrcode {
@@ -609,6 +596,9 @@ i.meta-icon {
     position: fixed;
     bottom: 0;
     border-top: 1px dashed rgba(0,0,0,0.14);
+}
+#omrss-pager .pagination li {
+    border-radius: 5px !important;
 }
 
 #omrss-active-pager a {
@@ -685,10 +675,6 @@ i.meta-icon {
 
 .rss-title {
     display: inline-block;
-}
-
-.omrss-item .favico {
-    vertical-align: text-bottom;
 }
 
 .omrss-tag {
@@ -792,12 +778,10 @@ nav .brand-logo {
 .meta-recommend-site {
     margin-right: 1.5rem;
 }
-.omrss-check-site {
-    margin-right: 10px;
-}
 
 .omrss-title-site {
-    padding-left: 10px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 .omrss-list2-title {
     display: inline-flex;

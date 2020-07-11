@@ -43,14 +43,14 @@
                     {% if user %}
                     {% if user.oauth_id|is_user_read_article:article.uindex or not article.is_recent %}
                         <span class="omrss-title truncate omrss-title-read">{{ article.title |truncatechars:50 }}</span>
-                        <i class="right material-icons read">check</i>
+                        <i class="material-icons read">check</i>
                     {% else %}
                         <span class="omrss-title truncate omrss-title-unread">{{ article.title |truncatechars:50 }}</span>
-                        <i class="right material-icons unread">lens</i>
+                        <i class="material-icons unread">lens</i>
                     {% endif %}
                     {% else %}
                         <span class="omrss-title truncate omrss-title-read">{{ article.title |truncatechars:50 }}</span>
-                        <i class="right material-icons read">check</i>
+                        <i class="material-icons read">check</i>
                     {% endif %}
                 </div>
 
