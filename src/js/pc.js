@@ -983,6 +983,7 @@ $(document).ready(function () {
             } else {
                 $('#omrss-main').html(data);
             }
+            $('#omrss-main').scrollTop(0);
             $('.tabs').tabs();
             $('.tooltipped').tooltip();
         }).fail(function () {
