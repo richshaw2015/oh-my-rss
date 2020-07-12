@@ -844,7 +844,7 @@ kbd:hover {
 
 .omrss-donate-block {
     border: 1px solid rgba(0, 0, 0, 0.10);
-    display: inline-block;
+    display: inline-flex;
 }
 
 .omrss-donate-payimg {
