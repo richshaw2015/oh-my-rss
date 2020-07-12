@@ -55,3 +55,10 @@ class UserAdmin(admin.ModelAdmin):
     list_editable = ['remark', 'level']
     list_filter = ('status', 'level')
     list_per_page = 10
+
+
+@admin.register(UserArticle)
+class UserArticleAdmin(admin.ModelAdmin):
+    list_display = ['title', 'site', 'user', 'author', 'src_url', 'ctime']
+    search_fields = ['title', 'src_url']
+    list_per_page = 10
