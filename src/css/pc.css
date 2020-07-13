@@ -167,18 +167,8 @@ i.meta-icon {
     padding-left: 0.5em;
 }
 
-.omrss-reply {
-    background-color: rgba(242,242,242,0.8);
-    padding: 10px 25px;
-    font-size: 0.8em;
-}
-
 .collection .collection-item:not(.active) .omrss-title {
     color: #444;
-}
-
-.omrss-msg p{
-    line-height: 150%;
 }
 
 .omrss-title-unread {
@@ -648,14 +638,6 @@ i.meta-icon {
     border: none;
 }
 
-.omrss-issue-meta {
-    font-size: 1rem;
-}
-
-.omrss-issue-name {
-    width: 20em;
-}
-
 #cancel {
     margin-right: 2rem;
     background-color:  #DFDFDF;
@@ -849,4 +831,36 @@ kbd:hover {
 
 .omrss-donate-payimg {
     width: 250px;
+}
+
+#omrss-main, ul.tabs {
+    background-color: rgb(243,243,243);
+}
+
+.omrss-issue-line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 8px;
+    word-break: break-all;
+}
+.omrss-issue-avatar {
+    width: 32.4px;
+    height: 32.4px;
+    margin-right: 10px;
+}
+.omrss-issue-msg {
+    max-width: 66%;
+}
+.omrss-reply-line {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    word-break: break-all;
+    color: #26a69a;
+    padding: 8px 0 12px 0;
+    font-size: 1rem;
+}
+.omrss-reply-line blockquote {
+    padding-left: 1rem;
 }

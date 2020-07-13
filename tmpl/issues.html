@@ -3,38 +3,27 @@
 <div class="divider"></div>
 
 <div class="flow-text">
-    <ul class="collection issues">
-        {% for msg in msgs %}
-        <li class="collection-item avatar omrss-msg">
+    {% for msg in msgs %}
+    <div class="omrss-issue-line">
         {% if msg.user is None %}
-            <img src="{{ msg.uid |to_gravatar_url }}" alt="" class="circle">
-            <span class="grey-text text-darken-1 omrss-issue-meta omrss-issue-name">
-                {% if msg.nickname %}
-                    {{ msg.nickname }}
-                {% else %}
-                    {{ msg.uid |to_fuzzy_uid }}
-                {% endif %}
-            </span>
-            <span class="omrss-issue-meta prettydate grey-text text-darken-1">{{ msg.ctime |to_date_fmt }}</span>
-            <p><i class="material-icons">format_quote</i> {{ msg.content }}</p>
-            {% if msg.reply %}
-                <div class="omrss-reply">{{ msg.reply }}</div>
-            {% endif %}
+            <img src="{{ msg.uid |to_gravatar_url }}" alt="" class="omrss-issue-avatar circle">
         {% else %}
-            <img src="{{ msg.user.avatar }}" alt="" class="circle">
-            <span class="grey-text text-darken-1 omrss-issue-meta omrss-issue-name">
-                {{ msg.user.oauth_name }}
-            </span>
-            <span class="omrss-issue-meta prettydate grey-text text-darken-1">{{ msg.ctime |to_date_fmt }}</span>
-            <p><i class="material-icons">format_quote</i> {{ msg.content }}</p>
-            {% if msg.reply %}
-                <div class="omrss-reply">{{ msg.reply }}</div>
-            {% endif %}
+            <img src="{{ msg.user.avatar }}" alt="" class="omrss-issue-avatar circle">
         {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
+
+        <div class="omrss-issue-msg"> {{ msg.content }}</div>
+    </div>
+
+    {% if msg.reply %}
+    <div class="omrss-reply-line">
+        <div class="omrss-issue-msg"><i class="material-icons">format_quote</i> {{ msg.reply }}</div>
+    </div>
+    {% endif %}
+        <div class="divider"></div>
+    {% endfor %}
 </div>
+
+<p></p>
 
 <!-- 添加留言 悬浮球 -->
 {% include 'add_issue.html' %}
