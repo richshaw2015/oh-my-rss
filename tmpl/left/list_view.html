@@ -25,19 +25,24 @@
                     <span class="omrss-meta meta-author">@{{ article.author |to_short_author:article.site.author }}</span>
                     <span class="meta-time prettydate omrss-meta">{{ article.ctime |to_date_fmt }}</span>
 
-                    <span class="right meta-num-l omrss-meta">{{ article.uindex |to_star_uv }}</span>
-                    <i class="right material-icons meta-icon omrss-meta star-icon
-                    {% if user and user.oauth_id|is_user_stared_article:article.uindex %}
-                    omrss-color
-                    {% endif %}
-                    ">star</i>
-
-                    <span class="right meta-num-l omrss-meta">{{ article.uindex |to_view_uv }}</span>
-                    <i class="right material-icons meta-icon omrss-meta visibility-icon">visibility</i>
-
                     {% if article.site.star >= 30 %}
-                        <span class="right new badge meta-recommend" data-badge-caption="">荐</span>
+                        <span class="new badge meta-recommend" data-badge-caption="">荐</span>
+                    {% else %}
+                        <span class="meta-recommend"></span>
                     {% endif %}
+
+                    <span class="omrss-view-stat">
+                        <i class="material-icons omrss-meta visibility-icon">visibility</i>
+                        <span class="meta-num-l omrss-meta">{{ article.uindex |to_view_uv }}</span>
+                    </span>
+                    <span class="omrss-star-stat">
+                        <i class="material-icons omrss-meta star-icon
+                        {% if user and user.oauth_id|is_user_stared_article:article.uindex %}
+                        omrss-color
+                        {% endif %}
+                        ">star</i>
+                        <span class="meta-num-l omrss-meta">{{ article.uindex |to_star_uv }}</span>
+                    </span>
                 </div>
             </li>
         {% endfor %}

@@ -102,30 +102,23 @@ pre[class*="language-"]:before {
     margin-left: 10px;
 }
 
-.meta-icon {
-    vertical-align: text-bottom;
-    line-height: unset;
-    margin-right: 2px;
-}
-i.meta-icon {
-    margin-left: 2px;
-}
-
 .open-icon {
     font-size: 1.05rem;
 }
 .visibility-icon {
     margin-right: 3px;
+    font-size: 0.88rem;
 }
 .sync-icon {
-    font-size: 0.95rem !important;
-    vertical-align: top;
+    font-size: 0.9rem !important;
+    margin-right: 2px;
 }
 .sync-bar-icon {
     font-size: 21.5px;
 }
 .star-icon {
     font-size: 0.95rem !important;
+    margin-right: 3px;
 }
 
 .star2-icon {
@@ -151,16 +144,8 @@ i.meta-icon {
     color: #444;
 }
 
-.collection .collection-item.active .omrss-meta-line {
+.collection .collection-item.active .omrss-meta-line, .collection .collection-item.active .omrss-meta {
     color: #fff;
-}
-
-.collection .collection-item.active .omrss-meta {
-    color: #fff;
-}
-
-.meta-time {
-    width: 4.5em;
 }
 
 .meta-left{
@@ -173,10 +158,6 @@ i.meta-icon {
 
 .omrss-title-unread {
     font-weight: bold;
-}
-
-.collection-item span {
-    display: inline-block;
 }
 
 .cnt-left {
@@ -352,9 +333,6 @@ i.meta-icon {
     .omrss-onlyunread {
         left: calc(400px - 54px - 5px - 54px);
     }
-    .omrss-meta {
-        font-size: 0.9rem;
-    }
     .collection .collection-item.ev-cnt-list {
         padding: 4px 8px;
     }
@@ -364,14 +342,17 @@ i.meta-icon {
     #omrss-pager .pagination {
         margin: 10px 0;
     }
+    .meta-author {
+        width: 7.5rem;
+    }
+    .meta-time {
+        width: 5rem;
+    }
+    .omrss-view-stat, .omrss-star-stat {
+        width: 4rem;
+    }
     .flow-text {
         font-size:1.2rem
-    }
-    .meta-num-s {
-        width: 1.5em;
-    }
-    .meta-num-l {
-        width: 2.5em;
     }
     .unread {
         font-size: 12px;
@@ -409,13 +390,6 @@ i.meta-icon {
         padding-top: 0.8rem;
         padding-bottom: 1rem;
     }
-    .meta-author {
-        width: 7rem;
-    }
-    span.meta-recommend {
-        margin-left: 0;
-        margin-right: 1rem;
-    }
     .omrss-donate-block {
         margin-right: 6px;
         margin-bottom: 6px;
@@ -442,12 +416,6 @@ i.meta-icon {
     .omrss-onlyunread {
         left: calc(500px - 54px - 5px - 54px);
     }
-    .omrss-meta {
-        font-size: 1rem;
-    }
-    .omrss-meta-line {
-        line-height: 1.7rem;
-    }
     .collection .collection-item.ev-cnt-list {
         padding: 8px 16px;
     }
@@ -460,11 +428,14 @@ i.meta-icon {
     .flow-text {
         font-size:1.3rem
     }
-    .meta-num-s {
-        width: 2em;
+    .meta-author {
+        width: 8rem;
     }
-    .meta-num-l {
-        width: 2em;
+    .meta-time {
+        width: 6rem;
+    }
+    .omrss-view-stat, .omrss-star-stat {
+        width: 4rem;
     }
     .unread {
         font-size: 14px;
@@ -501,14 +472,7 @@ i.meta-icon {
     }
 
     #omrss-article-bottom {
-        padding: 24px;
-    }
-    .meta-author {
-        width: 7.5rem;
-    }
-    span.meta-recommend {
-        margin-left: 0;
-        margin-right: 2.5em;
+        padding: 20px;
     }
     .omrss-donate-block {
         margin-right: 8px;
@@ -757,10 +721,6 @@ nav .brand-logo {
     padding: 0 15px;
 }
 
-.meta-recommend-site {
-    margin-right: 1.5rem;
-}
-
 .omrss-title-site {
     padding-left: 6px;
     padding-right: 6px;
@@ -863,4 +823,28 @@ kbd:hover {
 }
 .omrss-reply-line blockquote {
     padding-left: 1rem;
+}
+
+.omrss-meta-line {
+    display: flex;
+    height: 24px;
+    justify-content: space-between;
+    font-size: 0.9rem !important;
+}
+.meta-author, .meta-time {
+    overflow: hidden;
+}
+
+span.meta-recommend {
+    margin: auto 14px !important;
+    width: 3rem;
+}
+.omrss-view-stat, .omrss-star-stat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.meta-num-l {
+    width: 2rem;
 }

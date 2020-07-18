@@ -12,26 +12,33 @@
                 </div>
 
                 <div class="omrss-meta-line">
-
                     <span class="omrss-meta meta-author">@{{ site.author |to_short_author }}</span>
                     <span class="meta-time prettydate omrss-meta">{{ site.update_time |to_date_fmt }}</span>
 
-                    {% if user %}
-                        <span class="right meta-num-l omrss-meta omrss-unread-count">
-                            {{ site.unread_count }}</span>
+                    {% if article.site.star >= 30 %}
+                        <span class="new badge meta-recommend" data-badge-caption="">荐</span>
                     {% else %}
-                        <span class="right meta-num-l omrss-meta omrss-unread-count"
-                              data-ids="{{ site.update_ids }}">0</span>
+                        <span class="meta-recommend"></span>
                     {% endif %}
 
-                    <i class="right material-icons meta-icon omrss-meta visibility-icon">visibility_off</i>
-                    <span class="right meta-num-l omrss-meta">{{ site.update_count }}</span>
-                    <i class="right material-icons meta-icon omrss-meta sync-icon">sync</i>
-
-                    {% if site.star >= 30 %}
-                        <span class="right new badge meta-recommend-site" data-badge-caption="">荐</span>
-                    {% endif %}
+                    <span class="omrss-view-stat">
+                        <i class="material-icons omrss-meta sync-icon">sync</i>
+                        <span class="meta-num-l omrss-meta">{{ site.update_count }}</span>
+                    </span>
+                    <span class="omrss-star-stat">
+                        <i class="material-icons omrss-meta visibility-icon">visibility_off</i>
+                        {% if user %}
+                            <span class="right meta-num-l omrss-meta omrss-unread-count">
+                                {{ site.unread_count }}</span>
+                        {% else %}
+                            <span class="right meta-num-l omrss-meta omrss-unread-count"
+                                  data-ids="{{ site.update_ids }}">0</span>
+                        {% endif %}
+                    </span>
                 </div>
+
+
+
             </li>
         {% endfor %}
     </ul>
