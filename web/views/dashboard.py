@@ -101,7 +101,7 @@ def refer_pv_line_chart() -> Line:
         .add_yaxis("baidu", uv_baidu, is_connect_nones=True, is_smooth=True)
         .add_yaxis("google", uv_google, is_connect_nones=True, is_smooth=True)
         .add_yaxis("wanqu", uv_wanqu, is_connect_nones=True, is_smooth=True)
-        .set_global_opts(title_opts=options.TitleOpts(title="Referer各域名PV走势"),
+        .set_global_opts(title_opts=options.TitleOpts(title="Referer 各域名PV走势"),
                          yaxis_opts=options.AxisOpts(
                              is_scale=True,
                              splitline_opts=options.SplitLineOpts(is_show=True)
@@ -114,19 +114,19 @@ def refer_pv_line_chart() -> Line:
 
 
 def refer_pie_chart() -> Pie:
-    refer_hosts = list(filter(lambda x: x, R.smembers(settings.REDIS_REFER_ALL_KEY)))
-    refer_host_pv_keys = [settings.REDIS_REFER_PV_KEY % host for host in refer_hosts]
+    refer_hosts = list(filter(lambda x: x, R.smembers(settings.REDIS_REFER_DAY_KEY % current_day())))
+    refer_host_pv_keys = [settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()) for host in refer_hosts]
 
     c = (
         Pie()
         .add(
             "",
-            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys)) if int(z[1]) > 100],
+            [list(z) for z in zip(refer_hosts, R.mget(*refer_host_pv_keys)) if int(z[1]) > 2],
             # radius=["30%", "75%"],
             # rosetype="radius",
         )
         .set_global_opts(
-            title_opts=options.TitleOpts(title="Referer来源占比"),
+            title_opts=options.TitleOpts(title="Referer 来源占比"),
             legend_opts=options.LegendOpts(
                 type_="scroll", pos_left="80%", orient="vertical"
             ),

@@ -203,8 +203,8 @@ def incr_redis_key(key):
     return R.incr(key, amount=1)
 
 
-def add_referer_host(host):
-    key = settings.REDIS_REFER_ALL_KEY
+def add_referer_day_host(host):
+    key = settings.REDIS_REFER_DAY_KEY % current_day()
 
     return R.sadd(key, host)
 
@@ -216,8 +216,7 @@ def add_referer_stats(referer):
         if host and host not in settings.ALLOWED_HOSTS:
             logger.info(f"收到外域来源：`{host}`{referer}")
 
-            add_referer_host(host)
-            incr_redis_key(settings.REDIS_REFER_PV_KEY % host)
+            add_referer_day_host(host)
             incr_redis_key(settings.REDIS_REFER_PV_DAY_KEY % (host, current_day()))
 
 
