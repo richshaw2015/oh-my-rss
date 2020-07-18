@@ -807,7 +807,7 @@ kbd:hover {
 .omrss-issue-avatar {
     width: 32.4px;
     height: 32.4px;
-    margin-right: 10px;
+    margin-right: 12px;
 }
 .omrss-issue-msg {
     max-width: 66%;
@@ -847,4 +847,9 @@ span.meta-recommend {
 
 .meta-num-l {
     width: 2rem;
+}
+
+.omrss-issue-name {
+    font-size: 0.95rem;
+    padding: 4px 0;
 }

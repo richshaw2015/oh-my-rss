@@ -8,10 +8,27 @@
         {% if msg.user is None %}
             <img src="{{ msg.uid |to_gravatar_url }}" alt="" class="omrss-issue-avatar circle">
         {% else %}
-            <img src="{{ msg.user.avatar }}" alt="" class="omrss-issue-avatar circle">
+            <a href="{{ msg.user.oauth_blog }}" target="_blank">
+            {% if msg.user.level >= 10 %}
+                <figure class="spectre-avatar spectre-badge omrss-avatar-sm omrss-issue-avatar" data-badge="V">
+                    <img src="{{ msg.user.avatar }}" alt="头像">
+                </figure>
+            {% else  %}
+                <img src="{{ msg.user.avatar }}" alt="头像" class="omrss-issue-avatar circle">
+            {% endif %}
+            </a>
         {% endif %}
 
-        <div class="omrss-issue-msg"> {{ msg.content }}</div>
+        <div class="omrss-issue-msg">
+            {% if msg.user is None %}
+                {% if msg.nickname %}
+                <div class="grey-text omrss-issue-name">{{ msg.nickname }}</div>
+                {% endif %}
+            {% else %}
+                <div class="grey-text omrss-issue-name">{{ msg.user.oauth_name }}</div>
+            {% endif %}
+            <div class="">{{ msg.content }}</div>
+        </div>
     </div>
 
     {% if msg.reply %}
