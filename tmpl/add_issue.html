@@ -25,14 +25,20 @@
                 <input id="issue-input-name" class="validate" type="text" data-length="20" maxlength="20">
                 <label for="issue-input-name">您的昵称（选填，公开显示）</label>
             </div>
-            {% endif %}
-
             <div class="input-field col s6">
                 <i class="material-icons prefix">contact_mail</i>
                 <input id="issue-input-contact" class="validate" type="text" data-length="50"
                        maxlength="50">
                 <label for="issue-input-contact">联系方式（选填，仅站长可见）</label>
             </div>
+            {% else %}
+            <div class="input-field col s12">
+                <i class="material-icons prefix">contact_mail</i>
+                <input id="issue-input-contact" class="validate" type="text" data-length="50"
+                       maxlength="50">
+                <label for="issue-input-contact">联系方式（选填，仅站长可见）</label>
+            </div>
+            {% endif %}
         </div>
 
         <div class="modal-footer">
