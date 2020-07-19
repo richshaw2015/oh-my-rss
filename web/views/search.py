@@ -3,12 +3,18 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from web.models import *
 from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
-    is_sensitive_content
+    is_sensitive_content, split_cn_words
 import logging
 import os
 from user_agents import parse
 from web.verify import verify_request
-from django.db.models import Q
+from django.conf import settings
+from web.utils import whoosh_site_schema, whoosh_article_schema
+from whoosh.filedb.filestore import FileStorage
+from whoosh.qparser import MultifieldParser
+from whoosh.query import TermRange
+from feed.utils import current_ts
+
 
 logger = logging.getLogger(__name__)
 
@@ -63,28 +69,53 @@ def sitemap(request):
 
 
 @verify_request
-def insite_search(request):
+def in_site_search(request):
     """
-    站内搜索 TODO 支持多个关键字
+    站内搜索
     """
     user = get_login_user(request)
     keyword = request.POST.get('keyword', '').strip()
 
     logger.warning(f"搜索关键字：`{keyword}")
+    keyword = split_cn_words(keyword, join=True)
+    logger.info(f"转换后的关键字：`{keyword}")
 
+    storage = FileStorage(settings.WHOOSH_IDX_DIR)
+
+    # 查找相关源
+    idx = storage.open_index(indexname="site", schema=whoosh_site_schema)
+    qp = MultifieldParser(['cname', 'author', 'brief'], schema=whoosh_site_schema)
+    query = qp.parse(keyword)
+    sites = []
+
+    with idx.searcher() as s:
+        results = s.search(query, limit=50)
+
+        for ret in results:
+            sites.append(ret['id'])
+
+    rel_sites = Site.objects.filter(status='active', pk__in=sites).order_by('-star')
+
+    # 查找相关文章
+    idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
+    qp = MultifieldParser(['title', 'author', 'content'], schema=whoosh_article_schema)
+    query = qp.parse(keyword)
+    articles = []
+
+    with idx.searcher() as s:
+        old_mask = TermRange("uindex", None, str(current_ts() - 7*86400*1000))
+        results = s.search(query, mask=old_mask, limit=50)
+
+        for ret in results:
+            articles.append(ret['uindex'])
+    rel_articles = Article.objects.filter(status='active', uindex__in=articles)
+
+    # 用户订阅
     user_sub_feeds = []
     if user:
         user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
-    rel_sites = Site.objects.filter(status='active').filter(
-        Q(cname__icontains=keyword) | Q(brief__icontains=keyword)).order_by('-star')[:50]
-
-    rel_articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).filter(
-        Q(title__icontains=keyword) | Q(content__icontains=keyword)
-    ).order_by('-id')[:50]
-
     context = dict()
-
     context['user'] = user
     context['user_sub_feeds'] = user_sub_feeds
     context['rel_sites'] = rel_sites

@@ -15,7 +15,7 @@ urlpatterns = [
 
     path('robots.txt', search.robots, name='robots'),
     path('sitemap.txt', search.sitemap, name='sitemap'),
-    path('search', search.insite_search, name='insite_search'),
+    path('search', search.in_site_search, name='in_site_search'),
 
     path('oauth/github/redirect', oauth.github_callback, name='github_callback'),
 
@@ -43,7 +43,8 @@ urlpatterns = [
     path('api/dashboard/api/profile', dashboard.get_api_profile_chart_data, name='get_api_profile_chart_data'),
 
     path('api/install', install.install, name='install'),
-    path('api/init', install.init, name='init'),
+    path('api/load', install.load_db_data, name='load'),
+    path('api/debug', install.debug, name='debug'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_view_stats, name='add_view_stats'),

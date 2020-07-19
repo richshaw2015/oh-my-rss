@@ -20,6 +20,9 @@ from urllib.parse import urlparse
 import json
 import re
 from fake_useragent import UserAgent
+from web.stopwords import stopwords
+import jieba
+from whoosh.fields import Schema, TEXT, ID
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -535,6 +538,16 @@ def get_feed_ranking_dict():
     return {}
 
 
+def set_indexed(tag, key):
+    key = settings.REDIS_INDEXED_KEY % (tag, key)
+    return R.set(key, '1', 30*86400)
+
+
+def is_indexed(tag, key):
+    key = settings.REDIS_INDEXED_KEY % (tag, key)
+    return R.get(key) == '1'
+
+
 def set_updated_site(site_id, ttl=2*3600):
     """
     设置站点更新标记，2 小时
@@ -685,40 +698,6 @@ def is_sensitive_content(uindex, content):
 
     return is_sensitive
 
-#
-# def get_with_proxy(url):
-#     """
-#     通过 代理 请求，重试 3 次
-#     :param url:
-#     :return:
-#     """
-#     for i in range(0, 3):
-#         proxy_ip_port, proxy_pool = get_one_proxy_ip()
-#
-#         if proxy_pool <= 10:
-#             logger.warning("代理 IP 池不够 10 个了，开始异步更新")
-#             from web.tasks import update_proxy_pool_cron
-#             django_rq.enqueue(update_proxy_pool_cron)
-#
-#         if proxy_ip_port is not None:
-#             proxy = {"http": proxy_ip_port, "https": proxy_ip_port}
-#             header = {'User-Agent': UserAgent().random}
-#
-#             try:
-#                 rsp = requests.get(url, verify=False, timeout=15, headers=header, proxies=proxy)
-#                 logger.info(f"代理请求成功：`{url}`{proxy_ip_port}")
-#                 return rsp
-#             except requests.exceptions.ProxyError:
-#                 del_proxy_ip(proxy_ip_port)
-#             except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-#                 logger.warning(f"代理请求出现网络异常：`{url}`{proxy}")
-#             except:
-#                 logger.warning(f"代理请求出现未知异常：`{url}`{proxy}")
-#         else:
-#             # 等待代理 IP 池更新
-#             time.sleep(10)
-#     return None
-
 
 def get_with_proxy(url):
     """
@@ -778,3 +757,39 @@ def guard_log(msg, hits=3, duration=86400):
 
     if count >= hits:
         logger.warning(msg)
+
+
+@lru_cache(maxsize=128)
+def split_cn_words(cn, join=False):
+    """
+    中文分词；停词不计算
+    """
+    seg_list, word_list = jieba.cut(cn), []
+
+    for seg in seg_list:
+        seg = seg.strip().lower()
+
+        if seg and seg not in stopwords:
+            word_list.append(seg)
+
+    if join:
+        return ','.join(word_list)
+
+    return word_list
+
+
+# 搜索对象
+whoosh_site_schema = Schema(
+    id=ID(stored=True, unique=True),
+
+    cname=TEXT(field_boost=5.0),
+    author=TEXT(field_boost=3.0),
+    brief=TEXT(),
+)
+whoosh_article_schema = Schema(
+    uindex=ID(stored=True, unique=True),
+
+    title=TEXT(field_boost=5.0),
+    author=TEXT(field_boost=3.0),
+    content=TEXT(),
+)

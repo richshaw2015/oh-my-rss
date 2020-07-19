@@ -17,3 +17,4 @@ jieba
 fake-useragent
 django-rq
 django-crontab
+whoosh

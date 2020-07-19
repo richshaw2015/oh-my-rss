@@ -94,6 +94,7 @@ DATABASES = {
     }
 }
 
+WHOOSH_IDX_DIR = os.path.join(BASE_DIR, 'whoosh')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -131,6 +132,7 @@ CRONJOBS = [
    ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
    ('30 1 * * *', 'web.tasks.update_all_wemp_cron'),
    ('11 4 * * *', 'web.tasks.archive_article_cron'),
+   ('31 4 * * *', 'web.tasks.build_whoosh_index_cron'),
    ('*/43 * * * *', 'web.tasks.cal_all_article_tag_cron'),
    ('17 3 * * *', 'web.tasks.cal_article_distance_cron'),
    ('1 3 * * *', 'web.tasks.cal_site_ranking_cron'),
@@ -223,6 +225,7 @@ REDIS_SITES_LASTIDS_KEY = 'LASTIDS'
 REDIS_ACTIVE_SITES_KEY = 'ACTIVE/SITES'
 
 REDIS_USER_RANKING_KEY = 'USER/RANKING'
+REDIS_INDEXED_KEY = 'INDEXED/%s/%s'
 
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 

@@ -7,16 +7,18 @@ from web.omrssparser.atom import atom_spider
 from web.omrssparser.wemp import parse_wemp_ershicimi
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
-    set_proxy_ips, reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, \
-    get_user_visit_days, set_user_ranking_list, reset_sites_lastids
-import jieba
+    reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, get_recent_articles, \
+    get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed, \
+    is_indexed
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
 from collections import Counter
-import requests
-from scrapy.http import HtmlResponse
+from django.conf import settings
+import jieba
 import json
-import telnetlib
+import os
+from feed.utils import current_ts
+
 
 logger = logging.getLogger(__name__)
 
@@ -280,45 +282,94 @@ def load_articles_to_redis_cron():
 
 
 def load_active_sites_cron():
-    """
-    已经下线的站点
-    """
     sites = Site.objects.filter(status='active').values_list('pk', flat=True)
     set_active_sites(sites)
     return True
 
 
-def update_proxy_pool_cron():
+def build_whoosh_index_cron():
     """
-    TODO 这个不靠谱，待下线
-    :return:
+    建立全文搜索索引
     """
-    header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) '
-                            'Chrome/83.0.4103.106 Safari/537.36'}
-    rsp = requests.get('http://free-proxy.cz/zh/proxylist/country/CN/http/ping/all', verify=False, timeout=15,
-                       headers=header)
+    from web.utils import whoosh_site_schema, whoosh_article_schema
+    from whoosh.filedb.filestore import FileStorage
 
-    if rsp.ok:
-        valid_proxies = set()
-        response = HtmlResponse(url=rsp.url, body=rsp.text, encoding='utf8')
+    idx_dir = settings.WHOOSH_IDX_DIR
+    first_boot = False
 
-        ips = response.selector.xpath('//table[@id="proxy_list"]//tr/td[1]/text()').extract()
-        ports = response.selector.xpath('//table[@id="proxy_list"]//tr/td[2]/text()').extract()
+    if not os.path.exists(idx_dir):
+        os.makedirs(idx_dir)
+        first_boot = True
 
-        if len(ips) == len(ports):
-            for i in range(len(ips)):
-                try:
-                    telnetlib.Telnet(ips[i], port=int(ports[i]), timeout=2)
-                    valid_proxies.add(f"{ips[i]}:{ports[i]}")
+    storage = FileStorage(idx_dir)
 
-                    if len(valid_proxies) >= 50:
-                        break
-                except:
-                    continue
-
-        if valid_proxies:
-            set_proxy_ips(valid_proxies)
+    # 索引站点
+    if first_boot:
+        idx = storage.create_index(whoosh_site_schema, indexname="site")
     else:
-        logger.warning(f"获取 IP 代理服务出现网络异常！")
+        idx = storage.open_index(indexname="site", schema=whoosh_site_schema)
+
+    idx_writer = idx.writer()
+
+    for site_id in get_active_sites():
+        # 判断是否已经索引
+        if is_indexed('site', site_id):
+            continue
+
+        try:
+            site = Site.objects.get(pk=site_id, status='active')
+        except:
+            continue
+
+        cname = split_cn_words(site.cname, join=True)
+        author = site.author or ''
+        brief = split_cn_words(site.brief, join=True)
+
+        logger.info(f"分词结果：`{site_id}`{cname}`{brief}")
+
+        try:
+            idx_writer.add_document(id=site_id, cname=cname, author=author, brief=brief)
+            set_indexed('site', site_id)
+        except:
+            logger.warning(f"索引失败：`{site_id}")
+    idx_writer.commit()
+
+    # 索引文章
+    if first_boot:
+        idx = storage.create_index(whoosh_article_schema, indexname="article")
+    else:
+        idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
+
+    idx_writer = idx.writer()
+    ts = current_ts()
+
+    for uindex in get_recent_articles():
+        # 判断是否已经索引
+        if is_indexed('article', uindex):
+            continue
+
+        if int(uindex) < (ts - 86400*1000):
+            continue
+
+        try:
+            article = Article.objects.get(uindex=uindex, status='active')
+        except:
+            continue
+
+        if article.content.strip():
+            title = split_cn_words(article.title, join=True)
+            author = article.author or ''
+
+            content_soup = BeautifulSoup(article.content, 'html.parser')
+            content = split_cn_words(content_soup.get_text(), join=True)
+
+            logger.info(f"分词结果：`{uindex}`{title}")
+
+            try:
+                idx_writer.add_document(uindex=uindex, title=title, author=author, content=content)
+                set_indexed('article', uindex)
+            except:
+                logger.warning(f"索引失败：`{uindex}")
+    idx_writer.commit()
 
     return True
