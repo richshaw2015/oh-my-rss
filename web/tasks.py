@@ -341,7 +341,6 @@ def build_whoosh_index_cron():
         idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
 
     idx_writer = idx.writer()
-    ts = current_ts()
 
     for uindex in get_recent_articles():
         # 判断是否已经索引
