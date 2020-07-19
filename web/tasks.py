@@ -348,7 +348,7 @@ def build_whoosh_index_cron():
         if is_indexed('article', uindex):
             continue
 
-        if int(uindex) < (ts - 86400*1000):
+        if int(uindex) < (ts - 2*86400*1000):
             continue
 
         try:
