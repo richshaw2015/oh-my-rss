@@ -28,6 +28,9 @@ from whoosh.fields import Schema, TEXT, ID
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
 logger = logging.getLogger(__name__)
 
+# init jieba
+jieba.initialize()
+
 
 def get_host_name(url):
     return urlparse(url).netloc
