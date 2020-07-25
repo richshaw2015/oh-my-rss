@@ -129,13 +129,20 @@ def to_short_site_cname(user, site):
     """
     订阅源显示名称，最多 10 个汉字，支持用户自定义名称
     """
+    if isinstance(site, dict):
+        site_id = site['id']
+        site_cname = site['cname']
+    else:
+        site_id = site.id
+        site_cname = site.cname
+
     if user:
-        cname = get_user_site_cname(user.oauth_id, site.id)
+        cname = get_user_site_cname(user.oauth_id, site_id)
         if cname:
             logger.info(cname)
             return cut_to_short(cname, 20)
 
-    return cut_to_short(site.cname, 20)
+    return cut_to_short(site_cname, 20)
 
 
 @register.filter
@@ -143,12 +150,19 @@ def to_site_cname(user, site):
     """
     订阅源显示名称，支持用户自定义名称
     """
+    if isinstance(site, dict):
+        site_id = site['id']
+        site_cname = site['cname']
+    else:
+        site_id = site.id
+        site_cname = site.cname
+
     if user:
-        cname = get_user_site_cname(user.oauth_id, site.id)
+        cname = get_user_site_cname(user.oauth_id, site_id)
         if cname:
             return cname
 
-    return site.cname
+    return site_cname
 
 
 @register.filter
