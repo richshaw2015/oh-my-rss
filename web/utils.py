@@ -434,7 +434,7 @@ def get_user_visit_days(oauth_id):
     """
     计算一个用户登陆的天数（过去一个月）
     """
-    user_visit_keys = [settings.REDIS_USER_VISIT_DAY_KEY % (oauth_id, day) for day in get_xaxis_days(30)]
+    user_visit_keys = [settings.REDIS_USER_VISIT_DAY_KEY % (oauth_id, day) for day in get_xaxis_days(31)]
     return R.mget(*user_visit_keys).count('1')
 
 
