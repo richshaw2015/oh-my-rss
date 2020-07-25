@@ -437,6 +437,7 @@ def get_recommend_articles(request):
 
             context = dict()
             context['recommend_articles'] = recommend_articles
+            context['user'] = user
 
             return render(request, 'recommend/relative_article.html', context=context)
         else:
