@@ -317,7 +317,6 @@ gets
 getting
 given
 gives
-go
 goes
 going
 gone
@@ -334,7 +333,6 @@ have
 haven't
 having
 he
-hello
 help
 hence
 her
