@@ -139,7 +139,6 @@ def to_short_site_cname(user, site):
     if user:
         cname = get_user_site_cname(user.oauth_id, site_id)
         if cname:
-            logger.info(cname)
             return cut_to_short(cname, 20)
 
     return cut_to_short(site_cname, 20)
