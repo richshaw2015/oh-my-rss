@@ -972,12 +972,19 @@ var filterByTarget = function(c, s, keyStroke) {
 
 function allowShortcut() {
     let activeEl = document.activeElement;
+
+    // Safari
     if (activeEl === document.getElementById('omrss-body') ||
         activeEl === document.getElementById('omrss-main') ||
         activeEl === document.getElementById('omrss-left')) {
         return true;
-    } else {
+    } else if (activeEl.tagName === 'A') {
+        // Chrome
+        return true;
+    }
+    else {
         // console.log(activeEl);
+        // console.log(activeEl.tagName);
     }
     return false;
 }
