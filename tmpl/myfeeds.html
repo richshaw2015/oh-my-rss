@@ -25,7 +25,7 @@
         <div class="col s6 omrss-item" data-star="{{ feed.star }}" data-name="{{ feed.name }}" data-site="{{ feed.id }}">
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle omrss-recent-avatar omrss-text"/>
             <a href="{{ feed.link }}" target="_blank">
-                <span class="omrss-recent-site omrss-text">{{ feed.cname |to_short_site_name }}</span>
+                <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:feed }}</span>
             </a>
 
             <span class="waves-effect waves-light btn-small right omrss-text ev-toggle-feed omrss-sub-btn omrss-bgcolor"
@@ -41,7 +41,7 @@
             <img src="{{ feed.favicon |default:'/assets/img/rss.png' }}" class="circle omrss-recent-avatar omrss-text"/>
 
             <a href="{{ feed.link }}" target="_blank">
-                <span class="omrss-recent-site omrss-text">{{ feed.cname |to_short_site_name }}</span>
+                <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:feed }}</span>
             </a>
 
             <span class="waves-effect waves-light btn-small right omrss-text ev-toggle-feed omrss-sub-btn"

@@ -12,7 +12,7 @@
         <div class="col s8 omrss-text bold omrss-list2-title">
             <img src="{{ site.favicon }}" class="circle omrss-recent-avatar omrss-text" />
 
-            <div class="truncate">{{ site.cname }}(<span id="omrss-cur-site-unread">0</span>)</div>
+            <div class="truncate">{{ user|to_site_cname:site }}(<span id="omrss-cur-site-unread">0</span>)</div>
 
         </div>
 
@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="omrss-meta-line">
-                    <span class="omrss-meta meta-author">@{{ article.author |to_short_author:article.site.author }}</span>
+                    <span class="omrss-meta meta-author">@{% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}</span>
                     <span class="meta-time prettydate omrss-meta">{{ article.ctime |to_date_fmt }}</span>
 
                     {% if article.site.star >= 30 %}

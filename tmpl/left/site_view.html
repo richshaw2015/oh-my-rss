@@ -7,12 +7,12 @@
             <li class="collection-item ev-cnt-list" data-site="{{ site.pk }}">
                 <div class="omrss-title-line omrss-title-site">
                     <img src="{{ site.favicon }}" class="circle responsive-img favico"/>
-                    <span class="omrss-title truncate omrss-title-read">{{ site.cname }}</span>
+                    <span class="omrss-title truncate omrss-title-read">{{ user|to_site_cname:site }}</span>
                     <i class="material-icons read omrss-check-site">check</i>
                 </div>
 
                 <div class="omrss-meta-line">
-                    <span class="omrss-meta meta-author">@{{ site.author |to_short_author }}</span>
+                    <span class="omrss-meta meta-author">@{% to_short_author user s=site.id a1=site.author %}</span>
                     <span class="meta-time prettydate omrss-meta">{{ site.update_time |to_date_fmt }}</span>
 
                     {% if article.site.star >= 30 %}

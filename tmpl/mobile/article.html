@@ -41,14 +41,14 @@
         {% elif article.site.copyright == 30 %}
             原文转载自
         {% endif %}
-        「{{ article.site.cname }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
+        「{{ user|to_site_cname:article.site }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
                                        data-id="{{ article.uindex }}">
         {% if article.site.creator == 'wemp' %}
             mp.weixin.qq.com
         {% else %}
             {{ article.src_url |unquote }}
         {% endif %}
-        </a> ) By {{ article.author |default:article.site.author }}
+        </a> ) By {% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}
 
         <p id="omrss-read-stats">预计阅读时间<b> 0 </b>分钟（共 0 个字， 0 张图片， 0 个链接）</p>
 
@@ -110,7 +110,7 @@
 <div id="omrss-unsub-feed" class="modal">
     <div class="modal-content">
         <h3>确定吗？</h3>
-        <p>取消后将收不到「{{ article.site.cname }}」的更新，您可以通过右上角的
+        <p>取消后将收不到「{{ user|to_site_cname:article.site }}」的更新，您可以通过右上角的
             <i class="material-icons omrss-color">rss_feed</i>重新订阅</p>
 
         <div class="modal-footer">

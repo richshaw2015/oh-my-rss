@@ -4,7 +4,8 @@ import django
 from web.models import *
 from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
-    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file, get_recent_site_articles
+    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file, \
+    get_recent_site_articles, set_user_site_cname, set_user_site_author
 from web.views.views_html import get_all_issues
 from web.verify import verify_request
 import logging
@@ -197,6 +198,28 @@ def user_unsubscribe_feed(request):
         logger.warning(f"登陆用户取消订阅动作：`{user.oauth_name}`{site_id}")
 
         return JsonResponse({"site": site_id})
+
+    return HttpResponseForbidden("Param Error")
+
+
+@verify_request
+def user_custom_site(request):
+    """
+    用户自定义源名称
+    """
+    site_id = request.POST.get('site_id', '').strip()[:32]
+    site_name = request.POST.get('site_name', '').strip()[:20]
+    site_author = request.POST.get('site_author', '').strip()[:20]
+
+    user = get_login_user(request)
+
+    if user and site_id:
+        logger.warning(f"用户自定义订阅源：`{site_id}`{site_name}`{site_author}")
+
+        set_user_site_cname(user.oauth_id, site_id, site_name)
+        set_user_site_author(user.oauth_id, site_id, site_author)
+
+        return JsonResponse({})
 
     return HttpResponseForbidden("Param Error")
 

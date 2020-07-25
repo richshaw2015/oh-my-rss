@@ -12,7 +12,7 @@
         原文转载自
     {% endif %}
 
-    「{{ article.site.cname }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
+    「{{ user|to_site_cname:article.site }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
                                                   data-id="{{ article.uindex }}">
 
     {% if article.site.creator == 'wemp' %}
@@ -21,7 +21,7 @@
         {{ article.src_url |unquote }}
     {% endif %}
 
-    </a> ) By {{ article.author |default:article.site.author }}
+    </a> ) By {% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}
 
     <p id="omrss-read-stats">预计阅读时间<b> 0 </b>分钟（共 0 个字， 0 张图片， 0 个链接）</p>
 

@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="omrss-meta-line">
-                    <span class="meta-author">@{{ article.author |to_short_author:article.site.author }}</span>
+                    <span class="meta-author">@{% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}</span>
                     <span class="meta-time prettydate">{{ article.ctime |to_date_fmt }}</span>
 
                     <span class="right meta-num-s">{{ article.uindex |to_star_uv }}</span>

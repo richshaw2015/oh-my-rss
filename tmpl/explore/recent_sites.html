@@ -16,7 +16,7 @@
                 <div>
                     <img src="{{ site.favicon }}" class="circle omrss-recent-avatar omrss-text">
                     <a href="{{ site.link }}" target="_blank">
-                        <span class="omrss-recent-site omrss-text">{{ site.cname |to_short_site_name }}</span>
+                        <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:site }}</span>
                     </a>
                     {% if user %}
                         {% if site.pk in user_sub_feeds %}

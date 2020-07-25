@@ -54,6 +54,7 @@ urlpatterns = [
     path('api/update/site', views_api.user_force_update_site, name='user_force_update_site'),
 
     path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
+    path('api/feed/custom', views_api.user_custom_site, name='user_custom_site'),
     path('api/feed/subscribe', views_api.user_subscribe_feed, name='user_subscribe_feed'),
     path('api/feed/unsubscribe', views_api.user_unsubscribe_feed, name='user_unsubscribe_feed'),
 ]

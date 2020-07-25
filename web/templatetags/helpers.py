@@ -8,7 +8,7 @@ import logging
 from functools import lru_cache
 import re
 import time
-from web.utils import R, get_content_from_dat, is_user_stared
+from web.utils import R, get_content_from_dat, is_user_stared, get_user_site_cname, get_user_site_author
 
 register = template.Library()
 logger = logging.getLogger(__name__)
@@ -111,27 +111,44 @@ def cut_to_short(text, size):
     return short
 
 
-@register.filter
-@lru_cache(maxsize=1024)
-def to_short_author(author1, author2=''):
-    """
-    作者显示名称，最多 6 个汉字
-    """
-    author = author1 if author1 else author2
+@register.simple_tag
+def to_short_author(user, **kwargs):
+    if user:
+        author = get_user_site_author(user.oauth_id, kwargs.get('s'))
 
-    if not author:
-        author = 'None'
+        if author:
+            return cut_to_short(author, 12)
+
+    author = kwargs.get('a1') or kwargs.get('a2') or 'None'
 
     return cut_to_short(author, 12)
 
 
 @register.filter
-@lru_cache(maxsize=1024)
-def to_short_site_name(name):
+def to_short_site_cname(user, site):
     """
-    订阅源显示名称，最多 10 个汉字
+    订阅源显示名称，最多 10 个汉字，支持用户自定义名称
     """
-    return cut_to_short(name, 20)
+    if user:
+        cname = get_user_site_cname(user.oauth_id, site.id)
+        if cname:
+            logger.info(cname)
+            return cut_to_short(cname, 20)
+
+    return cut_to_short(site.cname, 20)
+
+
+@register.filter
+def to_site_cname(user, site):
+    """
+    订阅源显示名称，支持用户自定义名称
+    """
+    if user:
+        cname = get_user_site_cname(user.oauth_id, site.id)
+        if cname:
+            return cname
+
+    return site.cname
 
 
 @register.filter

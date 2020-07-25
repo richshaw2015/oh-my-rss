@@ -28,8 +28,9 @@ from whoosh.fields import Schema, TEXT, ID
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
 logger = logging.getLogger(__name__)
 
-# init jieba
-jieba.initialize()
+if not settings.DEBUG:
+    # init jieba
+    jieba.initialize()
 
 
 def get_host_name(url):
@@ -760,6 +761,26 @@ def guard_log(msg, hits=3, duration=86400):
 
     if count >= hits:
         logger.warning(msg)
+
+
+def set_user_site_cname(oauth_id, site_id, site_name):
+    key = settings.REDIS_USER_CONF_SITE_NAME_KEY % (oauth_id, site_id)
+    return R.set(key, site_name)
+
+
+def get_user_site_cname(oauth_id, site_id):
+    key = settings.REDIS_USER_CONF_SITE_NAME_KEY % (oauth_id, site_id)
+    return R.get(key)
+
+
+def set_user_site_author(oauth_id, site_id, site_author):
+    key = settings.REDIS_USER_CONF_SITE_AUTHOR_KEY % (oauth_id, site_id)
+    return R.set(key, site_author)
+
+
+def get_user_site_author(oauth_id, site_id):
+    key = settings.REDIS_USER_CONF_SITE_AUTHOR_KEY % (oauth_id, site_id)
+    return R.get(key)
 
 
 @lru_cache(maxsize=128)

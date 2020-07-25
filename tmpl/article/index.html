@@ -21,6 +21,13 @@
             <i class="large material-icons">more_vert</i>
         </a>
         <ul>
+            {% if user %}
+            <li><a class="btn-floating blue darken-1 tooltipped modal-trigger" data-position="left"
+                   data-tooltip="自定义源" data-target="omrss-custom-feed">
+                <i class="material-icons">edit</i></a>
+            </li>
+            {% endif %}
+
             <li><a class="btn-floating green darken-1 tooltipped" data-position="left"
                    data-tooltip="查看站点源" href="{{ article.site |to_rss }}" target="_blank">
                 <i class="material-icons">rss_feed</i></a>
@@ -42,7 +49,7 @@
     <div id="omrss-unsub-feed" class="modal">
         <div class="modal-content">
             <h3>确定吗？</h3>
-            <p>取消订阅将收不到「{{ article.site.cname }}」的更新，您可以通过右上角的
+            <p>取消订阅将收不到「{{ user|to_site_cname:article.site }}」的更新，您可以通过右上角的
                 <i class="material-icons omrss-color">rss_feed</i> 重新订阅</p>
 
             <div class="modal-footer">
@@ -54,6 +61,33 @@
         </div>
     </div>
 
+    <!-- 自定义源属性 -->
+    <div id="omrss-custom-feed" class="modal" data-site="{{ article.site.pk }}">
+        <div class="modal-content">
+            <h3>自定义源名称、作者（仅对自己生效）</h3>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">translate</i>
+                    <input id="omrss-feed-name" class="validate" type="text" data-length="20"
+                           maxlength="20" value="{{ user|to_site_cname:article.site }}">
+                    <label for="omrss-feed-name" class="active">源名称</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">person</i>
+                    <input id="omrss-feed-author" class="validate" type="text" data-length="20"
+                           maxlength="20" value="{% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}">
+                    <label for="omrss-feed-author" class="active">源作者</label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="modal-close btn waves-effect waves-light" id="cancel">取消</button>
+                <button class="btn waves-effect waves-light ev-submit-custom">提交</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

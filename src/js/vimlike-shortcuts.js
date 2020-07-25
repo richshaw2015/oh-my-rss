@@ -970,6 +970,18 @@ var filterByTarget = function(c, s, keyStroke) {
     return keyStroke.isValidKeyStroke();
 };
 
+function allowShortcut() {
+    let activeEl = document.activeElement;
+    if (activeEl === document.getElementById('omrss-body') ||
+        activeEl === document.getElementById('omrss-main') ||
+        activeEl === document.getElementById('omrss-left')) {
+        return true;
+    } else {
+        // console.log(activeEl);
+    }
+    return false;
+}
+
 V.addKeypress('srcollDown', {
     pattern: {
         value: 'j'
@@ -977,6 +989,9 @@ V.addKeypress('srcollDown', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             var scrollTop = $('#omrss-main').scrollTop();
             $('#omrss-main').scrollTop(scrollTop + CONSTANTS.SCROLL_STEP);
             return true;
@@ -991,6 +1006,9 @@ V.addKeypress('srcollDown', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             var scrollTop = $('#omrss-main').scrollTop();
             $('#omrss-main').scrollTop(scrollTop + 3 * CONSTANTS.SCROLL_STEP);
             return true;
@@ -1005,6 +1023,9 @@ V.addKeypress('scrollUp', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             var scrollTop = $('#omrss-main').scrollTop();
             $('#omrss-main').scrollTop(scrollTop - CONSTANTS.SCROLL_STEP);
             return true;
@@ -1019,7 +1040,9 @@ V.addKeypress('goTop', {
     fns: {
         filter: filterByTarget,
         execute: function (c, keyStrokes) {
-            logger.log('gotop');
+            if (!allowShortcut()) {
+                return true;
+            }
             $('#omrss-main').scrollTop(0);
             toast('回到顶部');
             return true;
@@ -1034,6 +1057,9 @@ V.addKeypress('hackCopyLeft', {
     fns: {
         filter: filterByTarget,
         execute: function (c, keyStrokes) {
+            if (!allowShortcut()) {
+                return true;
+            }
             $('#omrss-third').removeAttr('style');
             $('.cnt-right').css('overflow-y', 'scroll');
             return true;
@@ -1048,6 +1074,9 @@ V.addKeypress('goBottom', {
     fns: {
         filter: filterByTarget,
         execute: function () {
+            if (!allowShortcut()) {
+                return true;
+            }
             var offsetHeight = $('#omrss-main')[0].scrollHeight;
             $('#omrss-main').scrollTop(offsetHeight);
             toast('到达底部');
@@ -1057,6 +1086,10 @@ V.addKeypress('goBottom', {
 });
 
 function nextArticle() {
+    if (!allowShortcut()) {
+        return true;
+    }
+
     const curItem = $('.ev-cnt-list.active');
     if (curItem.length === 0) {
         $('.ev-cnt-list')[0].click();
@@ -1092,6 +1125,10 @@ V.addKeyup('nextArticle2', {
 
 
 function prevArticle() {
+    if (!allowShortcut()) {
+        return true;
+    }
+
     const target = $('.ev-cnt-list.active').prev();
     if (target.length === 1) {
         target.click();
@@ -1127,6 +1164,9 @@ V.addKeypress('siteBackNav', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             const target = $('.ev-site-back');
             if (target.length === 1) {
                 target.click();
@@ -1144,6 +1184,9 @@ V.addKeypress('markReadAll', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             $('.ev-mark-readall').click();
             return true;
         }
@@ -1157,6 +1200,9 @@ V.addKeypress('toggleFullscreen', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             $('.ev-toggle-fullscreen').click();
             toast('切换全屏');
             return true;
@@ -1171,6 +1217,9 @@ V.addKeypress('refreshSite', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             $('#omrss-loader').removeClass('hide');
             location.reload();
             $('#omrss-loader').addClass('hide');
@@ -1182,6 +1231,10 @@ V.addKeypress('refreshSite', {
 
 
 function nextPage() {
+    if (!allowShortcut()) {
+        return true;
+    }
+
     const target = $('.ev-page-next');
     if (target.length === 1) {
         target.click();
@@ -1217,6 +1270,9 @@ V.addKeypress('markAndNextPage', {
     fns: {
         filter: filterByTarget,
         execute: function() {
+            if (!allowShortcut()) {
+                return true;
+            }
             // 区分是否登录用户
             if (getLoginId()) {
                 let ids = [];
@@ -1278,6 +1334,10 @@ V.addKeypress('markAndNextPage', {
 
 
 function prevPage() {
+    if (!allowShortcut()) {
+        return true;
+    }
+
     const target = $('.ev-page-previous');
     if (target.length === 1) {
         target.click();
@@ -1497,6 +1557,9 @@ V.addKeyup('prevPage2', {
                 return keyStroke.isEscape();
             },
             execute: function() {
+                if (!allowShortcut()) {
+                    return true;
+                }
                 clear();
                 // fix ie6/7 blur when hit escape
                 window.focus();

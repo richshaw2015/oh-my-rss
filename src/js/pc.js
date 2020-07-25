@@ -565,6 +565,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         });
     });
 
@@ -621,6 +622,35 @@ $(document).ready(function () {
             toast("查看全部 ^o^");
         }
         loadPage(1, "");
+    });
+
+    // 自定义订阅源属性
+    $(document).on('click', '.ev-submit-custom', function () {
+        if (!getLoginId()) {
+            $('#omrss-custom-feed').modal('close');
+            warnToast('登陆用户才能自定义源！');
+            return false;
+        }
+
+        const name = $('#omrss-feed-name').val().trim();
+        const author = $('#omrss-feed-author').val().trim();
+        const site = $('#omrss-custom-feed').attr('data-site').trim();
+
+        if (name && author && site) {
+            $('#omrss-loader').removeClass('hide');
+
+            $.post("/api/feed/custom", {uid: getOrSetUid(), site_name: name,
+                site_author: author, site_id: site}, function (data) {
+                $('#omrss-custom-feed').modal('close');
+                toast("更新成功 ^o^");
+            }).fail(function () {
+                warnToast(NET_ERROR_MSG);
+            }).always(function () {
+                $('#omrss-loader').addClass('hide');
+            });
+        } else {
+            warnToast('没有输入内容！');
+        }
     });
 
     // 提交订阅源
@@ -846,6 +876,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         })
     });
 
@@ -863,6 +894,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         })
     });
 
@@ -878,12 +910,14 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         })
     });
 
     // 我的收藏
     $('.ev-my-star').click(function () {
         warnToast("功能开发中，敬请关注 ^o^");
+        $('#omrss-main').focus();
     });
 
     // 留言页面
@@ -897,6 +931,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         })
     });
 
@@ -911,6 +946,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         })
     });
 
@@ -933,6 +969,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         })
     });
     // 发现界面切换到 最近提交内容 TAB
@@ -952,6 +989,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         });
     });
 
@@ -972,6 +1010,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         });
     });
 
@@ -992,6 +1031,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         });
     });
 
@@ -1010,6 +1050,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         });
     });
 
@@ -1023,6 +1064,7 @@ $(document).ready(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
             $('#omrss-loader').addClass('hide');
+            $('#omrss-main').focus();
         });
     });
 
@@ -1076,6 +1118,7 @@ $(document).ready(function () {
                 warnToast(NET_ERROR_MSG);
             }).always(function () {
                 $('#omrss-loader').addClass('hide');
+                $('#omrss-main').focus();
             })
         }
     });
@@ -1098,11 +1141,11 @@ $(document).ready(function () {
                 $('.tooltipped').tooltip();
                 $('.tabs').tabs();
                 $('#omrss-main').scrollTop(0);
-                $('#omrss-main').focus();
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);
             }).always(function () {
                 $('#omrss-loader').addClass('hide');
+                $('#omrss-main').focus();
             })
         }
         e.preventDefault();

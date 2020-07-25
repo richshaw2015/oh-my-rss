@@ -17,7 +17,7 @@
                     <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar omrss-text">
                     <a href="{{ article.site.link }}" target="_blank" class="tooltipped"
                        data-tooltip="{{ article.site.brief |to_clean_brief }}" data-position="top">
-                        <span class="omrss-recent-site omrss-text">{{ article.site.cname |to_short_site_name }}</span>
+                        <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:article.site }}</span>
                     </a>
                     {% if user %}
                         {% if article.site.pk in user_sub_feeds %}
