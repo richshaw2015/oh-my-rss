@@ -1093,6 +1093,10 @@ $(document).ready(function () {
                 } else {
                     $('#omrss-main').html(data);
                 }
+
+                // 初始化组件
+                $('.tooltipped').tooltip();
+                $('.tabs').tabs();
                 $('#omrss-main').scrollTop(0);
                 $('#omrss-main').focus();
             }).fail(function () {

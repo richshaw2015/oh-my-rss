@@ -96,7 +96,7 @@ def add_api_profile(api, elapsed):
 def get_profile_apis():
     return (
         reverse('get_article_update_view'), reverse('get_lastweek_articles'), reverse('get_recent_articles'),
-        reverse('get_site_update_view'), reverse('get_site_article_update_view'),
+        reverse('get_site_update_view'), reverse('get_site_article_update_view'), reverse('in_site_search')
     )
 
 

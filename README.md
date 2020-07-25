@@ -1,4 +1,4 @@
-# 己思 - Oh My RSS
+# 己思
 己思是一个开源的在线 RSS 阅读服务，旨在为 IT 从业者提供一个优质的学习圈子。 
 
 ![预览](https://raw.githubusercontent.com/richshaw2015/oh-my-rss/master/assets/img/preview.jpg)

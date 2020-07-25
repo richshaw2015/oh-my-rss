@@ -1,15 +1,23 @@
 {% load helpers %}
 
-<h1><i class="material-icons">search</i> 搜索结果</h1>
-
-
-<blockquote>
-    <h3>「{{ keyword }}」 相关订阅源</h3>
-</blockquote>
+<h1><i class="material-icons">search</i>「{{ keyword }}」 的搜索结果</h1>
 
 <div class="divider"></div>
 
 <div class="row">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab col s6">
+                <a class="omrss-color active" href="#search-feed-results">相关订阅源</a></li>
+
+            <li class="tab col s6 ev-search-article">
+                <a class="omrss-color" href="#search-article-results">相关文章</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="row" id="search-feed-results">
     {% for site in rel_sites %}
     <div class="col s6">
         <div class="card">
@@ -49,15 +57,7 @@
     {% endfor %}
 </div>
 
-
-
-<blockquote>
-    <h3>「{{ keyword }}」 相关文章</h3>
-</blockquote>
-
-<div class="divider"></div>
-
-<div class="row">
+<div class="row" id="search-article-results">
     {% for article in rel_articles %}
     <div class="col s6 omrss-recent-article">
         <div class="card">
@@ -96,3 +96,4 @@
     </div>
     {% endfor %}
 </div>
+
