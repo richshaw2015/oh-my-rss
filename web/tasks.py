@@ -313,7 +313,7 @@ def build_whoosh_index_cron():
 
     for site_id in get_active_sites():
         # 判断是否已经索引
-        if is_indexed('site', site_id):
+        if is_indexed('site', site_id) and not first_boot:
             continue
 
         try:
@@ -344,7 +344,7 @@ def build_whoosh_index_cron():
 
     for uindex in get_recent_articles():
         # 判断是否已经索引
-        if is_indexed('article', uindex):
+        if is_indexed('article', uindex) and not first_boot:
             continue
 
         try:
