@@ -430,7 +430,7 @@ $(document).ready(function () {
         if (isIE()) {
             $('#modal-omrss-ie').modal('open');
         }
-    }, 5000);
+    }, 3500);
 
     /* 事件处理开始 */
     // 文章内容点击
