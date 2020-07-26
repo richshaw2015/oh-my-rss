@@ -984,7 +984,6 @@ function allowShortcut() {
     }
     else {
         // console.log(activeEl);
-        // console.log(activeEl.tagName);
     }
     return false;
 }

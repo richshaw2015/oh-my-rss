@@ -18,13 +18,30 @@ function initOnlyUnreadSwitch() {
     }
 }
 
+function isIE() {
+    return /Trident\/|MSIE/.test(navigator.userAgent)
+}
+
+function initMaterialUI() {
+    $('.modal').modal();
+    $('#modal-submit-rss').modal({"dismissible": false});
+    $('#modal-omrss-ie').modal({"dismissible": false});
+    $('#modal-add-issue').modal({"dismissible": false});
+
+    $('.tabs').tabs();
+    $('.fixed-action-btn').floatingActionButton();
+    $('.tooltipped').tooltip();
+
+    $('textarea#omrss-feed-input').characterCounter();
+    $('textarea#issue-input-detail, input#issue-input-name, input#issue-input-contact').characterCounter();
+
+}
+
 function initLayout() {
     // 初始化组件
-    $('.tooltipped').tooltip();
-    $('.modal').modal();
-    $('.tabs').tabs();
+    initMaterialUI();
+
     $('.sidenav').sidenav({"edge": "right"});
-    $('#modal-submit-rss').modal({"dismissible": false});
 
     // 阅读模式
     initReadMode();
@@ -179,15 +196,6 @@ function resetHeight() {
 function setCurPage(page) {
     // 记录当前页数
     localStorage.setItem('CURPG', page);
-}
-
-function getCurPage() {
-    const page = localStorage.getItem('CURPG');
-
-    if (page) {
-        return page;
-    }
-    return '1';
 }
 
 function setRecommendArticles(articleId) {
@@ -418,6 +426,11 @@ $(document).ready(function () {
     }, 4 * 3600 * 1000);
     /* 首页初始化结束 */
 
+    setTimeout(function () {
+        if (isIE()) {
+            $('#modal-omrss-ie').modal('open');
+        }
+    }, 5000);
 
     /* 事件处理开始 */
     // 文章内容点击
@@ -557,9 +570,8 @@ $(document).ready(function () {
         function (data) {
             $('#omrss-main').html(data).scrollTop(0);
 
-            // 初始化组件
-            $('.tooltipped').tooltip();
-            $('.tabs').tabs();
+            initMaterialUI();
+
             resetHeight();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
@@ -869,6 +881,9 @@ $(document).ready(function () {
         $.post("/api/html/homepage/intro", {uid: getOrSetUid()}, function (data) {
             target = $('#omrss-main');
             target.html(data);
+
+            initMaterialUI();
+
             target.scrollTop(0);
             resetHeight();
             updateReadStats();
@@ -887,6 +902,9 @@ $(document).ready(function () {
         $.post("/api/html/faq", {uid: getOrSetUid()}, function (data) {
             target = $('#omrss-main');
             target.html(data);
+
+            initMaterialUI();
+
             target.scrollTop(0);
             resetHeight();
             updateReadStats();
@@ -903,6 +921,9 @@ $(document).ready(function () {
         $('#omrss-loader').removeClass('hide');
         $.post("/api/html/homepage/intro", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
+
+            initMaterialUI();
+
             $('#omrss-main').scrollTop(0);
             resetHeight();
             updateReadStats();
@@ -925,6 +946,9 @@ $(document).ready(function () {
         $('#omrss-loader').removeClass('hide');
         $.post("/api/html/issues/all", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
+
+            initMaterialUI();
+
             $('#omrss-main').scrollTop(0);
             resetHeight();
         }).fail(function () {
@@ -940,6 +964,9 @@ $(document).ready(function () {
         $('#omrss-loader').removeClass('hide');
         $.post("/api/html/donate", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
+
+            initMaterialUI();
+
             $('#omrss-main').scrollTop(0);
             resetHeight();
         }).fail(function () {
@@ -960,11 +987,10 @@ $(document).ready(function () {
             } else {
                 $('#omrss-main').html(data);
             }
+            initMaterialUI();
 
             resetHeight();
             $('#omrss-main').scrollTop(0);
-            $('.tabs').tabs();
-            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -982,9 +1008,9 @@ $(document).ready(function () {
             } else {
                 $('#omrss-explore').html(data);
             }
+            initMaterialUI();
 
             $('#omrss-explore').scrollTop(0);
-            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -1003,9 +1029,8 @@ $(document).ready(function () {
             } else {
                 $('#omrss-explore').html(data);
             }
-
+            initMaterialUI();
             $('#omrss-explore').scrollTop(0);
-            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -1024,9 +1049,8 @@ $(document).ready(function () {
             } else {
                 $('#omrss-main').html(data);
             }
+            initMaterialUI();
             $('#omrss-main').scrollTop(0);
-            $('.tabs').tabs();
-            $('.tooltipped').tooltip();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -1045,7 +1069,7 @@ $(document).ready(function () {
                 $('#omrss-ranking').html(data);
             }
             
-            $('.tooltipped').tooltip();
+            initMaterialUI();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -1059,7 +1083,7 @@ $(document).ready(function () {
 
         $.post("/api/html/user/ranking", {uid: getOrSetUid()}, function (data) {
             $('#omrss-ranking').html(data);
-            $('.tooltipped').tooltip();
+            initMaterialUI();
         }).fail(function () {
             warnToast(NET_ERROR_MSG);
         }).always(function () {
@@ -1138,8 +1162,8 @@ $(document).ready(function () {
                 }
 
                 // 初始化组件
-                $('.tooltipped').tooltip();
-                $('.tabs').tabs();
+                initMaterialUI();
+
                 $('#omrss-main').scrollTop(0);
             }).fail(function () {
                 warnToast(NET_ERROR_MSG);

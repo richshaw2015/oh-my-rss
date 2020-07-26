@@ -19,7 +19,6 @@ from collections import Counter
 from urllib.parse import urlparse
 import json
 import re
-from fake_useragent import UserAgent
 from web.stopwords import stopwords
 import jieba
 from whoosh.fields import Schema, TEXT, ID
@@ -32,6 +31,19 @@ if not settings.DEBUG:
     # init jieba
     jieba.initialize()
 
+UAS = [
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/74.0.835.163 Safari/535.1',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/78.0',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.50 (KHTML, like Gecko) Version/13.0 Safari/534.50',
+    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Win64; x64; Trident/5.0)',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36 Edg/83.0.478.54',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0',
+    'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1',
+    'Mozilla/5.0 (CrKey armv7l 1.5.16041) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.0 Safari/537.36',
+]
+
 
 def get_host_name(url):
     return urlparse(url).netloc
@@ -40,6 +52,10 @@ def get_host_name(url):
 def get_short_host_name(url):
     host = urlparse(url).netloc
     return re.sub(r'^www\.|^blog.', '', host)
+
+
+def get_random_ua():
+    return random.choice(UAS)
 
 
 def incr_view_star(action, uindex):
@@ -709,7 +725,7 @@ def get_with_proxy(url):
     :param url:
     :return:
     """
-    header = {'User-Agent': UserAgent().random}
+    header = {'User-Agent': get_random_ua()}
 
     try:
         return requests.get(url, verify=False, timeout=25, headers=header)
@@ -728,7 +744,7 @@ def get_with_retry(url):
     :return:
     """
     for i in range(0, 2):
-        header = {'User-Agent': UserAgent().random}
+        header = {'User-Agent': get_random_ua()}
 
         try:
             return requests.get(url, verify=False, timeout=30, headers=header)

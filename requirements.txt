@@ -3,18 +3,15 @@ bs4
 lxml
 requests
 django >= 2.2
+django-rq
+django-crontab
 redis
 selenium
 feedparser
 pyecharts
-gunicorn
-gevent
 pyyaml
 ua-parser
 user-agents
 pillow
 jieba
-fake-useragent
-django-rq
-django-crontab
 whoosh

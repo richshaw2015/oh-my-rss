@@ -27,7 +27,7 @@ def index(request):
     else:
         sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
-    pre_load_count = 2 if pc else 10
+    pre_load_count = 1 if pc else 10
 
     articles = Article.objects.filter(status='active', site_id__in=sub_feeds).order_by('-id')[:pre_load_count]
 

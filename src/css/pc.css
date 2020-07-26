@@ -854,3 +854,7 @@ span.meta-recommend {
     font-size: 0.95rem;
     padding: 4px 0;
 }
+
+#modal-omrss-ie, #modal-omrss-ie .modal-footer {
+    background-color: #fff8ea;
+}
