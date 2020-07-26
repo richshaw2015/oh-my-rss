@@ -453,7 +453,9 @@ $(document).ready(function () {
                 // 直接渲染
                 const target = $('#omrss-main');
                 target.html(cachedData);
-                
+
+                initMaterialUI();
+
                 if (siteType !== 'wemp') {
                     // trim third content style tag
                     fixThirdStyleTag();
@@ -495,7 +497,10 @@ $(document).ready(function () {
 
                     // 渲染
                     const target = $('#omrss-main');
+
                     target.html(data);
+
+                    initMaterialUI();
 
                     if (siteType !== 'wemp') {
                         // trim third content style tag
@@ -1120,6 +1125,11 @@ $(document).ready(function () {
                 $('#omrss-loader').addClass('hide');
             });
         }
+    });
+
+    // 回到顶部
+    $(document).on('click', '#omrss-top', function () {
+        $('#omrss-main').scrollTop(0);
     });
 
     // 提交留言

@@ -1,10 +1,15 @@
-
 function getPageSize() {
     return 12;
 }
 
 function getMobileMain() {
     return $('#omrss-article').length !== 0 ? $('#omrss-article') : $('#omrss-main');
+}
+
+function initMaterialUI() {
+    $('.fixed-action-btn').floatingActionButton({"hoverEnabled": false});
+    $('.sidenav').sidenav({"edge": "right"});
+    $('.modal').modal({"endingTop": "32%"});
 }
 
 function loadPage(page) {
@@ -61,7 +66,7 @@ $(document).ready(function () {
     getOrSetUid();
 
     // 初始化组件
-    $('.modal').modal();
+    initMaterialUI();
 
     if (window.location.pathname === '/') {     
         // 动态加载首页
@@ -106,8 +111,8 @@ $(document).ready(function () {
 
         $.post("/api/html/homepage/intro", {uid: getOrSetUid(), mobile: true}, function (data) {
             target = getMobileMain();
-
             target.html(data);
+            initMaterialUI();
             target.scrollTop(0);
 
             updateReadStats();
@@ -126,6 +131,7 @@ $(document).ready(function () {
             target = getMobileMain();
 
             target.html(data);
+            initMaterialUI();
             target.scrollTop(0);
 
             updateReadStats();
@@ -162,6 +168,10 @@ $(document).ready(function () {
 
             toast("已将全部设为已读 ^o^");
         }
+    });
+
+    $(document).on('click', '#omrss-top', function () {
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
     });
 
     // TODO 支持我的订阅设置
