@@ -19,17 +19,3 @@
             <i class="material-icons omrss-article-bottom">publish</i> 回到顶部</a>
     </div>
 </div>
-
-<script>
-    {% if not user %}
-        {% if article.site.copyright < 30 %}
-            $('#omrss-third').css('overflow', 'hidden');
-            $('#omrss-third').css('max-height', getBriefHeight());
-            $('.cnt-right').css('overflow-y', 'hidden');
-        {% else %}
-            $('.cnt-right').css('overflow-y', 'scroll');
-        {% endif %}
-    {% else %}
-        $('.cnt-right').css('overflow-y', 'scroll');
-    {% endif %}
-</script>

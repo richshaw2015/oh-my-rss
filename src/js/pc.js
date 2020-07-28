@@ -465,8 +465,11 @@ $(document).ready(function () {
 
                     // linkify
                     setThirdLinkify();
+
+                    fixArticlePrivilege();
                 } else {
                     fixWempStyleTag();
+                    fixArticlePrivilege();
                 }
 
                 // 数据统计
@@ -511,8 +514,12 @@ $(document).ready(function () {
     
                         // linkify
                         setThirdLinkify();
+
+                        fixArticlePrivilege();
                     } else {
                         fixWempStyleTag();
+
+                        fixArticlePrivilege();
                     }
 
                     // 更新统计

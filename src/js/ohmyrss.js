@@ -359,7 +359,7 @@ function setToreadInfo(notify=false) {
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 
 // 缓存版本号，每次上线需要更新
-const cacheVer = '27';
+const cacheVer = '28';
 
 function setLruCache(key, value) {
     if (value.length < 100 * 1024 && value.length > 512) {
@@ -406,6 +406,8 @@ function fixThirdStyleTag() {
         $(this).removeAttr('height');
         $(this).removeAttr('style');
     });
+
+    $('#omrss-third style').remove();
 }
 
 function fixWempStyleTag() {
@@ -417,6 +419,20 @@ function fixWempStyleTag() {
             $(this).removeAttr('style');
         }
     });
+}
+
+function fixArticlePrivilege() {
+    const pri = $("#omrss-third").attr('data-privilege');
+
+    if (!getLoginId() && pri < 30) {
+        $('#omrss-third').css('overflow', 'hidden');
+        $('#omrss-third').css('max-height', getBriefHeight());
+        $('.cnt-right').css('overflow-y', 'hidden');
+    } else {
+        $('#omrss-third').css('overflow', 'auto');
+        $('#omrss-third').css('max-height', 'auto');
+        $('.cnt-right').css('overflow-y', 'scroll');
+    }
 }
 
 function codeHighlight() {
