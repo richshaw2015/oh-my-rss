@@ -11,7 +11,7 @@ class CnblogsPickSpider(Spider):
                             'https://www.cnblogs.com/pick/',
                         ],
                         index_xpath='//*[@id="post_list"]/div/div/h3/a/@href',
-                        article_title_xpath='//*[@id="cb_post_title_url"]/text()',
+                        article_title_xpath='//*[@id="cb_post_title_url"]/span/text()',
                         article_content_xpath='//*[@id="cnblogs_post_body"]',
                         index_limit_count=5,
                         )
