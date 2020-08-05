@@ -104,7 +104,7 @@ class UserArticle(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    uindex = models.IntegerField('唯一地址', unique=True)
+    uindex = models.IntegerField('地址')
     title = models.CharField('标题', max_length=200)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     src_url = models.CharField('原始链接', max_length=1024)
