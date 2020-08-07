@@ -691,6 +691,8 @@ def generate_rss_avatar(link, feed=''):
         avatar = '/assets/img/vtechread.jpg'
     elif 'news.qq.com' in link_host:
         avatar = '/assets/img/qqcom.png'
+    elif 'werss.app' in link_host:
+        avatar = '/assets/img/werss.png'
     # 其次根据 feed 地址匹配
     elif 'feed43.com' in feed_host:
         avatar = '/assets/img/feed43.png'
