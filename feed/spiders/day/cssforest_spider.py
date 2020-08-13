@@ -13,7 +13,6 @@ class CssforestSpider(Spider):
                         index_xpath="//section/h4/a/@href",
                         article_title_xpath="//article/header/h1/text()",
                         article_content_xpath="//main//article",
-                        index_limit_count=2,
                         article_trim_xpaths=[
                             "//article/header",
                             "//article/footer",

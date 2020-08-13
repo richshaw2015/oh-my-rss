@@ -16,5 +16,4 @@ class FrontendWeeklySpider(Spider):
                         article_trim_xpaths=[
                             '//div[@class="search-noresults"]//h1'
                         ],
-                        index_limit_count=1,
                         )

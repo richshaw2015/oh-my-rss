@@ -13,5 +13,4 @@ class HuodingSpider(Spider):
                         index_xpath="//header/h1/a/@href",
                         article_title_xpath="//article/header/h1/text()",
                         article_content_xpath="//article//div[@class='entry-content']",
-                        index_limit_count=2,
                         )

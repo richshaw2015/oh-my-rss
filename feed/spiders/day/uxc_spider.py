@@ -13,5 +13,4 @@ class UxcSpider(Spider):
                         index_xpath="//ul[@class='case-article-list']/li/a/@href",
                         article_title_xpath="//div[@class='article-title']/text()",
                         article_content_xpath="//div[@class='article-content']",
-                        index_limit_count=2,
                         )

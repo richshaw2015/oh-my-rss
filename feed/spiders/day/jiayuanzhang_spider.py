@@ -13,7 +13,6 @@ class JiayuanzhangSpider(Spider):
                         index_xpath="//h1[@class='post-title']/a/@href",
                         article_title_xpath="//div[@class='post']/h1/text()",
                         article_content_xpath="//div[@class='post']",
-                        index_limit_count=2,
                         article_trim_xpaths=[
                             "//div[@class='post']/h1",
                         ]

@@ -13,5 +13,4 @@ class YouzanSpider(Spider):
                         index_xpath='//h2/a/@href',
                         article_title_xpath='//header//h1/text()',
                         article_content_xpath='//section[@class="post-content"]',
-                        index_limit_count=3,
                         )

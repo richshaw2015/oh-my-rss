@@ -18,5 +18,4 @@ class CoolShellSpider(Spider):
                             "//*[@class='post-ratings-loading']",
                             "//*[@class='post-ratings']",
                         ],
-                        index_limit_count=3,
                         )

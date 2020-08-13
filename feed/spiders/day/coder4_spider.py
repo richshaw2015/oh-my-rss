@@ -13,5 +13,4 @@ class Coder4Spider(Spider):
                         index_xpath="//h1[@class='entry-title']/a/@href",
                         article_title_xpath="//h1[@class='entry-title']/text()",
                         article_content_xpath="//div[@class='entry-content']",
-                        index_limit_count=2,
                         )

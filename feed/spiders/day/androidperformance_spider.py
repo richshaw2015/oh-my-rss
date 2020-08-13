@@ -13,5 +13,4 @@ class AndroidPerformanceSpider(Spider):
                         index_xpath="//article/a/@href",
                         article_title_xpath="//*[@class='post-title']/a/text()",
                         article_content_xpath="//*[@class='article-entry']",
-                        index_limit_count=3,
                         )

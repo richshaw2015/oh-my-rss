@@ -13,7 +13,6 @@ class OldPandaSpider(Spider):
                         index_xpath="//h2[@class='entry-title']/a/@href",
                         article_title_xpath="//h1[@class='entry-title']/text()",
                         article_content_xpath="//div[@class='entry-content']",
-                        index_limit_count=3,
                         article_trim_xpaths=[
                             "//div[@class='at-below-post addthis_tool']",
                             "//div[@class='jp-relatedposts']"

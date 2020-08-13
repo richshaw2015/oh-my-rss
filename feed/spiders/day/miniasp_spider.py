@@ -13,5 +13,4 @@ class MiniaspSpider(Spider):
                         index_xpath="//h2[@class='post-title']/a/@href",
                         article_title_xpath="//h2[@class='post-title']/a/text()",
                         article_content_xpath="//section[@class='post-body text']",
-                        index_limit_count=2,
                         )

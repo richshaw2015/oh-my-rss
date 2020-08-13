@@ -13,5 +13,4 @@ class AdleredSpider(Spider):
                         index_xpath="//h1/a/@href",
                         article_title_xpath="//h1[contains(@class, 'title')]/text()",
                         article_content_xpath="//div[@id='post-article']",
-                        index_limit_count=8,
                         )

@@ -13,5 +13,4 @@ class YafeileeSpider(Spider):
                         index_xpath="//a[@class='blog-title']/@href",
                         article_title_xpath="//h2[@class='blog-title']/text()",
                         article_content_xpath="//div[@class='content markdown']",
-                        index_limit_count=1,
                         )

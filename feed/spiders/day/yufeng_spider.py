@@ -13,7 +13,6 @@ class YufengSpider(Spider):
                         index_xpath="//div[@class='post']/h2/a/@href",
                         article_title_xpath="//div[@class='post']/h2/text()",
                         article_content_xpath="//div[@class='post']/div[@class='content']",
-                        index_limit_count=3,
                         article_trim_xpaths=[
                             "//div[@class='sharedaddy sd-sharing-enabled']",
                             "//div[@class='yarpp-related']",

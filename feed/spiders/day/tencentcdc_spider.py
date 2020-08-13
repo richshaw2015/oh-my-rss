@@ -17,5 +17,4 @@ class TencentCdcSpider(Spider):
                             "//div[@class='content-title']",
                             "//div[@class='content-prevnext']",
                         ],
-                        index_limit_count=3,
                         )

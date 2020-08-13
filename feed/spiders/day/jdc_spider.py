@@ -14,7 +14,6 @@ class JdcSpider(Spider):
                         index_xpath='//h2/a/@href',
                         article_title_xpath='//h2/a/text()',
                         article_content_xpath='//div[@class="post"]',
-                        index_limit_count=3,
                         article_trim_xpaths=[
                             '//div[@class="crayon-toolbar"]',
                             '//div[@class="crayon-info"]',

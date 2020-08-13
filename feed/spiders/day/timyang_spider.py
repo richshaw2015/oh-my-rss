@@ -13,5 +13,4 @@ class TimyangSpider(Spider):
                         index_xpath="//h2/a/@href",
                         article_title_xpath="//*[@class='posttitle']/a/text()",
                         article_content_xpath="//*[@class='entry']",
-                        index_limit_count=3,
                         )

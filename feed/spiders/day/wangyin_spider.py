@@ -13,5 +13,4 @@ class WangYinSpider(Spider):
                         index_xpath="//ul[@class='list-group']/li/a/@href",
                         article_title_xpath='//h2/text()',
                         article_content_xpath="//div[@class='inner']",
-                        index_limit_count=3,
                         )

@@ -13,5 +13,4 @@ class GityuanSpider(Spider):
                         index_xpath="//div[@class='post-preview']/a/@href",
                         article_title_xpath='//h1/text()',
                         article_content_xpath="//div[contains(@class, 'post-container')]",
-                        index_limit_count=6,
                         )

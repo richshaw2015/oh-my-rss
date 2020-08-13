@@ -13,7 +13,6 @@ class DocschinaSpider(Spider):
                         index_xpath="//ul[@class='sidebar-links']/li/a[@class='sidebar-link']/@href",
                         article_title_xpath="//ul[@class='sidebar-links']/li/a[@class='sidebar-link']/text()",
                         article_content_xpath="//div[@class='content']",
-                        index_limit_count=2,
                         article_trim_xpaths=[
                             "//div[@class='content']/h1",
                             "//a[@aria-hidden='true']"

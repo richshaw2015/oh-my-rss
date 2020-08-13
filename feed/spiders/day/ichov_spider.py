@@ -14,5 +14,4 @@ class IchovSpider(Spider):
                         index_xpath="//div[@class='artTitle']/h2/a/@href",
                         article_title_xpath="//h1[@class='dtitle']/text()",
                         article_content_xpath="//div[@class='dcontent']",
-                        index_limit_count=1,
                         )

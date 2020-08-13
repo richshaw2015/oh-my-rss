@@ -13,5 +13,4 @@ class KernelTaobaoSpider(Spider):
                         index_xpath="//div[@class='article-title']/a/@href",
                         article_title_xpath="//h1[@class='post-title']/text()",
                         article_content_xpath="//div[@class='post-content']",
-                        index_limit_count=2,
                         )

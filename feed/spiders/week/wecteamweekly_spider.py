@@ -16,5 +16,4 @@ class WecteamWeeklySpider(Spider):
                         article_trim_xpaths=[
                             '//article//h1'
                         ],
-                        index_limit_count=2,
                         )

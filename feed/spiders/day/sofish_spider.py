@@ -13,5 +13,4 @@ class SofishSpider(Spider):
                         index_xpath="//div[@class='block']/h2/a/@href",
                         article_title_xpath="//a[@title='page.attributes.title']/h1/text()",
                         article_content_xpath="//div[@itemprop='articleBody']",
-                        index_limit_count=2,
                         )

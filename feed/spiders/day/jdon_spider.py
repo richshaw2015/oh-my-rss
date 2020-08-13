@@ -13,5 +13,4 @@ class JdonSpider(Spider):
                         index_xpath="//h3[@class='vid-name']/a/@href",
                         article_title_xpath="//title/text()",
                         article_content_xpath="//div[@class='post_body_content']",
-                        index_limit_count=6,
                         )

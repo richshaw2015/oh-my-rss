@@ -13,6 +13,5 @@ class AliyunfeWeeklySpider(Spider):
                         index_xpath="//a[contains(text(),'》第')]/@href",
                         article_title_xpath="//h2//*[@class='final-path']/text()",
                         article_content_xpath="//div[@id='readme']",
-                        index_limit_count=3,
                         index_reverse=True
                         )
