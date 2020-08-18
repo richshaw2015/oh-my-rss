@@ -419,7 +419,9 @@ function fixWempStyleTag() {
             $(this).removeAttr('style');
         }
     });
+}
 
+function fixChuangSongMeImg() {
     // 传送门图片兼容处理
     $("#omrss-third img").each(function() {
         const src = $(this).attr('src');

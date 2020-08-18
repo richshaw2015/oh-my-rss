@@ -456,6 +456,8 @@ $(document).ready(function () {
 
                 initMaterialUI();
 
+                fixChuangSongMeImg();
+
                 if (siteType !== 'wemp') {
                     // trim third content style tag
                     fixThirdStyleTag();
@@ -504,6 +506,7 @@ $(document).ready(function () {
                     target.html(data);
 
                     initMaterialUI();
+                    fixChuangSongMeImg();
 
                     if (siteType !== 'wemp') {
                         // trim third content style tag
