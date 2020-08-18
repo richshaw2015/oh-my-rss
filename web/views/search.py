@@ -55,7 +55,7 @@ def article(request, pid):
 
 def robots(request):
     sitemap = os.path.join(request.build_absolute_uri(), '/sitemap.txt')
-    return HttpResponse(f'''User-agent: *\nDisallow: /dash\n\nSitemap: {sitemap}''')
+    return HttpResponse(f'''User-agent: *\nDisallow: /dashboard\n\nSitemap: {sitemap}''')
 
 
 def sitemap(request):

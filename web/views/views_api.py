@@ -10,8 +10,8 @@ from web.views.views_html import get_all_issues
 from web.verify import verify_request
 import logging
 from django.conf import settings
-from web.omrssparser.wemp import parse_wemp_ershicimi
-from web.omrssparser.atom import parse_atom, parse_self_atom, parse_qnmlgb_atom
+from web.rssparser.mpwx import add_ershicimi_feed, add_wemp_feed, add_chuansongme_feed
+from web.rssparser.atom import add_atom_feed, add_self_feed, add_qnmlgb_feed
 from web.tasks import update_sites_async
 import json
 import django_rq
@@ -128,13 +128,17 @@ def submit_a_feed(request):
 
         if 'ershicimi.com' in host:
             feed_url = feed_url.replace('/user/analysis?bid=', '/a/')
-            rsp = parse_wemp_ershicimi(feed_url)
+            rsp = add_ershicimi_feed(feed_url)
         elif host in settings.ALLOWED_HOSTS:
-            rsp = parse_self_atom(feed_url)
+            rsp = add_self_feed(feed_url)
         elif 'qnmlgb.tech' in host:
-            rsp = parse_qnmlgb_atom(feed_url)
+            rsp = add_qnmlgb_feed(feed_url)
+        elif 'wemp.app' in host:
+            rsp = add_wemp_feed(feed_url)
+        elif 'chuansongme.com' in host:
+            rsp = add_chuansongme_feed(feed_url)
         else:
-            rsp = parse_atom(feed_url)
+            rsp = add_atom_feed(feed_url)
 
         if rsp:
             logger.warning(f"有新订阅源被提交：`{feed_url}")

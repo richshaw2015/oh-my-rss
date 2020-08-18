@@ -68,10 +68,12 @@
         <a href="#"><i class="material-icons omrss-color">help_outline</i>FAQ</a>
     </li>
 
+    {% if user %}
     <li>
-        <a href="/dash" target="_blank" class="sidenav-close">
+        <a href="/dashboard" target="_blank" class="sidenav-close">
             <i class="material-icons omrss-color">trending_up</i>后台报表</a>
     </li>
+    {% endif %}
 </ul>
 
 

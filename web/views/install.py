@@ -31,4 +31,6 @@ def install(request):
 
 
 def debug(request):
+    from web.tasks import update_all_mpwx_cron, clear_expired_job_cron, cal_dvc_stat_cron
+    cal_dvc_stat_cron()
     return JsonResponse({})

@@ -1,5 +1,5 @@
 from django.urls import path
-from web.views import dashboard, install, index, search, views_api, views_html, oauth
+from web.views import dashboard, install, index, search, views_api, views_html, oauth, job
 from web.feeds import SiteFeed
 
 urlpatterns = [
@@ -10,8 +10,8 @@ urlpatterns = [
     path('p/<int:pid>', search.article, name='article_alias'),
 
     path('feed/<site_id>', SiteFeed(), name='get_feed_entries'),
-    path('dash', dashboard.dashboard, name='dashboard'),
-    path('dash/logs', dashboard.get_warn_log, name='get_warn_log'),
+    path('dashboard', dashboard.dashboard, name='dashboard'),
+    path('dashboard/logs', dashboard.get_warn_log, name='get_warn_log'),
 
     path('robots.txt', search.robots, name='robots'),
     path('sitemap.txt', search.sitemap, name='sitemap'),
@@ -45,6 +45,10 @@ urlpatterns = [
     path('api/install', install.install, name='install'),
     path('api/load', install.load_db_data, name='load'),
     path('api/debug', install.debug, name='debug'),
+
+    path('api/job/get', job.get_one_job, name='get_one_job'),
+    path('api/job/finish', job.finish_job, name='finish_job'),
+    path('api/job/giveback', job.giveback_job, name='giveback_job'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_view_stats, name='add_view_stats'),

@@ -2,9 +2,8 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import get_hash_name, generate_rss_avatar, get_host_name, guard_log, set_updated_site, get_with_proxy, \
-    get_with_retry, get_short_host_name
-from web.omrssparser.wemp import parse_weixin_page
+from web.utils import get_hash_name, generate_rss_avatar, set_updated_site, get_with_retry, \
+    get_short_host_name
 import logging
 import feedparser
 import urllib
@@ -15,7 +14,7 @@ from feed.utils import current_ts, mark_crawled_url, is_crawled_url
 logger = logging.getLogger(__name__)
 
 
-def parse_qnmlgb_atom(feed_url):
+def add_qnmlgb_feed(feed_url):
     """
     解析 qnmlgb.tech RSS 源
     :param feed_url:
@@ -35,10 +34,10 @@ def parse_qnmlgb_atom(feed_url):
     cname = title[:20]
     link = feed_obj.feed.link[:1024]
     brief = feed_obj.feed.subtitle[:200]
-    favicon = feed_obj.feed.image.link.replace('/64.ico', '/132')
+    favicon = feed_obj.feed.image.link.replace('/64.ico', '/96')
 
     try:
-        site = Site(name=name, cname=cname, link=link, brief=brief, star=19, copyright=30,
+        site = Site(name=name, cname=cname, link=link, brief=brief, star=19, copyright=20,
                     creator='wemp', rss=feed_url, favicon=favicon)
         site.save()
 
@@ -49,7 +48,7 @@ def parse_qnmlgb_atom(feed_url):
     return None
 
 
-def parse_atom(feed_url):
+def add_atom_feed(feed_url):
     """
     解析普通的 RSS 源
     :param feed_url:
@@ -106,7 +105,7 @@ def atom_spider(site):
 
     if resp is None:
         if site.star > 9:
-            guard_log(f"RSS 源可能失效了`{site.rss}")
+            logger.warning(f"RSS 源可能失效了`{site.rss}")
         else:
             logger.info(f"RSS源可能失效了`{site.rss}")
         return None
@@ -152,16 +151,6 @@ def atom_spider(site):
         except:
             logger.warning(f'修复图片路径异常：`{title}`{link}')
 
-        # 公众号 RSS 二次抓取
-        if get_host_name(site.rss) in ('qnmlgb.tech', ):
-            if get_host_name(link) in ('mp.weixin.qq.com', ):
-                rsp = get_with_proxy(link)
-                
-                if rsp is not None and rsp.ok:
-                    try:
-                        title, author, value = parse_weixin_page(rsp)
-                    except:
-                        pass
         try:
             article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(), content=value)
             article.save()
@@ -176,7 +165,7 @@ def atom_spider(site):
     return True
 
 
-def parse_self_atom(feed_url):
+def add_self_feed(feed_url):
     """
     解析本站提供的 RSS 源
     :param feed_url:

@@ -81,9 +81,10 @@
     <li><a href="#" class="waves-effect sidenav-close ev-faq">
         <i class="material-icons omrss-color">help_outline</i>FAQ</a></li>
 
-    <li><a href="/dash" target="_blank" class="waves-effect sidenav-close">
+    {% if user %}
+    <li><a href="/dashboard" target="_blank" class="waves-effect sidenav-close">
         <i class="material-icons omrss-color">trending_up</i>后台报表</a></li>
-
+    {% endif %}
 </ul>
 
 <!-- 登录窗口 -->

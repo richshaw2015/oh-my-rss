@@ -2,14 +2,15 @@
 from web.models import *
 import logging
 from datetime import datetime
+import datetime as dt
 from django.utils.timezone import timedelta
-from web.omrssparser.atom import atom_spider
-from web.omrssparser.wemp import parse_wemp_ershicimi
+from web.rssparser.atom import atom_spider
+from web.rssparser.mpwx import make_mpwx_job
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
     reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, get_recent_articles, \
     get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed, \
-    is_indexed
+    is_indexed, set_job_stat, set_job_dvcs
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
 from collections import Counter
@@ -17,7 +18,7 @@ from django.conf import settings
 import jieba
 import json
 import os
-from feed.utils import current_ts
+from web.sql import JOB_STAT_SQL
 
 
 logger = logging.getLogger(__name__)
@@ -25,11 +26,11 @@ logger = logging.getLogger(__name__)
 
 def update_sites_async(sites, force_update=False):
     """
-    异步更新某一批订阅源，只支持普通源和公众号的更新
+    异步更新某一批订阅源，只支持普通源
     """
     for site_id in sites:
         try:
-            site = Site.objects.get(status='active', pk=site_id)
+            site = Site.objects.get(status='active', pk=site_id, creator='user')
         except:
             continue
 
@@ -37,15 +38,8 @@ def update_sites_async(sites, force_update=False):
         if not force_update and is_updated_site(site_id):
             continue
 
-        if site.creator != 'system':
-            logger.info(f"开始异步更新：{site_id}")
-
-            host = get_host_name(site.rss)
-
-            if 'ershicimi.com' in host:
-                parse_wemp_ershicimi(site.rss, update=True)
-            else:
-                atom_spider(site)
+        logger.info(f"开始异步更新：{site_id}")
+        atom_spider(site)
 
     return True
 
@@ -74,26 +68,31 @@ def update_all_atom_cron():
     return True
 
 
-def update_all_wemp_cron():
+def update_all_mpwx_cron():
     """
-    更新微信公众号，每天 1～2 次
+    更新微信公众号，每天 1 次；公众号的全部都会更新，且评级最低 10
     """
     sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
+    if settings.DEBUG:
+        sites = sites[:1]
+
     for site in sites:
-        # 无人订阅的源且不推荐的源不更新
-        if not is_active_rss(site.pk) and site.star < 9:
-            continue
+        host, action = get_host_name(site.rss), None
 
-        if not is_updated_site(site.pk):
-            host = get_host_name(site.rss)
+        if 'ershicimi.com' in host:
+            action = 11
+        elif 'qnmlgb.tech' in host:
+            action = 10
+        elif 'wemp.app' in host:
+            action = 12
+        elif 'chuansongme.com' in host:
+            action = 13
+        else:
+            logger.warning(f"未知的公众号域名：`{host}`{site.cname}")
 
-            if 'ershicimi.com' in host:
-                parse_wemp_ershicimi(site.rss, update=True)
-            elif 'qnmlgb.tech' in host:
-                atom_spider(site)
-            else:
-                pass
+        if action is not None:
+            make_mpwx_job(site, action)
 
     return True
 
@@ -105,7 +104,7 @@ def archive_article_cron():
     # (, 10)，直接删除
     Article.objects.filter(site__star__lt=10, is_recent=False).delete()
 
-    # [10, 20)，转移存储到磁盘
+    # [10, )，转移存储到磁盘
     articles = Article.objects.filter(site__star__gte=10, is_recent=False).order_by('-id').iterator()
 
     for article in articles:
@@ -369,3 +368,32 @@ def build_whoosh_index_cron():
     idx_writer.commit()
 
     return True
+
+
+def clear_expired_job_cron():
+    yesterday = datetime.now() - timedelta(days=1)
+    lastmonth = datetime.now() - timedelta(days=30)
+
+    # 过期任务状态变更
+    affected = Job.objects.filter(status=1, ctime__lt=yesterday).update(status=3)
+
+    if affected > 0:
+        logger.warning(f"超时任务数量：`{affected}")
+
+    # 清理数据
+    Job.objects.filter(ctime__lt=lastmonth).delete()
+
+    return True
+
+
+def cal_dvc_stat_cron():
+    # 计算设备详情
+    today_dt = datetime.now() - (datetime.now() - datetime.combine(dt.date.today(), dt.time()))
+    job_stats = Job.objects.raw(JOB_STAT_SQL % today_dt)
+
+    for stat in job_stats:
+        set_job_stat(stat)
+
+    # 计算总设备数
+    dvcs = Job.objects.distinct().values_list('dvc_id', flat=True)
+    set_job_dvcs(dvcs)

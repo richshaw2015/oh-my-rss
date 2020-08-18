@@ -130,7 +130,8 @@ USE_TZ = True
 
 CRONJOBS = [
    ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
-   ('30 1 * * *', 'web.tasks.update_all_wemp_cron'),
+   ('20 1 * * *', 'web.tasks.clear_expired_job_cron'),
+   ('30 1 * * *', 'web.tasks.update_all_mpwx_cron'),
    ('11 4 * * *', 'web.tasks.archive_article_cron'),
    ('31 4 * * *', 'web.tasks.build_whoosh_index_cron'),
    ('*/43 * * * *', 'web.tasks.cal_all_article_tag_cron'),
@@ -231,6 +232,9 @@ REDIS_INDEXED_KEY = 'INDEXED/%s/%s'
 REDIS_USER_CONF_SITE_NAME_KEY = 'CONF/SN/%s/%s'
 REDIS_USER_CONF_SITE_AUTHOR_KEY = 'CONF/SA/%s/%s'
 
+REDIS_JOB_DVC_KEY = 'JOB/DVC'
+REDIS_JOB_STAT_KEY = 'JOB/STAT/%s/%s/%s'
+
 SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 
 USER_SUBS_LIMIT = 100
@@ -242,6 +246,10 @@ VISITOR_SITE_ARTICLES_LIMIT = 100
 # github OAuth
 GITHUB_OAUTH_KEY = '4b40da1eb0585bf03dda'
 GITHUB_OAUTH_SECRET = 'c985780931b223658064d3218095d916106238d7'
+
+ROBOT_DVC_CNF = {
+    'Neos-MacBook-Pro.local': (31, 501),
+}
 
 LOGGING = {
     'version': 1,

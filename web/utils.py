@@ -463,16 +463,19 @@ def get_user_ranking_list():
     return json.loads(R.get(settings.REDIS_USER_RANKING_KEY))
 
 
-def save_avatar(avatar, userid, size=100):
+def save_avatar(avatar, userid, size=100, referer=None):
     """
     保存网络头像
     :param avatar:
     :param userid:
     :param size:
+    :param referer:
     :return: 保存后的头像地址
     """
     try:
-        rsp = requests.get(avatar, timeout=10)
+        headers = {'Referer': referer} if referer else {}
+
+        rsp = requests.get(avatar, timeout=15, headers=headers)
 
         if rsp.ok:
             img_obj = Image.open(BytesIO(rsp.content))
@@ -566,6 +569,16 @@ def set_indexed(tag, key):
 def is_indexed(tag, key):
     key = settings.REDIS_INDEXED_KEY % (tag, key)
     return R.get(key) == '1'
+
+
+def set_job_dvcs(dvcs):
+    key = settings.REDIS_JOB_DVC_KEY
+    return R.sadd(key, *dvcs)
+
+
+def set_job_stat(stat):
+    key = settings.REDIS_JOB_STAT_KEY % (current_day(), stat.dvc_id, stat.status)
+    return R.set(key, stat.c, 30*24*3600)
 
 
 def set_updated_site(site_id, ttl=2*3600):
@@ -721,24 +734,6 @@ def is_sensitive_content(uindex, content):
     return is_sensitive
 
 
-def get_with_proxy(url):
-    """
-    先不使用代理，免费的不靠谱；待后续改造
-    :param url:
-    :return:
-    """
-    header = {'User-Agent': get_random_ua()}
-
-    try:
-        return requests.get(url, verify=False, timeout=25, headers=header)
-    except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
-        logger.warning(f"GET 请求出现网络异常：`{url}")
-    except:
-        logger.warning(f"GET 请求出现未知异常：`{url}")
-
-    return None
-
-
 def get_with_retry(url):
     """
     普通爬取。重试 2 次
@@ -746,10 +741,10 @@ def get_with_retry(url):
     :return:
     """
     for i in range(0, 2):
-        header = {'User-Agent': get_random_ua()}
+        headers = {'User-Agent': get_random_ua()}
 
         try:
-            return requests.get(url, verify=False, timeout=30, headers=header)
+            return requests.get(url, verify=False, timeout=30, headers=headers)
         except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
             logger.warning(f"请求出现网络异常：`{url}")
         except:
@@ -758,27 +753,6 @@ def get_with_retry(url):
         time.sleep(20)
 
     return None
-
-
-def guard_log(msg, hits=3, duration=86400):
-    """
-    哨兵日志，满足 duration hits 条件才打印
-    :param msg:
-    :param hits:
-    :param duration:
-    :return:
-    """
-    logger.info(msg)
-
-    log_key = f"LOG/{msg}"
-
-    count = R.incr(log_key)
-
-    if count == 1:
-        R.expire(log_key, duration)
-
-    if count >= hits:
-        logger.warning(msg)
 
 
 def set_user_site_cname(oauth_id, site_id, site_name):
@@ -799,6 +773,11 @@ def set_user_site_author(oauth_id, site_id, site_author):
 def get_user_site_author(oauth_id, site_id):
     key = settings.REDIS_USER_CONF_SITE_AUTHOR_KEY % (oauth_id, site_id)
     return R.get(key)
+
+
+def valid_dvc_req(dvc_id, dvc_type, sign):
+    src = dvc_id + dvc_type + current_day()
+    return get_hash_name(src) == sign
 
 
 @lru_cache(maxsize=128)
