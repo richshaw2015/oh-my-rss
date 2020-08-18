@@ -72,10 +72,8 @@ def update_all_mpwx_cron():
     """
     更新微信公众号，每天 1 次；公众号的全部都会更新，且评级最低 10
     """
-    sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
-
-    if settings.DEBUG:
-        sites = sites[:1]
+    # 暂时只更新瓦斯阅读的，其他需要分布式环境搭建好
+    sites = Site.objects.filter(status='active', creator='wemp', rss__contains='qnmlgb.tech').order_by('-star')
 
     for site in sites:
         host, action = get_host_name(site.rss), None

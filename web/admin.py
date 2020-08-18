@@ -62,3 +62,17 @@ class UserArticleAdmin(admin.ModelAdmin):
     list_display = ['title', 'site', 'user', 'author', 'src_url', 'ctime']
     search_fields = ['title', 'src_url']
     list_per_page = 10
+
+
+@admin.register(Job)
+class JobAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
+    }
+
+    list_display = ['admin_url', 'action', 'status', 'dvc_id', 'dvc_type', 'dvc_ip', 'giveback', 'site', 'ctime',
+                    'mtime', 'remark']
+    search_fields = ['url', ]
+    list_filter = ('status', 'action', 'dvc_id')
+    list_per_page = 50

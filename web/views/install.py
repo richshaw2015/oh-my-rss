@@ -5,6 +5,8 @@ from web.models import *
 
 logger = logging.getLogger(__name__)
 
+wemp_dict = {}
+
 
 def load_db_data(request):
     """
@@ -31,6 +33,8 @@ def install(request):
 
 
 def debug(request):
-    from web.tasks import update_all_mpwx_cron, clear_expired_job_cron, cal_dvc_stat_cron
-    cal_dvc_stat_cron()
+    for site in Site.objects.filter(status='active', creator='wemp', rss__contains='www.ershicimi.com'):
+        if site.cname in wemp_dict.keys():
+            logger.info(site.cname)
+
     return JsonResponse({})
