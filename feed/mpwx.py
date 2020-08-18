@@ -11,7 +11,7 @@ import random
 import logging
 import hashlib
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     filename='sys.log',
                     filemode='a',
                     format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
@@ -114,8 +114,8 @@ def finish_job(job):
 
 
 # 间隔时间，受服务器控制
-idle_sleep = 300
-busy_sleep = 30
+idle_sleep = 180
+busy_sleep = 20
 
 
 while True:
