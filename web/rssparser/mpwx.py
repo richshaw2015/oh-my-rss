@@ -76,6 +76,14 @@ def parse_detail_page(job):
     host = get_host_name(job.rsp_url)
 
     if job.action == 20 or 'mp.weixin.qq.com' in host:
+        try:
+            msg = response.selector.xpath("//*[@class='weui-msg__text-area']/div/text()").extract_first().strip()
+            if msg == '该内容已被发布者删除':
+                logger.warning(f"检测到被发布者删除：`{job.url}")
+                return 6
+        except:
+            pass
+
         title, author, content = parse_mpwx_detail_page(response)
     elif job.action == 21:
         title, author, content = parse_ershicimi_detail_page(response)

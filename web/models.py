@@ -1,5 +1,4 @@
 from django.db import models
-from django.template.defaultfilters import truncatechars
 
 
 class Site(models.Model):
@@ -144,10 +143,6 @@ class Job(models.Model):
 
     url = models.CharField('原始链接', max_length=1024)
 
-    @property
-    def admin_url(self):
-        return truncatechars(self.url, 40)
-
     action = models.IntegerField('链接类型', choices=(
         (10, 'RSS 源'),
         (11, 'ershicimi 爬虫文章列表'),
@@ -168,6 +163,7 @@ class Job(models.Model):
         (3, '超时'),
         (4, '解析异常'),
         (5, '交还次数超限'),
+        (6, '被发布者删除'),
     ), default=0, db_index=True)
 
     dvc_id = models.CharField('设备号', max_length=128, null=True, blank=True)

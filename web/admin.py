@@ -66,13 +66,17 @@ class UserArticleAdmin(admin.ModelAdmin):
 
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
+    def view_link(self):
+        return mark_safe(f"<a href='{self.url}' target='_blank'>{self.url[:40]}...</a>")
+    view_link.short_description = ''
+
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size': '10'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
     }
 
-    list_display = ['admin_url', 'action', 'status', 'dvc_id', 'dvc_type', 'dvc_ip', 'giveback', 'site', 'ctime',
-                    'mtime', 'remark']
+    list_display = ['action', view_link, 'status', 'dvc_id', 'dvc_type', 'dvc_ip', 'giveback', 'site', 'ctime']
     search_fields = ['url', ]
-    list_filter = ('status', 'action', 'dvc_id')
-    list_per_page = 50
+    list_filter = ('status', 'action', 'dvc_id', 'dvc_type')
+    list_editable = ['status', ]
+    list_per_page = 20
