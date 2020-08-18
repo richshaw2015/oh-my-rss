@@ -163,7 +163,7 @@ class Job(models.Model):
         (3, '超时'),
         (4, '解析异常'),
         (5, '交还次数超限'),
-        (6, '被发布者删除'),
+        (6, '内容违规或删除'),
     ), default=0, db_index=True)
 
     dvc_id = models.CharField('设备号', max_length=128, null=True, blank=True)

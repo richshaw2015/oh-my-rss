@@ -77,9 +77,8 @@ def parse_detail_page(job):
 
     if job.action == 20 or 'mp.weixin.qq.com' in host:
         try:
-            msg = response.selector.xpath("//*[@class='weui-msg__text-area']/div/text()").extract_first().strip()
-            if msg == '该内容已被发布者删除':
-                logger.warning(f"检测到被发布者删除：`{job.url}")
+            if response.selector.xpath("//div[@class='weui-msg__text-area']").extract_first():
+                logger.warning(f"内容违规或删除：`{job.url}")
                 return 6
         except:
             pass
@@ -124,7 +123,11 @@ def parse_mpwx_detail_page(response):
                 extract_first().strip()
             content += iframe
         except:
-            title = ''
+            # 无标题的、分享文章
+            try:
+                title = response.selector.xpath('//meta[@ property ="og:title"]/@content').extract_first().strip()[:30]
+            except:
+                title = ''
 
     try:
         author = response.selector.xpath('//span[@id="js_author_name"]/text()').extract_first().strip()
