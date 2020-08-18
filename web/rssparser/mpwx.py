@@ -108,15 +108,23 @@ def parse_detail_page(job):
 
 
 def parse_mpwx_detail_page(response):
+    iframe = f'''<iframe frameborder=0 scrolling="no" seamless="seamless" src="{response.url}"></iframe>'''
+
     try:
         content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
     except AttributeError:
-        content = ''
+        content = iframe
 
     try:
         title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
     except AttributeError:
-        title = ''
+        try:
+            # 视频类的，只能加载出文字
+            title = response.selector.xpath('//h2[@class="common_share_title js_video_channel_title"]/text()').\
+                extract_first().strip()
+            content += iframe
+        except:
+            title = ''
 
     try:
         author = response.selector.xpath('//span[@id="js_author_name"]/text()').extract_first().strip()
