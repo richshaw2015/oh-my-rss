@@ -98,7 +98,7 @@ def parse_detail_page(job):
         logger.warning(f"页面解析失败：`{title}`{job.url}")
         return 4
     else:
-        mark_crawled_url([job.url, job.rsp_url])
+        mark_crawled_url(job.url, job.rsp_url)
 
         article = Article(title=title, author=author, site=job.site, uindex=current_ts(), content=content,
                           src_url=job.url)
