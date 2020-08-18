@@ -419,6 +419,15 @@ function fixWempStyleTag() {
             $(this).removeAttr('style');
         }
     });
+
+    // 传送门图片兼容处理
+    $("#omrss-third img").each(function() {
+        const src = $(this).attr('src');
+
+        if (src.indexOf('store.sogou.com') > 0) {
+            $(this).attr('src', src.split('&url=')[1]);
+        }
+    });
 }
 
 function fixArticlePrivilege() {
