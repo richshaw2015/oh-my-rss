@@ -248,7 +248,7 @@ GITHUB_OAUTH_KEY = '4b40da1eb0585bf03dda'
 GITHUB_OAUTH_SECRET = 'c985780931b223658064d3218095d916106238d7'
 
 ROBOT_DVC_CNF = {
-    'Neos-MacBook-Pro.local': (31, 501),
+    'Neos-MacBook-Pro.local': (3, 301),
 }
 
 LOGGING = {

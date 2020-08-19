@@ -10,6 +10,7 @@ import time
 import json
 import random
 import logging
+import gzip
 import hashlib
 
 logging.basicConfig(level=logging.INFO,
@@ -19,6 +20,7 @@ logging.basicConfig(level=logging.INFO,
                     )
 
 API_URL = 'https://ohmyrss.com'
+# API_URL = 'http://127.0.0.1:8080'
 
 DVC_ID = platform.node()
 DVC_TYPE = 'robot'
@@ -26,7 +28,7 @@ DVC_EXT = {
     'pf': platform.platform(),
     'sys': platform.system(),
     'sysver': platform.version(),
-    'ver': '1.1',
+    'ver': '1.2',
     'lat': '',
     'lon': '',
     'model': '',
@@ -106,18 +108,20 @@ def giveback_job(job):
 
 
 def finish_job(job):
-    # 这里做两次重试，确保数据传输可靠性
+    # 这里做两次重试，确保数据传输可靠性；并做请求体压缩
     s = requests.Session()
     s.mount('http://', HTTPAdapter(max_retries=2))
     s.mount('https://', HTTPAdapter(max_retries=2))
 
     try:
-        rsp = s.post(API_URL + '/api/job/finish', data={
+        body = json.dumps({
             "id": job['id'],
             "url": job['url'],
             "rsp": job['rsp'],
             "rsp_url": job['rsp_url'],
-        }, timeout=30)
+        })
+        body = gzip.compress(bytes(body, 'utf8'))
+        rsp = s.post(API_URL + '/api/job/finish', data=body, timeout=30, headers={'Content-Encoding': 'gzip'})
 
         if rsp.ok:
             logging.info(f"任务执行成功：`{job['id']}`{job['url']}")

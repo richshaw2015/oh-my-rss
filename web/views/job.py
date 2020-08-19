@@ -4,6 +4,8 @@ from web.utils import get_client_ip, valid_dvc_req
 from django.conf import settings
 from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 import logging
+import gzip
+import json
 from web.rssparser.mpwx import parse_list_page, parse_detail_page
 
 logger = logging.getLogger(__name__)
@@ -61,8 +63,16 @@ def giveback_job(request):
 
 
 def finish_job(request):
-    job_id, job_url, rsp, rsp_url = request.POST['id'], request.POST['url'], request.POST['rsp'], \
-                                    request.POST['rsp_url']
+    if request.headers.get('Content-Encoding') == 'gzip':
+        try:
+            body = json.loads(gzip.decompress(request.body).decode('utf8'))
+            job_id, job_url, rsp, rsp_url = body['id'], body['url'], body['rsp'], body['rsp_url']
+        except:
+            logger.warning("压缩请求处理异常！")
+            return HttpResponseForbidden("")
+    else:
+        job_id, job_url, rsp, rsp_url = request.POST['id'], request.POST['url'], request.POST['rsp'], \
+                                        request.POST['rsp_url']
 
     job, status = Job.objects.get(pk=job_id, status=1), -1
 
