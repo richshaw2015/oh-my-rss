@@ -99,9 +99,13 @@ def parse_detail_page(job):
     else:
         mark_crawled_url(job.url, job.rsp_url)
 
-        article = Article(title=title, author=author, site=job.site, uindex=current_ts(), content=content,
-                          src_url=job.url)
-        article.save()
+        try:
+            article = Article(title=title, author=author, site=job.site, uindex=current_ts(), content=content,
+                              src_url=job.url)
+            article.save()
+        except:
+            logger.warning(f"插入文章异常：`{title}`{job.site}`{job.url}")
+            return 7
 
         return 2
 
