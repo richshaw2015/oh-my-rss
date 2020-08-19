@@ -6,7 +6,8 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonRespons
 import logging
 import gzip
 import json
-from web.rssparser.mpwx import parse_list_page, parse_detail_page
+import django_rq
+from web.tasks import handle_job_async
 
 logger = logging.getLogger(__name__)
 
@@ -74,26 +75,6 @@ def finish_job(request):
         job_id, job_url, rsp, rsp_url = request.POST['id'], request.POST['url'], request.POST['rsp'], \
                                         request.POST['rsp_url']
 
-    job, status = Job.objects.get(pk=job_id, status=1), -1
+    django_rq.enqueue(handle_job_async, job_id, job_url, rsp, rsp_url)
 
-    if job.url == job_url:
-        job.rsp = rsp
-        job.rsp_url = rsp_url
-
-        if job.action in (10, 11, 12, 13):
-            status = parse_list_page(job)
-        elif job.action in (20, 21, 22, 23):
-            status = parse_detail_page(job)
-        else:
-            logger.warning(f"未知的任务类型：`{job.action}")
-
-        job.status = status
-        if status == 2:
-            job.rsp = ''
-
-        job.save()
-
-        return JsonResponse({})
-    else:
-        logger.warning(f"任务不匹配：`{job.id}`{job.url}`{job_url}")
-        return HttpResponseForbidden("")
+    return JsonResponse({})

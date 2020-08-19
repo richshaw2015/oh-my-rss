@@ -5,7 +5,7 @@ from datetime import datetime
 import datetime as dt
 from django.utils.timezone import timedelta
 from web.rssparser.atom import atom_spider
-from web.rssparser.mpwx import make_mpwx_job
+from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
     get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
     reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, get_recent_articles, \
@@ -40,6 +40,35 @@ def update_sites_async(sites, force_update=False):
 
         logger.info(f"开始异步更新：{site_id}")
         atom_spider(site)
+
+    return True
+
+
+def handle_job_async(job_id, job_url, rsp, rsp_url):
+    """
+    处理入库任务
+    """
+    job = Job.objects.get(pk=job_id, status=1)
+
+    if job.url == job_url:
+        job.rsp = rsp
+        job.rsp_url = rsp_url
+
+        if job.action in (10, 11, 12, 13):
+            status = parse_list_page(job)
+        elif job.action in (20, 21, 22, 23):
+            status = parse_detail_page(job)
+        else:
+            logger.warning(f"未知的任务类型：`{job.action}")
+            return False
+
+        job.status = status
+        if status == 2:
+            job.rsp = ''
+        job.save()
+    else:
+        logger.warning(f"任务不匹配：`{job.id}`{job.url}`{job_url}")
+        return False
 
     return True
 
