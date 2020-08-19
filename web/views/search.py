@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from web.models import *
 from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     is_sensitive_content, split_cn_words
@@ -54,18 +54,26 @@ def article(request, pid):
 
 
 def robots(request):
-    sitemap = os.path.join(request.build_absolute_uri(), '/sitemap.txt')
-    return HttpResponse(f'''User-agent: *\nDisallow: /dashboard\n\nSitemap: {sitemap}''')
+    user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
+
+    if user_agent.is_bot:
+        return HttpResponse(f'''User-agent: *\nDisallow: /dashboard\n\nSitemap: /sitemap.txt''')
+
+    return HttpResponseNotFound("Param Error")
 
 
 def sitemap(request):
-    indexs = Article.objects.filter(status='active', site__star__gte=10).order_by('-id').\
-        values_list('uindex', flat=True)[:1000]
+    user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
+    if user_agent.is_bot:
+        indexs = Article.objects.filter(status='active', site__star__gte=10).order_by('-id').\
+            values_list('uindex', flat=True)[:1000]
 
-    url = request.build_absolute_uri('/')[:-1].strip("/")
-    sites = [f'{url}/p/{index}' for index in indexs]
+        url = request.build_absolute_uri('/')[:-1].strip("/").replace('http://', 'https://')
+        sites = [f'{url}/post/{index}' for index in indexs]
 
-    return HttpResponse('\n'.join(sites))
+        return HttpResponse('\n'.join(sites))
+
+    return HttpResponseNotFound("Param Error")
 
 
 @verify_request
