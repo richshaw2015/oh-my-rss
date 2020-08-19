@@ -113,6 +113,10 @@ def archive_article_cron():
             article.content = ' '
             article.save()
 
+    # 清理数据
+    lastmonth = datetime.now() - timedelta(days=30)
+    Job.objects.filter(ctime__lt=lastmonth).delete()
+
     return True
 
 
@@ -369,17 +373,13 @@ def build_whoosh_index_cron():
 
 
 def clear_expired_job_cron():
-    yesterday = datetime.now() - timedelta(days=1)
-    lastmonth = datetime.now() - timedelta(days=30)
+    onehour = datetime.now() - timedelta(hours=1)
 
-    # 过期任务状态变更
-    affected = Job.objects.filter(status=1, ctime__lt=yesterday).update(status=3)
+    # 过期任务状态变更，最多执行 1 小时
+    affected = Job.objects.filter(status=1, mtime__lt=onehour).update(status=3)
 
     if affected > 0:
         logger.warning(f"超时任务数量：`{affected}")
-
-    # 清理数据
-    Job.objects.filter(ctime__lt=lastmonth).delete()
 
     return True
 

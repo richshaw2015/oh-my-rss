@@ -79,4 +79,4 @@ class JobAdmin(admin.ModelAdmin):
     search_fields = ['url', ]
     list_filter = ('status', 'action', 'dvc_id', 'dvc_type')
     list_editable = ['status', ]
-    list_per_page = 20
+    list_per_page = 12
