@@ -4,6 +4,7 @@
 """
 
 import requests
+from requests.adapters import HTTPAdapter
 import platform
 import time
 import json
@@ -25,7 +26,7 @@ DVC_EXT = {
     'pf': platform.platform(),
     'sys': platform.system(),
     'sysver': platform.version(),
-    'ver': '1.0',
+    'ver': '1.1',
     'lat': '',
     'lon': '',
     'model': '',
@@ -66,7 +67,8 @@ def get_a_job():
             return rsp.json()
     except:
         logging.warning("获取任务出现异常！")
-        return None
+
+    return None
 
 
 def handle_job(job):
@@ -78,9 +80,12 @@ def handle_job(job):
             job['rsp'] = rsp.text
             job['rsp_url'] = rsp.url
             return True
+        else:
+            logging.warning(f"执行任务失败：`{job}`{rsp.status_code}")
     except:
-        logging.warning(f"执行任务出现异常！`{job}")
-        return False
+        logging.warning(f"执行任务出现异常：`{job}")
+
+    return False
 
 
 def giveback_job(job):
@@ -92,14 +97,22 @@ def giveback_job(job):
 
         if rsp.ok:
             return True
+        else:
+            logging.warning(f"交还任务失败：`{job}")
     except:
-        logging.warning(f"交还任务出现异常！`{job}")
+        logging.warning(f"交还任务出现异常：`{job}")
+
     return False
 
 
 def finish_job(job):
+    # 这里做两次重试，确保数据传输可靠性
+    s = requests.Session()
+    s.mount('http://', HTTPAdapter(max_retries=2))
+    s.mount('https://', HTTPAdapter(max_retries=2))
+
     try:
-        rsp = requests.post(API_URL + '/api/job/finish', data={
+        rsp = s.post(API_URL + '/api/job/finish', data={
             "id": job['id'],
             "url": job['url'],
             "rsp": job['rsp'],
@@ -107,9 +120,13 @@ def finish_job(job):
         }, timeout=30)
 
         if rsp.ok:
+            logging.info(f"任务执行成功：`{job['id']}`{job['url']}")
             return True
+        else:
+            logging.warning(f"结束任务失败：`{job['id']}`{job['url']}")
     except:
-        logging.warning(f"结束任务出现异常！`{job}")
+        logging.warning(f"结束任务出现异常：`{job['id']}`{job['url']}")
+
     return False
 
 
