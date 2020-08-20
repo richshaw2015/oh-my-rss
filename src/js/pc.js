@@ -1203,14 +1203,14 @@ $(document).ready(function () {
 
             $.post("/search", {uid: getOrSetUid(), keyword: keyword, scope: scope}, function (data) {
                 if (!getLoginId()) {
-                    $('#omrss-search').html(updateVisitorSubStatus(data));
+                    $('#omrss-search-result').html(updateVisitorSubStatus(data));
                 } else {
-                    $('#omrss-search').html(data);
+                    $('#omrss-search-result').html(data);
                 }
                 // 初始化组件
                 initMaterialUI();
 
-                $('#omrss-main').scrollTop(0);
+                $('#omrss-search-result').scrollTop(0);
             }).fail(function () {
                 warnToast(SEARCH_ERROR_MSG);
             }).always(function () {
