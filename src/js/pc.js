@@ -204,7 +204,7 @@ function setRecommendArticles(articleId) {
             $.post("/api/html/recommend/articles", {uid: getOrSetUid(), id: articleId}, function(data){
                 $('#omrss-recommend').html(data);
             });
-        }, 2000);
+        }, 1000);
     }
 }
 
