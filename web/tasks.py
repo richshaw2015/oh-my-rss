@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 import datetime as dt
 from django.utils.timezone import timedelta
+from feed.utils import current_ts
 from web.rssparser.atom import atom_spider
 from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
 from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
@@ -19,7 +20,6 @@ import jieba
 import json
 import os
 from web.sql import JOB_STAT_SQL
-import time
 
 
 logger = logging.getLogger(__name__)
@@ -401,7 +401,10 @@ def build_whoosh_index_cron():
     idx_writer.commit()
 
     # 清理过期文章
-    lastweek_ts = int(time.time() * 1000) - 7*86400*1000
+    idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
+    idx_writer = idx.writer()
+
+    lastweek_ts = str(current_ts() - 7*86400*1000)
     query = QueryParser("uindex", idx.schema).parse('uindex:{to %s]' % lastweek_ts)
 
     with idx.searcher() as searcher:
