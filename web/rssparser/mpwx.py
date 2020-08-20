@@ -78,7 +78,7 @@ def parse_detail_page(job):
     if job.action == 20 or 'mp.weixin.qq.com' in host:
         try:
             if response.selector.xpath("//div[@class='weui-msg__text-area']").extract_first():
-                logger.warning(f"内容违规或删除：`{job.url}")
+                logger.info(f"内容违规或删除：`{job.url}")
                 return 6
         except:
             pass
