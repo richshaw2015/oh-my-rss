@@ -5,7 +5,7 @@ from .models import Site, Article
 
 
 class SiteFeed(Feed):
-    ttl = 4 * 3600
+    ttl = 12 * 3600
 
     def get_object(self, request, site_id):
         try:
@@ -32,7 +32,7 @@ class SiteFeed(Feed):
         return ''
 
     def items(self, site):
-        return Article.objects.filter(site=site, status='active').order_by('-ctime')[:10]
+        return Article.objects.filter(site=site, status='active').order_by('-id')[:10]
 
     def item_title(self, item):
         return item.title

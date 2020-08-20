@@ -1,0 +1,41 @@
+{% load helpers %}
+
+<div class="row">
+    {% for site in rel_sites %}
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content omrss-card-content">
+
+                <a href="{{ site.link }}" target="_blank">
+                    <span class="card-title omrss-recent-title">{{ site.brief |to_clean_brief }}</span>
+                </a>
+
+                <div class="divider nav-divider"></div>
+
+                <div>
+                    <img src="{{ site.favicon }}" class="circle omrss-recent-avatar omrss-text">
+                    <a href="{{ site.link }}" target="_blank">
+                        <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:site }}</span>
+                    </a>
+
+                {% if user %}
+                    {% if site.pk in user_sub_feeds %}
+                        <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ site.name }}"
+                        data-site="{{ site.pk }}">已订阅</span>
+                    {% else %}
+                        <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
+                              data-name="{{ site.name }}" data-site="{{ site.pk }}">订阅</span>
+                    {% endif %}
+                {% else %}
+                    <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
+                          data-name="{{ site.name }}" data-site="{{ site.pk }}">订阅</span>
+                {% endif %}
+
+                    <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

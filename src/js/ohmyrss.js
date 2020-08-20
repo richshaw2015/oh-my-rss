@@ -1,6 +1,8 @@
 // 提示信息
 const [NET_ERROR_MSG, LOGIN_ERROR_MSG, LOGIN_SUCC_MSG, SUBS_LIMIT_ERROR_MSG] = 
     ['网络异常，请稍后重试！', '登录授权失败，请稍后重试！', '登录成功 ^o^', '已达订阅数上限，请取消一部分！'];
+const SEARCH_ERROR_MSG = '搜索异常，请切换关键字后重试！'
+const NEED_REFRESH_MSG = '请刷新页面后重试！'
 
 // 登陆用户的未读数
 let userUnreadCount = 0;

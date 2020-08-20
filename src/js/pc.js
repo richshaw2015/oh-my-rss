@@ -1174,7 +1174,7 @@ $(document).ready(function () {
         if (keyword) {
             $('#omrss-loader').removeClass('hide');
 
-            $.post("/search", {uid: getOrSetUid(), keyword: keyword}, function (data) {
+            $.post("/search", {uid: getOrSetUid(), keyword: keyword, scope: 'feed'}, function (data) {
                 if (!getLoginId()) {
                     $('#omrss-main').html(updateVisitorSubStatus(data));
                 } else {
@@ -1186,13 +1186,40 @@ $(document).ready(function () {
 
                 $('#omrss-main').scrollTop(0);
             }).fail(function () {
-                warnToast(NET_ERROR_MSG);
+                warnToast(SEARCH_ERROR_MSG);
             }).always(function () {
                 $('#omrss-loader').addClass('hide');
                 $('#omrss-main').focus();
             })
         }
         e.preventDefault();
+    });
+    $(document).on('click', '.ev-search', function(e) {
+        const keyword = $(this).attr('data-keyword');
+        const scope = $(this).attr('data-scope');
+
+        if (keyword && scope) {
+            $('#omrss-loader').removeClass('hide');
+
+            $.post("/search", {uid: getOrSetUid(), keyword: keyword, scope: scope}, function (data) {
+                if (!getLoginId()) {
+                    $('#omrss-search').html(updateVisitorSubStatus(data));
+                } else {
+                    $('#omrss-search').html(data);
+                }
+                // 初始化组件
+                initMaterialUI();
+
+                $('#omrss-main').scrollTop(0);
+            }).fail(function () {
+                warnToast(SEARCH_ERROR_MSG);
+            }).always(function () {
+                $('#omrss-loader').addClass('hide');
+                $('#omrss-main').focus();
+            })
+        } else {
+            warnToast(NEED_REFRESH_MSG);
+        }
     });
 
     // 切换全屏 TODO FIXME
@@ -1212,10 +1239,10 @@ $(document).ready(function () {
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState !== 'visible') {
             isBgWin = true;
-            console.log('转到后台：' + (new Date()));
+            // console.log('转到后台：' + (new Date()));
         } else {
             isBgWin = false;
-            console.log('转到前台：' + (new Date()));
+            // console.log('转到前台：' + (new Date()));
         }
     });
     /* 事件处理结束 */

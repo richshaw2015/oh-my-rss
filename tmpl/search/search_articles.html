@@ -1,0 +1,41 @@
+{% load helpers %}
+
+<div class="row">
+    {% for article in rel_articles %}
+    <div class="col s6 omrss-recent-article">
+        <div class="card">
+            <div class="card-content omrss-card-content">
+                <div>
+                    <a href="{{ article.src_url }}" target="_blank">
+                        <span class="card-title omrss-recent-title">{{ article.title }}</span>
+                    </a>
+                </div>
+
+                <div class="divider nav-divider"></div>
+
+                <div>
+                    <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar omrss-text">
+                    <a href="{{ article.site.link }}" target="_blank" class="tooltipped"
+                       data-tooltip="{{ article.site.brief |to_clean_brief }}" data-position="top">
+                        <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:article.site }}</span>
+                    </a>
+                    {% if user %}
+                        {% if article.site.pk in user_sub_feeds %}
+                            <span class="waves-light right omrss-text omrss-sub-btn" data-name="{{ article.site.name }}"
+                            data-site="{{ article.site.pk }}">已订阅</span>
+                        {% else %}
+                            <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
+                                  data-name="{{ article.site.name }}" data-site="{{ article.site.pk }}">订阅</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
+                              data-name="{{ article.site.name }}" data-site="{{ article.site.pk }}">订阅</span>
+                    {% endif %}
+
+                    <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ article.site.star |to_stars }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

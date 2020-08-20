@@ -19,6 +19,7 @@ import jieba
 import json
 import os
 from web.sql import JOB_STAT_SQL
+import time
 
 
 logger = logging.getLogger(__name__)
@@ -323,6 +324,7 @@ def build_whoosh_index_cron():
     """
     from web.utils import whoosh_site_schema, whoosh_article_schema
     from whoosh.filedb.filestore import FileStorage
+    from whoosh.qparser import QueryParser
 
     idx_dir = settings.WHOOSH_IDX_DIR
     first_boot = False
@@ -397,6 +399,14 @@ def build_whoosh_index_cron():
             except:
                 logger.warning(f"索引失败：`{uindex}")
     idx_writer.commit()
+
+    # 清理过期文章
+    lastweek_ts = int(time.time() * 1000) - 7*86400*1000
+    query = QueryParser("uindex", idx.schema).parse('uindex:{to %s]' % lastweek_ts)
+
+    with idx.searcher() as searcher:
+        idx_writer.delete_by_query(query, searcher)
+        idx_writer.commit()
 
     return True
 

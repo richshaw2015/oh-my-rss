@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from web.models import *
 from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     is_sensitive_content, split_cn_words
@@ -83,40 +83,49 @@ def in_site_search(request):
     """
     user = get_login_user(request)
     keyword = request.POST.get('keyword', '').strip()
+    scope = request.POST.get('scope', 'feed')
 
     logger.warning(f"搜索关键字：`{keyword}")
     keyword = split_cn_words(keyword, join=True)
     logger.info(f"转换后的关键字：`{keyword}")
 
+    if not keyword:
+        return HttpResponseNotFound("Empty Keyword")
+
     storage = FileStorage(settings.WHOOSH_IDX_DIR)
+    rel_sites, rel_articles = None, None
 
     # 查找相关源
-    idx = storage.open_index(indexname="site", schema=whoosh_site_schema)
-    qp = MultifieldParser(['cname', 'author', 'brief'], schema=whoosh_site_schema)
-    query = qp.parse(keyword)
-    sites = []
+    if scope == 'feed':
+        idx = storage.open_index(indexname="site", schema=whoosh_site_schema)
+        qp = MultifieldParser(['cname', 'author', 'brief'], schema=whoosh_site_schema)
+        query = qp.parse(keyword)
+        sites = []
 
-    with idx.searcher() as s:
-        results = s.search(query, limit=50)
+        with idx.searcher() as s:
+            results = s.search(query, limit=50)
 
-        for ret in results:
-            sites.append(ret['id'])
+            for ret in results:
+                sites.append(ret['id'])
 
-    rel_sites = Site.objects.filter(status='active', pk__in=sites).order_by('-star')
+        rel_sites = Site.objects.filter(status='active', pk__in=sites).order_by('-star')
+    elif scope == 'article':
+        # 查找相关文章
+        idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
+        qp = MultifieldParser(['title', 'author', 'content'], schema=whoosh_article_schema)
+        query = qp.parse(keyword)
+        articles = []
 
-    # 查找相关文章
-    idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
-    qp = MultifieldParser(['title', 'author', 'content'], schema=whoosh_article_schema)
-    query = qp.parse(keyword)
-    articles = []
+        with idx.searcher() as s:
+            old_mask = TermRange("uindex", None, str(current_ts() - 7*86400*1000))
+            results = s.search(query, mask=old_mask, limit=50)
 
-    with idx.searcher() as s:
-        old_mask = TermRange("uindex", None, str(current_ts() - 7*86400*1000))
-        results = s.search(query, mask=old_mask, limit=50)
-
-        for ret in results:
-            articles.append(ret['uindex'])
-    rel_articles = Article.objects.filter(status='active', uindex__in=articles)
+            for ret in results:
+                articles.append(ret['uindex'])
+        rel_articles = Article.objects.filter(status='active', uindex__in=articles)
+    else:
+        logger.warning(f"未知的搜索类型：`{scope}")
+        return HttpResponseForbidden("Param Error")
 
     # 用户订阅
     user_sub_feeds = []
@@ -130,4 +139,4 @@ def in_site_search(request):
     context['rel_articles'] = rel_articles
     context['keyword'] = keyword
 
-    return render(request, 'search.html', context=context)
+    return render(request, 'search/search.html', context=context)
