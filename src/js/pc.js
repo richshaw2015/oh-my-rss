@@ -1174,7 +1174,7 @@ $(document).ready(function () {
         if (keyword) {
             $('#omrss-loader').removeClass('hide');
 
-            $.post("/search", {uid: getOrSetUid(), keyword: keyword, scope: 'feed'}, function (data) {
+            $.post("/search", {uid: getOrSetUid(), keyword: keyword, scope: 'all'}, function (data) {
                 if (!getLoginId()) {
                     $('#omrss-main').html(updateVisitorSubStatus(data));
                 } else {

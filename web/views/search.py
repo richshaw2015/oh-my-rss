@@ -83,11 +83,14 @@ def in_site_search(request):
     """
     user = get_login_user(request)
     keyword = request.POST.get('keyword', '').strip()
-    scope = request.POST.get('scope', 'feed')
+    scope = request.POST.get('scope', 'all')
 
     logger.warning(f"搜索关键字：`{keyword}")
     keyword = split_cn_words(keyword, join=True)
     logger.info(f"转换后的关键字：`{keyword}")
+
+    if scope not in ('all', 'feed', 'article'):
+        return HttpResponseForbidden('Param Error')
 
     if not keyword:
         return HttpResponseNotFound("Empty Keyword")
@@ -96,7 +99,7 @@ def in_site_search(request):
     rel_sites, rel_articles = None, None
 
     # 查找相关源
-    if scope == 'feed':
+    if scope in ('feed', 'all'):
         idx = storage.open_index(indexname="site", schema=whoosh_site_schema)
         qp = MultifieldParser(['cname', 'author', 'brief'], schema=whoosh_site_schema)
         query = qp.parse(keyword)
@@ -109,7 +112,8 @@ def in_site_search(request):
                 sites.append(ret['id'])
 
         rel_sites = Site.objects.filter(status='active', pk__in=sites).order_by('-star')
-    elif scope == 'article':
+
+    if scope in ('article', 'all'):
         # 查找相关文章
         idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
         qp = MultifieldParser(['title', 'author', 'content'], schema=whoosh_article_schema)
@@ -123,9 +127,6 @@ def in_site_search(request):
             for ret in results:
                 articles.append(ret['uindex'])
         rel_articles = Article.objects.filter(status='active', uindex__in=articles)
-    else:
-        logger.warning(f"未知的搜索类型：`{scope}")
-        return HttpResponseForbidden("Param Error")
 
     # 用户订阅
     user_sub_feeds = []
@@ -139,4 +140,9 @@ def in_site_search(request):
     context['rel_articles'] = rel_articles
     context['keyword'] = keyword
 
-    return render(request, 'search/search.html', context=context)
+    if scope == 'all':
+        return render(request, 'search/search.html', context=context)
+    elif scope == 'feed':
+        return render(request, 'search/search_feeds.html', context=context)
+    elif scope == 'article':
+        return render(request, 'search/search_articles.html', context=context)
