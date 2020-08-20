@@ -4,11 +4,12 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonRespons
 from django.conf import settings
 from web.models import *
 from web.utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
-    get_similar_article, get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
+    get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
     get_site_last_id, get_user_unread_articles, get_user_unread_sites, get_user_ranking_list, get_sites_lastids
 from web.verify import verify_request
 import logging
 import json
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -407,40 +408,28 @@ def get_site_article_update_view(request):
 
 
 @verify_request
-def get_recommend_articles(request):
+def get_recommend_sites(request):
     """
-    获取文章推荐的订阅源，只开放登录用户 TODO 优化性能
+    获取文章推荐的订阅源，只开放登录用户；考虑性能，这里进行随机生成
     :param request:
     :return:
     """
-    uindex = int(request.POST['id'])
     user = get_login_user(request)
 
-    if uindex and user:
-        recommend_articles = []
-        relative_articles = list(get_similar_article(uindex).keys())
+    if user:
         user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
-        for relative_uindex in relative_articles:
-            try:
-                article = Article.objects.get(uindex=relative_uindex, status='active')
-            except:
-                continue
-
-            if article.site_id not in user_sub_feeds:
-                recommend_articles.append(article)
-            if len(recommend_articles) >= 3:
-                break
-
-        if recommend_articles:
-            logger.info(f'推荐数据条数：`{len(recommend_articles)}`{user.oauth_name}')
-
-            context = dict()
-            context['recommend_articles'] = recommend_articles
-            context['user'] = user
-
-            return render(request, 'recommend/relative_article.html', context=context)
-        else:
+        sites = Site.objects.filter(status='active', star__gte=10).exclude(pk__in=user_sub_feeds)
+        try:
+            sites = random.sample(list(sites), 3)
+        except:
+            logger.warning(f"生成随机订阅失败：`{sites}")
             return JsonResponse({})
+
+        context = dict()
+        context['sites'] = sites
+        context['user'] = user
+
+        return render(request, 'recommend/random_sites.html', context=context)
 
     return HttpResponseForbidden("No Recommend Data")

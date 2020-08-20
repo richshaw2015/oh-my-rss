@@ -499,7 +499,7 @@ def save_avatar(avatar, userid, size=100, referer=None):
 
 def cal_cosine_distance(x, y):
     """
-    计算两个列表的余弦相似度，0 ~ 1
+    计算两个列表的余弦相似度，0 ~ 1 TODO 目前无用
     :param x:
     :param y:
     :return:
@@ -523,20 +523,6 @@ def cal_cosine_distance(x, y):
     distance = dot / (len_x * len_y)
 
     return round(distance, 2)
-
-
-def get_similar_article(uindex):
-    key = settings.REDIS_SIMILAR_ARTICLE_KEY % uindex
-
-    return R.hgetall(key)
-
-
-def set_similar_article(uindex, simlar_dict):
-    key = settings.REDIS_SIMILAR_ARTICLE_KEY % uindex
-
-    ret = R.hmset(key, simlar_dict)
-    R.expire(key, 30 * 24 * 3600)
-    return ret
 
 
 def set_user_visit_day(oauth_id):

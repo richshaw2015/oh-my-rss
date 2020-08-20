@@ -134,8 +134,6 @@ CRONJOBS = [
    ('20 0 * * *', 'web.tasks.update_all_mpwx_cron'),
    ('11 4 * * *', 'web.tasks.archive_article_cron'),
    ('31 4 * * *', 'web.tasks.build_whoosh_index_cron'),
-   ('*/43 * * * *', 'web.tasks.cal_all_article_tag_cron'),
-   ('17 3 * * *', 'web.tasks.cal_article_distance_cron'),
    ('1 3 * * *', 'web.tasks.cal_site_ranking_cron'),
    ('11 3 * * *', 'web.tasks.cal_user_ranking_cron'),
    ('*/3 * * * *', 'web.tasks.load_articles_to_redis_cron'),
@@ -203,8 +201,6 @@ REDIS_USER_READ_KEY = 'READ/%s/%s'
 
 # active rss in 3 days
 REDIS_ACTIVE_RSS_KEY = 'ACTIVE/%s'
-
-REDIS_SIMILAR_ARTICLE_KEY = 'SIMILAR/%s'
 
 REDIS_FEED_RANKING_KEY = 'FEED/RANKING'
 

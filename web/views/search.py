@@ -5,7 +5,6 @@ from web.models import *
 from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     is_sensitive_content, split_cn_words
 import logging
-import os
 from user_agents import parse
 from web.verify import verify_request
 from django.conf import settings

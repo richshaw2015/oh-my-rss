@@ -7,11 +7,10 @@ from django.utils.timezone import timedelta
 from feed.utils import current_ts
 from web.rssparser.atom import atom_spider
 from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
-from web.utils import is_active_rss, set_similar_article, get_similar_article, cal_cosine_distance, \
-    get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, is_updated_site, get_host_name, \
+from web.utils import is_active_rss, get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, \
+    is_updated_site, get_host_name, is_indexed, set_job_stat, set_job_dvcs, \
     reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, get_recent_articles, \
-    get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed, \
-    is_indexed, set_job_stat, set_job_dvcs
+    get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed
 from web.stopwords import stopwords
 from bs4 import BeautifulSoup
 from collections import Counter
@@ -152,7 +151,7 @@ def archive_article_cron():
 
 def cal_all_article_tag_cron():
     """
-    设置最近一周的文章标识、统计词频；每隔 ？ 分钟
+    设置最近一周的文章标识、统计词频；每隔 ？ 分钟 TODO 废弃了
     """
     # 设置最近一周文章标识
     lastweek = datetime.now() - timedelta(days=7)
@@ -184,41 +183,6 @@ def cal_all_article_tag_cron():
 
             article.tags = json.dumps(tags_list)
             article.save()
-
-    return True
-
-
-def cal_article_distance_cron():
-    """
-    计算新增文章的相似度，用于推荐订阅；每隔 ？ 分钟计算一次
-    """
-    articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10).exclude(tags='').\
-        order_by('-id')
-
-    lastmonth = datetime.now() - timedelta(days=30)
-
-    for article in articles:
-        similar_dict = {}
-
-        if not get_similar_article(article.uindex):
-            # 和过去一个月的文章对比
-            compare_articles = Article.objects.filter(status='active', site__star__gte=10, ctime__gt=lastmonth).\
-                exclude(tags='').values('uindex', 'tags')
-
-            for compare in compare_articles:
-                src_tags = json.loads(article.tags)
-                dest_tags = json.loads(compare['tags'])
-                distance = cal_cosine_distance(src_tags, dest_tags)
-
-                if 0.1 < distance < 1:
-                    similar_dict[compare['uindex']] = distance
-
-            if similar_dict:
-                sorted_similar_dict = dict(sorted(similar_dict.items(), key=lambda v: v[1], reverse=True)[:10])
-
-                logger.info(f'{article.uindex}`{sorted_similar_dict}')
-
-                set_similar_article(article.uindex, sorted_similar_dict)
 
     return True
 
