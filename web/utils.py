@@ -674,13 +674,13 @@ def generate_rss_avatar(link, feed=''):
         avatar = '/assets/img/juejin.png'
     elif 'rsshub.app' in link_host:
         avatar = '/assets/img/rsshub.png'
-    elif 'chuansongme.com' in link_host:
+    elif settings.CHUANSONGME_HOST in link_host:
         avatar = '/assets/img/chuansongme.jpg'
     elif 'ximalaya.com' in link_host:
         avatar = '/assets/img/ximalaya.png'
     elif 'smzdm.com' in link_host:
         avatar = '/assets/img/smzdm.jpg'
-    elif link_host == "qnmlgb.tech":
+    elif settings.QNMLGB_HOST in link_host:
         avatar = '/assets/img/qnmlgb.png'
     elif link_host == 'weixin.sogou.com':
         avatar = '/assets/img/sogou.png'

@@ -9,6 +9,7 @@ import feedparser
 import urllib
 from bs4 import BeautifulSoup
 from io import BytesIO
+from django.conf import settings
 from feed.utils import current_ts, mark_crawled_url, is_crawled_url
 
 logger = logging.getLogger(__name__)
@@ -23,7 +24,7 @@ def add_qnmlgb_feed(feed_url):
     feed_obj = feedparser.parse(feed_url)
 
     title = feed_obj.feed.get('title')
-    name = get_hash_name('qnmlgb.tech' + title)
+    name = get_hash_name(settings.QNMLGB_HOST + title)
 
     site = Site.objects.filter(name=name)
     if site:

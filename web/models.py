@@ -145,14 +145,16 @@ class Job(models.Model):
 
     action = models.IntegerField('链接类型', choices=(
         (10, 'RSS 源'),
-        (11, 'ershicimi 爬虫文章列表'),
-        (12, 'wemp 爬虫文章列表'),
-        (13, 'chuansongme 爬虫文章列表'),
+        (11, 'ershicimi 文章列表'),
+        (12, 'wemp 文章列表'),
+        (13, 'chuansongme 文章列表'),
+        (14, 'any 文章列表'),
 
         (20, 'mpwx 文章详情'),
-        (21, 'ershicimi 爬虫文章详情'),
-        (22, 'wemp 爬虫文章详情'),
-        (23, 'chuansongme 爬虫文章详情'),
+        (21, 'ershicimi 文章详情'),
+        (22, 'wemp 文章详情'),
+        (23, 'chuansongme 文章详情'),
+        (24, 'any 文章详情'),
     ))
     rsp = models.TextField('内容', default='', null=True, blank=True)
 

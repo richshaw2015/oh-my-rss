@@ -428,8 +428,15 @@ function fixChuangSongMeImg() {
     $("#omrss-third img").each(function() {
         const src = $(this).attr('src');
 
-        if (src.indexOf('store.sogou.com') > 0) {
-            $(this).attr('src', src.split('&url=')[1]);
+        if (src !== undefined) {
+            if (src.indexOf('store.sogou.com') > 0) {
+                $(this).attr('src', src.split('&url=')[1]);
+            }
+        } else {
+            const dataSrc = $(this).attr('data-src');
+            if (dataSrc !== undefined) {
+                $(this).attr('src', dataSrc);
+            }
         }
     });
 }

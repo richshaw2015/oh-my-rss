@@ -15,6 +15,12 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# mpwx third party hosts
+ERSHICIMI_HOST = 'ershicimi.com'
+QNMLGB_HOST = 'qnmlgb.tech'
+WEMP_HOST = 'wemp.app'
+CHUANSONGME_HOST = 'chuansongme.com'
+ANYV_HOST = 'anyv.net'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/

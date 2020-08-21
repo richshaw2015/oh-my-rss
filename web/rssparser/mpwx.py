@@ -2,7 +2,7 @@
 from web.models import *
 import logging
 from scrapy.http import HtmlResponse
-from web.utils import save_avatar, get_with_retry, get_host_name
+from web.utils import save_avatar, get_with_retry, get_host_name, get_random_emoji
 from feed.utils import current_ts, is_crawled_url, mark_crawled_url
 import urllib
 from bs4 import BeautifulSoup
@@ -49,8 +49,8 @@ def parse_list_page(job):
     elif job.action == 13:
         # chansongme
         links = response.selector.xpath("//*[@class='feed_item_question']//a[@class='question_link']/@href").extract()
-    else:
-        logger.warning(f"未知的任务类型：`{job.action}")
+    elif job.action == 14:
+        links = response.selector.xpath("//div[@class='grid news_desc']/h3/a/@href").extract()
 
     if not links:
         logger.warning(f"页面解析失败：`{job.url}")
@@ -90,8 +90,8 @@ def parse_detail_page(job):
         title, author, content = parse_wemp_detail_page(response)
     elif job.action == 23:
         title, author, content = parse_chuansongme_detail_page(response)
-    else:
-        logger.warning(f"未知的任务类型：`{job.action}")
+    elif job.action == 24:
+        title, author, content = parse_anyv_detail_page(response)
 
     if title is None:
         logger.warning(f"页面解析失败：`{title}`{job.url}")
@@ -197,7 +197,19 @@ def parse_chuansongme_detail_page(response):
     return None, None, None
 
 
-def save_feed_to_db(name, cname, qrcode, avatar, brief, url):
+def parse_anyv_detail_page(response):
+    title = response.selector.xpath("//div[@class='product-details']/div[@class='desc span_3_of_2']//h1/text()")\
+        .extract_first().strip()
+    author = ''
+    content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+
+    if title and content:
+        return title, author, content
+
+    return None, None, None
+
+
+def save_feed_to_db(name, cname, link, avatar, brief, url):
     site = Site.objects.filter(name=name)
 
     if site:
@@ -205,9 +217,13 @@ def save_feed_to_db(name, cname, qrcode, avatar, brief, url):
         return {"site": site[0].pk}
     else:
         # 新增站点
-        favicon = save_avatar(avatar, name, referer=url)
+        if avatar:
+            favicon = save_avatar(avatar, name, referer=url)
+        else:
+            favicon = get_random_emoji()
+
         try:
-            site = Site(name=name, cname=cname, link=qrcode, brief=brief, star=10, creator='wemp', copyright=20,
+            site = Site(name=name, cname=cname, link=link, brief=brief, star=10, creator='wemp', copyright=20,
                         rss=url, favicon=favicon)
             site.save()
 
@@ -292,6 +308,28 @@ def add_chuansongme_feed(url):
 
     if qrcode and name and avatar and cname and brief:
         return save_feed_to_db(name, cname, qrcode, avatar, brief, url)
+    else:
+        logger.warning(f'字段解析异常：`{url}')
+
+    return None
+
+
+def add_anyv_feed(url):
+    rsp = get_with_retry(url)
+
+    if rsp is None or not rsp.ok:
+        return None
+
+    response = HtmlResponse(url=url, body=rsp.text, encoding='utf8')
+
+    # 没有二维码和头像
+    avatar, link = '', url
+    brief = response.selector.xpath("//*[@class='user_group']/li[2]/text()").extract_first().strip().split(':', 1)[1]
+    cname = response.selector.xpath("//div[@class='subtitle']/h1/a/text()").extract_first()[:-4]
+    name = response.selector.xpath("//*[@class='user_group']/li/a/text()").extract_first()[6:]
+
+    if name and cname and brief:
+        return save_feed_to_db(name, cname, link, avatar, brief, url)
     else:
         logger.warning(f'字段解析异常：`{url}')
 
