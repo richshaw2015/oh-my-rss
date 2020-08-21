@@ -48,7 +48,7 @@ def handle_job_async(job_id, job_url, rsp, rsp_url):
     """
     处理入库任务
     """
-    job = Job.objects.get(pk=job_id, status=1)
+    job = Job.objects.get(pk=job_id, status__in=(1, 3))
 
     if job.url == job_url:
         job.rsp = rsp
