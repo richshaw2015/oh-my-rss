@@ -78,6 +78,7 @@ def parse_detail_page(job):
     if job.action == 20 or 'mp.weixin.qq.com' in host:
         try:
             if response.selector.xpath("//div[@class='weui-msg__text-area']").extract_first():
+                mark_crawled_url(job.url, job.rsp_url)
                 logger.info(f"内容违规或删除：`{job.url}")
                 return 6
         except:
@@ -93,12 +94,12 @@ def parse_detail_page(job):
     elif job.action == 24:
         title, author, content = parse_anyv_detail_page(response)
 
+    mark_crawled_url(job.url, job.rsp_url)
+
     if title is None:
         logger.warning(f"页面解析失败：`{title}`{job.url}")
         return 4
     else:
-        mark_crawled_url(job.url, job.rsp_url)
-
         try:
             article = Article(title=title, author=author, site=job.site, uindex=current_ts(), content=content,
                               src_url=job.url)
