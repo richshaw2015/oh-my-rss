@@ -33,8 +33,15 @@ def install(request):
 
 
 def debug(request):
-    for site in Site.objects.filter(status='active', creator='wemp', rss__contains='www.ershicimi.com'):
-        if site.cname in wemp_dict.keys():
-            logger.info(site.cname)
+    # from web.rssparser.mpwx import make_mpwx_job
+    # site = Site.objects.get(pk=2910)
+    # make_mpwx_job(site, 14)
+
+    sites = Site.objects.filter(status='active', creator='wemp', rss__contains='anyv.net', favicon__contains='emoji/')
+    for site in sites:
+        name = site.name + '.jpg'
+        if os.path.exists(os.path.join(settings.BASE_DIR, 'assets', 'avatar', name)):
+            site.favicon = f'/assets/avatar/{name}'
+            site.save()
 
     return JsonResponse({})

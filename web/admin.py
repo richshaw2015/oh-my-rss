@@ -75,7 +75,7 @@ class JobAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
     }
 
-    list_display = ['action', view_link, 'status', 'dvc_id', 'dvc_type', 'dvc_ip', 'giveback', 'site', 'ctime']
+    list_display = ['action', view_link, 'status', 'dvc_id', 'dvc_type', 'dvc_ip', 'giveback', 'site', 'ctime', 'mtime']
     search_fields = ['url', ]
     list_filter = ('status', 'action', 'dvc_id', 'dvc_type')
     list_editable = ['status', ]
