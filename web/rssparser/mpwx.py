@@ -160,51 +160,62 @@ def parse_mpwx_detail_page(response):
 
 
 def parse_ershicimi_detail_page(response):
-    title = response.selector.xpath('//h1[@class="article-title"]/text()').extract_first().strip()
-    author = response.selector.xpath('//div[@class="article-sub"]//a/text()').extract_first().strip()
-
     try:
-        content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
-    except:
-        content = response.selector.xpath('//div[@class="abstract"]').extract_first().strip()
+        title = response.selector.xpath('//h1[@class="article-title"]/text()').extract_first().strip()
+        author = response.selector.xpath('//div[@class="article-sub"]//a/text()').extract_first().strip()
 
-    if title and author and content:
-        return title, author, content
+        try:
+            content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+        except AttributeError:
+            content = response.selector.xpath('//div[@class="abstract"]').extract_first().strip()
+
+        if title and author and content:
+            return title, author, content
+    except:
+        pass
 
     return None, None, None
 
 
 def parse_wemp_detail_page(response):
-    title = response.selector.xpath('//h1[@class="post__title"]/text()').extract_first().strip()
-    author = response.selector.xpath('//a[@class="post__author"]/span/text()').extract_first().strip()
-    content = response.selector.xpath('//div[@id="content"]').extract_first().strip()
+    try:
+        title = response.selector.xpath('//h1[@class="post__title"]/text()').extract_first().strip()
+        author = response.selector.xpath('//a[@class="post__author"]/span/text()').extract_first().strip()
+        content = response.selector.xpath('//div[@id="content"]').extract_first().strip()
 
-    if title and author and content:
-        return title, author, content
+        if title and author and content:
+            return title, author, content
+    except:
+        pass
 
     return None, None, None
 
 
 def parse_chuansongme_detail_page(response):
-    title = response.selector.xpath('//h2[@class="rich_media_title"]/text()').extract_first().strip()
-    author = response.selector.xpath(
-        "//*[@id='meta_content']/span[@class='rich_media_meta rich_media_meta_text']/text()").extract_first().strip()
-    content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+    try:
+        title = response.selector.xpath('//h2[@class="rich_media_title"]/text()').extract_first().strip()
+        author = response.selector.xpath(
+            "//*[@id='meta_content']/span[@class='rich_media_meta rich_media_meta_text']/text()").extract_first().strip()
+        content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
 
-    if title and author and content:
-        return title, author, content
+        if title and author and content:
+            return title, author, content
+    except:
+        pass
 
     return None, None, None
 
 
 def parse_anyv_detail_page(response):
-    title = response.selector.xpath("//div[@class='product-details']/div[@class='desc span_3_of_2']//h1/text()")\
-        .extract_first().strip()
-    author = ''
-    content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
+    try:
+        title = response.selector.xpath("//div[@class='product-details']/div[@class='desc span_3_of_2']//h1/text()")\
+            .extract_first().strip()
+        content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
 
-    if title and content:
-        return title, author, content
+        if title and content:
+            return title, '', content
+    except:
+        pass
 
     return None, None, None
 
