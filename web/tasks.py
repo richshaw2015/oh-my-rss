@@ -102,26 +102,27 @@ def update_all_mpwx_cron():
     更新微信公众号，每天 1 次；公众号的全部都会更新，且评级最低 10
     """
     # 暂时只更新瓦斯阅读的，其他需要分布式环境搭建好
-    sites = Site.objects.filter(status='active', creator='wemp', rss__contains=settings.QNMLGB_HOST).order_by('-star')
+    sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
     for site in sites:
         host, action = get_host_name(site.rss), None
 
-        if settings.ERSHICIMI_HOST in host:
-            action = 11
-        elif settings.QNMLGB_HOST in host:
-            action = 10
-        elif settings.WEMP_HOST in host:
-            action = 12
-        elif settings.CHUANSONGME_HOST in host:
-            action = 13
-        elif settings.ANYV_HOST in host:
-            action = 14
-        else:
-            logger.warning(f"未知的公众号域名：`{host}`{site.cname}")
+        if settings.QNMLGB_HOST in host or settings.ANYV_HOST in host:
+            if settings.ERSHICIMI_HOST in host:
+                action = 11
+            elif settings.QNMLGB_HOST in host:
+                action = 10
+            elif settings.WEMP_HOST in host:
+                action = 12
+            elif settings.CHUANSONGME_HOST in host:
+                action = 13
+            elif settings.ANYV_HOST in host:
+                action = 14
+            else:
+                logger.warning(f"未知的公众号域名：`{host}`{site.cname}")
 
-        if action is not None:
-            make_mpwx_job(site, action)
+            if action is not None:
+                make_mpwx_job(site, action)
 
     return True
 
