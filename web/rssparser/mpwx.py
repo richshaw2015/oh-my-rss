@@ -327,7 +327,7 @@ def add_anyv_feed(url):
     brief = response.selector.xpath("//*[@class='user_group']/li[2]/text()"
                                     ).extract_first().strip().split(':', 1)[1].split(', 微信搜索')[0]
     cname = response.selector.xpath("//div[@class='subtitle']/h1/a/text()").extract_first().strip()[:-4]
-    name = response.selector.xpath("//*[@class='user_group']/li/a/text()").extract_first().strip()[6:]
+    name = response.selector.xpath("//*[@class='user_group']/li/a/text()").extract_first().strip().split(':')[-1]
 
     if name and cname and brief:
         return save_feed_to_db(name, cname, link, avatar, brief, url)
