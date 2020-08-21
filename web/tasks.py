@@ -382,10 +382,10 @@ def build_whoosh_index_cron():
 
 
 def clear_expired_job_cron():
-    onehour = datetime.now() - timedelta(hours=1)
+    timeout_ts = datetime.now() - timedelta(hours=6)
 
     # 过期任务状态变更，最多执行 1 小时
-    affected = Job.objects.filter(status=1, mtime__lt=onehour).update(status=3)
+    affected = Job.objects.filter(status=1, mtime__lt=timeout_ts).update(status=3)
 
     if affected > 0:
         logger.warning(f"超时任务数量：`{affected}")
