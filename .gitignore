@@ -22,4 +22,5 @@ venv
 node_modules/
 dist/
 dat/
+dat2/
 whoosh/

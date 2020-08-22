@@ -155,6 +155,7 @@ STATICFILES_DIRS = [
 ]
 
 HTML_DATA_DIR = os.path.join(BASE_DIR, "dat")
+HTML_DATA2_DIR = os.path.join(BASE_DIR, "dat2")
 
 # redis service
 REDIS_HOST = '127.0.0.1'

@@ -22,6 +22,7 @@ import re
 from web.stopwords import stopwords
 import jieba
 from whoosh.fields import Schema, TEXT, ID
+from feed.utils import mkdir
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -603,6 +604,29 @@ def write_dat_file(uindex, content):
     写入到文件系统；写入成功或已经存在返回 True
     """
     file = os.path.join(settings.HTML_DATA_DIR, str(uindex))
+
+    if os.path.exists(file):
+        return True
+
+    try:
+        if content.strip():
+            with open(file, 'w', encoding='UTF8') as f:
+                f.write(content)
+            return True
+    except:
+        logger.warning(f"写入文件失败：`{uindex}")
+
+    return False
+
+
+def write_dat2_file(uindex, site_id, content):
+    """
+    写入到文件系统；写入成功或已经存在返回 True
+    """
+    new_dir = os.path.join(settings.HTML_DATA2_DIR, str(site_id))
+    mkdir(new_dir)
+
+    file = os.path.join(new_dir, f"{uindex}.html")
 
     if os.path.exists(file):
         return True
