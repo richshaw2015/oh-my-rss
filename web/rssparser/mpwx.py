@@ -177,6 +177,13 @@ def parse_ershicimi_detail_page(response):
         if title and author and content:
             return title, author, content
     except:
+        logger.warning(f"数据解析异常：`{response.url}")
+
+    try:
+        name = response.selector.xpath("//meta[@name='keywords']/@content").extract_first().split(',')[1]
+        qrcode = response.selector.xpath("//img[@class='qr-code']/@src").extract_first()
+        logger.info(f"二十次幂数据：`{qrcode}`{name}")
+    except:
         pass
 
     return None, None, None
@@ -191,7 +198,7 @@ def parse_wemp_detail_page(response):
         if title and author and content:
             return title, author, content
     except:
-        pass
+        logger.warning(f"数据解析异常：`{response.url}")
 
     return None, None, None
 
@@ -206,7 +213,7 @@ def parse_chuansongme_detail_page(response):
         if title and author and content:
             return title, author, content
     except:
-        pass
+        logger.warning(f"数据解析异常：`{response.url}")
 
     return None, None, None
 
@@ -220,7 +227,7 @@ def parse_anyv_detail_page(response):
         if title and content:
             return title, '', content
     except:
-        pass
+        logger.warning(f"数据解析异常：`{response.url}")
 
     return None, None, None
 
