@@ -3,7 +3,7 @@ import django
 from django.urls import resolve
 from web.models import *
 from web.utils import get_hash_name, generate_rss_avatar, set_updated_site, get_with_retry, \
-    get_short_host_name
+    get_short_host_name, write_dat2_file
 import logging
 import feedparser
 import urllib
@@ -153,8 +153,12 @@ def atom_spider(site):
             logger.warning(f'修复图片路径异常：`{title}`{link}')
 
         try:
-            article = Article(site=site, title=title, author=author, src_url=link, uindex=current_ts(), content=value)
+            uindex = current_ts()
+
+            article = Article(site=site, title=title, author=author, src_url=link, uindex=uindex, content='')
             article.save()
+
+            write_dat2_file(uindex, site.id, value)
 
             mark_crawled_url(link)
         except django.db.utils.IntegrityError:

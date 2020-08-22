@@ -120,17 +120,22 @@ class DomPipeline(object):
 class InsertDBPipeline(object):
 
     def process_item(self, item, spider):
+        from web.utils import write_dat2_file
+
         site = Site.objects.get(name=item['name'])
 
         if site.status == 'active':
             try:
-                article = Article(site=site, title=item['title'], uindex=current_ts(), content=item['content'],
-                                  remark='', src_url=item['url'], author=item.get('author'))
+                uindex = current_ts()
+
+                article = Article(site=site, title=item['title'], uindex=uindex, content='', src_url=item['url'],
+                                  author=item.get('author'))
                 article.save()
+
+                write_dat2_file(uindex, site.id, item['content'])
 
                 spider.logger.info(f"Insert to DB:`{item['title']}`{item['url']}`{item['req_url']}")
 
-                # mark status
                 mark_crawled_url(item['url'], item['req_url'])
             except django.db.utils.IntegrityError:
                 # repeat item

@@ -35,7 +35,7 @@ def article(request, pid):
         set_user_read_article(user.oauth_id, pid)
 
     # 判断是否命中敏感词
-    if is_sensitive_content(pid, article.content):
+    if is_sensitive_content(pid, article.site_id):
         user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
 
         if user_agent.is_mobile or user_agent.is_bot:

@@ -2,6 +2,7 @@ from django.contrib.syndication.views import Feed
 from django.urls import reverse
 
 from .models import Site, Article
+from web.utils import get_content
 
 
 class SiteFeed(Feed):
@@ -38,7 +39,7 @@ class SiteFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        return item.content
+        return get_content(item.uindex, item.site_id)
 
     def item_link(self, item):
         return item.src_url

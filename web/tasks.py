@@ -7,15 +7,13 @@ from django.utils.timezone import timedelta
 from feed.utils import current_ts
 from web.rssparser.atom import atom_spider
 from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
-from web.utils import is_active_rss, get_user_subscribe_feeds, set_feed_ranking_dict, write_dat_file, \
-    is_updated_site, get_host_name, is_indexed, set_job_stat, set_job_dvcs, \
+from web.utils import is_active_rss, get_user_subscribe_feeds, set_feed_ranking_dict, get_content, \
+    is_updated_site, get_host_name, is_indexed, set_job_stat, set_job_dvcs, del_dat2_file, \
     reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, get_recent_articles, \
     get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed
-from web.stopwords import stopwords
 from bs4 import BeautifulSoup
 from collections import Counter
 from django.conf import settings
-import jieba
 import json
 import os
 from web.sql import JOB_STAT_SQL
@@ -129,63 +127,21 @@ def update_all_mpwx_cron():
 
 def archive_article_cron():
     """
-    归档并清理文章，每天一次
+    归档并清理文章
     """
-    # (, 10)，直接删除
-    Article.objects.filter(site__star__lt=10, is_recent=False).delete()
-
-    # [10, )，转移存储到磁盘
-    articles = Article.objects.filter(site__star__gte=10, is_recent=False).order_by('-id').iterator()
-
+    # (, 10)，没有收藏过把文件也删除了
+    articles = Article.objects.filter(site__star__lt=10, is_recent=False).iterator()
     for article in articles:
-        if not article.content.strip():
-            break
+        if not UserArticle.objects.filter(uindex=article.uindex).exists():
+            del_dat2_file(article.uindex, article.site_id)
 
-        if write_dat_file(article.uindex, article.content):
-            article.content = ' '
-            article.save()
+        article.delete()
 
-    # 清理数据
-    lastmonth = datetime.now() - timedelta(days=30)
-    Job.objects.filter(ctime__lt=lastmonth).delete()
+    # TODO 每个源保留最近 1000 条文章
 
-    return True
-
-
-def cal_all_article_tag_cron():
-    """
-    设置最近一周的文章标识、统计词频；每隔 ？ 分钟 TODO 废弃了
-    """
-    # 设置最近一周文章标识
-    lastweek = datetime.now() - timedelta(days=7)
-
-    Article.objects.filter(is_recent=True, ctime__lte=lastweek).update(is_recent=False)
-
-    # 扫描空 tag 然后统计词频
-    articles = Article.objects.filter(is_recent=True, status='active', site__star__gte=10, tags='').order_by('-id')
-
-    for article in articles:
-        content_soup = BeautifulSoup(article.content, 'html.parser')
-        content_text = content_soup.get_text() + 3 * article.title
-        seg_list = jieba.cut(content_text)
-        words_list = []
-
-        for seg in seg_list:
-            seg = seg.strip().lower()
-
-            if len(seg) > 1 and seg not in stopwords:
-                words_list.append(seg)
-
-        tags_list = dict(Counter(words_list).most_common(10))
-
-        # 过滤只出现一次的
-        tags_list = {k: v for k, v in tags_list.items() if v >= 2}
-
-        if tags_list:
-            logger.info(f'{article.uindex}`{tags_list}')
-
-            article.tags = json.dumps(tags_list)
-            article.save()
+    # 清理 Job 数据
+    deat_ts = datetime.now() - timedelta(days=14)
+    Job.objects.filter(ctime__lt=deat_ts).delete()
 
     return True
 
@@ -351,7 +307,9 @@ def build_whoosh_index_cron():
         except:
             continue
 
-        if article.content.strip():
+        content = get_content(uindex, article.site_id)
+
+        if content:
             title = split_cn_words(article.title, join=True)
             author = article.author or ''
 

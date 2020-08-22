@@ -8,7 +8,7 @@ import logging
 from functools import lru_cache
 import re
 import time
-from web.utils import R, get_content_from_dat, is_user_stared, get_user_site_cname, get_user_site_author
+from web.utils import R, get_content, is_user_stared, get_user_site_cname, get_user_site_author
 
 register = template.Library()
 logger = logging.getLogger(__name__)
@@ -175,11 +175,8 @@ def to_clean_brief(brief):
 
 @register.filter
 @lru_cache(maxsize=1024)
-def to_article_content(uindex, content):
-    if content.strip():
-        return content
-    else:
-        return get_content_from_dat(uindex)
+def to_article_content(uindex, site_id):
+    return get_content(uindex, site_id)
 
 
 @register.filter

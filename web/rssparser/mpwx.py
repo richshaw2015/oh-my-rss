@@ -2,7 +2,7 @@
 from web.models import *
 import logging
 from scrapy.http import HtmlResponse
-from web.utils import save_avatar, get_with_retry, get_host_name, get_random_emoji
+from web.utils import save_avatar, get_with_retry, get_host_name, get_random_emoji, write_dat2_file
 from feed.utils import current_ts, is_crawled_url, mark_crawled_url
 import urllib
 from bs4 import BeautifulSoup
@@ -101,9 +101,13 @@ def parse_detail_page(job):
         return 4
     else:
         try:
-            article = Article(title=title, author=author, site=job.site, uindex=current_ts(), content=content,
+            uindex = current_ts()
+
+            article = Article(title=title, author=author, site=job.site, uindex=uindex, content='',
                               src_url=job.url)
             article.save()
+
+            write_dat2_file(uindex, job.site_id, content)
         except:
             logger.warning(f"插入文章异常：`{title}`{job.site}`{job.url}")
             return 7

@@ -4,7 +4,7 @@ import django
 from web.models import *
 from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
-    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, write_dat_file, \
+    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, \
     get_recent_site_articles, set_user_site_cname, set_user_site_author
 from web.views.views_html import get_all_issues
 from web.verify import verify_request
@@ -294,9 +294,6 @@ def user_star_article(request):
             except django.db.utils.IntegrityError:
                 logger.warning(f"已经收藏过了：`{user.oauth_id}`{uindex}")
                 return JsonResponse({})
-
-            # 收藏后的文章写入文件，防止丢失
-            write_dat_file(uindex, article.content)
 
             # 缓存标记
             set_user_stared(user.oauth_id, uindex)

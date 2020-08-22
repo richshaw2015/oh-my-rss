@@ -599,22 +599,13 @@ def is_user_stared(oauth_id, uindex):
     return R.get(key) == '1'
 
 
-def write_dat_file(uindex, content):
-    """
-    写入到文件系统；写入成功或已经存在返回 True
-    """
-    file = os.path.join(settings.HTML_DATA_DIR, str(uindex))
-
-    if os.path.exists(file):
-        return True
-
+def del_dat2_file(uindex, site_id):
+    file = os.path.join(settings.HTML_DATA2_DIR, str(site_id), f"{uindex}.html")
     try:
-        if content.strip():
-            with open(file, 'w', encoding='UTF8') as f:
-                f.write(content)
-            return True
+        os.remove(file)
+        return True
     except:
-        logger.warning(f"写入文件失败：`{uindex}")
+        pass
 
     return False
 
@@ -642,11 +633,14 @@ def write_dat2_file(uindex, site_id, content):
     return False
 
 
-def get_content_from_dat(uindex):
-    file = os.path.join(settings.HTML_DATA_DIR, str(uindex))
+@lru_cache(maxsize=2048)
+def get_content(uindex, site_id):
+    file = os.path.join(os.path.join(settings.HTML_DATA2_DIR, str(site_id)), f"{uindex}.html")
 
     if os.path.exists(file):
         return open(file, encoding='UTF8').read()
+    else:
+        logger.warning(f"文件丢失：`{file}")
 
     return ''
 
@@ -727,14 +721,12 @@ def generate_rss_avatar(link, feed=''):
     return avatar
 
 
-def is_sensitive_content(uindex, content):
+@lru_cache(maxsize=1024)
+def is_sensitive_content(uindex, site_id):
     """
     文章是否命中国内的敏感词
     """
-    is_sensitive = False
-
-    if not content.strip():
-        content = get_content_from_dat(uindex)
+    is_sensitive, content = False, get_content(uindex, site_id)
 
     for word in settings.SENSITIVE_WORDS:
         if word in content:
