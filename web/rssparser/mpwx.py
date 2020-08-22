@@ -7,6 +7,7 @@ from feed.utils import current_ts, is_crawled_url, mark_crawled_url
 import urllib
 from bs4 import BeautifulSoup
 import feedparser
+from django.conf import settings
 import re
 
 logger = logging.getLogger(__name__)
@@ -75,7 +76,7 @@ def parse_detail_page(job):
     # 判断跳转后的域名
     host = get_host_name(job.rsp_url)
 
-    if job.action == 20 or 'mp.weixin.qq.com' in host:
+    if job.action == 20 or settings.MPWX_HOST in host:
         try:
             if response.selector.xpath("//div[@class='weui-msg__text-area']").extract_first():
                 mark_crawled_url(job.url, job.rsp_url)
@@ -86,7 +87,7 @@ def parse_detail_page(job):
 
         title, author, content = parse_mpwx_detail_page(response)
 
-        if job.action != 20 and 'mp.weixin.qq.com' in host:
+        if job.action != 20 and settings.MPWX_HOST in host:
             logger.info(f"跳转到微信原文：`{job.url}`{job.rsp_url}`{title}")
 
     elif job.action == 21:
@@ -182,13 +183,6 @@ def parse_ershicimi_detail_page(response):
             return title, author, content
     except:
         logger.warning(f"数据解析异常：`{response.url}")
-
-    try:
-        name = response.selector.xpath("//meta[@name='keywords']/@content").extract_first().split(',')[1]
-        qrcode = response.selector.xpath("//img[@class='qr-code']/@src").extract_first()
-        logger.info(f"二十次幂数据：`{qrcode}`{name}")
-    except:
-        pass
 
     return None, None, None
 

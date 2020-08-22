@@ -22,6 +22,8 @@ WEMP_HOST = 'wemp.app'
 CHUANSONGME_HOST = 'chuansongme.com'
 ANYV_HOST = 'anyv.net'
 
+MPWX_HOST = 'mp.weixin.qq.com'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
