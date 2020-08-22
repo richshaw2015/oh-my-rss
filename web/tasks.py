@@ -105,7 +105,7 @@ def update_all_mpwx_cron():
     for site in sites:
         host, action = get_host_name(site.rss), None
 
-        if settings.QNMLGB_HOST in host or settings.ANYV_HOST in host:
+        if settings.QNMLGB_HOST in host or settings.ANYV_HOST in host or settings.ERSHICIMI_HOST in host:
             if settings.ERSHICIMI_HOST in host:
                 action = 11
             elif settings.QNMLGB_HOST in host:
