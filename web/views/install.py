@@ -1,7 +1,9 @@
 from django.http import JsonResponse
 from web.utils import *
+from feed.utils import mkdir
 import logging
 from web.models import *
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +29,33 @@ def install(request):
     """
     部署后操作
     """
-    from web.tasks import build_whoosh_index_cron
-    build_whoosh_index_cron()
+    articles = Article.objects.filter(status='active').iterator()
+    for article in articles:
+        mkdir(os.path.join(settings.HTML_DATA2_DIR, str(article.site_id)))
+        new_file = os.path.join(settings.HTML_DATA2_DIR, str(article.site_id), f"{article.uindex}.html")
+        old_file = os.path.join(settings.HTML_DATA_DIR, str(article.uindex))
+
+        # 不存在时才新建
+        if not os.path.exists(new_file):
+            if os.path.exists(old_file):
+                shutil.copyfile(old_file, new_file)
+            elif article.content.strip():
+                write_dat2_file(article.uindex, article.site_id, article.content)
+            else:
+                logger.warning(f"文件同步失败：`{article.uindex}")
+    # 收藏文章
+    articles = UserArticle.objects.all().iterator()
+    for article in articles:
+        mkdir(os.path.join(settings.HTML_DATA2_DIR, str(article.site_id)))
+        new_file = os.path.join(settings.HTML_DATA2_DIR, str(article.site_id), f"{article.uindex}.html")
+        old_file = os.path.join(settings.HTML_DATA_DIR, str(article.uindex))
+
+        # 不存在时才新建
+        if not os.path.exists(new_file):
+            if os.path.exists(old_file):
+                shutil.copyfile(old_file, new_file)
+            else:
+                logger.warning(f"旧文件查找失败：`{article.uindex}")
     return JsonResponse({})
 
 
@@ -37,11 +64,7 @@ def debug(request):
     # site = Site.objects.get(pk=2910)
     # make_mpwx_job(site, 14)
 
-    sites = Site.objects.filter(status='active', creator='wemp', rss__contains='anyv.net', favicon__contains='emoji/')
-    for site in sites:
-        name = site.name + '.jpg'
-        if os.path.exists(os.path.join(settings.BASE_DIR, 'assets', 'avatar', name)):
-            site.favicon = f'/assets/avatar/{name}'
-            site.save()
+    from web.tasks import build_whoosh_index_cron
+    build_whoosh_index_cron()
 
     return JsonResponse({})

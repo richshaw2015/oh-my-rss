@@ -85,6 +85,10 @@ def parse_detail_page(job):
             pass
 
         title, author, content = parse_mpwx_detail_page(response)
+
+        if job.action != 20 and 'mp.weixin.qq.com' in host:
+            logger.info(f"跳转到微信原文：`{job.url}`{job.rsp_url}`{title}")
+
     elif job.action == 21:
         title, author, content = parse_ershicimi_detail_page(response)
     elif job.action == 22:
