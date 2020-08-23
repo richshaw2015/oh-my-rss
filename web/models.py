@@ -49,7 +49,6 @@ class Article(models.Model):
     title = models.CharField('标题', max_length=200)
     author = models.CharField('作者', max_length=100, null=True, blank=True)
     uindex = models.IntegerField('唯一地址', unique=True, db_index=True)
-    content = models.TextField('内容')
     src_url = models.CharField('原始链接', max_length=1024)
     status = models.CharField('状态', max_length=20, choices=(
         ('active', '激活'),
@@ -60,8 +59,6 @@ class Article(models.Model):
         (True, '最近文章'),
         (False, '历史文章'),
     ), default=True, db_index=True)
-
-    tags = models.TextField('词频', default='', null=True, blank=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
@@ -182,4 +179,3 @@ class Job(models.Model):
     ctime = models.DateTimeField('创建时间', auto_now_add=True)
     mtime = models.DateTimeField('更新时间', auto_now=True)
     remark = models.TextField('备注', default='', null=True, blank=True)
-

@@ -108,8 +108,7 @@ def parse_detail_page(job):
         try:
             uindex = current_ts()
 
-            article = Article(title=title, author=author, site=job.site, uindex=uindex, content='',
-                              src_url=job.url)
+            article = Article(title=title, author=author, site=job.site, uindex=uindex, src_url=job.url)
             article.save()
 
             write_dat2_file(uindex, job.site_id, content)

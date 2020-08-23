@@ -154,7 +154,7 @@ def atom_spider(site):
         try:
             uindex = current_ts()
 
-            article = Article(site=site, title=title, author=author, src_url=link, uindex=uindex, content='')
+            article = Article(site=site, title=title, author=author, src_url=link, uindex=uindex)
             article.save()
 
             write_dat2_file(uindex, site.id, value)

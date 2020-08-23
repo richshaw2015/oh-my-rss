@@ -313,7 +313,7 @@ def build_whoosh_index_cron():
             title = split_cn_words(article.title, join=True)
             author = article.author or ''
 
-            content_soup = BeautifulSoup(article.content, 'html.parser')
+            content_soup = BeautifulSoup(content, 'html.parser')
             content = split_cn_words(content_soup.get_text(), join=True)
 
             logger.info(f"分词结果：`{uindex}`{title}")

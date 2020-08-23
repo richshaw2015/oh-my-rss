@@ -37,10 +37,10 @@ def debug(request):
     # make_mpwx_job(site, 14)
     import pickle
 
-    R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_FEED_DB,
-                    decode_responses=True)
-    CRAWL_PREFIX = 'CRAWL/*'
-    for key in R.keys(CRAWL_PREFIX):
-        R.delete(key)
+    # R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_FEED_DB,
+    #                 decode_responses=True)
+    # CRAWL_PREFIX = 'CRAWL/*'
+    # for key in R.keys(CRAWL_PREFIX):
+    #     R.delete(key)
 
     return JsonResponse({})

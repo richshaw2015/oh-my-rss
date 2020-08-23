@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import redis
-from ohmyrss.settings import REDIS_FEED_DB, REDIS_HOST, REDIS_PORT, CRAWL_FLAG_DIR
+from ohmyrss.settings import CRAWL_FLAG_DIR
 import time
 import urllib
 import hashlib
-
-
-R = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FEED_DB, decode_responses=True)
-CRAWL_PREFIX = 'CRAWL/'
 
 
 def mkdir(directory):

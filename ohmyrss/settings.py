@@ -165,8 +165,6 @@ CRAWL_FLAG_DIR = os.path.join(HTML_DATA2_DIR, "crawl")
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
 
-# for scrapy use db
-REDIS_FEED_DB = 0
 # for web use db
 REDIS_WEB_DB = 1
 # for async job db

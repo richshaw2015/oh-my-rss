@@ -128,7 +128,7 @@ class InsertDBPipeline(object):
             try:
                 uindex = current_ts()
 
-                article = Article(site=site, title=item['title'], uindex=uindex, content='', src_url=item['url'],
+                article = Article(site=site, title=item['title'], uindex=uindex, src_url=item['url'],
                                   author=item.get('author'))
                 article.save()
 
