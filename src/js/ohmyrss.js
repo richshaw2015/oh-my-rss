@@ -361,7 +361,7 @@ function setToreadInfo(notify=false) {
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 
 // 缓存版本号，每次上线需要更新
-const cacheVer = '28';
+const cacheVer = '29';
 
 function setLruCache(key, value) {
     if (value.length < 100 * 1024 && value.length > 512) {
