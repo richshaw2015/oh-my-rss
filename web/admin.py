@@ -25,7 +25,7 @@ class SiteAdmin(admin.ModelAdmin):
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'status', 'ctime')
-    search_fields = ('title', 'content', 'src_url', 'uindex', 'remark', 'author')
+    search_fields = ('title', 'src_url', 'uindex', 'remark', 'author')
     list_filter = ('status', 'is_recent')
     list_per_page = 50
 
