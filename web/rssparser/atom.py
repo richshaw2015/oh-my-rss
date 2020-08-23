@@ -2,15 +2,14 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import get_hash_name, generate_rss_avatar, set_updated_site, get_with_retry, \
-    get_short_host_name, write_dat2_file
+from web.utils import generate_rss_avatar, set_updated_site, get_with_retry, get_short_host_name, write_dat2_file
 import logging
 import feedparser
 import urllib
 from bs4 import BeautifulSoup
 from io import BytesIO
 from django.conf import settings
-from feed.utils import current_ts, mark_crawled_url, is_crawled_url
+from feed.utils import current_ts, mark_crawled_url, is_crawled_url, get_hash_name
 
 logger = logging.getLogger(__name__)
 

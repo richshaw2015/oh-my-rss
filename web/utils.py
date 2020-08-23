@@ -22,7 +22,7 @@ import re
 from web.stopwords import stopwords
 import jieba
 from whoosh.fields import Schema, TEXT, ID
-from feed.utils import mkdir
+from feed.utils import mkdir, get_hash_name
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -163,13 +163,6 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
-
-
-def get_hash_name(feed_id):
-    """
-    用户提交的订阅源，根据hash值生成唯一标识
-    """
-    return hashlib.md5(feed_id.encode('utf8')).hexdigest()
 
 
 def current_day():

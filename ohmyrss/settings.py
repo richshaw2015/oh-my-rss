@@ -159,6 +159,8 @@ STATICFILES_DIRS = [
 HTML_DATA_DIR = os.path.join(BASE_DIR, "dat")
 HTML_DATA2_DIR = os.path.join(BASE_DIR, "dat2")
 
+CRAWL_FLAG_DIR = os.path.join(HTML_DATA2_DIR, "crawl")
+
 # redis service
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
