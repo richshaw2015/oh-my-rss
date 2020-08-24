@@ -337,27 +337,6 @@ def get_user_subscribe_feeds(oauth_id, from_user=True, user_level=1):
     return [int(i) for i in sub_feeds]
 
 
-def set_proxy_ips(proxies):
-    R.delete(settings.REDIS_PROXY_KEY)
-    return R.sadd(settings.REDIS_PROXY_KEY, *proxies)
-
-
-def del_proxy_ip(proxy):
-    return R.srem(settings.REDIS_PROXY_KEY, proxy)
-
-
-def get_one_proxy_ip():
-    """
-    返回一个 IP，同时返回 IP 池数量
-    """
-    proxies = tuple(R.smembers(settings.REDIS_PROXY_KEY))
-
-    if len(proxies) == 0:
-        return None, 0
-    else:
-        return random.choice(proxies), len(proxies)
-
-
 def set_user_read_article(oauth_id, uindex):
     """
     已登录用户同步已读文章状态

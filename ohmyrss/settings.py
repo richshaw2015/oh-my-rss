@@ -35,7 +35,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    '192.168.9.231',
+    '192.168.31.204',
     'localhost',
     'ohmyrss.com',
     'www.ohmyrss.com',
@@ -156,7 +156,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
-HTML_DATA_DIR = os.path.join(BASE_DIR, "dat")
 HTML_DATA2_DIR = os.path.join(BASE_DIR, "dat2")
 
 CRAWL_FLAG_DIR = os.path.join(HTML_DATA2_DIR, "crawl")
@@ -219,8 +218,6 @@ REDIS_USER_VISIT_DAY_KEY = 'UVD/%s/%s'
 REDIS_USER_STAR_KEY = 'STAR2/%s/%s'
 
 REDIS_UPDATED_SITE_KEY = 'UPDATED/%s'
-
-REDIS_PROXY_KEY = 'PROXY'
 
 # db index cache
 REDIS_ARTICLES_KEY = 'ARTICLES'

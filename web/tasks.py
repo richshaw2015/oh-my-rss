@@ -46,7 +46,10 @@ def handle_job_async(job_id, job_url, rsp, rsp_url):
     """
     处理入库任务
     """
-    job = Job.objects.get(pk=job_id, status__in=(1, 3))
+    try:
+        job = Job.objects.get(pk=job_id, status__in=(1, 3))
+    except:
+        return False
 
     if job.url == job_url:
         job.rsp = rsp
@@ -64,11 +67,11 @@ def handle_job_async(job_id, job_url, rsp, rsp_url):
         if status == 2:
             job.rsp = ''
         job.save()
+        return True
     else:
         logger.warning(f"任务不匹配：`{job.id}`{job.url}`{job_url}")
-        return False
 
-    return True
+    return False
 
 
 def update_all_atom_cron():

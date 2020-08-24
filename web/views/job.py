@@ -73,6 +73,8 @@ def finish_job(request):
         job_id, job_url, rsp, rsp_url = request.POST['id'], request.POST['url'], request.POST['rsp'], \
                                         request.POST['rsp_url']
 
-    django_rq.enqueue(handle_job_async, job_id, job_url, rsp, rsp_url)
+    # 最多保存 6 小时
+    django_rq.enqueue(handle_job_async, job_id, job_url, rsp, rsp_url, result_ttl=10, ttl=6*3600, job_timeout=300,
+                      failure_ttl=10*86400)
 
     return JsonResponse({})
