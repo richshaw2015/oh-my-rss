@@ -112,7 +112,7 @@ def in_site_search(request):
 
         rel_sites = Site.objects.filter(status='active', pk__in=sites).order_by('-star')
 
-    if scope in ('article', 'all'):
+    if scope == 'article':
         # 查找相关文章
         idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
         qp = MultifieldParser(['title', 'author', 'content'], schema=whoosh_article_schema)
