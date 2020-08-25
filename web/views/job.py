@@ -34,7 +34,7 @@ def get_one_job(request):
     job.dvc_ip = dvc_ip
 
     job.save()
-    sleep = settings.ROBOT_DVC_CNF[dvc_id] if settings.ROBOT_DVC_CNF.get(dvc_id) else (300, 1800)
+    sleep = settings.ROBOT_DVC_CNF[dvc_id] if settings.ROBOT_DVC_CNF.get(dvc_id) else (60, 600)
 
     return JsonResponse({"id": job.id, "url": job.url, "sleep": sleep})
 
