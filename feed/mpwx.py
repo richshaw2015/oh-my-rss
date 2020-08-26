@@ -24,11 +24,12 @@ API_URL = 'https://ohmyrss.com'
 
 DVC_ID = platform.node()
 DVC_TYPE = 'robot'
+DVC_VER = '1.0.1'
 DVC_EXT = {
     'pf': platform.platform(),
     'sys': platform.system(),
     'sysver': platform.version(),
-    'ver': '1.2',
+    'ver': DVC_VER,
     'lat': '',
     'lon': '',
     'model': '',
@@ -62,7 +63,8 @@ def get_a_job():
             "dvc_id": DVC_ID,
             "dvc_type": DVC_TYPE,
             "sign": md5(f"{DVC_ID}{DVC_TYPE}{current_day()}"),
-            "dvc_ext": json.dumps(DVC_EXT)
+            "dvc_ext": json.dumps(DVC_EXT),
+            "ver": DVC_VER,
         }, timeout=30)
 
         if rsp.ok:
@@ -152,6 +154,9 @@ while True:
         # 开始处理，失败则交还
         if not handle_job(job):
             giveback_job(job)
+            # 额外 sleep，等待任务被其他端认领
+            time.sleep(busy_sleep)
         else:
             finish_job(job)
-            time.sleep(busy_sleep)
+
+        time.sleep(busy_sleep)
