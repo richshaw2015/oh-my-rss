@@ -6,6 +6,7 @@ import datetime as dt
 from django.utils.timezone import timedelta
 from feed.utils import current_ts
 from web.rssparser.atom import atom_spider
+from web.rssparser.podcast import podcast_spider
 from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
 from web.utils import is_active_rss, get_user_subscribe_feeds, set_feed_ranking_dict, get_content, \
     is_updated_site, get_host_name, is_indexed, set_job_stat, set_job_dvcs, del_dat2_file, \
@@ -76,7 +77,7 @@ def handle_job_async(job_id, job_url, rsp, rsp_url):
 
 def update_all_atom_cron():
     """
-    定时更新所有源，1～2 小时的周期
+    定时更新所有普通源
     """
     now, sites = datetime.now(), []
 
@@ -98,11 +99,21 @@ def update_all_atom_cron():
     return True
 
 
+def update_all_podcast_cron():
+    """
+    更新播客
+    """
+    sites = Site.objects.filter(status='active', creator='podcast').order_by('-star')
+    for site in sites:
+        podcast_spider(site)
+
+    return True
+
+
 def update_all_mpwx_cron():
     """
-    更新微信公众号，每天 1 次；公众号的全部都会更新，且评级最低 10
+    更新微信公众号
     """
-    # 暂时只更新瓦斯阅读的，其他需要分布式环境搭建好
     sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
 
     for site in sites:

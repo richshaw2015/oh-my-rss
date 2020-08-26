@@ -46,6 +46,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'django_crontab',
     'django_rq',
+    'django_admin_shell',
     'web.apps.WebConfig',
 
     'django.contrib.admin',
@@ -140,6 +141,7 @@ CRONJOBS = [
    ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
    ('5 */6 * * *', 'web.tasks.clear_expired_job_cron'),
    ('20 0,12 * * *', 'web.tasks.update_all_mpwx_cron'),
+   ('20 3 * * *', 'web.tasks.update_all_podcast_cron'),
    ('11 4 * * *', 'web.tasks.archive_article_cron'),
    ('31 4 * * *', 'web.tasks.build_whoosh_index_cron'),
    ('1 3 * * *', 'web.tasks.cal_site_ranking_cron'),
