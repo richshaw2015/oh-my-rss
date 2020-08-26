@@ -27,8 +27,9 @@ class Site(models.Model):
     rss = models.CharField('RSS地址', max_length=1024, null=True, blank=True)
     creator = models.CharField('创建人', choices=(
         ('system', '系统录入'),
-        ('user', '用户提交'),
-        ('wemp', '微信公众号'),
+        ('user', 'RSS'),
+        ('podcast', '播客'),
+        ('wemp', '公众号'),
     ), max_length=20, null=True, blank=True, default='system', db_index=True)
 
     ctime = models.DateTimeField('创建时间', auto_now_add=True)

@@ -12,9 +12,11 @@ import logging
 from django.conf import settings
 from web.rssparser.mpwx import add_ershicimi_feed, add_wemp_feed, add_chuansongme_feed, add_anyv_feed
 from web.rssparser.atom import add_atom_feed, add_self_feed, add_qnmlgb_feed
+from web.rssparser.podcast import add_postcast_feed
 from web.tasks import update_sites_async
 import json
 import django_rq
+import feedparser
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +142,13 @@ def submit_a_feed(request):
         elif settings.ANYV_HOST in host:
             rsp = add_anyv_feed(feed_url)
         else:
-            rsp = add_atom_feed(feed_url)
+            # 区分播客还是普通 RSS
+            feed_obj = feedparser.parse(feed_url)
+
+            if feed_obj.namespaces.get('itunes'):
+                rsp = add_postcast_feed(feed_obj)
+            else:
+                rsp = add_atom_feed(feed_obj)
 
         if rsp:
             logger.warning(f"有新订阅源被提交：`{feed_url}")

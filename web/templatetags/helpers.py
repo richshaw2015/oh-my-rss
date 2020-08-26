@@ -182,10 +182,10 @@ def to_article_content(uindex, site_id):
 @register.filter
 @lru_cache(maxsize=512)
 def to_rss(site):
-    if site.creator == 'user':
-        rss = site.rss
-    else:
+    if site.creator in ('system', 'wemp'):
         rss = reverse('get_feed_entries', kwargs={"site_id": site.pk})
+    else:
+        rss = site.rss
 
     if not rss:
         logger.error(f'生成 RSS 失败：`{site.pk}`{site.creator}')

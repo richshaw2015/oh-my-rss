@@ -23,6 +23,7 @@ from web.stopwords import stopwords
 import jieba
 from whoosh.fields import Schema, TEXT, ID
 from feed.utils import mkdir, get_hash_name
+from bs4 import BeautifulSoup
 
 # init Redis connection
 R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_WEB_DB, decode_responses=True)
@@ -752,6 +753,11 @@ def get_user_site_author(oauth_id, site_id):
 def valid_dvc_req(dvc_id, dvc_type, sign):
     src = dvc_id + dvc_type + current_day()
     return get_hash_name(src) == sign
+
+
+def get_html_text(html):
+    bs = BeautifulSoup(html, "html.parser")
+    return bs.get_text()
 
 
 @lru_cache(maxsize=128)

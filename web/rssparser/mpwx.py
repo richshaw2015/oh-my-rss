@@ -243,7 +243,7 @@ def save_feed_to_db(name, cname, link, avatar, brief, url):
             favicon = get_random_emoji()
 
         try:
-            site = Site(name=name, cname=cname, link=link, brief=brief, star=10, creator='wemp', copyright=20,
+            site = Site(name=name, cname=cname, link=link, brief=brief, star=12, creator='wemp', copyright=20,
                         rss=url, favicon=favicon)
             site.save()
 
