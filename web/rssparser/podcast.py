@@ -8,10 +8,11 @@ import feedparser
 import json
 from io import BytesIO
 from feed.utils import current_ts, mark_crawled_url, is_crawled_url, get_hash_name
+from base64 import b64encode
 
 logger = logging.getLogger(__name__)
 
-podcast_tmpl = '''<div id='omrss-podlove' data-episode='%s'>
+podcast_tmpl = '''<div id="omrss-podlove" data-episode="%s">
   <root style="max-width:950px;min-width:260px;">
     <div class="tablet:px-6 tablet:pt-6 mobile:px-4 mobile:pt-4 flex flex-col">
       <div class="flex-col items-center mobile:flex tablet:hidden">
@@ -222,6 +223,7 @@ def podcast_spider(site):
                 ]
             }
             episode = json.dumps(episode)
+            episode = b64encode(bytes(episode, encoding='UTF8')).decode('UTF8')
             content = podcast_tmpl % episode + brief
         else:
             content = brief + f'''<p></p><img src="{img}">'''

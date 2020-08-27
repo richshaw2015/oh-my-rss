@@ -863,4 +863,6 @@ span.meta-recommend {
     display: flex;
     align-items: center;
     flex-direction: column;
+    padding-top: 16px;
+    padding-bottom: 10px;
 }

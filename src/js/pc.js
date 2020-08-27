@@ -463,9 +463,9 @@ $(document).ready(function () {
                     fixWempStyleTag();
                     fixArticlePrivilege();
                 } else if (siteType === 'podcast') {
-                    let episode = $("#omrss-podlove").attr("data-episode")
+                    const episode = $("#omrss-podlove").attr("data-episode")
                     if (episode !== undefined) {
-                        window.podlovePlayer("#omrss-podlove", JSON.parse(episode), podCastConfig)
+                        window.podlovePlayer("#omrss-podlove", JSON.parse(atob(episode)), podCastConfig)
                     }
                 } else {
                     // trim third content style tag
@@ -520,7 +520,7 @@ $(document).ready(function () {
                     } else if (siteType === 'podcast') {
                         const episode = $("#omrss-podlove").attr("data-episode")
                         if (episode !== undefined) {
-                            window.podlovePlayer("#omrss-podlove", JSON.parse(episode), podCastConfig);
+                            window.podlovePlayer("#omrss-podlove", JSON.parse(atob(episode)), podCastConfig)
                         }
                     } else {
                         // trim third content style tag
