@@ -779,6 +779,25 @@ def split_cn_words(cn, join=False):
     return word_list
 
 
+def to_podcast_duration(duration):
+    dest = duration
+
+    try:
+        if ':' not in duration:
+            seconds = int(duration)
+
+            m, s = divmod(seconds, 60)
+            h, m = divmod(m, 60)
+            if h > 0:
+                return "%02d:%02d:%02d" % (h, m, s)
+            else:
+                return "%02d:%02d" % (m, s)
+    except ValueError:
+        logger.warning(f"转换时间失败：`{duration}")
+
+    return dest
+
+
 # 搜索对象
 whoosh_site_schema = Schema(
     id=ID(stored=True, unique=True),

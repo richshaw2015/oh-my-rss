@@ -22,6 +22,7 @@ function isIE() {
     return /Trident\/|MSIE/.test(navigator.userAgent)
 }
 
+
 function initMaterialUI() {
     $('.modal').modal();
     $('#modal-submit-rss').modal({"dismissible": false});
@@ -458,7 +459,15 @@ $(document).ready(function () {
 
                 fixChuangSongMeImg();
 
-                if (siteType !== 'wemp') {
+                if (siteType === 'wemp') {
+                    fixWempStyleTag();
+                    fixArticlePrivilege();
+                } else if (siteType === 'podcast') {
+                    let episode = $("#omrss-podlove").attr("data-episode")
+                    if (episode !== undefined) {
+                        window.podlovePlayer("#omrss-podlove", JSON.parse(episode), podCastConfig)
+                    }
+                } else {
                     // trim third content style tag
                     fixThirdStyleTag();
 
@@ -468,9 +477,6 @@ $(document).ready(function () {
                     // linkify
                     setThirdLinkify();
 
-                    fixArticlePrivilege();
-                } else {
-                    fixWempStyleTag();
                     fixArticlePrivilege();
                 }
 
@@ -508,19 +514,23 @@ $(document).ready(function () {
                     initMaterialUI();
                     fixChuangSongMeImg();
 
-                    if (siteType !== 'wemp') {
+                    if (siteType === 'wemp') {
+                        fixWempStyleTag();
+                        fixArticlePrivilege();
+                    } else if (siteType === 'podcast') {
+                        const episode = $("#omrss-podlove").attr("data-episode")
+                        if (episode !== undefined) {
+                            window.podlovePlayer("#omrss-podlove", JSON.parse(episode), podCastConfig);
+                        }
+                    } else {
                         // trim third content style tag
                         fixThirdStyleTag();
-    
+
                         // 代码样式
                         codeHighlight();
-    
+
                         // linkify
                         setThirdLinkify();
-
-                        fixArticlePrivilege();
-                    } else {
-                        fixWempStyleTag();
 
                         fixArticlePrivilege();
                     }

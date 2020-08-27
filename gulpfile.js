@@ -31,6 +31,11 @@ function fontTask() {
         .pipe(dest('assets/font/'))
 }
 
+function podcastResTask() {
+    return src('src/podlove/**/*')
+        .pipe(dest('assets/podlove/'))
+}
+
 function jsEchartsTask() {
     return src('src/js/vendor/echarts.min.js')
         .pipe(dest('assets/js'))
@@ -91,6 +96,7 @@ exports.build = series(
     jsLibTask, cssLibTask,
     parallel(cssMobileTask, cssPcTask),
     parallel(jsPcTask, jsMobileTask),
+    podcastResTask,
 );
 
 exports.default = function() {

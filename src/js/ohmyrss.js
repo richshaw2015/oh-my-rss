@@ -4,6 +4,22 @@ const [NET_ERROR_MSG, LOGIN_ERROR_MSG, LOGIN_SUCC_MSG, SUBS_LIMIT_ERROR_MSG] =
 const SEARCH_ERROR_MSG = '搜索异常，请切换关键字后重试！'
 const NEED_REFRESH_MSG = '请刷新页面后重试！'
 
+const podCastConfig = {
+  "base": "/player/",
+  "theme": {
+    "tokens": {
+      "brand": "#166255",
+      "brandDark": "#166255",
+      "brandDarkest": "#1A3A4A",
+      "brandLightest": "#E5EAECFF",
+      "shadeDark": "#807E7C",
+      "shadeBase": "#807E7C",
+      "contrast": "#000",
+      "alt": "#fff"
+    },
+  }
+}
+
 // 登陆用户的未读数
 let userUnreadCount = 0;
 

@@ -858,3 +858,9 @@ span.meta-recommend {
 #modal-omrss-ie, #modal-omrss-ie .modal-footer {
     background-color: #fff8ea;
 }
+
+#omrss-podlove {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
