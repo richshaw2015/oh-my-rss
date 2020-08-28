@@ -5,7 +5,6 @@ requests
 django >= 2.2
 django-rq
 django-crontab
-django-admin-shell
 redis
 selenium
 feedparser
