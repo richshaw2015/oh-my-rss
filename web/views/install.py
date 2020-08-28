@@ -4,7 +4,7 @@ from feed.utils import mkdir
 import logging
 from web.models import *
 import shutil
-import urllib
+import feedparser
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +32,30 @@ def install(request):
 
 
 def debug(request):
-    # from web.rssparser.mpwx import make_mpwx_job
-    # site = Site.objects.get(pk=2910)
-    # make_mpwx_job(site, 14)
-    import pickle
+    from web.rssparser.podcast import podcast_spider
+    from web.rssparser.atom import atom_spider
 
-    # R = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_FEED_DB,
-    #                 decode_responses=True)
-    # CRAWL_PREFIX = 'CRAWL/*'
-    # for key in R.keys(CRAWL_PREFIX):
-    #     R.delete(key)
+    # site = Site.objects.get(pk=3345)
+    # podcast_spider(site)
+    sites = Site.objects.filter(status='active', creator='user')
+    for site in sites:
+        feed_obj = feedparser.parse(site.rss)
+
+        if is_podcast_feed(feed_obj):
+            logger.info(f"发现目标：`{site.id}`{site.cname}`{site.rss}")
+
+            if feed_obj.feed.get('image'):
+                favicon = save_avatar(feed_obj.feed.image.href, site.name)
+                site.favicon = favicon
+
+            if site.star < 10:
+                site.star = 10
+
+            if feed_obj.feed.get('subtitle'):
+                brief = get_html_text(feed_obj.feed.subtitle)[:200]
+                site.brief = brief
+
+            site.creator = 'podcast'
+            site.save()
 
     return JsonResponse({})

@@ -4,7 +4,7 @@ import django
 from web.models import *
 from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
-    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, \
+    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, is_podcast_feed, \
     get_recent_site_articles, set_user_site_cname, set_user_site_author, set_active_site
 from web.views.views_html import get_all_issues
 from web.verify import verify_request
@@ -145,7 +145,7 @@ def submit_a_feed(request):
             # 区分播客还是普通 RSS
             feed_obj = feedparser.parse(feed_url)
 
-            if feed_obj.namespaces.get('itunes'):
+            if is_podcast_feed(feed_obj):
                 rsp = add_postcast_feed(feed_obj)
             else:
                 rsp = add_atom_feed(feed_obj)

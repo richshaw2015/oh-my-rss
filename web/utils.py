@@ -790,6 +790,15 @@ def split_cn_words(cn, join=False):
     return word_list
 
 
+def is_podcast_feed(feed_obj):
+    try:
+        return 'podcast' in feed_obj.namespaces.get('itunes', '')
+    except AttributeError:
+        pass
+
+    return False
+
+
 def to_podcast_duration(duration):
     dest = duration
 
