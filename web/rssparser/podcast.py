@@ -243,5 +243,4 @@ def podcast_spider(site):
         except:
             logger.warning(f'数据插入异常：`{title}`{link}')
 
-    set_updated_site(site.pk)
     return True
