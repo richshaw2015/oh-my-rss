@@ -166,15 +166,6 @@ def to_site_cname(user, site):
 
 @register.filter
 @lru_cache(maxsize=1024)
-def to_clean_brief(brief):
-    """
-    去掉第三方说明性的文字
-    """
-    return re.sub(r' - Made with love by .*$', '', brief)[:50]
-
-
-@register.filter
-@lru_cache(maxsize=1024)
 def to_article_content(uindex, site_id):
     return get_content(uindex, site_id)
 

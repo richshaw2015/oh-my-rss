@@ -16,7 +16,7 @@
                 <div>
                     <img src="{{ article.site.favicon }}" class="circle omrss-recent-avatar omrss-text">
                     <a href="{{ article.site.link }}" target="_blank" class="tooltipped"
-                       data-tooltip="{{ article.site.brief |to_clean_brief }}" data-position="top">
+                       data-tooltip="{{ article.site.brief|truncatechars:50 }}" data-position="top">
                         <span class="omrss-recent-site omrss-text">{{ user|to_short_site_cname:article.site }}</span>
                     </a>
                     {% if user %}

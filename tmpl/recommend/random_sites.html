@@ -7,7 +7,7 @@
             <div class="card-content omrss-card-content">
                 <div>
                     <a href="{{ site.link }}" target="_blank">
-                        <span class="card-title omrss-recent-title">{{ site.brief|to_clean_brief }}</span>
+                        <span class="card-title omrss-recent-title">{{ site.brief|truncatechars:50 }}</span>
                     </a>
                 </div>
 

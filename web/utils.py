@@ -804,7 +804,7 @@ def trim_brief(brief):
     去掉第三方说明性的文字
     """
     brief = re.sub(r' - Made with love by .*$', '', brief)
-    return re.sub(r' \(RSS provided by .*$', '', brief)
+    return re.sub(r'\(RSS provided by .*$', '', brief).strip()
 
 
 def to_podcast_duration(duration):
