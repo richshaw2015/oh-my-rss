@@ -5,7 +5,7 @@ class Site(models.Model):
     """
     站点表
     """
-    name = models.CharField('scrapy代号', max_length=100, unique=True)
+    name = models.CharField('name', max_length=100)
     author = models.CharField('作者', max_length=100, null=True, blank=True, default='')
     cname = models.CharField('名称', max_length=100)
     link = models.CharField('主页', max_length=1024)
