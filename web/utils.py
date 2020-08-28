@@ -799,6 +799,14 @@ def is_podcast_feed(feed_obj):
     return False
 
 
+def trim_brief(brief):
+    """
+    去掉第三方说明性的文字
+    """
+    brief = re.sub(r' - Made with love by .*$', '', brief)
+    return re.sub(r' \(RSS provided by .*$', '', brief)
+
+
 def to_podcast_duration(duration):
     dest = duration
 

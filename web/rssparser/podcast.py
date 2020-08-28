@@ -1,7 +1,7 @@
 
 import django
 from web.models import *
-from web.utils import generate_rss_avatar, set_updated_site, get_with_retry, get_short_host_name, write_dat2_file, \
+from web.utils import generate_rss_avatar, get_with_retry, get_short_host_name, write_dat2_file, trim_brief, \
     save_avatar, get_html_text, to_podcast_duration
 import logging
 import feedparser
@@ -123,7 +123,7 @@ def add_postcast_feed(feed_obj):
                 link = url
 
         if feed_obj.feed.get('subtitle'):
-            brief = get_html_text(feed_obj.feed.subtitle)[:200]
+            brief = trim_brief(get_html_text(feed_obj.feed.subtitle))[:200]
         else:
             brief = feed_obj.feed.title
 

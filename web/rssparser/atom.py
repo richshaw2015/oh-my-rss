@@ -3,7 +3,7 @@ import django
 from django.urls import resolve
 from web.models import *
 from web.utils import generate_rss_avatar, set_updated_site, get_with_retry, get_short_host_name, write_dat2_file, \
-    get_html_text
+    get_html_text, trim_brief
 import logging
 import feedparser
 import urllib
@@ -74,7 +74,7 @@ def add_atom_feed(feed_obj):
             link = url
 
         if feed_obj.feed.get('subtitle'):
-            brief = get_html_text(feed_obj.feed.subtitle)[:200]
+            brief = trim_brief(get_html_text(feed_obj.feed.subtitle))[:200]
         else:
             brief = feed_obj.feed.title
 
