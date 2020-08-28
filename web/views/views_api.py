@@ -159,8 +159,9 @@ def submit_a_feed(request):
             if user:
                 add_user_sub_feeds(user.oauth_id, [rsp['site'], ])
 
-            # 异步更新任务
-            django_rq.enqueue(update_sites_async, [rsp['site'], ])
+            if rsp.get('creator') == 'user':
+                # 新增的普通 RSS 才触发异步更新任务
+                django_rq.enqueue(update_sites_async, [rsp['site'], ])
 
             return JsonResponse(rsp)
         else:

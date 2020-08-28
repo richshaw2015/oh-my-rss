@@ -88,7 +88,7 @@ def add_atom_feed(feed_obj):
                         creator='user', rss=url, favicon=favicon, author=author)
             site.save()
 
-            return {"site": site.pk}
+            return {"site": site.pk, "creator": "user"}
         except:
             logger.error(f'处理源出现异常：`{url}')
 
