@@ -306,9 +306,20 @@ def del_user_sub_feed(oauth_id, feed):
 
 
 def set_active_sites(sites):
+    """
+    批量设置有效的源（未下线的）
+    """
     key = settings.REDIS_ACTIVE_SITES_KEY
     R.delete(key)
     return R.sadd(key, *sites)
+
+
+def set_active_site(site):
+    """
+    设置单个源有效（未下线的）
+    """
+    key = settings.REDIS_ACTIVE_SITES_KEY
+    return R.sadd(key, site)
 
 
 def get_active_sites():

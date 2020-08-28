@@ -5,7 +5,7 @@ from web.models import *
 from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
     set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, \
-    get_recent_site_articles, set_user_site_cname, set_user_site_author
+    get_recent_site_articles, set_user_site_cname, set_user_site_author, set_active_site
 from web.views.views_html import get_all_issues
 from web.verify import verify_request
 import logging
@@ -152,6 +152,8 @@ def submit_a_feed(request):
 
         if rsp:
             logger.warning(f"有新订阅源被提交：`{feed_url}")
+
+            set_active_site(rsp['site'])
 
             # 已登录用户，自动订阅
             if user:
