@@ -187,7 +187,7 @@ def podcast_spider(site):
         audio, img = None, ''
         if entry.get('links'):
             for el in entry['links']:
-                if 'audio/' in el.type:
+                if 'audio/' in el.type or el.href.endswith('.m4a') or el.href.endswith('.mp3'):
                     audio = el
                     break
 
