@@ -214,7 +214,7 @@ def podcast_spider(site):
                 # "subtitle": brief,
                 "publicationDate": entry.get('published'),
                 "poster": img,
-                "duration": to_podcast_duration(entry.get('itunes_duration')),
+                "duration": to_podcast_duration(entry.get('itunes_duration', '')),
                 "audio": [
                     {
                         "url": audio.href,
