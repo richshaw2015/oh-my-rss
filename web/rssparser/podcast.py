@@ -187,12 +187,12 @@ def podcast_spider(site):
         audio, img = None, ''
         if entry.get('links'):
             for el in entry['links']:
-                if 'audio/' in el.type or el.href.endswith('.m4a') or el.href.endswith('.mp3'):
+                if 'audio/' in el.get('type') or el.get('rel') == 'enclosure':
                     audio = el
                     break
 
         if entry.get('image'):
-            img = entry.image.href
+            img = entry.image.get('href')
 
         try:
             brief = entry.content[0].value
