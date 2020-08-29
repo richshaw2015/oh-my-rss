@@ -154,7 +154,7 @@ def archive_article_cron():
     # TODO 每个源保留最近 1000 条文章
 
     # 清理 Job 数据
-    deat_ts = datetime.now() - timedelta(days=14)
+    deat_ts = datetime.now() - timedelta(days=7)
     Job.objects.filter(ctime__lt=deat_ts).delete()
 
     return True
@@ -376,3 +376,5 @@ def cal_dvc_stat_cron():
     # 计算总设备数
     dvcs = Job.objects.distinct().values_list('dvc_id', flat=True)
     set_job_dvcs(dvcs)
+
+    return True
