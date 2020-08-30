@@ -139,7 +139,6 @@ USE_TZ = True
 
 CRONJOBS = [
    ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
-   ('5 */6 * * *', 'web.tasks.clear_expired_job_cron'),
    ('2 * * * *', 'web.tasks.cal_dvc_stat_cron'),
    ('20 0,12 * * *', 'web.tasks.update_all_mpwx_cron'),
    ('20 2 * * *', 'web.tasks.update_all_podcast_cron'),
