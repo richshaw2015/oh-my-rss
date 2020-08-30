@@ -165,6 +165,7 @@ class Job(models.Model):
         (5, '交还次数超限'),
         (6, '内容违规或删除'),
         (7, '服务端处理异常'),
+        (8, '已入队'),
     ), default=0, db_index=True)
 
     dvc_id = models.CharField('设备号', max_length=128, null=True, blank=True)

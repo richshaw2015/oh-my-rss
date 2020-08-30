@@ -48,7 +48,7 @@ def handle_job_async(job_id, job_url, rsp, rsp_url):
     处理入库任务
     """
     try:
-        job = Job.objects.get(pk=job_id, status__in=(1, 3))
+        job = Job.objects.get(pk=job_id, status__in=(1, 3, 8))
     except:
         return False
 
@@ -257,7 +257,7 @@ def load_active_sites_cron():
 
 def build_whoosh_index_cron():
     """
-    建立全文搜索索引
+    建立全文搜索索引 TODO 优化索引效率
     """
     from web.utils import whoosh_site_schema, whoosh_article_schema
     from whoosh.filedb.filestore import FileStorage

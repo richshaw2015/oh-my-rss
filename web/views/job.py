@@ -50,7 +50,7 @@ def giveback_job(request):
         job.giveback += 1
         job.remark += f'{job.dvc_id},'
 
-        if job.giveback >= 3:
+        if job.giveback >= 2:
             job.status = 5
         else:
             job.status = 0
@@ -76,5 +76,11 @@ def finish_job(request):
     # 最多保存 6 小时
     django_rq.enqueue(handle_job_async, job_id, job_url, rsp, rsp_url, result_ttl=10, ttl=6*3600, job_timeout=300,
                       failure_ttl=10*86400)
+
+    # 更新状态
+    try:
+        Job.objects.get(pk=job_id, status__in=(1, 3)).update(status=8)
+    except:
+        logger.warning(f"任务状态变更出现异常：`{job_id}")
 
     return JsonResponse({})
