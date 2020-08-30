@@ -771,7 +771,6 @@ def get_html_text(html):
     return bs.get_text()
 
 
-@lru_cache(maxsize=128)
 def split_cn_words(cn, join=False, limit=None):
     """
     中文分词；停词不计算
@@ -785,8 +784,7 @@ def split_cn_words(cn, join=False, limit=None):
             word_list.append(seg)
 
     if limit:
-        white_list = [i[0] for i in Counter(word_list).most_common(limit) if len(i[0]) > 1]
-        word_list = [i for i in word_list if i in white_list]
+        word_list = [i[0] for i in Counter(word_list).most_common(limit) if len(i[0]) > 1]
 
     if join:
         return ','.join(word_list)

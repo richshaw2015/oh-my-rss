@@ -111,8 +111,7 @@ def in_site_search(request):
                 sites.append(ret['id'])
 
         rel_sites = Site.objects.filter(status='active', pk__in=sites).order_by('-star')
-
-    if scope == 'article':
+    elif scope == 'article':
         # 查找相关文章
         idx = storage.open_index(indexname="article", schema=whoosh_article_schema)
         qp = MultifieldParser(['title', 'author', 'content'], schema=whoosh_article_schema)
@@ -125,7 +124,7 @@ def in_site_search(request):
 
             for ret in results:
                 articles.append(ret['uindex'])
-        rel_articles = Article.objects.filter(status='active', uindex__in=articles)
+        rel_articles = Article.objects.filter(is_recent=True, status='active', uindex__in=articles).iterator()
 
     # 用户订阅
     user_sub_feeds = []
