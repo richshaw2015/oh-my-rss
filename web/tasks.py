@@ -257,7 +257,7 @@ def load_active_sites_cron():
 
 def build_whoosh_index_cron():
     """
-    建立全文搜索索引 TODO 优化索引效率
+    建立全文搜索索引
     """
     from web.utils import whoosh_site_schema, whoosh_article_schema
     from whoosh.filedb.filestore import FileStorage
@@ -294,13 +294,13 @@ def build_whoosh_index_cron():
         author = site.author or ''
         brief = split_cn_words(site.brief, join=True)
 
-        logger.info(f"分词结果：`{site_id}`{cname}`{brief}")
+        logger.info(f"源分词结果：`{site_id}`{cname}`{brief}")
 
         try:
             idx_writer.add_document(id=site_id, cname=cname, author=author, brief=brief)
             set_indexed('site', site_id)
         except:
-            logger.warning(f"索引失败：`{site_id}")
+            logger.warning(f"源索引失败：`{site_id}")
     idx_writer.commit()
 
     # 索引文章
@@ -328,15 +328,15 @@ def build_whoosh_index_cron():
             author = article.author or ''
 
             content_soup = BeautifulSoup(content, 'html.parser')
-            content = split_cn_words(content_soup.get_text(), join=True)
+            content = split_cn_words(content_soup.get_text(), join=True, limit=10)
 
-            logger.info(f"分词结果：`{uindex}`{title}")
+            logger.info(f"文章分词结果：`{uindex}`{title}`{content}")
 
             try:
                 idx_writer.add_document(uindex=uindex, title=title, author=author, content=content)
                 set_indexed('article', uindex)
             except:
-                logger.warning(f"索引失败：`{uindex}")
+                logger.warning(f"文章索引失败：`{uindex}")
     idx_writer.commit()
 
     # 清理过期文章

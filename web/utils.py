@@ -772,7 +772,7 @@ def get_html_text(html):
 
 
 @lru_cache(maxsize=128)
-def split_cn_words(cn, join=False):
+def split_cn_words(cn, join=False, limit=None):
     """
     中文分词；停词不计算
     """
@@ -783,6 +783,10 @@ def split_cn_words(cn, join=False):
 
         if seg and seg not in stopwords:
             word_list.append(seg)
+
+    if limit:
+        white_list = [i[0] for i in Counter(word_list).most_common(limit)]
+        word_list = [i for i in word_list if i in white_list]
 
     if join:
         return ','.join(word_list)
