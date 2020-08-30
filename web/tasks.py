@@ -330,7 +330,7 @@ def build_whoosh_index_cron():
             content_soup = BeautifulSoup(content, 'html.parser')
             content = split_cn_words(content_soup.get_text(), join=True, limit=20)
 
-            logger.info(f"文章分词结果：`{uindex}`{title}`{set(content)}")
+            logger.info(f"文章分词结果：`{uindex}`{title}")
 
             try:
                 idx_writer.add_document(uindex=uindex, title=title, author=author, content=content)

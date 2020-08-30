@@ -785,7 +785,7 @@ def split_cn_words(cn, join=False, limit=None):
             word_list.append(seg)
 
     if limit:
-        white_list = [i[0] for i in Counter(word_list).most_common(limit) if len(i[0] > 1)]
+        white_list = [i[0] for i in Counter(word_list).most_common(limit) if len(i[0]) > 1]
         word_list = [i for i in word_list if i in white_list]
 
     if join:
