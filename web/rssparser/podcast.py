@@ -164,16 +164,20 @@ def podcast_spider(site):
 
     feed_obj = feedparser.parse(BytesIO(resp.content))
 
-    for entry in feed_obj.entries[:12]:
+    for entry in feed_obj.entries:
         # 有些是空的
         if not entry:
             continue
 
         try:
             title = entry.title
-            link = entry.link
         except AttributeError:
-            logger.warning(f'必要属性获取失败：`{site.rss}')
+            logger.warning(f'title 获取失败：`{site.rss}')
+            continue
+
+        link = entry.get('link') or entry.get('guid')
+        if not link:
+            logger.warning(f'link 获取失败：`{site.rss}')
             continue
 
         if is_crawled_url(link):
