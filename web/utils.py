@@ -606,11 +606,14 @@ def write_dat2_file(uindex, site_id, content):
     if os.path.exists(file):
         return True
 
+    if not content.strip():
+        logger.warning(f"写入空文件：`{content}`{uindex}")
+
     try:
-        if content.strip():
-            with open(file, 'w', encoding='UTF8') as f:
-                f.write(content)
-            return True
+        with open(file, 'w', encoding='UTF8') as f:
+            f.write(content)
+
+        return True
     except:
         logger.warning(f"写入文件失败：`{uindex}")
 
