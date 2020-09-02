@@ -75,9 +75,9 @@ def finish_job(request):
 
     # 更新状态
     try:
-        Job.objects.get(pk=job_id, status__in=(1, 3)).update(status=8)
-    except:
-        logger.warning(f"任务状态变更出现异常：`{job_id}")
+        Job.objects.filter(pk=int(job_id), status__in=(1, 3, 5)).update(status=8)
+    except Exception as e:
+        logger.warning(f"任务状态变更出现异常：`{e}`{job_id}")
 
     # 最多保存 6 小时
     django_rq.enqueue(handle_job_async, job_id, job_url, rsp, rsp_url, result_ttl=10, ttl=6*3600, job_timeout=300,
