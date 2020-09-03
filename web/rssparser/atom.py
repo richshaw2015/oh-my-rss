@@ -136,7 +136,10 @@ def atom_spider(site):
 
         try:
             value = entry.content[0].value
-        except:
+        except (AttributeError, IndexError):
+            value = None
+
+        if not value:
             value = entry.get('description') or entry.link
 
         # to absolute image url
