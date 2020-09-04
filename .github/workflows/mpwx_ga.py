@@ -141,7 +141,7 @@ while True:
     job = get_a_job()
 
     if job is None:
-        exit(98)
+        exit(0)
     else:
         if job.get('sleep'):
             busy_sleep = job['sleep'][0]
