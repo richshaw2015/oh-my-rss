@@ -13,18 +13,11 @@ import logging
 import gzip
 import hashlib
 
-logging.basicConfig(level=logging.INFO,
-                    filename='sys.log',
-                    filemode='a',
-                    format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
-                    )
-
 API_URL = 'https://ohmyrss.com'
-# API_URL = 'http://127.0.0.1:8080'
 
-DVC_ID = platform.node()
+DVC_ID = 'Github-Action'
 DVC_TYPE = 'robot'
-DVC_VER = '1.0.1'
+DVC_VER = '1.1.0'
 DVC_EXT = {
     'pf': platform.platform(),
     'sys': platform.system(),
@@ -137,19 +130,21 @@ def finish_job(job):
 
 
 # 间隔时间，受服务器控制
-idle_sleep = 180
-busy_sleep = 20
+busy_sleep = 5
+start_ts = int(time.time())
 
 
 while True:
+    if int(time.time()) - start_ts > 10*60:
+        exit(99)
+
     job = get_a_job()
 
     if job is None:
-        time.sleep(idle_sleep)
+        exit(98)
     else:
         if job.get('sleep'):
             busy_sleep = job['sleep'][0]
-            idle_sleep = job['sleep'][1]
 
         # 开始处理，失败则交还
         if not handle_job(job):
