@@ -12,12 +12,13 @@ import random
 import logging
 import gzip
 import hashlib
+from datetime import datetime, timedelta
 
 API_URL = 'https://ohmyrss.com'
 
 DVC_ID = 'Github-Action'
 DVC_TYPE = 'robot'
-DVC_VER = '1.1.0'
+DVC_VER = '1.1.1'
 DVC_EXT = {
     'pf': platform.platform(),
     'sys': platform.system(),
@@ -46,8 +47,8 @@ def md5(src):
     return hashlib.md5(src.encode('utf8')).hexdigest()
 
 
-def current_day():
-    return time.strftime("%Y%m%d", time.localtime(time.time()))
+def current_hk_day():
+    return (datetime.utcnow() + timedelta(hours=8)).strftime("%Y%m%d")
 
 
 def get_a_job():
@@ -55,7 +56,7 @@ def get_a_job():
         rsp = requests.post(API_URL + '/api/job/get', data={
             "dvc_id": DVC_ID,
             "dvc_type": DVC_TYPE,
-            "sign": md5(f"{DVC_ID}{DVC_TYPE}{current_day()}"),
+            "sign": md5(f"{DVC_ID}{DVC_TYPE}{current_hk_day()}"),
             "dvc_ext": json.dumps(DVC_EXT),
             "ver": DVC_VER,
         }, timeout=30)
