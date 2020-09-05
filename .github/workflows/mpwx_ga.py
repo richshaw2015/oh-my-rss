@@ -137,7 +137,7 @@ start_ts = int(time.time())
 
 while True:
     if int(time.time()) - start_ts > 10*60:
-        exit(99)
+        exit(0)
 
     job = get_a_job()
 
