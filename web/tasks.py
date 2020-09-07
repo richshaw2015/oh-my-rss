@@ -143,6 +143,10 @@ def archive_article_cron():
     """
     归档并清理文章
     """
+    # 变更最近文章标示
+    lastweek_ts = datetime.now() - timedelta(days=7)
+    Article.objects.filter(is_recent=True, ctime__lte=lastweek_ts).update(is_recent=False)
+
     # (, 10)，没有收藏过把文件也删除了
     articles = Article.objects.filter(site__star__lt=10, is_recent=False).iterator()
     for article in articles:
@@ -154,8 +158,7 @@ def archive_article_cron():
     # TODO 每个源保留最近 1000 条文章
 
     # 清理 Job 数据
-    deat_ts = datetime.now() - timedelta(days=7)
-    Job.objects.filter(ctime__lt=deat_ts).delete()
+    Job.objects.filter(ctime__lt=lastweek_ts).delete()
 
     return True
 

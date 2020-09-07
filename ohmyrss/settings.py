@@ -46,7 +46,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'django_crontab',
     'django_rq',
-    'django_admin_shell',
     'web.apps.WebConfig',
 
     'django.contrib.admin',
