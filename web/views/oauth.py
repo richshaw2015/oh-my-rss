@@ -15,9 +15,10 @@ def github_callback(request):
     """
     接收 github 的登录回调
     """
+    logger.info(request.build_absolute_uri())
+
     try:
         code = request.GET.get('code')
-
         if code:
             rsp = requests.post('https://github.com/login/oauth/access_token', data={
                 "client_id": settings.GITHUB_OAUTH_KEY,
