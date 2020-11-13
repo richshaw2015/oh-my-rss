@@ -46,7 +46,7 @@ def get_lastweek_articles(request):
             reach_sub_limit = len(my_sub_feeds) == settings.USER_SUBS_LIMIT
 
     # 异步更新任务
-    django_rq.enqueue(update_sites_async, list(my_sub_feeds))
+    django_rq.enqueue(update_sites_async, list(my_sub_feeds), result_ttl=1, ttl=3600, failure_ttl=3600)
 
     # 获取文章索引列表
     my_toread_articles = set()
@@ -161,7 +161,7 @@ def submit_a_feed(request):
 
             if rsp.get('creator') == 'user':
                 # 新增的普通 RSS 才触发异步更新任务
-                django_rq.enqueue(update_sites_async, [rsp['site'], ])
+                django_rq.enqueue(update_sites_async, [rsp['site'], ], result_ttl=1, ttl=3600, failure_ttl=3600)
 
             return JsonResponse(rsp)
         else:
@@ -192,7 +192,7 @@ def user_subscribe_feed(request):
         add_user_sub_feeds(user.oauth_id, [site_id, ])
 
         # 异步更新
-        django_rq.enqueue(update_sites_async, [site.pk, ])
+        django_rq.enqueue(update_sites_async, [site.pk, ], result_ttl=1, ttl=3600, failure_ttl=3600)
 
         logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_id}")
 
@@ -279,7 +279,7 @@ def user_force_update_site(request):
     if site:
         # 异步刷新
         logger.info(f"强制刷新源：`{site_id}")
-        django_rq.enqueue(update_sites_async, [site.pk, ], True)
+        django_rq.enqueue(update_sites_async, [site.pk, ], True, result_ttl=1, ttl=3600, failure_ttl=3600)
 
         return JsonResponse({})
 
