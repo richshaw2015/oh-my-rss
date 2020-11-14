@@ -14,7 +14,7 @@ import gzip
 import hashlib
 from datetime import datetime, timedelta
 
-API_URL = 'https://ohmyrss.com'
+API_URL = 'https://ohmyrss.org'
 
 DVC_ID = 'Github-Action'
 DVC_TYPE = 'robot'
