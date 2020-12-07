@@ -46,7 +46,7 @@ def get_lastweek_articles(request):
             reach_sub_limit = len(my_sub_feeds) == settings.USER_SUBS_LIMIT
 
     # 异步更新任务
-    django_rq.enqueue(update_sites_async, list(my_sub_feeds), result_ttl=1, ttl=3600, failure_ttl=3600)
+    # django_rq.enqueue(update_sites_async, list(my_sub_feeds), result_ttl=1, ttl=3600, failure_ttl=3600)
 
     # 获取文章索引列表
     my_toread_articles = set()
