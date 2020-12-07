@@ -13,8 +13,8 @@ urlpatterns = [
     path('dashboard', dashboard.dashboard, name='dashboard'),
     path('dashboard/logs', dashboard.get_warn_log, name='get_warn_log'),
 
-    path('robots.txt', search.robots, name='robots'),
-    path('sitemap.txt', search.sitemap, name='sitemap'),
+    # path('robots.txt', search.robots, name='robots'),
+    # path('sitemap.txt', search.sitemap, name='sitemap'),
     path('search', search.in_site_search, name='in_site_search'),
 
     path('oauth/github/redirect', oauth.github_callback, name='github_callback'),
