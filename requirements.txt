@@ -2,7 +2,7 @@ scrapy
 bs4
 lxml
 requests
-django >= 2.2
+django
 django-rq
 django-crontab
 redis
