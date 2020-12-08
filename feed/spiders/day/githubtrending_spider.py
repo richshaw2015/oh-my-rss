@@ -13,5 +13,4 @@ class GithubTrendingSpider(Spider):
                         index_xpath='//*[@class="Box-row"]/h1/a/@href',
                         article_title_xpath='//meta[@property="og:title"]/@content',
                         article_content_xpath='//div[@id="readme"]',
-                        index_limit_count=10,
                         )
