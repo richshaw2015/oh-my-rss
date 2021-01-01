@@ -126,6 +126,9 @@ def parse_mpwx_detail_page(response):
         content = response.selector.xpath('//div[@id="js_content"]').extract_first().strip()
     except AttributeError:
         content = iframe
+    except Exception as e:
+        logger.info(e)
+        content = iframe
 
     try:
         title = response.selector.xpath('//h2[@id="activity-name"]/text()').extract_first().strip()
@@ -163,7 +166,10 @@ def parse_mpwx_detail_page(response):
                 except IndexError:
                     pass
 
-        return title, author, str(content_soup)
+        try:
+            return title, author, str(content_soup)
+        except Exception as e:
+            logger.warning(e)
 
     return None, None, None
 
