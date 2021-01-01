@@ -32,8 +32,13 @@ class SiteFeed(Feed):
     def categories(self, site):
         return ''
 
+    def feed_copyright(self, site):
+        if site.creator == 'wemp':
+            return site.favicon
+        return ''
+
     def items(self, site):
-        return Article.objects.filter(site=site, status='active').order_by('-id')[:50]
+        return Article.objects.filter(site=site, status='active').order_by('-id')[:30]
 
     def item_title(self, item):
         return item.title
