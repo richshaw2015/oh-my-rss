@@ -114,6 +114,7 @@ def atom_spider(site):
     content = BytesIO(resp.content)
     feed_obj = feedparser.parse(content)
 
+    feed_obj.entries.reverse()
     for entry in feed_obj.entries:
         # 有些是空的
         if not entry:

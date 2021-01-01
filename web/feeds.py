@@ -33,7 +33,7 @@ class SiteFeed(Feed):
         return ''
 
     def items(self, site):
-        return Article.objects.filter(site=site, status='active').order_by('-id')[:10]
+        return Article.objects.filter(site=site, status='active').order_by('-id')[:50]
 
     def item_title(self, item):
         return item.title

@@ -21,6 +21,7 @@ def make_mpwx_job(site, action):
         # RSS 直接解析
         feed_obj = feedparser.parse(site.rss)
 
+        feed_obj.entries.reverse()
         for entry in feed_obj.entries:
             # 有些是空的
             if not entry:
