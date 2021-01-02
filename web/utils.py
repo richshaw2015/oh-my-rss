@@ -708,19 +708,19 @@ def generate_rss_avatar(link, feed=''):
     return avatar
 
 
-@lru_cache(maxsize=1024)
-def is_sensitive_content(uindex, site_id):
-    """
-    文章是否命中国内的敏感词
-    """
-    is_sensitive, content = False, get_content(uindex, site_id)
-
-    for word in settings.SENSITIVE_WORDS:
-        if word in content:
-            is_sensitive = True
-            break
-
-    return is_sensitive
+# @lru_cache(maxsize=1024)
+# def is_sensitive_content(uindex, site_id):
+#     """
+#     文章是否命中国内的敏感词
+#     """
+#     is_sensitive, content = False, get_content(uindex, site_id)
+#
+#     for word in settings.SENSITIVE_WORDS:
+#         if word in content:
+#             is_sensitive = True
+#             break
+#
+#     return is_sensitive
 
 
 def get_with_retry(url):

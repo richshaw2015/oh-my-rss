@@ -1,9 +1,9 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden, HttpResponseRedirect
 from web.models import *
 from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
-    is_sensitive_content, split_cn_words
+    split_cn_words
 import logging
 from user_agents import parse
 from web.verify import verify_request
@@ -28,22 +28,22 @@ def article(request, pid):
     try:
         article = Article.objects.get(uindex=pid, status='active')
     except:
-        return redirect('index')
+        return HttpResponseRedirect('https://dinorss.org/')
 
     user = get_login_user(request)
     if user:
         set_user_read_article(user.oauth_id, pid)
 
     # 判断是否命中敏感词
-    if is_sensitive_content(pid, article.site_id):
-        user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
-
-        if user_agent.is_mobile or user_agent.is_bot:
-            logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{pid}')
-            return redirect(article.src_url)
-        else:
-            logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{pid}')
-            return redirect('index')
+    # if is_sensitive_content(pid, article.site_id):
+    #     user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
+    #
+    #     if user_agent.is_mobile or user_agent.is_bot:
+    #         logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{pid}')
+    #         return redirect(article.src_url)
+    #     else:
+    #         logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{pid}')
+    #         return redirect('index')
 
     context = dict()
     context['article'] = article
