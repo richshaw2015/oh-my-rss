@@ -866,3 +866,13 @@ span.meta-recommend {
     padding-top: 16px;
     padding-bottom: 10px;
 }
+.dino-tips {
+    font-size: 13px !important;
+    padding-right: 20px;
+}
+
+@media only screen and (max-width: 1280px) {
+    .dino-tips {
+        display: none;
+    }
+}
