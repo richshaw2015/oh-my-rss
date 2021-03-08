@@ -148,6 +148,7 @@ CRONJOBS = [
    ('*/3 * * * *', 'web.tasks.load_articles_to_redis_cron'),
    ('*/2 * * * *', 'web.tasks.load_active_sites_cron'),
 ]
+CRONTAB_LOCK_JOBS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
