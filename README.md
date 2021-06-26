@@ -86,8 +86,3 @@ scrapy crawl coolshell
 
 ## 贡献
 详见 CONTRIBUTING.md
-
-## 交流群
-请添加管理员 `richshaw`，备注：`己思`或加入我们的 [Slack 社区](https://ohmyrss.slack.com/)
-
-![预览](https://raw.githubusercontent.com/richshaw2015/oh-my-rss/master/assets/img/qrcode.jpg)
