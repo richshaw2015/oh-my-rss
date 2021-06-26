@@ -2,7 +2,7 @@
 from web.models import User
 from django.shortcuts import redirect
 import requests
-from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
+from requests import HTTPError, Timeout, ConnectionError
 import logging
 from django.conf import settings
 import json
@@ -72,7 +72,7 @@ def github_callback(request):
                             response.set_signed_cookie('toast', 'LOGIN_SUCC_MSG', max_age=20)
 
                             return response
-    except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+    except (HTTPError, Timeout, ConnectionError):
         logger.warning("OAuth 认证网络出现异常！")
     except:
         logger.error("OAuth 认证出现未知异常")

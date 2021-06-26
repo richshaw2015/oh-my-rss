@@ -16,13 +16,13 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # mpwx third party hosts
-ERSHICIMI_HOST = 'ershicimi.com'
+# ERSHICIMI_HOST = 'ershicimi.com'
 QNMLGB_HOST = 'qnmlgb.tech'
-WEMP_HOST = 'wemp.app'
-CHUANSONGME_HOST = 'chuansongme.com'
-ANYV_HOST = 'anyv.net'
+# WEMP_HOST = 'wemp.app'
+# CHUANSONGME_HOST = 'chuansongme.com'
+# ANYV_HOST = 'anyv.net'
 
-MPWX_HOST = 'mp.weixin.qq.com'
+# MPWX_HOST = 'mp.weixin.qq.com'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -138,8 +138,8 @@ USE_TZ = True
 
 CRONJOBS = [
    ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
-   ('2 * * * *', 'web.tasks.cal_dvc_stat_cron'),
-   ('20 0 * * *', 'web.tasks.update_all_mpwx_cron'),
+   # ('2 * * * *', 'web.tasks.cal_dvc_stat_cron'),
+   # ('20 0 * * *', 'web.tasks.update_all_mpwx_cron'),
    ('20 2 * * *', 'web.tasks.update_all_podcast_cron'),
    ('11 4 * * *', 'web.tasks.archive_article_cron'),
    ('31 4 * * *', 'web.tasks.build_whoosh_index_cron'),
@@ -239,7 +239,7 @@ REDIS_USER_CONF_SITE_AUTHOR_KEY = 'CONF/SA/%s/%s'
 REDIS_JOB_DVC_KEY = 'JOB/DVC'
 REDIS_JOB_STAT_KEY = 'JOB/STAT/%s/%s/%s'
 
-SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
+# SENSITIVE_WORDS = ('科学上网', '各种翻墙工具')
 
 USER_SUBS_LIMIT = 100
 VISITOR_SUBS_LIMIT = 50
@@ -251,9 +251,9 @@ VISITOR_SITE_ARTICLES_LIMIT = 100
 GITHUB_OAUTH_KEY = '4b40da1eb0585bf03dda'
 GITHUB_OAUTH_SECRET = 'c985780931b223658064d3218095d916106238d7'
 
-ROBOT_DVC_CNF = {
-    'Neos-MacBook-Pro.local': (3, 301),
-}
+# ROBOT_DVC_CNF = {
+#     'Neos-MacBook-Pro.local': (3, 301),
+# }
 
 LOGGING = {
     'version': 1,

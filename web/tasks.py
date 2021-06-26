@@ -2,14 +2,14 @@
 from web.models import *
 import logging
 from datetime import datetime
-import datetime as dt
+# import datetime as dt
 from django.utils.timezone import timedelta
 from feed.utils import current_ts
 from web.rssparser.atom import atom_spider
 from web.rssparser.podcast import podcast_spider
-from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
+# from web.rssparser.mpwx import make_mpwx_job, parse_list_page, parse_detail_page
 from web.utils import is_active_rss, get_user_subscribe_feeds, set_feed_ranking_dict, get_content, \
-    is_updated_site, get_host_name, is_indexed, set_job_stat, set_job_dvcs, del_dat2_file, \
+    is_updated_site, is_indexed, del_dat2_file, \
     reset_recent_articles, reset_recent_site_articles, set_site_lastid, set_active_sites, get_recent_articles, \
     get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed
 from bs4 import BeautifulSoup
@@ -17,62 +17,62 @@ from collections import Counter
 from django.conf import settings
 import json
 import os
-from web.sql import JOB_STAT_SQL
+# from web.sql import JOB_STAT_SQL
 
 
 logger = logging.getLogger(__name__)
 
 
-def update_sites_async(sites, force_update=False):
-    """
-    异步更新某一批订阅源，只支持普通源
-    """
-    for site_id in sites:
-        try:
-            site = Site.objects.get(status='active', pk=site_id, creator='user')
-        except:
-            continue
+# def update_sites_async(sites, force_update=False):
+#     """
+#     异步更新某一批订阅源，只支持普通源
+#     """
+#     for site_id in sites:
+#         try:
+#             site = Site.objects.get(status='active', pk=site_id, creator='user')
+#         except:
+#             continue
+#
+#         # 最近已经更新过了，跳过
+#         if not force_update and is_updated_site(site_id):
+#             continue
+#
+#         logger.info(f"开始异步更新：{site_id}")
+#         atom_spider(site)
+#
+#     return True
 
-        # 最近已经更新过了，跳过
-        if not force_update and is_updated_site(site_id):
-            continue
 
-        logger.info(f"开始异步更新：{site_id}")
-        atom_spider(site)
-
-    return True
-
-
-def handle_job_async(job_id, job_url, rsp, rsp_url):
-    """
-    处理入库任务
-    """
-    try:
-        job = Job.objects.get(pk=job_id, status__in=(1, 3, 8))
-    except:
-        return False
-
-    if job.url == job_url:
-        job.rsp = rsp
-        job.rsp_url = rsp_url
-
-        if job.action in (10, 11, 12, 13, 14):
-            status = parse_list_page(job)
-        elif job.action in (20, 21, 22, 23, 24):
-            status = parse_detail_page(job)
-        else:
-            logger.warning(f"未知的任务类型：`{job.action}")
-            return False
-
-        job.status = status
-        if status == 2:
-            job.rsp = ''
-        job.save()
-        return True
-    else:
-        logger.warning(f"任务不匹配：`{job.id}`{job.url}`{job_url}")
-
-    return False
+# def handle_job_async(job_id, job_url, rsp, rsp_url):
+#     """
+#     处理入库任务
+#     """
+#     try:
+#         job = Job.objects.get(pk=job_id, status__in=(1, 3, 8))
+#     except:
+#         return False
+#
+#     if job.url == job_url:
+#         job.rsp = rsp
+#         job.rsp_url = rsp_url
+#
+#         if job.action in (10, 11, 12, 13, 14):
+#             status = parse_list_page(job)
+#         elif job.action in (20, 21, 22, 23, 24):
+#             status = parse_detail_page(job)
+#         else:
+#             logger.warning(f"未知的任务类型：`{job.action}")
+#             return False
+#
+#         job.status = status
+#         if status == 2:
+#             job.rsp = ''
+#         job.save()
+#         return True
+#     else:
+#         logger.warning(f"任务不匹配：`{job.id}`{job.url}`{job_url}")
+#
+#     return False
 
 
 def update_all_atom_cron():
@@ -82,10 +82,7 @@ def update_all_atom_cron():
     now, sites = datetime.now(), []
 
     # 按照不同频率更新，区分用户自定义的和推荐的
-    if now.hour % 2 == 0:
-        sites = Site.objects.filter(status='active', creator='user').order_by('-star')
-    elif now.hour % 2 == 1:
-        sites = Site.objects.filter(status='active', creator='user', star__gte=9).order_by('-star')
+    sites = Site.objects.filter(status='active', creator='user').order_by('-star')
 
     for site in sites:
         # 无人订阅的源且不推荐的源不更新
@@ -110,33 +107,33 @@ def update_all_podcast_cron():
     return True
 
 
-def update_all_mpwx_cron():
-    """
-    更新微信公众号
-    """
-    sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
-
-    for site in sites:
-        host, action = get_host_name(site.rss), None
-
-        if settings.QNMLGB_HOST in host or settings.ANYV_HOST in host or settings.ERSHICIMI_HOST in host:
-            if settings.ERSHICIMI_HOST in host:
-                action = 11
-            elif settings.QNMLGB_HOST in host:
-                action = 10
-            elif settings.WEMP_HOST in host:
-                action = 12
-            elif settings.CHUANSONGME_HOST in host:
-                action = 13
-            elif settings.ANYV_HOST in host:
-                action = 14
-            else:
-                logger.warning(f"未知的公众号域名：`{host}`{site.cname}")
-
-            if action is not None:
-                make_mpwx_job(site, action)
-
-    return True
+# def update_all_mpwx_cron():
+#     """
+#     更新微信公众号
+#     """
+#     sites = Site.objects.filter(status='active', creator='wemp').order_by('-star')
+#
+#     for site in sites:
+#         host, action = get_host_name(site.rss), None
+#
+#         if settings.QNMLGB_HOST in host or settings.ANYV_HOST in host or settings.ERSHICIMI_HOST in host:
+#             if settings.ERSHICIMI_HOST in host:
+#                 action = 11
+#             elif settings.QNMLGB_HOST in host:
+#                 action = 10
+#             elif settings.WEMP_HOST in host:
+#                 action = 12
+#             elif settings.CHUANSONGME_HOST in host:
+#                 action = 13
+#             elif settings.ANYV_HOST in host:
+#                 action = 14
+#             else:
+#                 logger.warning(f"未知的公众号域名：`{host}`{site.cname}")
+#
+#             if action is not None:
+#                 make_mpwx_job(site, action)
+#
+#     return True
 
 
 def archive_article_cron():
@@ -356,23 +353,23 @@ def build_whoosh_index_cron():
     return True
 
 
-def cal_dvc_stat_cron():
-    # 过期任务状态变更，最多执行 1 小时
-    timeout_ts = datetime.now() - timedelta(hours=1)
-    affected = Job.objects.filter(status=1, mtime__lt=timeout_ts).update(status=3)
-
-    if affected > 0:
-        logger.warning(f"超时任务数量：`{affected}")
-
-    # 计算设备详情
-    today_dt = datetime.now() - (datetime.now() - datetime.combine(dt.date.today(), dt.time()))
-    job_stats = Job.objects.raw(JOB_STAT_SQL % today_dt)
-
-    for stat in job_stats:
-        set_job_stat(stat)
-
-    # 计算总设备数
-    dvcs = Job.objects.distinct().values_list('dvc_id', flat=True)
-    set_job_dvcs(dvcs)
-
-    return True
+# def cal_dvc_stat_cron():
+#     # 过期任务状态变更，最多执行 1 小时
+#     timeout_ts = datetime.now() - timedelta(hours=1)
+#     affected = Job.objects.filter(status=1, mtime__lt=timeout_ts).update(status=3)
+#
+#     if affected > 0:
+#         logger.warning(f"超时任务数量：`{affected}")
+#
+#     # 计算设备详情
+#     today_dt = datetime.now() - (datetime.now() - datetime.combine(dt.date.today(), dt.time()))
+#     job_stats = Job.objects.raw(JOB_STAT_SQL % today_dt)
+#
+#     for stat in job_stats:
+#         set_job_stat(stat)
+#
+#     # 计算总设备数
+#     dvcs = Job.objects.distinct().values_list('dvc_id', flat=True)
+#     set_job_dvcs(dvcs)
+#
+#     return True

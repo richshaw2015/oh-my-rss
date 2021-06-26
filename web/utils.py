@@ -12,9 +12,8 @@ import requests
 import os
 from PIL import Image
 from io import BytesIO
-from requests import ReadTimeout, ConnectTimeout, HTTPError, Timeout, ConnectionError
+from requests import HTTPError, Timeout, ConnectionError
 import logging
-import hashlib
 from collections import Counter
 from urllib.parse import urlparse
 import json
@@ -474,7 +473,7 @@ def save_avatar(avatar, userid, size=100, referer=None):
             return f'/assets/avatar/{jpg}'
         else:
             logger.error(f"同步用户头像出现网络异常！`{userid}`{avatar}")
-    except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+    except (HTTPError, Timeout, ConnectionError):
         logger.error(f"同步用户头像网络异常！`{userid}`{avatar}")
     except:
         logger.error(f"同步用户头像未知异常`{userid}`{avatar}")
@@ -542,14 +541,14 @@ def is_indexed(tag, key):
     return R.get(key) == '1'
 
 
-def set_job_dvcs(dvcs):
-    key = settings.REDIS_JOB_DVC_KEY
-    return R.sadd(key, *dvcs)
-
-
-def set_job_stat(stat):
-    key = settings.REDIS_JOB_STAT_KEY % (current_day(), stat.dvc_id, stat.status)
-    return R.set(key, stat.c, 30*24*3600)
+# def set_job_dvcs(dvcs):
+#     key = settings.REDIS_JOB_DVC_KEY
+#     return R.sadd(key, *dvcs)
+#
+#
+# def set_job_stat(stat):
+#     key = settings.REDIS_JOB_STAT_KEY % (current_day(), stat.dvc_id, stat.status)
+#     return R.set(key, stat.c, 30*24*3600)
 
 
 def set_updated_site(site_id, ttl=2*3600):
@@ -679,8 +678,6 @@ def generate_rss_avatar(link, feed=''):
         avatar = '/assets/img/juejin.png'
     elif 'rsshub.app' in link_host:
         avatar = '/assets/img/rsshub.png'
-    elif settings.CHUANSONGME_HOST in link_host:
-        avatar = '/assets/img/chuansongme.jpg'
     elif 'ximalaya.com' in link_host:
         avatar = '/assets/img/ximalaya.png'
     elif 'smzdm.com' in link_host:
@@ -734,7 +731,7 @@ def get_with_retry(url):
 
         try:
             return requests.get(url, verify=False, timeout=30, headers=headers)
-        except (ConnectTimeout, HTTPError, ReadTimeout, Timeout, ConnectionError):
+        except (HTTPError, Timeout, ConnectionError):
             logger.warning(f"请求出现网络异常：`{url}")
         except:
             logger.warning(f"请求出现未知异常：`{url}")

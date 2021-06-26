@@ -10,7 +10,6 @@ from web.views.views_html import get_all_issues
 from web.verify import verify_request
 import logging
 from django.conf import settings
-from web.rssparser.mpwx import add_ershicimi_feed, add_wemp_feed, add_chuansongme_feed, add_anyv_feed
 from web.rssparser.atom import add_atom_feed, add_self_feed, add_qnmlgb_feed
 from web.rssparser.podcast import add_postcast_feed
 import json
@@ -126,19 +125,10 @@ def submit_a_feed(request):
     if feed_url:
         host = get_host_name(feed_url)
 
-        if settings.ERSHICIMI_HOST in host:
-            feed_url = feed_url.replace('/user/analysis?bid=', '/a/')
-            rsp = add_ershicimi_feed(feed_url)
-        elif host in settings.ALLOWED_HOSTS:
+        if host in settings.ALLOWED_HOSTS:
             rsp = add_self_feed(feed_url)
         elif settings.QNMLGB_HOST in host:
             rsp = add_qnmlgb_feed(feed_url)
-        elif settings.WEMP_HOST in host:
-            rsp = add_wemp_feed(feed_url)
-        elif settings.CHUANSONGME_HOST in host:
-            rsp = add_chuansongme_feed(feed_url)
-        elif settings.ANYV_HOST in host:
-            rsp = add_anyv_feed(feed_url)
         else:
             # 区分播客还是普通 RSS
             feed_obj = feedparser.parse(feed_url)
