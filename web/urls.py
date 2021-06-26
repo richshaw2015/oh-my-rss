@@ -1,5 +1,5 @@
 from django.urls import path
-from web.views import dashboard, install, index, search, views_api, views_html, oauth, job
+from web.views import dashboard, install, index, search, views_api, views_html, oauth, monitor
 from web.feeds import SiteFeed
 
 urlpatterns = [
@@ -45,6 +45,8 @@ urlpatterns = [
     path('api/install', install.install, name='install'),
     path('api/load', install.load_db_data, name='load'),
     path('api/debug', install.debug, name='debug'),
+
+    path('api/heartbeat', monitor.heart_beat, name='heart_beat'),
 
     # path('api/job/get', job.get_one_job, name='get_one_job'),
     # path('api/job/finish', job.finish_job, name='finish_job'),
