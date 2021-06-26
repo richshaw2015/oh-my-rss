@@ -23,7 +23,7 @@ def heart_beat(request):
     running_process = subprocess.getoutput("ps x")
 
     try:
-        assert 4 == running_process.count('ohmyrss.wsgi:application')
+        assert 2 == running_process.count('ohmyrss.wsgi:application')
     except:
         return HttpResponse("FAIL: ohmyrss.wsgi:application")
 
