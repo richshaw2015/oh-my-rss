@@ -13,9 +13,7 @@ from django.conf import settings
 from web.rssparser.mpwx import add_ershicimi_feed, add_wemp_feed, add_chuansongme_feed, add_anyv_feed
 from web.rssparser.atom import add_atom_feed, add_self_feed, add_qnmlgb_feed
 from web.rssparser.podcast import add_postcast_feed
-from web.tasks import update_sites_async
 import json
-import django_rq
 import feedparser
 
 logger = logging.getLogger(__name__)
@@ -159,9 +157,9 @@ def submit_a_feed(request):
             if user:
                 add_user_sub_feeds(user.oauth_id, [rsp['site'], ])
 
-            if rsp.get('creator') == 'user':
-                # 新增的普通 RSS 才触发异步更新任务
-                django_rq.enqueue(update_sites_async, [rsp['site'], ], result_ttl=1, ttl=3600, failure_ttl=3600)
+            # if rsp.get('creator') == 'user':
+            #     # 新增的普通 RSS 才触发异步更新任务
+            #     django_rq.enqueue(update_sites_async, [rsp['site'], ], result_ttl=1, ttl=3600, failure_ttl=3600)
 
             return JsonResponse(rsp)
         else:
@@ -192,7 +190,7 @@ def user_subscribe_feed(request):
         add_user_sub_feeds(user.oauth_id, [site_id, ])
 
         # 异步更新
-        django_rq.enqueue(update_sites_async, [site.pk, ], result_ttl=1, ttl=3600, failure_ttl=3600)
+        # django_rq.enqueue(update_sites_async, [site.pk, ], result_ttl=1, ttl=3600, failure_ttl=3600)
 
         logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_id}")
 
@@ -267,23 +265,23 @@ def user_mark_read_all(request):
     return HttpResponseNotFound("Param Error")
 
 
-@verify_request
-def user_force_update_site(request):
-    """
-    强制刷新源，用户手动触发
-    """
-    site_id = request.POST.get('site_id', '')
-
-    site = Site.objects.get(pk=site_id, status='active')
-
-    if site:
-        # 异步刷新
-        logger.info(f"强制刷新源：`{site_id}")
-        django_rq.enqueue(update_sites_async, [site.pk, ], True, result_ttl=1, ttl=3600, failure_ttl=3600)
-
-        return JsonResponse({})
-
-    return HttpResponseNotFound("Param Error")
+# @verify_request
+# def user_force_update_site(request):
+#     """
+#     强制刷新源，用户手动触发
+#     """
+#     site_id = request.POST.get('site_id', '')
+#
+#     site = Site.objects.get(pk=site_id, status='active')
+#
+#     if site:
+#         # 异步刷新
+#         logger.info(f"强制刷新源：`{site_id}")
+#         django_rq.enqueue(update_sites_async, [site.pk, ], True, result_ttl=1, ttl=3600, failure_ttl=3600)
+#
+#         return JsonResponse({})
+#
+#     return HttpResponseNotFound("Param Error")
 
 
 @verify_request

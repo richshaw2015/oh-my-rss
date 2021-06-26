@@ -45,7 +45,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'django_crontab',
-    'django_rq',
+    # 'django_rq',
     'web.apps.WebConfig',
 
     'django.contrib.admin',
@@ -168,16 +168,16 @@ REDIS_PORT = '6379'
 # for web use db
 REDIS_WEB_DB = 1
 # for async job db
-REDIS_RQ_DB = 2
+# REDIS_RQ_DB = 2
 
-RQ_QUEUES = {
-    'default': {
-        'HOST': REDIS_HOST,
-        'PORT': REDIS_PORT,
-        'DB': REDIS_RQ_DB,
-        'DEFAULT_TIMEOUT': 1200,
-    },
-}
+# RQ_QUEUES = {
+#     'default': {
+#         'HOST': REDIS_HOST,
+#         'PORT': REDIS_PORT,
+#         'DB': REDIS_RQ_DB,
+#         'DEFAULT_TIMEOUT': 1200,
+#     },
+# }
 
 # page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'
@@ -317,10 +317,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        'rq.worker': {
-            'handlers': ['my_info', 'my_warn', 'my_error'],
-            'level': 'INFO',
-            'propagate': True,
-        },
+        # 'rq.worker': {
+        #     'handlers': ['my_info', 'my_warn', 'my_error'],
+        #     'level': 'INFO',
+        #     'propagate': True,
+        # },
     },
 }

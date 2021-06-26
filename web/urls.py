@@ -46,16 +46,16 @@ urlpatterns = [
     path('api/load', install.load_db_data, name='load'),
     path('api/debug', install.debug, name='debug'),
 
-    path('api/job/get', job.get_one_job, name='get_one_job'),
-    path('api/job/finish', job.finish_job, name='finish_job'),
-    path('api/job/giveback', job.giveback_job, name='giveback_job'),
+    # path('api/job/get', job.get_one_job, name='get_one_job'),
+    # path('api/job/finish', job.finish_job, name='finish_job'),
+    # path('api/job/giveback', job.giveback_job, name='giveback_job'),
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_view_stats, name='add_view_stats'),
     path('api/star/article', views_api.user_star_article, name='user_star_article'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
     path('api/mark/read', views_api.user_mark_read_all, name='user_mark_read_all'),
-    path('api/update/site', views_api.user_force_update_site, name='user_force_update_site'),
+    # path('api/update/site', views_api.user_force_update_site, name='user_force_update_site'),
 
     path('api/feed/add', views_api.submit_a_feed, name='submit_a_feed'),
     path('api/feed/custom', views_api.user_custom_site, name='user_custom_site'),
