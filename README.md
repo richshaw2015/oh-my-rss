@@ -14,13 +14,6 @@
 一些支持的订阅源： 
 `酷 壳 – CoolShell` 、  `科技爱好者周刊` 、  `GitHub 热门` 、  `湾区日报` 、  `前端精读周刊` 、  `... `
 
-
-订阅源主要支持三种类型以满足您的个性化订阅需求：
-
-- 通过其他途径生成的 RSS 源（在线提交）
-- 微信公众号（在线提交）
-- 自定义 Scrapy 爬虫（贡献源码）
-
 ### VimLike的快捷键
 Vim 党的福音来了~
 
@@ -48,7 +41,7 @@ Vim 党的福音来了~
 </table>
 
 ### 更多
-欢迎Issue、PR或加群讨论。
+欢迎 Issue、PR。
 
 ## 快速开始
 ### 依赖
@@ -59,7 +52,6 @@ Vim 党的福音来了~
 可选的：
 - Redis服务（6379端口），用于记录阅读数、点赞数等数据
 - requirements.txt 中的依赖库 `gunicorn`、`gevent` 在开发环境为非必须
-- `chromium`、`chromedriver` 只有在处理纯 js 渲染页面时才需要
 
 ### 运行Web服务
 
@@ -77,12 +69,6 @@ python3 manage.py migrate web
 数据录入：
 
 在 django 管理后台录入站点信息，或者在线提交订阅源地址。
-
-### 爬虫
-运行爬虫采集命令，例如：
-```shell
-scrapy crawl coolshell
-```
 
 ## 贡献
 详见 CONTRIBUTING.md
