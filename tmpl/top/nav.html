@@ -29,51 +29,49 @@
         </div>
     </li>
 
-    <li class="ev-toggle-fullscreen sidenav-close omrss-nodisplay" data-tooltip="切换全屏" data-position="bottom">
-        <a href="#"><i class="material-icons omrss-color">fullscreen</i>切换全屏</a>
-    </li>
+<!--    <li class="ev-toggle-fullscreen sidenav-close omrss-nodisplay" data-tooltip="切换全屏" data-position="bottom">-->
+<!--        <a href="#"><i class="material-icons omrss-color">fullscreen</i>切换全屏</a>-->
+<!--    </li>-->
 
-    <li><a href="#" class="waves-effect sidenav-close ev-my-feed">
-        <i class="material-icons omrss-color">rss_feed</i>我的订阅</a>
-    </li>
+<!--    <li><a href="#" class="waves-effect sidenav-close ev-my-feed">-->
+<!--        <i class="material-icons omrss-color">rss_feed</i>我的订阅</a>-->
+<!--    </li>-->
 
-    <li><a href="#" class="waves-effect sidenav-close ev-my-star">
-        <i class="material-icons omrss-color">star_border</i>我的收藏</a>
-    </li>
+<!--    <li><a href="#" class="waves-effect sidenav-close ev-my-star">-->
+<!--        <i class="material-icons omrss-color">star_border</i>我的收藏</a>-->
+<!--    </li>-->
 
-    <li class="omrss-nodisplay">
-        <a href="#" class="waves-effect ev-mark-readall sidenav-close">
-            <i class="material-icons omrss-color">check</i>全部设为已读</a>
-    </li>
+<!--    <li class="omrss-nodisplay">-->
+<!--        <a href="#" class="waves-effect ev-mark-readall sidenav-close">-->
+<!--            <i class="material-icons omrss-color">check</i>全部设为已读</a>-->
+<!--    </li>-->
 
 
-    <div class="divider nav-divider"></div>
-
-    <li class="ev-leave-msg sidenav-close">
-        <a href="#"><i class="material-icons omrss-color">format_quote</i>留言</a>
-    </li>
+<!--    <div class="divider nav-divider"></div>-->
 
 {#    <li class="ev-donate sidenav-close">#}
 {#        <a href="#"><i class="material-icons omrss-color">attach_money</i>捐赠</a>#}
 {#    </li>#}
 
 
-    <div class="divider nav-divider"></div>
+<!--    <div class="divider nav-divider"></div>-->
 
     <li class="ev-intro sidenav-close">
         <a href="#"><i class="material-icons omrss-color">info_outline</i>关于</a>
     </li>
 
-    <li class="ev-faq sidenav-close">
-        <a href="#"><i class="material-icons omrss-color">help_outline</i>FAQ</a>
+    <li class="ev-leave-msg sidenav-close">
+        <a href="#"><i class="material-icons omrss-color">format_quote</i>留言</a>
     </li>
 
-    {% if user %}
+<!--    <li class="ev-faq sidenav-close">-->
+<!--        <a href="#"><i class="material-icons omrss-color">help_outline</i>FAQ</a>-->
+<!--    </li>-->
     <li>
         <a href="/dashboard" target="_blank" class="sidenav-close">
             <i class="material-icons omrss-color">trending_up</i>后台报表</a>
     </li>
-    {% endif %}
+
 </ul>
 
 
@@ -82,8 +80,8 @@
         <a href="#" class="brand-logo tooltipped" id="omrss-logo-font" data-tooltip="首页"
            data-position="bottom"><img src="/assets/img/logo.svg" id="omrss-logo">己思</a>
 
-        <a href="#" class="left tooltipped omrss-onlyunread ev-toggle-onlyunread" data-tooltip="切换只看未读"
-           data-position="bottom"><i class="material-icons omrss-color"></i></a>
+<!--        <a href="#" class="left tooltipped omrss-onlyunread ev-toggle-onlyunread" data-tooltip="切换只看未读"-->
+<!--           data-position="bottom"><i class="material-icons omrss-color"></i></a>-->
 
         <a href="#" class="left tooltipped omrss-readmode ev-toggle-readmode" data-tooltip="切换浏览视图"
            data-position="bottom"><i class="material-icons omrss-color"></i></a>
@@ -100,7 +98,7 @@
         <ul class="right">
             <li>
                 <a href="https://dinorss.org/" target="_blank">
-                    <span class="dino-tips">推荐使用 Dinosaur Rss 🦕 客户端</span>
+                    <span class="dino-tips">完整功能请下载 Dinosaur Rss 🦕</span>
                 </a>
             </li>
             <li id="omrss-unread"></li>
@@ -114,9 +112,9 @@
             -->
 
             {% if not user %}
-                <li>
-                    <a href="#model-omrss-login" class="modal-trigger omrss-color">一键登录</a>
-                </li>
+<!--                <li>-->
+<!--                    <a href="#model-omrss-login" class="modal-trigger omrss-color">一键登录</a>-->
+<!--                </li>-->
 
                 <!--
                 <li class="tooltipped" data-tooltip="一键登录" data-position="bottom">
@@ -151,7 +149,7 @@
     <div class="modal-content">
         <h3>即将跳转到三方平台登录</h3>
 
-        <p>登录后可以跨平台同步数据，享受推荐、收藏等一系列计算特权</p>
+<!--        <p>登录后可以跨平台同步数据，享受推荐、收藏等一系列计算特权</p>-->
         <p>目前仅支持<b> GitHub OAuth </b>认证，过程只会获取您的公开信息，预计需要几秒钟时间</p>
 
         <div class="modal-footer">

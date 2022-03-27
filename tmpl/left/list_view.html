@@ -25,11 +25,11 @@
                     <span class="omrss-meta meta-author">@{% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}</span>
                     <span class="meta-time prettydate omrss-meta">{{ article.ctime |to_date_fmt }}</span>
 
-                    {% if article.site.star >= 30 %}
-                        <span class="new badge meta-recommend" data-badge-caption="">荐</span>
-                    {% else %}
-                        <span class="meta-recommend"></span>
-                    {% endif %}
+<!--                    {% if article.site.star >= 30 %}-->
+<!--                        <span class="new badge meta-recommend" data-badge-caption="">荐</span>-->
+<!--                    {% else %}-->
+<!--                        <span class="meta-recommend"></span>-->
+<!--                    {% endif %}-->
 
                     <span class="omrss-view-stat">
                         <i class="material-icons omrss-meta visibility-icon">visibility</i>

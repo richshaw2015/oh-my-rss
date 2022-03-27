@@ -10,7 +10,7 @@
         {% include 'article/third.html' %}
     </div>
 
-    <div class="divider"></div>
+<!--    <div class="divider"></div> -->
 
     <!-- 文章底部 -->
     {% include 'article/bottom-meta.html' %}
@@ -28,20 +28,25 @@
             </li>
             {% endif %}
 
-            <li><a class="btn-floating green darken-1 tooltipped" data-position="left"
-                   data-tooltip="查看站点源" href="{{ article.site |to_rss }}" target="_blank">
+            <li><a class="btn-floating green darken-1 tooltipped" data-position="left" target="_blank"
+                   data-tooltip="查看站点源" href="{{ article.site |to_rss }}">
                 <i class="material-icons">rss_feed</i></a>
             </li>
 
-            <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger" data-position="left"
-                   data-tooltip="取消订阅" data-target="omrss-unsub-feed">
-                <i class="material-icons">delete</i></a>
+            <li><a class="btn-floating yellow darken-1 tooltipped" data-position="left"
+                   data-tooltip="回到顶部" data-target="omrss-unsub-feed" href="#" id="omrss-top">
+                <i class="material-icons">publish</i></a>
             </li>
 
-            <li><a class="btn-floating red tooltipped ev-star-article" data-position="left"
-                   data-tooltip="收藏" data-id="{{ article.uindex }}" href="#">
-                <i class="material-icons">star</i></a>
-            </li>
+<!--            <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger" data-position="left"-->
+<!--                   data-tooltip="取消订阅" data-target="omrss-unsub-feed">-->
+<!--                <i class="material-icons">delete</i></a>-->
+<!--            </li>-->
+
+<!--            <li><a class="btn-floating red tooltipped ev-star-article" data-position="left"-->
+<!--                   data-tooltip="收藏" data-id="{{ article.uindex }}" href="#">-->
+<!--                <i class="material-icons">star</i></a>-->
+<!--            </li>-->
         </ul>
     </div>
 

@@ -2,33 +2,33 @@
 <h1 id="omrss-article-title">{{ article.title }}</h1>
 
 <blockquote id="omrss-article-stats">
-    {% if not user %}
-        {% if article.site.copyright < 30 %}
-            摘要转载自
-        {% else %}
-            原文转载自
-        {% endif %}
-    {% else %}
-        原文转载自
-    {% endif %}
+<!--    {% if not user %}-->
+<!--        {% if article.site.copyright < 30 %}-->
+<!--            摘要转载自-->
+<!--        {% else %}-->
+<!--            原文转载自-->
+<!--        {% endif %}-->
+<!--    {% else %}-->
+<!--        原文转载自-->
+<!--    {% endif %}-->
 
-    「{{ user|to_site_cname:article.site }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"
-                                                  data-id="{{ article.uindex }}">
+<!--    「{{ user|to_site_cname:article.site }}」 (<a href="{{ article.src_url }}" target="_blank" class="ev-open-src"-->
+<!--                                                  data-id="{{ article.uindex }}">-->
 
-    {% if article.site.creator == 'wemp' %}
-        mp.weixin.qq.com
-    {% else %}
-        {{ article.src_url |unquote }}
-    {% endif %}
+<!--    {% if article.site.creator == 'wemp' %}-->
+<!--        mp.weixin.qq.com-->
+<!--    {% else %}-->
+<!--        {{ article.src_url |unquote }}-->
+<!--    {% endif %}-->
 
-    </a> ) By {% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}
+<!--    </a> ) By {% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}-->
 
     {% if article.site.creator != 'podcast' %}
         <p id="omrss-read-stats">预计阅读时间<b> 0 </b>分钟（共 0 个字， 0 张图片， 0 个链接）</p>
     {% endif %}
 
-    {% if article.copyright == 0 %}
-        <p>侵犯了您的权益？请<a href="#" class="ev-leave-msg">在此</a>留言</p>
-    {% endif %}
+<!--    {% if article.copyright == 0 %}-->
+<!--        <p>侵犯了您的权益？请<a href="#" class="ev-leave-msg">在此</a>留言</p>-->
+<!--    {% endif %}-->
 
 </blockquote>

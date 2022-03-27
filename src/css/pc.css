@@ -662,12 +662,12 @@ li.ev-cnt-list:not(.active):hover{
     background-color: #364246;
 }
 #omrss-logo {
-    width: 32px;
+    width: 28px;
     vertical-align: middle;
     margin: auto 16px auto 20px;
 }
 #omrss-logo-font {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 .omrss-color {
     color: #f26522 !important;

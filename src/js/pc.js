@@ -180,16 +180,16 @@ function resetHeight() {
     // 右侧滚动条
     $('.cnt-right').css({
         'overflow-y': 'auto',
-        'height': ($(window).height() - 64) + 'px'
+        'height': ($(window).height() - 54) + 'px'
     });
     // 左侧内容栏
     if ($(window).width() >= 1600 ) {
         $('#omrss-cnt-list').css({
-            'max-height': ($(window).height() - 64 - 60) + 'px'
+            'max-height': ($(window).height() - 54 - 42) + 'px'
         });
     } else {
         $('#omrss-cnt-list').css({
-            'max-height': ($(window).height() - 64 - 50) + 'px'
+            'max-height': ($(window).height() - 54 - 42) + 'px'
         });
     }
 }
