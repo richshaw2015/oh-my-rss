@@ -111,7 +111,7 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
 }
 .visibility-icon {
     margin-right: 3px;
-    font-size: 0.88rem;
+    font-size: 0.8rem;
 }
 .sync-icon {
     font-size: 0.9rem !important;
@@ -553,7 +553,7 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
 #omrss-pager {
     position: fixed;
     bottom: 0;
-    border-top: 1px dashed rgba(0,0,0,0.14);
+    /* border-top: 1px dashed rgba(0,0,0,0.14); */
 }
 #omrss-pager .pagination li {
     border-radius: 5px !important;
@@ -662,9 +662,9 @@ li.ev-cnt-list:not(.active):hover{
     background-color: #364246;
 }
 #omrss-logo {
-    width: 28px;
+    width: 32px;
     vertical-align: middle;
-    margin: auto 16px auto 20px;
+    margin: auto 10px auto 20px;
 }
 #omrss-logo-font {
     font-size: 1.2rem;
@@ -871,13 +871,15 @@ span.meta-recommend {
     padding-top: 16px;
     padding-bottom: 10px;
 }
-.dino-tips {
-    font-size: 13px !important;
-    padding-right: 20px;
-}
 
 @media only screen and (max-width: 1280px) {
     .dino-tips {
         display: none;
+    }
+}
+@media only screen and (min-width: 1280px) {
+    .dino-tips {
+        font-size: 13px !important;
+        padding-right: 20px;
     }
 }

@@ -2,9 +2,9 @@ function initReadMode() {
     const mode = getReadMode();
 
     if (mode === 'site') {
-        $('.ev-toggle-readmode i').text('apps')
+        $('.ev-toggle-readmode i').text('view_module')
     } else if (mode === 'article') {
-        $('.ev-toggle-readmode i').text('low_priority')
+        $('.ev-toggle-readmode i').text('view_list')
     }
 }
 
@@ -12,7 +12,7 @@ function initOnlyUnreadSwitch() {
     const onlyUnread = getOnlyUnreadSwitch();
 
     if (onlyUnread === 'yes') {
-        $('.ev-toggle-onlyunread i').text('visibility_off');
+        $('.ev-toggle-onlyunread i').text('lens');
     } else {
         $('.ev-toggle-onlyunread i').text('visibility');
     }
@@ -146,7 +146,7 @@ function updateSiteUnreadCount(read=0, abs=null) {
 function getPageSize(reflow=false) {
     // 每次都动态取，以防窗口变化
     const itemHeight = $('#omrss-cnt-list ul li:first').outerHeight(true);
-    let containerHeight = $(window).height() - $('#omrss-header').outerHeight() - $('#omrss-pager').outerHeight();
+    let containerHeight = $(window).height() - $('#omrss-header').outerHeight() - $('#omrss-pager').outerHeight() - 20;
 
     const siteNavHeight = $('#omrss-site-nav').outerHeight();
     if (siteNavHeight !== undefined) {
@@ -628,10 +628,10 @@ $(document).ready(function () {
         let reflow = false;
 
         if (mode === 'site') {
-            $('.ev-toggle-readmode i').text('apps');
+            $('.ev-toggle-readmode i').text('view_module');
             toast("切换到站点视图 ^o^");
         } else if (mode === 'article') {
-            $('.ev-toggle-readmode i').text('low_priority');
+            $('.ev-toggle-readmode i').text('view_list');
 
             // 从站点视图切换到文章视图，有可能导致分页数变化
             if ($('#omrss-site-nav').outerHeight() !== undefined) {
@@ -652,7 +652,7 @@ $(document).ready(function () {
         const onlyUnread = toggleOnlyUnread();
 
         if (onlyUnread === 'yes') {
-            $('.ev-toggle-onlyunread i').text('visibility_off');
+            $('.ev-toggle-onlyunread i').text('lens');
             toast("只看未读 ^o^");
         } else if (onlyUnread === 'no') {
             $('.ev-toggle-onlyunread i').text('visibility');

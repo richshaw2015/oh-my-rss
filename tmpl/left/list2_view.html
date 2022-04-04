@@ -68,14 +68,14 @@
                         <i class="material-icons omrss-meta visibility-icon">visibility</i>
                         <span class="meta-num-l omrss-meta">{{ article.uindex |to_view_uv }}</span>
                     </span>
-                    <span class="omrss-star-stat">
-                        <i class="material-icons omrss-meta star-icon
-                        {% if user and user.oauth_id|is_user_stared_article:article.uindex %}
-                        omrss-color
-                        {% endif %}
-                        ">star</i>
-                        <span class="meta-num-l omrss-meta">{{ article.uindex |to_star_uv }}</span>
-                    </span>
+<!--                    <span class="omrss-star-stat">-->
+<!--                        <i class="material-icons omrss-meta star-icon-->
+<!--                        {% if user and user.oauth_id|is_user_stared_article:article.uindex %}-->
+<!--                        omrss-color-->
+<!--                        {% endif %}-->
+<!--                        ">star</i>-->
+<!--                        <span class="meta-num-l omrss-meta">{{ article.uindex |to_star_uv }}</span>-->
+<!--                    </span>-->
                 </div>
             </li>
         {% endfor %}
