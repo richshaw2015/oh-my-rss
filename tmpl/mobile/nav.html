@@ -8,11 +8,7 @@
             <ul class="right">
                 <li id="omrss-unread"></li>
 
-            {% if not user %}
-                <li class="tooltipped" data-tooltip="一键登录" data-position="bottom">
-                    <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
-                </li>
-            {% else %}
+            {% if user %}
                 <li data-oauth-id="{{ user.oauth_id }}"
                     data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
 
@@ -67,19 +63,8 @@
         </div>
     </li>
 
-    <li><a href="#" class="waves-effect sidenav-close ev-my-feed">
-        <i class="material-icons omrss-color">rss_feed</i>我的订阅</a></li>
-
-    <li><a href="#" class="waves-effect ev-mark-readall sidenav-close">
-        <i class="material-icons omrss-color">check</i>全部设为已读</a></li>
-
-    <div class="divider nav-divider"></div>
-
     <li><a href="#" class="waves-effect sidenav-close ev-intro">
         <i class="material-icons omrss-color">info_outline</i>关于</a></li>
-
-    <li><a href="#" class="waves-effect sidenav-close ev-faq">
-        <i class="material-icons omrss-color">help_outline</i>FAQ</a></li>
 
     {% if user %}
     <li><a href="/dashboard" target="_blank" class="waves-effect sidenav-close">

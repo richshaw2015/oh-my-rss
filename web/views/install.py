@@ -1,10 +1,6 @@
 from django.http import JsonResponse
 from web.utils import *
-from feed.utils import mkdir
 import logging
-from web.models import *
-import shutil
-import feedparser
 
 logger = logging.getLogger(__name__)
 
@@ -32,14 +28,6 @@ def install(request):
 
 
 def debug(request):
-    sites = Site.objects.filter(brief__contains='RSS provided')
-    for site in sites:
-        site.brief = trim_brief(site.brief)
-        site.save()
-
-    sites = Site.objects.filter(brief__contains=' Made with love')
-    for site in sites:
-        site.brief = trim_brief(site.brief)
-        site.save()
-
+    from web.tasks import archive_article_cron
+    archive_article_cron()
     return JsonResponse({})

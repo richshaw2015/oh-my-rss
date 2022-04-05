@@ -127,25 +127,6 @@ def is_active_rss(feed):
     return R.get(settings.REDIS_ACTIVE_RSS_KEY % feed) == '1'
 
 
-@lru_cache(maxsize=128, typed=True)
-def get_visitor_subscribe_feeds(sub_feeds, unsub_feeds, star=25):
-    """
-    获取游客订阅的站点；已订阅 + 推荐 - 取消订阅；最多返回 50 个
-    """
-    # 设置订阅源缓存
-    set_active_rss(sub_feeds)
-
-    # TODO 优化这里的性能
-    recommend_feeds = list(Site.objects.filter(status='active', star__gte=star).values_list('id', flat=True))
-    active_feeds = {int(s) for s in get_active_sites()}
-
-    try:
-        return list((set(list(sub_feeds) + recommend_feeds) - set(unsub_feeds)) & active_feeds
-                    )[:settings.VISITOR_SUBS_LIMIT]
-    except:
-        return []
-
-
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -652,21 +633,6 @@ def generate_rss_avatar(link, feed=''):
         avatar = get_random_emoji()
 
     return avatar
-
-
-# @lru_cache(maxsize=1024)
-# def is_sensitive_content(uindex, site_id):
-#     """
-#     文章是否命中国内的敏感词
-#     """
-#     is_sensitive, content = False, get_content(uindex, site_id)
-#
-#     for word in settings.SENSITIVE_WORDS:
-#         if word in content:
-#             is_sensitive = True
-#             break
-#
-#     return is_sensitive
 
 
 def get_with_retry(url):

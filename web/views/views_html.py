@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 from django.conf import settings
 from web.models import *
-from web.utils import get_visitor_subscribe_feeds, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
+from web.utils import get_login_user, get_user_subscribe_feeds, set_user_read_article, \
     get_feed_ranking_dict, get_user_unread_count, get_recent_site_articles, \
     get_site_last_id, get_user_unread_articles, get_user_unread_sites, get_user_ranking_list, get_sites_lastids
 from web.verify import verify_request
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @verify_request
 def get_article_detail(request):
     """
-    获取文章详情；已登录用户记录已读 TODO 服务器记录阅读数
+    获取文章详情；已登录用户记录已读
     """
     uindex = request.POST.get('id')
     user = get_login_user(request)
@@ -25,7 +25,7 @@ def get_article_detail(request):
 
     try:
         article = Article.objects.get(uindex=uindex, status='active')
-    except:
+    except Exception as e:
         logger.info(f"获取文章详情请求处理异常：`{uindex}")
         return HttpResponseNotFound("Param Error")
 
@@ -47,34 +47,21 @@ def get_my_feeds(request):
     """
     获取我的订阅列表；游客已订阅、推荐订阅；登陆用户已订阅、推荐订阅
     """
-    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
-
     user, reach_sub_limit = get_login_user(request), [False, 0]
     
     if user is None:
-        visitor_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
-
+        visitor_sub_feeds = settings.VISITOR_FEEDS
         sub_sites = Site.objects.filter(status='active', pk__in=visitor_sub_feeds).order_by('-star')
-        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(pk__in=visitor_sub_feeds).\
-            order_by('-star')
-
-        if len(visitor_sub_feeds) == settings.VISITOR_SUBS_LIMIT:
-            reach_sub_limit = [True, settings.VISITOR_SUBS_LIMIT]
     else:
         user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
-
         sub_sites = Site.objects.filter(status='active', pk__in=user_sub_feeds).order_by('-star')
-        recom_sites = Site.objects.filter(status='active', star__gte=20).exclude(pk__in=user_sub_feeds)\
-            .order_by('-star')
 
         if user.level < 10:
-            if len(user_sub_feeds) == settings.USER_SUBS_LIMIT:
+            if len(user_sub_feeds) >= settings.USER_SUBS_LIMIT:
                 reach_sub_limit = [True, settings.USER_SUBS_LIMIT]
 
     context = dict()
     context['sub_sites'] = sub_sites
-    context['recom_sites'] = recom_sites
     context['user'] = user
     context['reach_sub_limit'] = reach_sub_limit
 
@@ -248,8 +235,6 @@ def get_site_update_view(request):
     """
     获取更新的全局站点视图，游客 100 个，登陆用户 200 个站点
     """
-    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
     onlyunread = request.POST.get('onlyunread', 'no') == 'yes'
@@ -257,7 +242,7 @@ def get_site_update_view(request):
     user = get_login_user(request)
 
     if user is None:
-        my_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        my_feeds = settings.VISITOR_FEEDS
     else:
         my_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
@@ -271,8 +256,8 @@ def get_site_update_view(request):
         # 分页处理
         try:
             paginator_obj = Paginator(my_feeds, page_size)
-        except:
-            logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
+        except Exception as e:
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{e}")
             return HttpResponseNotFound("Page Number Error")
 
         pg = paginator_obj.page(page)
@@ -306,8 +291,6 @@ def get_article_update_view(request):
     获取更新的文章列表视图；登录用户展示其订阅内容
     """
     # 请求参数获取
-    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     page_size = int(request.POST.get('page_size', 10))
     page = int(request.POST.get('page', 1))
     mobile = request.POST.get('mobile', False)
@@ -317,7 +300,7 @@ def get_article_update_view(request):
 
     # 我的订阅源
     if user is None:
-        my_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
+        my_sub_feeds = settings.VISITOR_FEEDS
     else:
         my_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
@@ -336,8 +319,8 @@ def get_article_update_view(request):
         # 分页处理
         try:
             paginator_obj = Paginator(my_articles, page_size)
-        except:
-            logger.warning(f"分页参数错误：`{page}`{page_size}`{sub_feeds}`{unsub_feeds}")
+        except Exception as e:
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{e}")
             return HttpResponseForbidden("Page Number Error")
 
         pg = paginator_obj.page(page)
@@ -400,36 +383,8 @@ def get_site_article_update_view(request):
             context['articles'] = json.dumps(recent_articles)
 
             return render(request, 'left/list2_view.html', context=context)
-        except:
-            logger.warning(f"分页参数错误：`{page}`{page_size}`{site_id}")
+        except Exception as e:
+            logger.warning(f"分页参数错误：`{page}`{page_size}`{site_id}`{e}")
             return HttpResponseForbidden("Page Number Error")
 
     return HttpResponseForbidden("No Sites Data")
-
-
-@verify_request
-def get_recommend_sites(request):
-    """
-    获取文章推荐的订阅源，只开放登录用户；考虑性能，这里进行随机生成
-    :param request:
-    :return:
-    """
-    user = get_login_user(request)
-
-    if user:
-        user_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
-
-        sites = Site.objects.filter(status='active', star__gte=10).exclude(pk__in=user_sub_feeds)
-        try:
-            sites = random.sample(list(sites), 3)
-        except:
-            logger.warning(f"生成随机订阅失败：`{sites}")
-            return JsonResponse({})
-
-        context = dict()
-        context['sites'] = sites
-        context['user'] = user
-
-        return render(request, 'recommend/random_sites.html', context=context)
-
-    return HttpResponseForbidden("No Recommend Data")

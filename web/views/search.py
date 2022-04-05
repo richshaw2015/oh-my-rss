@@ -25,23 +25,12 @@ def article(request, pid):
 
     try:
         article = Article.objects.get(uindex=pid, status='active')
-    except:
+    except Exception as e:
         return HttpResponseRedirect('https://dinorss.org/')
 
     user = get_login_user(request)
     if user:
         set_user_read_article(user.oauth_id, pid)
-
-    # 判断是否命中敏感词
-    # if is_sensitive_content(pid, article.site_id):
-    #     user_agent = parse(request.META.get('HTTP_USER_AGENT', ''))
-    #
-    #     if user_agent.is_mobile or user_agent.is_bot:
-    #         logger.warning(f'文章命中了敏感词，转到原文：`{article.title}`{pid}')
-    #         return redirect(article.src_url)
-    #     else:
-    #         logger.warning(f'文章命中了敏感词，禁止访问：`{article.title}`{pid}')
-    #         return redirect('index')
 
     context = dict()
     context['article'] = article

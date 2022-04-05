@@ -22,7 +22,6 @@ urlpatterns = [
     # private urls
     path('api/html/article/detail', views_html.get_article_detail, name='get_article_detail'),
     path('api/html/feeds/all', views_html.get_my_feeds, name='get_my_feeds'),
-    path('api/html/recommend/articles', views_html.get_recommend_sites, name='get_recommend_sites'),
     path('api/html/homepage/intro', views_html.get_homepage_intro, name='get_homepage_intro'),
     path('api/html/faq', views_html.get_faq, name='get_faq'),
     path('api/html/explore', views_html.get_explore, name='get_explore'),
@@ -54,7 +53,6 @@ urlpatterns = [
 
     path('api/lastweek/articles', views_api.get_lastweek_articles, name='get_lastweek_articles'),
     path('api/actionlog/add', views_api.add_view_stats, name='add_view_stats'),
-    path('api/star/article', views_api.user_star_article, name='user_star_article'),
     path('api/message/add', views_api.leave_a_message, name='leave_a_message'),
     path('api/mark/read', views_api.user_mark_read_all, name='user_mark_read_all'),
     # path('api/update/site', views_api.user_force_update_site, name='user_force_update_site'),

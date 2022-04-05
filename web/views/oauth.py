@@ -6,7 +6,7 @@ from requests import HTTPError, Timeout, ConnectionError
 import logging
 from django.conf import settings
 import json
-from web.utils import add_user_sub_feeds, get_visitor_subscribe_feeds, add_register_count, save_avatar
+from web.utils import add_user_sub_feeds, add_register_count, save_avatar
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def github_callback(request):
 
                             if created:
                                 logger.warning(f"欢迎新用户登录：`{user.oauth_name}")
-                                add_user_sub_feeds(oauth_id, get_visitor_subscribe_feeds('', '', star=28))
+                                add_user_sub_feeds(oauth_id, settings.USER_DEFAULT_FEEDS)
                                 add_register_count()
 
                                 # 用户头像存储到本地一份，国内网络会丢图
@@ -74,8 +74,8 @@ def github_callback(request):
                             return response
     except (HTTPError, Timeout, ConnectionError):
         logger.warning("OAuth 认证网络出现异常！")
-    except:
-        logger.error("OAuth 认证出现未知异常")
+    except Exception as e:
+        logger.error(f"OAuth 认证出现未知异常 {e}")
 
     response = redirect('index')
     response.set_signed_cookie('toast', 'LOGIN_ERROR_MSG', max_age=20)

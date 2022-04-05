@@ -10,6 +10,7 @@ from web.utils import is_active_rss, get_user_subscribe_feeds, set_feed_ranking_
     get_user_visit_days, set_user_ranking_list, reset_sites_lastids, split_cn_words, get_active_sites, set_indexed
 from collections import Counter
 from django.conf import settings
+from django.db.models import Count
 import json
 import os
 
@@ -30,17 +31,22 @@ def update_all_atom_cron():
             continue
 
         atom_spider(site)
+
+    load_articles_to_redis_cron()
+    load_active_sites_cron()
     return True
 
 
 def update_all_podcast_cron():
     """
-    更新播客，3 天更新一次
+    更新播客
     """
     sites = Site.objects.filter(status='active', creator='podcast').order_by('-star')
     for site in sites:
         podcast_spider(site)
 
+    load_articles_to_redis_cron()
+    load_active_sites_cron()
     return True
 
 
@@ -52,13 +58,12 @@ def archive_article_cron():
     lastweek_ts = datetime.now() - timedelta(days=7)
     Article.objects.filter(is_recent=True, ctime__lte=lastweek_ts).update(is_recent=False)
 
-    # (, 10)，没有收藏过把文件也删除了
-    articles = Article.objects.filter(site__star__lt=10, is_recent=False).iterator()
-    for article in articles:
-        del_dat2_file(article.uindex, article.site_id)
-        article.delete()
-
-    # TODO 每个源保留最近 1000 条文章
+    for dest in Article.objects.values("site_id").annotate(count=Count('site_id')).\
+            filter(count__gt=1000):
+        for article in Article.objects.filter(site_id=dest['site_id']).order_by('-id')[1000:]:
+            if not article.is_recent:
+                del_dat2_file(article.uindex, article.site_id)
+                article.delete()
     return True
 
 
@@ -121,7 +126,7 @@ def cal_site_ranking_cron():
 
 def load_articles_to_redis_cron():
     """
-    扫描一遍数据库，每隔 5 分钟同步一次
+    扫描一遍数据库
     """
     site_articles, articles, sites_lastids = {}, [], []
 

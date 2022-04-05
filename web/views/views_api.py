@@ -1,8 +1,7 @@
 
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse, HttpResponseForbidden
-import django
 from web.models import *
-from web.utils import incr_view_uv, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
+from web.utils import incr_view_uv, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
     set_user_read_articles, set_user_visit_day, is_podcast_feed, \
     get_recent_site_articles, set_user_site_cname, set_user_site_author, set_active_site
@@ -25,8 +24,6 @@ def get_lastweek_articles(request):
     """
     uid = request.POST.get('uid', '')
     user = get_login_user(request)
-    sub_feeds = json.loads(request.POST.get('sub_feeds') or '[]')
-    unsub_feeds = json.loads(request.POST.get('unsub_feeds') or '[]')
     ext = request.POST.get('ext', '')
 
     reach_sub_limit = False
@@ -34,16 +31,12 @@ def get_lastweek_articles(request):
     logger.info(f"查询未读数：`{uid}`{ext}")
 
     if user is None:
-        my_sub_feeds = get_visitor_subscribe_feeds(tuple(sub_feeds), tuple(unsub_feeds))
-        reach_sub_limit = len(my_sub_feeds) == settings.VISITOR_SUBS_LIMIT
+        my_sub_feeds = settings.VISITOR_FEEDS
     else:
         my_sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 
         if user.level < 10:
-            reach_sub_limit = len(my_sub_feeds) == settings.USER_SUBS_LIMIT
-
-    # 异步更新任务
-    # django_rq.enqueue(update_sites_async, list(my_sub_feeds), result_ttl=1, ttl=3600, failure_ttl=3600)
+            reach_sub_limit = len(my_sub_feeds) >= settings.USER_SUBS_LIMIT
 
     # 获取文章索引列表
     my_toread_articles = set()
@@ -65,9 +58,6 @@ def get_lastweek_articles(request):
         return response
     else:
         response = JsonResponse({"result": my_toread_articles})
-        if reach_sub_limit:
-            response.set_signed_cookie('toast', 'SUBS_LIMIT_ERROR_MSG', max_age=20)
-
         return response
 
 
@@ -103,8 +93,8 @@ def leave_a_message(request):
             logger.warning(f"有新的留言：`{content}")
 
             return get_all_issues(request)
-        except:
-            logger.error(f"留言增加失败：`{uid}`{content}`{nickname}`{contact}")
+        except Exception as e:
+            logger.error(f"留言增加失败：`{uid}`{content}`{nickname}`{contact}`{e}")
 
             return HttpResponseServerError('Internal Error')
 
@@ -144,11 +134,6 @@ def submit_a_feed(request):
             # 已登录用户，自动订阅
             if user:
                 add_user_sub_feeds(user.oauth_id, [rsp['site'], ])
-
-            # if rsp.get('creator') == 'user':
-            #     # 新增的普通 RSS 才触发异步更新任务
-            #     django_rq.enqueue(update_sites_async, [rsp['site'], ], result_ttl=1, ttl=3600, failure_ttl=3600)
-
             return JsonResponse(rsp)
         else:
             logger.warning(f"RSS 解析失败：`{feed_url}")
@@ -170,15 +155,12 @@ def user_subscribe_feed(request):
         # 先判断是否达到限制
         if user.level < 10:
             if len(get_user_subscribe_feeds(user.oauth_id, from_user=False, user_level=user.level)) \
-                    == settings.USER_SUBS_LIMIT:
+                    <= settings.USER_SUBS_LIMIT:
 
                 logger.warning(f"已达到订阅上限：`{user.oauth_name}")
                 return JsonResponse({"code": 1, "msg": f"已达到 {settings.USER_SUBS_LIMIT} 个订阅数，请先取消一部分！"})
 
         add_user_sub_feeds(user.oauth_id, [site_id, ])
-
-        # 异步更新
-        # django_rq.enqueue(update_sites_async, [site.pk, ], result_ttl=1, ttl=3600, failure_ttl=3600)
 
         logger.warning(f"登陆用户订阅动作：`{user.oauth_name}`{site_id}")
 
@@ -199,7 +181,6 @@ def user_unsubscribe_feed(request):
         del_user_sub_feed(user.oauth_id, site_id)
 
         logger.warning(f"登陆用户取消订阅动作：`{user.oauth_name}`{site_id}")
-
         return JsonResponse({"site": site_id})
 
     return HttpResponseForbidden("Param Error")
@@ -250,12 +231,4 @@ def user_mark_read_all(request):
         else:
             return JsonResponse({})
 
-    return HttpResponseNotFound("Param Error")
-
-
-@verify_request
-def user_star_article(request):
-    """
-    登陆用户收藏文章，不再支持
-    """
     return HttpResponseNotFound("Param Error")

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from web.models import *
-from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, get_visitor_subscribe_feeds
+from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds
 import logging
 from user_agents import parse
 from django.conf import settings
@@ -23,7 +23,7 @@ def index(request):
 
     # 默认的渲染列表，区分是否登录用户
     if user is None:
-        sub_feeds = get_visitor_subscribe_feeds('', '')
+        sub_feeds = settings.VISITOR_FEEDS
     else:
         sub_feeds = get_user_subscribe_feeds(user.oauth_id, user_level=user.level)
 

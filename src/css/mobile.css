@@ -72,6 +72,11 @@ a, p, li, h1, h2, h3, h4, h5, h6 {
     word-break: break-all;
 }
 
+nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
+    height: 54px !important;
+    line-height: 54px !important;
+}
+
 /* 悬浮球动画 */
 .fixed-action-btn {
     padding-top: 0;
@@ -178,7 +183,7 @@ nav .brand-logo {
     color: inherit;
 }
 #omrss-pager .pagination li {
-    border-radius: 6px !important;
+    border-radius: 2px !important;
 }
 .pagination li {
     width: 15%;
