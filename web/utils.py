@@ -215,7 +215,7 @@ def reset_recent_articles(articles):
 
     R.sadd(key, *articles)
 
-    R.expire(key, 600)
+    R.expire(key, 2*86400)
 
     return True
 
@@ -232,7 +232,7 @@ def reset_recent_site_articles(site_id, articles):
 
     R.sadd(key, *articles)
 
-    R.expire(key, 600)
+    R.expire(key, 2*86400)
 
     return True
 
@@ -244,7 +244,7 @@ def get_recent_site_articles(site_id):
 
 def set_site_lastid(site_id, uindex):
     key = settings.REDIS_SITE_LASTID_KEY % site_id
-    return R.set(key, uindex, 600)
+    return R.set(key, uindex, 2*86400)
 
 
 def get_site_last_id(site_id):
