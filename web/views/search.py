@@ -25,18 +25,17 @@ def article(request, pid):
 
     try:
         article = Article.objects.get(uindex=pid, status='active')
+        user = get_login_user(request)
+        if user:
+            set_user_read_article(user.oauth_id, pid)
+
+        context = dict()
+        context['article'] = article
+        context['user'] = user
+
+        return render(request, 'mobile/article.html', context=context)
     except Exception as e:
         return HttpResponseRedirect('https://dinorss.org/')
-
-    user = get_login_user(request)
-    if user:
-        set_user_read_article(user.oauth_id, pid)
-
-    context = dict()
-    context['article'] = article
-    context['user'] = user
-
-    return render(request, 'mobile/article.html', context=context)
 
 
 def robots(request):

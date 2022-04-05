@@ -1,6 +1,8 @@
+import shutil
+
 from django.http import JsonResponse
 from web.utils import *
-from web.models import Article
+from web.models import Article, Site
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,10 +31,14 @@ def install(request):
 
 
 def debug(request):
-    for a in Article.objects.all().iterator():
-        try:
-            a.site
-        except Exception as e:
-            a.delete()
-    
+    for s in range(1, 4843):
+        if not Site.objects.filter(pk=s).exists():
+            Article.objects.filter(site_id=s).delete()
+
+            site_data = os.path.join(settings.HTML_DATA2_DIR, str(s))
+            try:
+                shutil.rmtree(site_data)
+            except Exception as e:
+                logger.info(e)
+
     return JsonResponse({})
