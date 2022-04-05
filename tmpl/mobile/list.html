@@ -40,10 +40,6 @@
                     ">star</i>
                     <span class="right meta-num-l">{{ article.uindex |to_view_uv }}</span>
                     <i class="right material-icons meta-icon visibility-icon">visibility</i>
-
-                    {% if article.site.star >= 30 %}
-                        <span class="right new badge meta-recommend" data-badge-caption="">荐</span>
-                    {% endif %}
                 </div>
             </li>
         {% endfor %}

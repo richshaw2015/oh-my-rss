@@ -27,12 +27,11 @@
                               data-name="{{ site.name }}" data-site="{{ site.pk }}">订阅</span>
                     {% endif %}
                 {% else %}
-                    <span class="waves-effect waves-light btn-small right omrss-text ev-sub-feed omrss-sub-btn"
-                          data-name="{{ site.name }}" data-site="{{ site.pk }}">订阅</span>
                 {% endif %}
 
-                    <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>
-
+                    <span class="new right omrss-recent-badge">
+                        <i class="material-icons meta-icon sync-icon">sync</i>
+                        {{ site.pk |to_site_update_count }}</span>
                 </div>
             </div>
         </div>

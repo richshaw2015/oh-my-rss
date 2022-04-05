@@ -34,6 +34,11 @@
 <!--                    <span class="right omrss-text yellow-text text-darken-2 omrss-rank-star">{{ site.star |to_stars }}</span>-->
 
                     <span class="new right omrss-text omrss-rank-score">{{ site.score }} 人气</span>
+                    {% if not user %}
+                    <span class="new right omrss-recent-badge">
+                        <i class="material-icons meta-icon sync-icon">sync</i>
+                        {{ site.pk |to_site_update_count }}</span>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -247,6 +247,7 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
 
 .omrss-rank-score {
     font-weight: 300;
+    padding-right: 16px;
 }
 
 @media only screen and (max-width: 992px) {
@@ -404,90 +405,6 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
     }
 }
 
-@media only screen and (min-width: 1600px) {
-    .omrss-top-form {
-        left: 510px;
-    }
-    .cnt-left {
-        width: 500px;
-    }
-    .cnt-right {
-        left: 500px;
-    }
-    .omrss-readmode {
-        left: calc(500px - 54px - 5px);
-    }
-    .omrss-onlyunread {
-        left: calc(500px - 54px - 5px - 54px);
-    }
-    .collection .collection-item.ev-cnt-list {
-        padding: 8px 16px;
-    }
-    #omrss-pager {
-        width: 480px;
-    }
-    #omrss-pager .pagination {
-        margin: 6px 0;
-    }
-    .flow-text {
-        font-size:1.3rem
-    }
-    .meta-author {
-        width: 8rem;
-    }
-    .meta-time {
-        width: 6rem;
-    }
-    .omrss-view-stat, .omrss-star-stat {
-        width: 4rem;
-    }
-    .unread {
-        font-size: 14px;
-    }
-    .read {
-        font-size: 16px;
-    }
-
-    h1 {
-        font-size: 2.4rem;
-        margin-top: 1.4rem;
-        margin-bottom: 0.8rem;
-    }
-    h2 {
-        font-size: 2.1rem;
-        margin-top: 1rem;
-        margin-bottom: 0.6rem;
-    }
-    h3 {
-        font-size: 1.8rem;
-        margin-top: 0.8rem;
-        margin-bottom: 0.4rem;
-    }
-    h4 {
-        font-size: 1.5rem;
-        margin-top: 0.6rem;
-        margin-bottom: 0.3rem;
-    }
-    h5 {
-        font-size: 1.4rem;
-    }
-    h6 {
-        font-size: 1.3rem;
-    }
-
-    #omrss-article-bottom {
-        padding: 20px;
-    }
-    .omrss-donate-block {
-        margin-right: 8px;
-        margin-bottom: 8px;
-    }
-    .omrss-donate-img {
-        width: 100px;
-        height: 100px;
-    }
-}
-
 .rss-title {
     font-size: 1.2rem;
 }
@@ -506,11 +423,7 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
         margin-right: 0.5rem;
     }
 }
-@media only screen and (min-width: 1800px) {
-    .omrss-right-space {
-        margin-right: 2rem;
-    }
-}
+
 #omrss-header {
     position: fixed;
     height: 54px;

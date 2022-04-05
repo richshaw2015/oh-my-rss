@@ -67,10 +67,12 @@
 <!--    <li class="ev-faq sidenav-close">-->
 <!--        <a href="#"><i class="material-icons omrss-color">help_outline</i>FAQ</a>-->
 <!--    </li>-->
+    {% if user %}
     <li>
         <a href="/dashboard" target="_blank" class="sidenav-close">
             <i class="material-icons omrss-color">trending_up</i>后台报表</a>
     </li>
+    {% endif %}
 
 </ul>
 
@@ -80,8 +82,10 @@
         <a href="#" class="brand-logo tooltipped" id="omrss-logo-font" data-tooltip="首页"
            data-position="bottom"><img src="/assets/img/logo.svg" id="omrss-logo">己思</a>
 
-<!--        <a href="#" class="left tooltipped omrss-onlyunread ev-toggle-onlyunread" data-tooltip="切换只看未读"-->
-<!--           data-position="bottom"><i class="material-icons omrss-color"></i></a>-->
+        {% if user %}
+        <a href="#" class="left tooltipped omrss-onlyunread ev-toggle-onlyunread" data-tooltip="切换只看未读"
+           data-position="bottom"><i class="material-icons omrss-color"></i></a>
+        {% endif %}
 
         <a href="#" class="left tooltipped omrss-readmode ev-toggle-readmode" data-tooltip="切换浏览视图"
            data-position="bottom"><i class="material-icons omrss-color"></i></a>
@@ -111,17 +115,7 @@
             </li>
             -->
 
-            {% if not user %}
-<!--                <li>-->
-<!--                    <a href="#model-omrss-login" class="modal-trigger omrss-color">一键登录</a>-->
-<!--                </li>-->
-
-                <!--
-                <li class="tooltipped" data-tooltip="一键登录" data-position="bottom">
-                    <a href="#model-omrss-login" class="modal-trigger"><i class="material-icons omrss-color">person</i></a>
-                </li>
-                -->
-            {% else %}
+            {% if user %}
                 <li data-oauth-id="{{ user.oauth_id }}"
                     data-oauth-name="{{ user.oauth_name }}" id="omrss-my">
 

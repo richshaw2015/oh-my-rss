@@ -13,8 +13,10 @@ function initOnlyUnreadSwitch() {
 
     if (onlyUnread === 'yes') {
         $('.ev-toggle-onlyunread i').text('lens');
+        $('.ev-toggle-onlyunread i').css('font-size', '18px');
     } else {
         $('.ev-toggle-onlyunread i').text('visibility');
+        $('.ev-toggle-onlyunread i').css('font-size', '24px');
     }
 }
 
@@ -653,9 +655,11 @@ $(document).ready(function () {
 
         if (onlyUnread === 'yes') {
             $('.ev-toggle-onlyunread i').text('lens');
+            $('.ev-toggle-onlyunread i').css('font-size', '18px');
             toast("只看未读 ^o^");
         } else if (onlyUnread === 'no') {
             $('.ev-toggle-onlyunread i').text('visibility');
+            $('.ev-toggle-onlyunread i').css('font-size', '24px');
             toast("查看全部 ^o^");
         }
         loadPage(1, "");
