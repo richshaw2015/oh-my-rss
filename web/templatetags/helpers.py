@@ -108,19 +108,23 @@ def to_short_site_cname(user, site):
     """
     订阅源显示名称，最多 10 个汉字，支持用户自定义名称
     """
-    if isinstance(site, dict):
-        site_id = site['id']
-        site_cname = site['cname']
-    else:
-        site_id = site.id
-        site_cname = site.cname
+    try:
+        if isinstance(site, dict):
+            site_id = site['id']
+            site_cname = site['cname']
+        else:
+            site_id = site.id
+            site_cname = site.cname
 
-    if user:
-        cname = get_user_site_cname(user.oauth_id, site_id)
-        if cname:
-            return cut_to_short(cname, 20)
+        if user:
+            cname = get_user_site_cname(user.oauth_id, site_id)
+            if cname:
+                return cut_to_short(cname, 20)
 
-    return cut_to_short(site_cname, 20)
+        return cut_to_short(site_cname, 20)
+    except Exception as e:
+        logger.warning(f"{site}`{e}")
+    return ''
 
 
 @register.filter
