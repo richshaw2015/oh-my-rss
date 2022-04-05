@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from web.utils import *
+from web.models import Article
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,10 @@ def install(request):
 
 
 def debug(request):
-    from web.tasks import archive_article_cron
-    archive_article_cron()
+    for a in Article.objects.all().iterator():
+        try:
+            a.site
+        except Exception as e:
+            a.delete()
+    
     return JsonResponse({})

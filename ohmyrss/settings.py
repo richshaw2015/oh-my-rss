@@ -4,8 +4,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-VISITOR_FEEDS = [5, 14, 21, 48, 118, 163, 222, 227, 229, 251, 261, 415, 536, 558, 1393, 20, 25, 33, 104, 166, 179, 223,
-                 240, 1482, 2798, 12, 13, 50, 334, 512, 1046, 3, 31, 1, 6, 7, 10, 208, 420, 47, 2, 4, 409, 494]
+VISITOR_FEEDS = [5, 14, 48, 118, 163, 222, 227, 251, 261, 536, 558, 1393, 20, 25, 33, 104, 166, 179, 223, 4853,
+                 1482, 12, 13, 334, 512, 1046, 3, 31, 1, 7, 208, 420, 47, 2, 4, 409, 494, 504, 424, 4843]
 USER_DEFAULT_FEEDS = [1, 2, 3, 7, 20]
 
 # mpwx third party hosts
