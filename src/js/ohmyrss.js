@@ -377,7 +377,7 @@ function setToreadInfo(notify=false) {
 let lruCache = new Cache(50, false, new Cache.LocalStorageCacheStorage('OMRSS'));
 
 // 缓存版本号，每次上线需要更新
-const cacheVer = '29';
+const cacheVer = '30';
 
 function setLruCache(key, value) {
     if (value.length < 100 * 1024 && value.length > 512) {
@@ -435,24 +435,6 @@ function fixWempStyleTag() {
 
         if ( style !== undefined ){
             $(this).removeAttr('style');
-        }
-    });
-}
-
-function fixChuangSongMeImg() {
-    // 传送门图片兼容处理
-    $("#omrss-third img").each(function() {
-        const src = $(this).attr('src');
-
-        if (src !== undefined) {
-            if (src.indexOf('store.sogou.com') > 0) {
-                $(this).attr('src', src.split('&url=')[1]);
-            }
-        } else {
-            const dataSrc = $(this).attr('data-src');
-            if (dataSrc !== undefined) {
-                $(this).attr('src', dataSrc);
-            }
         }
     });
 }

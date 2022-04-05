@@ -2,9 +2,9 @@
 from django.http import HttpResponseNotFound, HttpResponseServerError, JsonResponse, HttpResponseForbidden
 import django
 from web.models import *
-from web.utils import incr_view_star, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
+from web.utils import incr_view_uv, get_visitor_subscribe_feeds, get_user_subscribe_feeds, get_login_user, \
     add_user_sub_feeds, del_user_sub_feed, get_user_unread_count, get_host_name, \
-    set_user_read_articles, set_user_visit_day, set_user_stared, is_user_stared, is_podcast_feed, \
+    set_user_read_articles, set_user_visit_day, is_podcast_feed, \
     get_recent_site_articles, set_user_site_cname, set_user_site_author, set_active_site
 from web.views.views_html import get_all_issues
 from web.verify import verify_request
@@ -76,9 +76,7 @@ def add_view_stats(request):
     """
     增加文章浏览数据打点
     """
-    uindex = request.POST.get('id')
-
-    if incr_view_star('VIEW', uindex):
+    if incr_view_uv(request.POST.get('id')):
         return JsonResponse({})
 
     return HttpResponseNotFound("Param Error")
@@ -255,52 +253,9 @@ def user_mark_read_all(request):
     return HttpResponseNotFound("Param Error")
 
 
-# @verify_request
-# def user_force_update_site(request):
-#     """
-#     强制刷新源，用户手动触发
-#     """
-#     site_id = request.POST.get('site_id', '')
-#
-#     site = Site.objects.get(pk=site_id, status='active')
-#
-#     if site:
-#         # 异步刷新
-#         logger.info(f"强制刷新源：`{site_id}")
-#         django_rq.enqueue(update_sites_async, [site.pk, ], True, result_ttl=1, ttl=3600, failure_ttl=3600)
-#
-#         return JsonResponse({})
-#
-#     return HttpResponseNotFound("Param Error")
-
-
 @verify_request
 def user_star_article(request):
     """
-    登陆用户收藏文章
+    登陆用户收藏文章，不再支持
     """
-    uindex = request.POST.get('id')
-    user = get_login_user(request)
-
-    if user and uindex:
-        if not is_user_stared(user.oauth_id, uindex):
-            article = Article.objects.get(uindex=uindex, status='active')
-
-            try:
-                record = UserArticle(user=user, site=article.site, uindex=uindex, title=article.title,
-                                     author=article.author, src_url=article.src_url)
-                record.save()
-            except django.db.utils.IntegrityError:
-                logger.warning(f"已经收藏过了：`{user.oauth_id}`{uindex}")
-                return JsonResponse({})
-
-            # 缓存标记
-            set_user_stared(user.oauth_id, uindex)
-
-            # 统计次数
-            incr_view_star('STAR', uindex)
-
-            return JsonResponse({})
-        else:
-            return JsonResponse({})
     return HttpResponseNotFound("Param Error")

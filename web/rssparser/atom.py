@@ -2,7 +2,7 @@
 import django
 from django.urls import resolve
 from web.models import *
-from web.utils import generate_rss_avatar, set_updated_site, get_with_retry, get_short_host_name, write_dat2_file, \
+from web.utils import generate_rss_avatar, get_with_retry, get_short_host_name, write_dat2_file, \
     get_html_text, trim_brief
 import logging
 import feedparser
@@ -170,7 +170,6 @@ def atom_spider(site):
         except:
             logger.warning(f'数据插入异常：`{title}`{link}')
 
-    set_updated_site(site.pk)
     return True
 
 

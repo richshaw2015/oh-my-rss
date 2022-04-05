@@ -1,10 +1,10 @@
 function initReadMode() {
     const mode = getReadMode();
 
-    if (mode === 'site') {
-        $('.ev-toggle-readmode i').text('view_module')
-    } else if (mode === 'article') {
+    if (mode === 'article') {
         $('.ev-toggle-readmode i').text('view_list')
+    } else {
+        $('.ev-toggle-readmode i').text('view_module')
     }
 }
 
@@ -37,7 +37,6 @@ function initMaterialUI() {
 
     $('textarea#omrss-feed-input').characterCounter();
     $('textarea#issue-input-detail, input#issue-input-name, input#issue-input-contact').characterCounter();
-
 }
 
 function initLayout() {
@@ -56,31 +55,6 @@ function initLayout() {
 
     // 使页面主内容区域获得焦点，这样快捷键就生效了
     $('#omrss-main').focus();
-}
-
-function updateStarUI(newAdd=false) {
-    // 更新收藏 UI
-    $('.ev-star-article').each(function (index){
-        evTarget = $(this);
-        id = evTarget.attr('data-id');
-
-        if (isStared(id)) {
-            // 区分是悬浮球，还是底部工具栏
-            if (evTarget.hasClass('btn-floating')) {
-                evTarget.addClass('omrss-nodisplay');
-            } else {
-                evTarget.find('span').text(' 已收藏');
-                evTarget.removeClass('ev-star-article');
-            }
-        }
-    });
-    
-    if (newAdd) {
-        const el = $('.ev-cnt-list.active').find('i.star-icon');
-        if (el.length === 1) {
-            el.addClass('omrss-color');
-        }
-    }
 }
 
 // 用于返回上级
@@ -166,7 +140,6 @@ function getPageSize(reflow=false) {
     if (itemHeight > 0) {
         pageSize = Math.floor(containerHeight / itemHeight);
     }
-    // console.log(pageSize + " " + reflow);
     return pageSize;
 }
 
@@ -185,30 +158,15 @@ function resetHeight() {
         'height': ($(window).height() - 54) + 'px'
     });
     // 左侧内容栏
-    if ($(window).width() >= 1600 ) {
-        $('#omrss-cnt-list').css({
-            'max-height': ($(window).height() - 54 - 42) + 'px'
-        });
-    } else {
-        $('#omrss-cnt-list').css({
-            'max-height': ($(window).height() - 54 - 42) + 'px'
-        });
-    }
+    $('#omrss-cnt-list').css({
+        'max-height': ($(window).height() - 54 - 42) + 'px'
+    });
+
 }
 
 function setCurPage(page) {
     // 记录当前页数
     localStorage.setItem('CURPG', page);
-}
-
-function setRecommendArticles(articleId) {
-    if (getLoginId()) {
-        setTimeout(function () {
-            $.post("/api/html/recommend/articles", {uid: getOrSetUid(), id: articleId}, function(data){
-                $('#omrss-recommend').html(data);
-            });
-        }, 1000);
-    }
 }
 
 
@@ -360,7 +318,6 @@ function loadPage(page, site="", reflow=false) {
                 $('#omrss-loader').addClass('hide');
             });
         }
-
     } else if (mode === 'article') {
         $.post("/api/html/articles/list", {
             uid: getOrSetUid(), page_size: getPageSize(reflow), page: page, sub_feeds: subFeeds, unsub_feeds: unSubFeeds,
@@ -459,8 +416,6 @@ $(document).ready(function () {
 
                 initMaterialUI();
 
-                fixChuangSongMeImg();
-
                 if (siteType === 'wemp') {
                     fixWempStyleTag();
                     fixArticlePrivilege();
@@ -485,8 +440,6 @@ $(document).ready(function () {
                 // 数据统计
                 updateReadStats();
 
-                updateStarUI();
-
                 target.scrollTop(0);
 
                 if (evTarget.find('i.unread').length === 1) {
@@ -497,9 +450,6 @@ $(document).ready(function () {
                     // 剩余未读数
                     updateUnreadCount(1, false);
                 }
-
-                // 推荐文章
-                setRecommendArticles(articleId);
             } else {
                 // 没有缓存数据，走网络请求
                 $('#omrss-loader').removeClass('hide');
@@ -514,7 +464,6 @@ $(document).ready(function () {
                     target.html(data);
 
                     initMaterialUI();
-                    fixChuangSongMeImg();
 
                     if (siteType === 'wemp') {
                         fixWempStyleTag();
@@ -539,8 +488,6 @@ $(document).ready(function () {
 
                     // 更新统计
                     updateReadStats();
-
-                    updateStarUI();
                     
                     target.scrollTop(0);
 
@@ -559,9 +506,6 @@ $(document).ready(function () {
                         $.post("/api/actionlog/add", {uid: getOrSetUid(), id: articleId, action: "VIEW"}, function(){
                         });
                     }, 1000);
-
-                    // 推荐文章
-                    setRecommendArticles(articleId);
                 }).fail(function () {
                     warnToast(NET_ERROR_MSG);
                 }).always(function () {
@@ -639,7 +583,6 @@ $(document).ready(function () {
             if ($('#omrss-site-nav').outerHeight() !== undefined) {
                 reflow = true;
             }
-
             toast("切换到文章视图 ^o^");
         }
         loadPage(1, "", reflow);
@@ -703,7 +646,7 @@ $(document).ready(function () {
             
             $.post("/api/feed/add", {uid: getOrSetUid(), url: url}, function (data) {
                 visitorSubFeed(data.site);
-                toast("添加成功，预计一小时内收到更新 ^o^", 3000);
+                toast("添加成功，预计一天内收到更新 ^o^", 3000);
             }).fail(function () {
                 warnToast('RSS 地址解析失败，管理员稍后会跟进处理！');
             }).always(function () {
@@ -770,33 +713,6 @@ $(document).ready(function () {
         const site = $(this).attr('data-site');
 
         loadPage(page, site);
-    });
-
-    // 收藏处理
-    $(document).on('click', '.ev-star-article', function () {
-        if (!getLoginId()) {
-            warnToast("登陆后才能收藏！");
-        } else {
-            const id = $(this).attr('data-id');
-            const evTarget = $(this);
-
-            if (isStared(id)) {
-                updateStarUI();
-                toast("已经收藏过了 ^o^");
-            } else {
-                $('#omrss-loader').removeClass('hide');
-                $.post("/api/star/article", {uid: getOrSetUid(), id: id}, function (data) {
-                    setStared(id);
-                    updateStarUI(newAdd=true);
-                    
-                    toast("收藏成功 ^o^");
-                }).fail(function () {
-                    warnToast(NET_ERROR_MSG);
-                }).always(function () {
-                    $('#omrss-loader').addClass('hide');
-                });
-            }
-        }
     });
 
     // 左上角返回按钮
@@ -924,27 +840,6 @@ $(document).ready(function () {
         })
     });
 
-    // FAQ
-    $(document).on('click', '.ev-faq', function () {
-        $('#omrss-loader').removeClass('hide');
-
-        $.post("/api/html/faq", {uid: getOrSetUid()}, function (data) {
-            target = $('#omrss-main');
-            target.html(data);
-
-            initMaterialUI();
-
-            target.scrollTop(0);
-            resetHeight();
-            updateReadStats();
-        }).fail(function () {
-            warnToast(NET_ERROR_MSG);
-        }).always(function () {
-            $('#omrss-loader').addClass('hide');
-            $('#omrss-main').focus();
-        })
-    });
-
     // 首页
     $('#omrss-logo-font').click(function () {
         $('#omrss-loader').removeClass('hide');
@@ -964,34 +859,10 @@ $(document).ready(function () {
         })
     });
 
-    // 我的收藏
-    $('.ev-my-star').click(function () {
-        warnToast("功能开发中，敬请关注 ^o^");
-        $('#omrss-main').focus();
-    });
-
     // 留言页面
     $(document).on('click', '.ev-leave-msg', function() {
         $('#omrss-loader').removeClass('hide');
         $.post("/api/html/issues/all", {uid: getOrSetUid()}, function (data) {
-            $('#omrss-main').html(data);
-
-            initMaterialUI();
-
-            $('#omrss-main').scrollTop(0);
-            resetHeight();
-        }).fail(function () {
-            warnToast(NET_ERROR_MSG);
-        }).always(function () {
-            $('#omrss-loader').addClass('hide');
-            $('#omrss-main').focus();
-        })
-    });
-
-    // 捐赠页面
-    $(document).on('click', '.ev-donate', function() {
-        $('#omrss-loader').removeClass('hide');
-        $.post("/api/html/donate", {uid: getOrSetUid()}, function (data) {
             $('#omrss-main').html(data);
 
             initMaterialUI();

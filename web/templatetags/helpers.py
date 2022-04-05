@@ -6,22 +6,11 @@ import hashlib
 import urllib
 import logging
 from functools import lru_cache
-import re
 import time
-from web.utils import R, get_content, is_user_stared, get_user_site_cname, get_user_site_author
+from web.utils import R, get_content, get_user_site_cname, get_user_site_author
 
 register = template.Library()
 logger = logging.getLogger(__name__)
-
-
-@register.filter
-def to_stars(num):
-    """
-    turn feed score to stars
-    :param num:
-    :return:
-    """
-    return '★' * int(num / 10)
 
 
 @register.filter
@@ -49,11 +38,6 @@ def to_view_uv(uindex):
 
 
 @register.filter
-def to_star_uv(uindex):
-    return R.get(settings.REDIS_STAR_KEY % uindex) or 0
-
-
-@register.filter
 def to_fuzzy_uid(uid):
     return uid[:3] + '**' + uid[-3:]
 
@@ -78,11 +62,6 @@ def is_user_read_article(user_id, uindex):
     """
     key = settings.REDIS_USER_READ_KEY % (user_id, uindex)
     return R.get(key) == '1'
-
-
-@register.filter
-def is_user_stared_article(user_id, uindex):
-    return is_user_stared(user_id, uindex)
 
 
 def cut_to_short(text, size):

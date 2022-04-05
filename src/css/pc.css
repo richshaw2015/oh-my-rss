@@ -219,7 +219,7 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
 }
 
 .btn, .btn-small {
-    border-radius: 5px;
+    border-radius: 2px;
 }
 .omrss-sub-btn {
     min-width: 4rem !important;
@@ -469,7 +469,7 @@ nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
     /* border-top: 1px dashed rgba(0,0,0,0.14); */
 }
 #omrss-pager .pagination li {
-    border-radius: 5px !important;
+    border-radius: 2px !important;
 }
 
 #omrss-active-pager a {

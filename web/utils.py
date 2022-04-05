@@ -59,29 +59,19 @@ def get_random_ua():
     return random.choice(UAS)
 
 
-def incr_view_star(action, uindex):
+def incr_view_uv(uindex):
     """
-    文章浏览数、收藏数统计，保留一年数据
-    :param action:
+    文章浏览数统计，保留一年数据
     :param uindex:
     :return:
     """
-    key = None
+    key = settings.REDIS_VIEW_KEY % uindex
+    ret = R.incr(key)
 
-    if action == 'VIEW':
-        key = settings.REDIS_VIEW_KEY % uindex
-    elif action == 'STAR':
-        key = settings.REDIS_STAR_KEY % uindex
+    if ret == 1:
+        R.expire(key, 365 * 86400)
 
-    if key is not None:
-        ret = R.incr(key)
-
-        if ret == 1:
-            R.expire(key, 365 * 86400)
-
-        return ret
-
-    return False
+    return ret
 
 
 def add_register_count():
@@ -129,7 +119,7 @@ def set_active_rss(feeds):
     """
     with R.pipeline(transaction=False) as p:
         for feed in feeds:
-            p.set(settings.REDIS_ACTIVE_RSS_KEY % feed, 1, 3*24*3600)
+            p.set(settings.REDIS_ACTIVE_RSS_KEY % feed, 1, 2*24*3600)
         p.execute()
 
 
@@ -541,47 +531,6 @@ def is_indexed(tag, key):
     return R.get(key) == '1'
 
 
-# def set_job_dvcs(dvcs):
-#     key = settings.REDIS_JOB_DVC_KEY
-#     return R.sadd(key, *dvcs)
-#
-#
-# def set_job_stat(stat):
-#     key = settings.REDIS_JOB_STAT_KEY % (current_day(), stat.dvc_id, stat.status)
-#     return R.set(key, stat.c, 30*24*3600)
-
-
-def set_updated_site(site_id, ttl=2*3600):
-    """
-    设置站点更新标记，2 小时
-    """
-    key = settings.REDIS_UPDATED_SITE_KEY % site_id
-    return R.set(key, '1', ttl)
-
-
-def is_updated_site(site_id):
-    key = settings.REDIS_UPDATED_SITE_KEY % site_id
-    return R.get(key) == '1'
-
-
-def set_user_stared(oauth_id, uindex):
-    """
-    设置用户收藏，保存一年时间
-    """
-    key = settings.REDIS_USER_STAR_KEY % (oauth_id, uindex)
-
-    return R.set(key, '1', 365 * 24 * 3600)
-
-
-def is_user_stared(oauth_id, uindex):
-    """
-    用户是否收藏
-    """
-    key = settings.REDIS_USER_STAR_KEY % (oauth_id, uindex)
-
-    return R.get(key) == '1'
-
-
 def del_dat2_file(uindex, site_id):
     file = os.path.join(settings.HTML_DATA2_DIR, str(site_id), f"{uindex}.html")
     try:
@@ -835,11 +784,4 @@ whoosh_site_schema = Schema(
     cname=TEXT(field_boost=5.0),
     author=TEXT(field_boost=3.0),
     brief=TEXT(),
-)
-whoosh_article_schema = Schema(
-    uindex=ID(stored=True, unique=True),
-
-    title=TEXT(field_boost=5.0),
-    author=TEXT(field_boost=3.0),
-    content=TEXT(),
 )

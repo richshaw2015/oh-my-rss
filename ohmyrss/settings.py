@@ -138,8 +138,6 @@ USE_TZ = True
 
 CRONJOBS = [
    ('1 7-22 * * *', 'web.tasks.update_all_atom_cron'),
-   # ('2 * * * *', 'web.tasks.cal_dvc_stat_cron'),
-   # ('20 0 * * *', 'web.tasks.update_all_mpwx_cron'),
    ('20 2 * * *', 'web.tasks.update_all_podcast_cron'),
    ('11 4 * * *', 'web.tasks.archive_article_cron'),
    ('31 4 * * *', 'web.tasks.build_whoosh_index_cron'),
@@ -182,7 +180,6 @@ REDIS_WEB_DB = 1
 
 # page view count, thumb count, open page count
 REDIS_VIEW_KEY = 'VIEW/%s'
-REDIS_STAR_KEY = 'STAR/%s'
 
 # register user count
 REDIS_REG_KEY = 'REG/%s'

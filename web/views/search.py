@@ -1,5 +1,5 @@
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden, HttpResponseRedirect
 from web.models import *
 from web.utils import add_referer_stats, get_login_user, get_user_subscribe_feeds, set_user_read_article, \
@@ -8,11 +8,9 @@ import logging
 from user_agents import parse
 from web.verify import verify_request
 from django.conf import settings
-from web.utils import whoosh_site_schema, whoosh_article_schema
+from web.utils import whoosh_site_schema
 from whoosh.filedb.filestore import FileStorage
 from whoosh.qparser import MultifieldParser
-from whoosh.query import TermRange
-from feed.utils import current_ts
 
 
 logger = logging.getLogger(__name__)

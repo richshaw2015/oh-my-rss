@@ -29,32 +29,12 @@
         </div>
     </li>
 
-<!--    <li class="ev-toggle-fullscreen sidenav-close omrss-nodisplay" data-tooltip="切换全屏" data-position="bottom">-->
-<!--        <a href="#"><i class="material-icons omrss-color">fullscreen</i>切换全屏</a>-->
-<!--    </li>-->
-
-<!--    <li><a href="#" class="waves-effect sidenav-close ev-my-feed">-->
-<!--        <i class="material-icons omrss-color">rss_feed</i>我的订阅</a>-->
-<!--    </li>-->
-
-<!--    <li><a href="#" class="waves-effect sidenav-close ev-my-star">-->
-<!--        <i class="material-icons omrss-color">star_border</i>我的收藏</a>-->
-<!--    </li>-->
-
-<!--    <li class="omrss-nodisplay">-->
-<!--        <a href="#" class="waves-effect ev-mark-readall sidenav-close">-->
-<!--            <i class="material-icons omrss-color">check</i>全部设为已读</a>-->
-<!--    </li>-->
-
-
 <!--    <div class="divider nav-divider"></div>-->
-
-{#    <li class="ev-donate sidenav-close">#}
-{#        <a href="#"><i class="material-icons omrss-color">attach_money</i>捐赠</a>#}
-{#    </li>#}
-
-
-<!--    <div class="divider nav-divider"></div>-->
+    {% if user %}
+    <li><a href="#" class="waves-effect sidenav-close ev-my-feed">
+        <i class="material-icons omrss-color">rss_feed</i>我的订阅</a>
+    </li>
+    {% endif %}
 
     <li class="ev-intro sidenav-close">
         <a href="#"><i class="material-icons omrss-color">info_outline</i>关于</a>
@@ -64,9 +44,6 @@
         <a href="#"><i class="material-icons omrss-color">format_quote</i>留言</a>
     </li>
 
-<!--    <li class="ev-faq sidenav-close">-->
-<!--        <a href="#"><i class="material-icons omrss-color">help_outline</i>FAQ</a>-->
-<!--    </li>-->
     {% if user %}
     <li>
         <a href="/dashboard" target="_blank" class="sidenav-close">

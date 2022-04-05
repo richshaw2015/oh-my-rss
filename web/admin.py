@@ -55,28 +55,3 @@ class UserAdmin(admin.ModelAdmin):
     list_editable = ['remark', 'level']
     list_filter = ('status', 'level')
     list_per_page = 10
-
-
-@admin.register(UserArticle)
-class UserArticleAdmin(admin.ModelAdmin):
-    list_display = ['title', 'site', 'user', 'author', 'src_url', 'ctime']
-    search_fields = ['title', 'src_url']
-    list_per_page = 10
-
-
-@admin.register(Job)
-class JobAdmin(admin.ModelAdmin):
-    def view_link(self):
-        return mark_safe(f"<a href='{self.url}' target='_blank'>{self.url[:40]}...</a>")
-    view_link.short_description = ''
-
-    formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 20})},
-    }
-
-    list_display = ['action', view_link, 'status', 'dvc_id', 'dvc_type', 'dvc_ip', 'ctime', 'mtime']
-    search_fields = ['url', ]
-    list_filter = ('status', 'action', 'dvc_id', 'dvc_type')
-    list_editable = ['status', ]
-    list_per_page = 12

@@ -32,12 +32,6 @@
                     <span class="meta-author">@{% to_short_author user s=article.site.id a1=article.author a2=article.site.author %}</span>
                     <span class="meta-time prettydate">{{ article.ctime |to_date_fmt }}</span>
 
-                    <span class="right meta-num-s">{{ article.uindex |to_star_uv }}</span>
-                    <i class="right material-icons meta-icon star-icon
-                    {% if user and user.oauth_id|is_user_stared_article:article.uindex %}
-                    omrss-color
-                    {% endif %}
-                    ">star</i>
                     <span class="right meta-num-l">{{ article.uindex |to_view_uv }}</span>
                     <i class="right material-icons meta-icon visibility-icon">visibility</i>
                 </div>
