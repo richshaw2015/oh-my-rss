@@ -7,7 +7,7 @@ import redis
 from functools import lru_cache
 from django.conf import settings
 from django.urls import reverse
-from .models import Site, User
+from .models import User
 import requests
 import os
 from PIL import Image
@@ -325,7 +325,7 @@ def set_user_read_article(oauth_id, uindex):
     """
     key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
 
-    return R.set(key, 1, 30*24*3600)
+    return R.set(key, 1, settings.RECENT_DAYS * 86400 + 86400)
 
 
 def set_user_read_articles(oauth_id, ids):
@@ -338,7 +338,7 @@ def set_user_read_articles(oauth_id, ids):
     with R.pipeline(transaction=False) as p:
         for uindex in ids:
             key = settings.REDIS_USER_READ_KEY % (oauth_id, uindex)
-            p.set(key, 1, 14*24*3600)
+            p.set(key, 1, settings.RECENT_DAYS * 86400 + 86400)
         p.execute()
 
 
@@ -648,8 +648,8 @@ def get_with_retry(url):
             return requests.get(url, verify=False, timeout=30, headers=headers)
         except (HTTPError, Timeout, ConnectionError):
             logger.warning(f"请求出现网络异常：`{url}")
-        except:
-            logger.warning(f"请求出现未知异常：`{url}")
+        except Exception as e:
+            logger.warning(f"请求出现未知异常：`{url}`{e}")
 
         time.sleep(20)
 
@@ -674,11 +674,6 @@ def set_user_site_author(oauth_id, site_id, site_author):
 def get_user_site_author(oauth_id, site_id):
     key = settings.REDIS_USER_CONF_SITE_AUTHOR_KEY % (oauth_id, site_id)
     return R.get(key)
-
-
-def valid_dvc_req(dvc_id, dvc_type, sign):
-    src = dvc_id + dvc_type + current_day()
-    return get_hash_name(src) == sign
 
 
 def get_html_text(html):

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseNotFound, HttpResponseForbidden
 from django.conf import settings
 from web.models import *
 from web.utils import get_login_user, get_user_subscribe_feeds, set_user_read_article, \
@@ -9,7 +9,6 @@ from web.utils import get_login_user, get_user_subscribe_feeds, set_user_read_ar
 from web.verify import verify_request
 import logging
 import json
-import random
 
 logger = logging.getLogger(__name__)
 

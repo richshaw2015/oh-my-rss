@@ -55,12 +55,12 @@ def archive_article_cron():
     归档并清理文章
     """
     # 变更最近文章标示
-    lastweek_ts = datetime.now() - timedelta(days=7)
-    Article.objects.filter(is_recent=True, ctime__lte=lastweek_ts).update(is_recent=False)
+    recent_ts = datetime.now() - timedelta(days=settings.RECENT_DAYS)
+    Article.objects.filter(is_recent=True, ctime__lte=recent_ts).update(is_recent=False)
 
     for dest in Article.objects.values("site_id").annotate(count=Count('site_id')).\
-            filter(count__gt=1000):
-        for article in Article.objects.filter(site_id=dest['site_id']).order_by('-id')[1000:]:
+            filter(count__gt=settings.MAX_ARTICLES):
+        for article in Article.objects.filter(site_id=dest['site_id']).order_by('-id')[settings.MAX_ARTICLES:]:
             if not article.is_recent:
                 del_dat2_file(article.uindex, article.site_id)
                 article.delete()
