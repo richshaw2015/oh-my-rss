@@ -10,7 +10,7 @@ class CnblogsPickSpider(Spider):
                         start_urls=[
                             'https://www.cnblogs.com/pick/',
                         ],
-                        index_xpath='//*[@id="post_list"]/div/div/h3/a/@href',
+                        index_xpath='//a[@class="post-item-title"]/@href',
                         article_title_xpath='//*[@id="cb_post_title_url"]/span/text()',
                         article_content_xpath='//*[@id="cnblogs_post_body"]',
                         )

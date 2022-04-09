@@ -11,9 +11,6 @@ class WecteamWeeklySpider(Spider):
                             'https://github.com/wecteam/weekly',
                         ],
                         index_xpath="//a[contains(text(),'第 ')]/@href",
-                        article_title_xpath='//article//h1/text()',
+                        article_title_xpath="//strong[@class='final-path']/text()",
                         article_content_xpath='//article',
-                        article_trim_xpaths=[
-                            '//article//h1'
-                        ],
                         )
