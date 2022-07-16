@@ -21,6 +21,6 @@ docs
 venv
 node_modules/
 dist/
-dat/
+data/
 dat2/
 whoosh/

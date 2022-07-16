@@ -147,7 +147,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
-HTML_DATA2_DIR = os.path.join(BASE_DIR, "dat")
+HTML_DATA2_DIR = os.path.join(BASE_DIR, "data")
 
 CRAWL_FLAG_DIR = os.path.join(HTML_DATA2_DIR, "crawl")
 
